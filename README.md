@@ -1,7 +1,7 @@
 # Chords
 
-**Banco extenso de acordes de guitarra con sonido y afinación en vivo.**
-Fundación Flutter (Android + Linux) construida con arquitectura limpia,
+**Banco extenso de acordes de guitarra con sonido, arpegios y afinación en vivo.**
+Fundación Flutter (Android + Linux + Web) construida con arquitectura limpia,
 diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
@@ -14,19 +14,31 @@ diseño atómico y Material 3 Expressive.
 
 - **Banco extenso**: 156 acordes (12 raíces × 13 cualidades) y 581 posiciones
   verificadas (cejillas, formas movibles, power chords, triadas e inversiones),
-  cada una con su nivel de dificultad (1-5).
+  cada una con su nivel de dificultad (1-5) y géneros asociados
+  (Pop, Rock, Blues, Funk, Jazz, Balada, Latino, Metal…).
+- **Onboarding**: introducción de 3 pantallas al primer arranque (persistida).
+- **Aprender**: itinerario por 5 niveles (🌱 primeros acordes → 🎷 jazz),
+  progreso persistente por acorde dominado, guía paso a paso
+  (dedos → rasgueo → cambio) y **arpegios guiados** (ascendente, descendente,
+  alterno y fingerstyle) con audio real por cuerda.
+- **Modo juego "toca el acorde"**: elige el acorde, escucha 5 s por el
+  micrófono, puntúa por notas reconocidas y encadena series con racha y récord.
 - **Sonido de cada acorde**: síntesis por cuerda tipo Karplus-Strong con
-  envolvente realista, mezclada y codificada a WAV (SoLoud).
+  envolvente realista, codificada a WAV (SoLoud). Funciona en Android, Linux
+  y Web (WASM).
 - **Micrófono en vivo**: captura PCM16 + detector de tono YIN: nota, cents y
   acordes sugeridos en tiempo real.
+- **Biblioteca con filtros**: búsqueda libre, chips por género, por nivel y
+  por calidad, más slider de dificultad máxima; los esenciales salen primero.
 - **Diseño Material 3 Expressive adaptable**: esquema semilla púrpura, formas
-  amplias, curva de énfasis; barra inferior en móvil y rijado lateral en
+  amplias, curva de énfasis; barra inferior en móvil y riel lateral en
   escritorio, diagramas en espejo para zurdos.
 - **Rutas profundas y deep links**: `chords://...`, `https://chords.app/...`,
   query params (`?root=E&quality=min&difficulty=1&q=blues`).
 - **Flavors**: `dev`, `staging` y `prod` con `applicationId` y nombre propios.
 - **Calidad**: análisis estático estricto (0 issues), git hooks pre-commit y
-  pre-push, Makefile, CLI propia y 25 tests (unitarios, widget y smoke).
+  pre-push, Makefile, CLI propia y 32 tests (unitarios, widget, smoke y audit
+  responsive en móvil).
 
 ## Arranque rápido
 
@@ -76,7 +88,16 @@ dart run bin/chords_cli.dart flavor list
 ```bash
 make build-linux   # binario Linux release por flavor
 make build-apk     # APK release por flavor
+make build-web     # web de release
 ```
+
+## Compatibilidad
+
+| Plataforma | Build | Sonido | Micrófono |
+| --- | --- | --- | --- |
+| Android (dev/staging/prod) | APK release | SoLoud | RECORD_AUDIO en runtime |
+| Linux (x64) | binario release | SoLoud | PulseAudio/PipeWire |
+| Web (Chrome/Edge/Firefox) | `flutter build web` | SoLoud WASM | AudioWorklet PCM16 |
 
 ## Licencia
 

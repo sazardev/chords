@@ -1,97 +1,137 @@
 /// Calidad (tipo) de acorde: define los intervalos que lo construyen.
+///
+/// Además de los intervalos musicales, cada calidad declara los géneros en
+/// los que aparece con más frecuencia, para poder filtrar por estilo.
 enum ChordQuality {
-  /// Triada mayor: estable y brillante.
-  major('maj', '', 'Mayor', <int>[0, 4, 7], 'Triada mayor; base de casi todo.'),
+  /// Mayor: estable y brillante.
+  major(
+    'maj',
+    '',
+    'Mayor',
+    <int>[0, 4, 7],
+    'Triada mayor; base de casi todo.',
+    <String>['Pop', 'Rock', 'Infantil', 'Gospel'],
+  ),
 
-  /// Triada menor: melancólica.
-  minor('min', 'm', 'Menor', <int>[
-    0,
-    3,
-    7,
-  ], 'Triada menor; color triste o íntimo.'),
+  /// Menor: melancólica.
+  minor(
+    'min',
+    'm',
+    'Menor',
+    <int>[0, 3, 7],
+    'Triada menor; color triste o íntimo.',
+    <String>['Rock', 'Balada', 'Pop', 'Metal'],
+  ),
 
-  /// Séptima de dominante: tensión que resuelve a la tónica.
-  seven('7', '7', 'Séptima de dominante', <int>[
-    0,
-    4,
-    7,
-    10,
-  ], 'Blues y funk; tensión con resolución fuerte.'),
+  /// Séptima de dominante: tensión que resuelve.
+  seven(
+    '7',
+    '7',
+    'Séptima de dominante',
+    <int>[0, 4, 7, 10],
+    'Blues y funk; tensión con resolución fuerte.',
+    <String>['Blues', 'Funk', 'Jazz', 'Rock'],
+  ),
 
-  /// Séptima menor: suave, muy usada en jazz y pop.
-  minorSeven('m7', 'm7', 'Séptima menor', <int>[
-    0,
-    3,
-    7,
-    10,
-  ], 'Suave y versátil; columna vertebral del ii-V-I.'),
+  /// Séptima menor: suave y versátil.
+  minorSeven(
+    'm7',
+    'm7',
+    'Séptima menor',
+    <int>[0, 3, 7, 10],
+    'Suave y versátil; columna vertebral del ii-V-I.',
+    <String>['R&B', 'Soul', 'Jazz', 'Pop'],
+  ),
 
   /// Séptima mayor: soñadora.
-  majorSeven('maj7', 'maj7', 'Séptima mayor', <int>[
-    0,
-    4,
-    7,
-    11,
-  ], 'Color soñador de pop y jazz.'),
+  majorSeven(
+    'maj7',
+    'maj7',
+    'Séptima mayor',
+    <int>[0, 4, 7, 11],
+    'Color soñador de pop y jazz.',
+    <String>['Jazz', 'Soul', 'Bossa', 'Pop'],
+  ),
 
-  /// Cuarta suspendida: suspensión abierta.
-  suspendedFourth('sus4', 'sus4', 'Suspendida 4', <int>[
-    0,
-    5,
-    7,
-  ], 'Suspensión abierta; suele resolver a mayor.'),
+  /// Suspendida 4: suspensión abierta.
+  suspendedFourth(
+    'sus4',
+    'sus4',
+    'Suspendida 4',
+    <int>[0, 5, 7],
+    'Suspensión abierta; suele resolver a mayor.',
+    <String>['Pop', 'Rock', 'Ambient'],
+  ),
 
-  /// Segunda suspendida: abierta y moderna.
-  suspendedSecond('sus2', 'sus2', 'Suspendida 2', <int>[
-    0,
-    2,
-    7,
-  ], 'Abierta y etérea; habitual en pop y rock.'),
+  /// Suspendida 2: abierta y moderna.
+  suspendedSecond(
+    'sus2',
+    'sus2',
+    'Suspendida 2',
+    <int>[0, 2, 7],
+    'Abierta y etérea; habitual en pop y rock.',
+    <String>['Pop', 'Rock', 'Ambient'],
+  ),
 
   /// Power chord de dos notas.
-  power('5', '5', 'Quinta', <int>[
-    0,
-    7,
-  ], 'Dos notas; rock, metal y distorsión.'),
+  power(
+    '5',
+    '5',
+    'Quinta',
+    <int>[0, 7],
+    'Dos notas; rock, metal y distorsión.',
+    <String>['Rock', 'Metal', 'Punk'],
+  ),
 
   /// Mayor con sexta añadida.
-  sixth('6', '6', 'Sexta', <int>[
-    0,
-    4,
-    7,
-    9,
-  ], 'Aire vintage; frecuente en funk y folk.'),
+  sixth(
+    '6',
+    '6',
+    'Sexta',
+    <int>[0, 4, 7, 9],
+    'Aire vintage; frecuente en funk y folk.',
+    <String>['Funk', 'Jazz', 'Country'],
+  ),
 
   /// Menor con sexta añadida.
-  minorSixth('m6', 'm6', 'Sexta menor', <int>[
-    0,
-    3,
-    7,
-    9,
-  ], 'Color latino y jazz; muy expresiva.'),
+  minorSixth(
+    'm6',
+    'm6',
+    'Sexta menor',
+    <int>[0, 3, 7, 9],
+    'Color latino y jazz; muy expresiva.',
+    <String>['Jazz', 'Latino', 'Bossa'],
+  ),
 
   /// Triada disminuida: inestable.
-  diminished('dim', 'dim', 'Disminuido', <int>[
-    0,
-    3,
-    6,
-  ], 'Tensión inestable; acorde de paso.'),
+  diminished(
+    'dim',
+    'dim',
+    'Disminuido',
+    <int>[0, 3, 6],
+    'Tensión inestable; acorde de paso.',
+    <String>['Jazz', 'Clásico', 'Metal'],
+  ),
 
   /// Triada aumentada: simétrica.
-  augmented('aug', 'aug', 'Aumentado', <int>[
-    0,
-    4,
-    8,
-  ], 'Simétrico y luminoso; enlaces cromáticos.'),
+  augmented(
+    'aug',
+    'aug',
+    'Aumentado',
+    <int>[0, 4, 8],
+    'Simétrico y luminoso; enlaces cromáticos.',
+    <String>['Jazz', 'Rock', 'Clásico'],
+  ),
 
-  /// Novena de dominante: color jazz.
-  ninth('9', '9', 'Novena', <int>[
-    0,
-    4,
-    7,
-    10,
-    14,
-  ], 'Rica y moderna; funk y r&b.');
+  /// Novena de dominante: rica y moderna.
+  ninth(
+    '9',
+    '9',
+    'Novena',
+    <int>[0, 4, 7, 10, 14],
+    'Rica y moderna; funk y r&b.',
+    <String>['Funk', 'R&B', 'Jazz'],
+  );
 
   /// Crea una calidad con sus metadatos.
   const ChordQuality(
@@ -100,6 +140,7 @@ enum ChordQuality {
     this.label,
     this.intervals,
     this.description,
+    this.genres,
   );
 
   /// Identificador estable usado en el banco de datos.
@@ -116,6 +157,9 @@ enum ChordQuality {
 
   /// Descripción musical breve.
   final String description;
+
+  /// Géneros asociados a la calidad.
+  final List<String> genres;
 
   /// Resuelve una calidad a partir de su identificador.
   ///
@@ -137,3 +181,24 @@ enum ChordQuality {
     _ => null,
   };
 }
+
+/// Lista de géneros disponibles, ordenada por popularidad.
+const List<String> kChordGenres = <String>[
+  'Pop',
+  'Rock',
+  'Blues',
+  'Jazz',
+  'Funk',
+  'Balada',
+  'R&B',
+  'Soul',
+  'Latino',
+  'Metal',
+  'Bossa',
+  'Country',
+  'Infantil',
+  'Ambient',
+  'Clásico',
+  'Gospel',
+  'Punk',
+];

@@ -14,6 +14,15 @@ abstract interface class ChordRepository {
   /// Busca un acorde por identificador.
   Chord? chordById(String id);
 
-  /// Acordes que suenan exactamente las clases de tono indicadas.
+  /// Acordes que suenan las clases de tono indicadas.
   List<Chord> chordsByPitchClasses(Set<int> pitchClasses);
+
+  /// Acordes asociados a un género (p. ej. `Blues`).
+  List<Chord> chordsByGenre(String genre);
+
+  /// Acordes de un nivel de aprendizaje (1-5).
+  List<Chord> chordsByLevel(int level);
+
+  /// Orden recomendado de estudio: esenciales primero, luego por dificultad.
+  List<Chord> essentialFirst(List<Chord> chords);
 }

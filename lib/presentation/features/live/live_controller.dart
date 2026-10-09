@@ -9,11 +9,12 @@ import 'package:flutter/foundation.dart';
 /// Controlador de la afinación en vivo con micrófono.
 class LiveController extends ChangeNotifier {
   /// Crea el controlador.
-  LiveController(this._audio, this._chords, this._matchChords);
+  LiveController(this._audio, this._chords);
 
   final AudioRepository _audio;
   final ChordRepository _chords;
-  final MatchChordsByPitchClassesUseCase _matchChords;
+  final MatchChordsByPitchClassesUseCase _matchChords =
+      const MatchChordsByPitchClassesUseCase();
 
   MicStatus _status = MicStatus.idle;
   PitchReading? _reading;
@@ -49,10 +50,7 @@ class LiveController extends ChangeNotifier {
     notifyListeners();
     await _audio.requestAccess();
     _audio.readings.listen(_onReading);
-    _audio.statusStream.listen((MicStatus status) {
-      _status = status;
-      notifyListeners();
-    });
+    _audio.statusStream.listen(_onStatus);
   }
 
   /// Detiene la escucha del micrófono.
@@ -62,9 +60,14 @@ class LiveController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _onStatus(MicStatus status) {
+    _status = status;
+    notifyListeners();
+  }
+
   void _onReading(PitchReading reading) {
     _reading = reading;
-    final int pitchClass = _pitchClassOfNote(reading.note);
+    final int pitchClass = _pitchClassOf(reading.note);
     if (reading.isReliable) {
       _detected
         ..clear()
@@ -74,7 +77,7 @@ class LiveController extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _pitchClassOfNote(String label) {
+  int _pitchClassOf(String label) {
     const List<String> names = <String>[
       'C',
       'C#',

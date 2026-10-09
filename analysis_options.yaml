@@ -16,6 +16,7 @@ analyzer:
     - build/**
     - android/**
     - linux/**
+    - web/**
 
 linter:
   rules:

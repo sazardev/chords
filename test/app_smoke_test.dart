@@ -3,18 +3,19 @@ import 'package:chords/config/app_config.dart';
 import 'package:chords/data/audio/audio_repository_impl.dart';
 import 'package:chords/data/chords/datasources/chord_asset_datasource.dart';
 import 'package:chords/data/chords/repositories/chord_repository_impl.dart';
+import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
-import 'package:chords/domain/chords/usecases/get_chord_by_id_use_case.dart';
-import 'package:chords/domain/chords/usecases/get_chords_use_case.dart';
-import 'package:chords/domain/chords/usecases/match_chords_by_pitch_classes_use_case.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
+import 'package:chords/presentation/features/game/game_controller.dart';
+import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
+import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
 import 'package:chords/presentation/router/route_paths.dart';
@@ -24,42 +25,50 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Smoke test de la aplicación completa (arranque, assets y navegación).
 void main() {
   testWidgets('la app arranca, carga el banco y navega', (
     WidgetTester tester,
   ) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final PreferencesService preferences = await PreferencesService.create();
     final ChordRepository chords = ChordRepositoryImpl(
       dataSource: const ChordAssetDataSource(),
     );
     final AudioRepository audio = AudioRepositoryImpl();
+    final SettingsController settings = SettingsController(preferences);
+    final OnboardingController onboarding = OnboardingController(preferences);
     final ChordsController chordsController = ChordsController(
-      GetChordsUseCase(chords),
+      chords,
       const SearchChordsUseCase(),
+      preferences,
     );
+    final ChordDetailController chordDetail = ChordDetailController(
+      chords,
+      audio,
+      preferences,
+    );
+    final LearnController learn = LearnController(chords, preferences);
+    final GameController game = GameController(audio, chords, preferences);
+    final LiveController live = LiveController(audio, chords);
 
     await tester.runAsync(() async {
       await chords.load();
       await chordsController.load();
+      await learn.load();
+      onboarding.load();
     });
 
     final List<SingleChildWidget> providers = <SingleChildWidget>[
-      ChangeNotifierProvider<SettingsController>(
-        create: (_) => SettingsController(),
-      ),
+      ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
       ChangeNotifierProvider<ChordsController>.value(value: chordsController),
-      ChangeNotifierProvider<ChordDetailController>(
-        create: (_) =>
-            ChordDetailController(GetChordByIdUseCase(chords), audio),
-      ),
-      ChangeNotifierProvider<LiveController>(
-        create: (_) => LiveController(
-          audio,
-          chords,
-          const MatchChordsByPitchClassesUseCase(),
-        ),
-      ),
+      ChangeNotifierProvider<ChordDetailController>.value(value: chordDetail),
+      ChangeNotifierProvider<LearnController>.value(value: learn),
+      ChangeNotifierProvider<GameController>.value(value: game),
+      ChangeNotifierProvider<LiveController>.value(value: live),
     ];
 
     await tester.pumpWidget(
@@ -73,8 +82,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Chords'), findsOneWidget);
-    expect(find.text('Todos los acordes de guitararra'), findsOneWidget);
+    // Onboarding pendiente en el primer arranque: se muestra sobre el home.
+    expect(find.text('Omitir'), findsOneWidget);
+    await tester.tap(find.text('Omitir'));
+    await tester.pumpAndSettle();
+    expect(find.text('¿Qué tocas hoy?'), findsOneWidget);
 
     // Navegación al listado de acordes.
     await tester.tap(find.text('Acordes').last);
@@ -87,19 +99,34 @@ void main() {
         .chord;
     await tester.tap(find.byType(ChordCard).first);
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pumpAndSettle();
+    expect(find.text('Arpegios'), findsOneWidget);
+    // El listado de posiciones está más abajo: hay que desplazarse.
+    await tester.drag(find.byType(ListView).last, const Offset(0, -600));
+    await tester.pumpAndSettle();
     expect(find.text('Posiciones'), findsOneWidget);
     expect(find.text(chord.name), findsWidgets);
 
     // Página en vivo sin micrófono activo.
     routerOf(tester).go(kLivePath);
     await tester.pumpAndSettle();
-    expect(find.text('Afinación en vivo'), findsOneWidget);
+    expect(find.text('En vivo'), findsWidgets);
     expect(find.text('Micrófono en espera'), findsOneWidget);
+
+    // Modo juego: iniciar serie y ver el objetivo.
+    routerOf(tester).go(kGamePath);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Empezar serie'));
+    await tester.pumpAndSettle();
+    expect(find.text('Ronda 1'), findsOneWidget);
+    expect(find.text('Estoy listo'), findsOneWidget);
 
     // Deep link con parámetros de consulta: /chords?root=E&quality=min.
     routerOf(tester).go('$kChordsPath?root=E&quality=min');
     await tester.pumpAndSettle();
     expect(find.byType(GridView), findsOneWidget);
+    await tester.pump(Duration.zero);
     expect(chordsController.visibleChords.isNotEmpty, isTrue);
     expect(
       chordsController.visibleChords.every(
@@ -111,7 +138,6 @@ void main() {
 }
 
 /// Recupera el enrutador montado en la aplicación.
-GoRouter routerOf(WidgetTester tester) {
-  final MaterialApp app = tester.widget<MaterialApp>(find.byType(MaterialApp));
-  return app.routerConfig! as GoRouter;
-}
+GoRouter routerOf(WidgetTester tester) =>
+    tester.widget<MaterialApp>(find.byType(MaterialApp)).routerConfig!
+        as GoRouter;

@@ -1,87 +1,154 @@
+import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/presentation/features/chords/chords_controller.dart';
+import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/router/route_paths.dart';
-import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
+import 'package:chords/presentation/widgets/atoms/progress_ring.dart';
+import 'package:chords/presentation/widgets/molecules/quick_action_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-/// Pantalla de inicio con accesos a las secciones principales.
+/// Pantalla de inicio con progreso, continuación y accesos rápidos.
 class HomePage extends StatelessWidget {
   /// Crea la pantalla de inicio.
   const HomePage({super.key});
 
-  static const List<_Entry> _entries = <_Entry>[
-    _Entry(
-      icon: Icons.library_music_rounded,
-      title: 'Banco de acordes',
-      subtitle: '156 acordes · 581 posiciones',
-      route: kChordsPath,
-    ),
-    _Entry(
-      icon: Icons.graphic_eq_rounded,
-      title: 'Afinación en vivo',
-      subtitle: 'Detecta la nota con el micrófono',
-      route: kLivePath,
-    ),
-  ];
+  @override
+  Widget build(BuildContext context) {
+    final ChordsController chords = context.watch<ChordsController>();
+    final LearnController learn = context.watch<LearnController>();
+    final String? nextId = learn.nextChordId;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Chords')),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 24),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  AppText(
+                    'Hola, guitararrista',
+                    variant: AppTextVariant.bodyLarge,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const AppText(
+                    '¿Qué tocas hoy?',
+                    variant: AppTextVariant.displayLarge,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: _ProgressSummary(learn: learn),
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: QuickActionCard(
+                icon: Icons.school_rounded,
+                title: 'Continúa aprendiendo',
+                subtitle: nextId == null
+                    ? '¡Itinerario completo!'
+                    : 'Siguiente: ${_nameOf(chords, nextId)}',
+                onTap: () => context.go(kLearnPath),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: QuickActionCard(
+                icon: Icons.library_music_rounded,
+                title: 'Biblioteca de acordes',
+                subtitle:
+                    '${chords.allChords.length} acordes por género y nivel',
+                onTap: () => context.go(kChordsPath),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: QuickActionCard(
+                icon: Icons.sports_esports_rounded,
+                title: 'Modo juego',
+                subtitle: 'Toca el acorde y encadena la serie',
+                onTap: () => context.go(kGamePath),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: QuickActionCard(
+                icon: Icons.graphic_eq_rounded,
+                title: 'Afinación en vivo',
+                subtitle: 'Detecta la nota con tu micrófono',
+                onTap: () => context.go(kLivePath),
+                color: Theme.of(context).colorScheme.secondaryContainer,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _nameOf(ChordsController chords, String id) {
+    for (final Chord chord in chords.allChords) {
+      if (chord.id == id) {
+        return chord.name;
+      }
+    }
+    return id;
+  }
+}
+
+/// Resumen de progreso del aprendizaje.
+class _ProgressSummary extends StatelessWidget {
+  const _ProgressSummary({required this.learn});
+
+  final LearnController learn;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Chords')),
-    body: ListView(
+  Widget build(BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    return Container(
       padding: const EdgeInsets.all(16),
-      children: <Widget>[
-        const AppText(
-          'Todos los acordes de guitararra',
-          variant: AppTextVariant.displayLarge,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: <Color>[scheme.primaryContainer, scheme.tertiaryContainer],
         ),
-        const SizedBox(height: 8),
-        AppText(
-          'Todas las variantes y dificultades, con sonido y afinación en vivo.',
-          variant: AppTextVariant.bodyLarge,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-        const SizedBox(height: 20),
-        for (final _Entry entry in _entries) ...<Widget>[
-          AppCard(
-            onTap: () => context.go(entry.route),
-            child: Row(
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Row(
+        children: <Widget>[
+          ProgressRing(
+            progress: learn.progress,
+            size: 76,
+            label: '${(learn.progress * 100).round()}%',
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CircleAvatar(radius: 24, child: Icon(entry.icon)),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AppText(entry.title, variant: AppTextVariant.titleLarge),
-                      AppText(
-                        entry.subtitle,
-                        variant: AppTextVariant.labelMedium,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ],
-                  ),
+                const AppText(
+                  'Progreso del itinerario',
+                  variant: AppTextVariant.titleMedium,
                 ),
-                const Icon(Icons.chevron_right_rounded),
+                const SizedBox(height: 4),
+                AppText(
+                  '${learn.mastered.length} acordes dominados',
+                  color: scheme.onPrimaryContainer,
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 12),
         ],
-      ],
-    ),
-  );
-}
-
-class _Entry {
-  const _Entry({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.route,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String route;
+      ),
+    );
+  }
 }

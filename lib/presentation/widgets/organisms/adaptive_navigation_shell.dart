@@ -20,9 +20,19 @@ class AdaptiveNavigationShell extends StatelessWidget {
       label: 'Inicio',
     ),
     _Destination(
+      icon: Icons.school_outlined,
+      selectedIcon: Icons.school_rounded,
+      label: 'Aprender',
+    ),
+    _Destination(
       icon: Icons.library_music_outlined,
       selectedIcon: Icons.library_music_rounded,
       label: 'Acordes',
+    ),
+    _Destination(
+      icon: Icons.sports_esports_outlined,
+      selectedIcon: Icons.sports_esports_rounded,
+      label: 'Jugar',
     ),
     _Destination(
       icon: Icons.graphic_eq_outlined,
@@ -75,6 +85,7 @@ class AdaptiveNavigationShell extends StatelessWidget {
         selectedIndex: shell.currentIndex,
         onDestinationSelected: _onDestinationSelected,
         animationDuration: kMotionMedium,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: <Widget>[
           for (final _Destination destination in _destinations)
             NavigationDestination(

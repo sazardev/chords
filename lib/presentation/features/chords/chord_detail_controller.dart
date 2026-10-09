@@ -1,21 +1,29 @@
+import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
+import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
-import 'package:chords/domain/chords/usecases/get_chord_by_id_use_case.dart';
+import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Controlador del detalle de un acorde.
 class ChordDetailController extends ChangeNotifier {
   /// Crea el controlador.
-  ChordDetailController(this._getChordById, this._audioRepository);
+  ChordDetailController(
+    this._repository,
+    this._audioRepository,
+    this._preferences,
+  );
 
-  final GetChordByIdUseCase _getChordById;
+  final ChordRepository _repository;
   final AudioRepository _audioRepository;
+  final PreferencesService _preferences;
 
   Chord? _chord;
   int _selectedIndex = 0;
   bool _loading = false;
   String? _error;
+  String? _playingId;
 
   /// Acorde cargado.
   Chord? get chord => _chord;
@@ -29,11 +37,21 @@ class ChordDetailController extends ChangeNotifier {
   /// Mensaje de error.
   String? get error => _error;
 
+  /// Identificador del sonido que está sonando.
+  String? get playingId => _playingId;
+
+  /// `true` si el sonido está activado en ajustes.
+  bool get soundEnabled => _preferences.soundEnabled;
+
   /// Posición seleccionada actualmente.
   ChordVariant? get selectedVariant =>
       _chord == null || _chord!.variants.isEmpty
       ? null
       : _chord!.variants[_selectedIndex.clamp(0, _chord!.variants.length - 1)];
+
+  /// Si el acorde está marcado como dominado.
+  bool get isMastered =>
+      _chord != null && _preferences.masteredChordIds.contains(_chord!.id);
 
   /// Carga el acorde por identificador.
   Future<void> load(String chordId) async {
@@ -41,7 +59,10 @@ class ChordDetailController extends ChangeNotifier {
     _error = null;
     notifyListeners();
     try {
-      final Chord? chord = await _getChordById.load(chordId);
+      if (!_repository.isLoaded) {
+        await _repository.load();
+      }
+      final Chord? chord = _repository.chordById(chordId);
       if (chord == null) {
         _error = 'No se encontró el acorde $chordId';
         _chord = null;
@@ -66,13 +87,51 @@ class ChordDetailController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Reproduce el sonido de la posición seleccionada.
+  /// Reproduce el sonido de la posición seleccionada (rasgueo).
   Future<void> playSelected() async {
     final Chord? chord = _chord;
     final ChordVariant? variant = selectedVariant;
-    if (chord == null || variant == null) {
+    if (chord == null || variant == null || !_preferences.soundEnabled) {
       return;
     }
-    await _audioRepository.playChord(chord, variant);
+    _playingId = variant.id;
+    notifyListeners();
+    try {
+      await _audioRepository.playChord(chord, variant);
+    } finally {
+      _playingId = null;
+      notifyListeners();
+    }
+  }
+
+  /// Reproduce la posición seleccionada como arpegio.
+  Future<void> playArpeggio(ArpeggioPattern pattern) async {
+    final Chord? chord = _chord;
+    final ChordVariant? variant = selectedVariant;
+    if (chord == null || variant == null || !_preferences.soundEnabled) {
+      return;
+    }
+    _playingId = '${variant.id}-${pattern.id}';
+    notifyListeners();
+    try {
+      await _audioRepository.playArpeggio(chord, variant, pattern);
+    } finally {
+      _playingId = null;
+      notifyListeners();
+    }
+  }
+
+  /// Marca o desmarca el acorde como dominado.
+  Future<void> toggleMastered() async {
+    final Chord? chord = _chord;
+    if (chord == null) {
+      return;
+    }
+    final Set<String> updated = <String>{..._preferences.masteredChordIds};
+    if (!updated.add(chord.id)) {
+      updated.remove(chord.id);
+    }
+    await _preferences.setMasteredChordIds(updated);
+    notifyListeners();
   }
 }

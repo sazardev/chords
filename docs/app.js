@@ -148,6 +148,29 @@ const FEATURES = [
   },
 ];
 
+const LEARN_FEATURES = [
+  {
+    icon: 'school',
+    title: 'Itinerario por niveles',
+    text: 'De los abiertos esenciales al jazz. Progreso persistente por acorde dominado.',
+  },
+  {
+    icon: 'arpegio',
+    title: 'Arpegios guiados',
+    text: 'Ascendente, descendente, alterno y fingerstyle, sintetizados cuerda por cuerda.',
+  },
+  {
+    icon: 'game',
+    title: 'Modo juego',
+    text: 'Toca el acorde, el micrófono valida las notas y encadenas serie con racha y récord.',
+  },
+  {
+    icon: 'genre',
+    title: 'Filtros por género',
+    text: 'Pop, Rock, Blues, Funk, Jazz, Balada, Latino y Metal, además de nivel y dificultad.',
+  },
+];
+
 const TOKENS = [
   { name: 'primary', value: '#6750A4' },
   { name: 'primary-container', value: '#E9DDFF' },
@@ -167,6 +190,14 @@ const DIFFICULTY = [
 
 /** Iconos SVG del sistema de diseño. */
 const ICONS = {
+  school:
+    '<path fill="currentColor" d="M12 3 1 9l4 2.2v6L12 21l7-3.8v-6L23 9l-11-6Zm0 2.3 7.5 4.2L12 13.7 4.5 9.5 12 5.3ZM6 13.1l6 3.3 6-3.3v3.9l-6 3.3-6-3.3v-3.9Z"/>',
+  arpegio:
+    '<path fill="currentColor" d="M3 17h2v-2H3v2Zm4 0h2v-4H7v4Zm4 0h2V9h-2v8Zm4 0h2V5h-2v12ZM19 17h2v-8h-2v8Z"/>',
+  game:
+    '<path fill="currentColor" d="M7 7h10a5 5 0 0 1 5 5v3a4 4 0 0 1-4 4h-1v2h-2v-2h-2v2h-2v-2H9v2H7v-2a5 5 0 0 1-5-5v-3a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v1h2v-1h2v-1H7Zm10 0h-2v1h2v1h2v-1a3 3 0 0 0-3-3Zm-8 3v2H5v-2h4Zm10 0v2h-4v-2h4Z"/>',
+  genre:
+    '<path fill="currentColor" d="M12 3v10.6a4 4 0 1 0 2 3.4V7h4V3h-6Z"/>',
   library:
     '<path fill="currentColor" d="M4 4h2v16H4V4Zm4 0h2v16H8V4Zm4 0h2v16h-2V4Zm4 0h2v16h-2V4Zm4 0h2v16h-2V4Z"/>',
   sound:
@@ -375,6 +406,17 @@ function bindAppBar() {
   window.addEventListener('scroll', onScroll, { passive: true });
 }
 
+function renderLearn() {
+  const host = $('[data-learn]');
+  if (!host) return;
+  host.innerHTML = LEARN_FEATURES.map(
+    (f) => '<article class="feature"><span class="icon"><svg viewBox="0 0 24 24" width="22" height="22">' +
+      ICONS[f.icon] + '</svg></span><h3>' + f.title + '</h3><p>' + f.text +
+      '</p></article>'
+  ).join('');
+}
+
+renderLearn();
 renderFeatures();
 renderHeroGrid();
 renderLibrary();

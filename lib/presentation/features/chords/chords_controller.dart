@@ -1,12 +1,13 @@
+import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_filters.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
-import 'package:chords/domain/chords/usecases/get_chords_use_case.dart';
+import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
 import 'package:flutter/foundation.dart';
 
-/// Estado de la carga del listado.
+/// Estado de la carga de la biblioteca.
 enum ChordsStatus {
   /// Cargando el banco de acordes.
   loading,
@@ -18,58 +19,46 @@ enum ChordsStatus {
   error,
 }
 
-/// Estado del listado de acordes.
-class ChordsState {
-  /// Crea un estado del listado.
-  const ChordsState({
-    this.status = ChordsStatus.loading,
-    this.chords = const <Chord>[],
-    this.error,
-  });
-
-  /// Estado de carga.
-  final ChordsStatus status;
-
-  /// Todos los acordes cargados.
-  final List<Chord> chords;
-
-  /// Mensaje de error si la carga falló.
-  final String? error;
-}
-
-/// Controlador del listado de acordes y sus filtros.
+/// Controlador de la biblioteca de acordes y sus filtros.
 class ChordsController extends ChangeNotifier {
-  /// Crea el controlador con los casos de uso indicados.
-  ChordsController(this._getChords, this._searchChords);
+  /// Crea el controlador.
+  ChordsController(this._repository, this._searchChords, this._preferences);
 
-  final GetChordsUseCase _getChords;
+  final ChordRepository _repository;
   final SearchChordsUseCase _searchChords;
+  final PreferencesService _preferences;
 
-  ChordsState _state = const ChordsState();
+  ChordsStatus _status = ChordsStatus.loading;
   ChordFilters _filters = const ChordFilters.empty();
   List<Chord> _visible = const <Chord>[];
 
-  /// Estado actual.
-  ChordsState get state => _state;
+  /// Estado de carga.
+  ChordsStatus get status => _status;
 
   /// Filtros activos.
   ChordFilters get filters => _filters;
 
-  /// Acordes que cumplen los filtros.
+  /// Acordes que cumplen los filtros (esenciales primero).
   List<Chord> get visibleChords => _visible;
+
+  /// Todos los acordes del banco.
+  List<Chord> get allChords => _repository.chords;
+
+  /// Si el sonido está activado.
+  bool get soundEnabled => _preferences.soundEnabled;
 
   /// Carga inicial del banco de acordes.
   Future<void> load() async {
-    _state = const ChordsState();
+    _status = ChordsStatus.loading;
     notifyListeners();
     try {
-      final List<Chord> chords = await _getChords();
-      _state = ChordsState(status: ChordsStatus.ready, chords: chords);
+      await _repository.load();
       _applyFilters();
-    } on Object catch (error) {
-      _state = ChordsState(status: ChordsStatus.error, error: '$error');
-      notifyListeners();
+      _status = ChordsStatus.ready;
+    } on Object {
+      _status = ChordsStatus.error;
     }
+    notifyListeners();
   }
 
   /// Cambia el texto de búsqueda.
@@ -80,17 +69,28 @@ class ChordsController extends ChangeNotifier {
 
   /// Selecciona o deselecciona la raíz.
   void selectRoot(ChordRoot? root) {
-    _filters = root == null
-        ? _filters.copyWith(clearRoot: true)
-        : _filters.copyWith(root: root);
+    _filters = _filters.copyWith(root: root, clearRoot: root == null);
     _applyFilters();
   }
 
   /// Selecciona o deselecciona la calidad.
   void selectQuality(ChordQuality? quality) {
-    _filters = quality == null
-        ? _filters.copyWith(clearQuality: true)
-        : _filters.copyWith(quality: quality);
+    _filters = _filters.copyWith(
+      quality: quality,
+      clearQuality: quality == null,
+    );
+    _applyFilters();
+  }
+
+  /// Selecciona o deselecciona el género.
+  void selectGenre(String? genre) {
+    _filters = _filters.copyWith(genre: genre, clearGenre: genre == null);
+    _applyFilters();
+  }
+
+  /// Selecciona o deselecciona el nivel de aprendizaje.
+  void selectLevel(int? level) {
+    _filters = _filters.copyWith(level: level);
     _applyFilters();
   }
 
@@ -107,7 +107,9 @@ class ChordsController extends ChangeNotifier {
   }
 
   void _applyFilters() {
-    _visible = _searchChords(_state.chords, _filters);
+    _visible = _repository.essentialFirst(
+      _searchChords(_repository.chords, _filters),
+    );
     notifyListeners();
   }
 }

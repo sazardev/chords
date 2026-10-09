@@ -10,6 +10,7 @@ import 'package:chords/data/audio/yin_pitch_detector.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
+import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
@@ -32,13 +33,12 @@ class AudioRepositoryImpl implements AudioRepository {
     _sampleRate = encoder?.sampleRate ?? 44100;
   }
 
-  /// Micrófono creado de forma perezosa (evita tocar el canal de plataforma
-  /// hasta que realmente se necesita escuchar).
   MicrophoneStreamService? _microphone;
 
   /// Micrófono creado de forma perezosa (evita tocar el canal de plataforma
   /// hasta que realmente se necesita escuchar).
   MicrophoneStreamService get _mic => _microphone ??= MicrophoneStreamService();
+
   final PitchDetector _detector;
   final ChordAudioSynthesizer _synthesizer;
   final WavEncoder _encoder;
@@ -95,10 +95,29 @@ class AudioRepositoryImpl implements AudioRepository {
   @override
   Future<void> playChord(Chord chord, ChordVariant variant) async {
     await _ensureEngine();
-    final AudioSource source = await _sourceFor(chord, variant);
-    if (_engineReady) {
-      SoLoud.instance.play(source, volume: 0.9);
-    }
+    final AudioSource source = await _loadCached(
+      key: '${chord.id}:${variant.id}',
+      samples: _synthesizer.synthesize(variant),
+    );
+    _play(source);
+  }
+
+  @override
+  Future<void> playArpeggio(
+    Chord chord,
+    ChordVariant variant,
+    ArpeggioPattern pattern,
+  ) async {
+    await _ensureEngine();
+    final AudioSource source = await _loadCached(
+      key: '${chord.id}:${variant.id}:arp-${pattern.id}',
+      samples: _synthesizer.synthesizeArpeggio(
+        variant,
+        pattern.stringOrder,
+        pattern.intervalMs,
+      ),
+    );
+    _play(source);
   }
 
   @override
@@ -120,17 +139,24 @@ class AudioRepositoryImpl implements AudioRepository {
     _engineReady = true;
   }
 
-  Future<AudioSource> _sourceFor(Chord chord, ChordVariant variant) async {
-    final String key = '${chord.id}:${variant.id}';
+  Future<AudioSource> _loadCached({
+    required String key,
+    required Float64List samples,
+  }) async {
     final AudioSource? cached = _sources[key];
     if (cached != null) {
       return cached;
     }
-    final Float64List samples = _synthesizer.synthesize(variant);
     final Uint8List wav = _encoder.encode(samples);
     final AudioSource source = await SoLoud.instance.loadMem('$key.wav', wav);
     _sources[key] = source;
     return source;
+  }
+
+  void _play(AudioSource source) {
+    if (_engineReady) {
+      SoLoud.instance.play(source, volume: 0.9);
+    }
   }
 
   void _onMicData(Uint8List bytes) {

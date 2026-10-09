@@ -1,7 +1,9 @@
 import 'package:chords/config/app_config.dart';
 import 'package:chords/presentation/features/chords/chord_detail_page.dart';
 import 'package:chords/presentation/features/chords/chords_page.dart';
+import 'package:chords/presentation/features/game/game_page.dart';
 import 'package:chords/presentation/features/home/home_page.dart';
+import 'package:chords/presentation/features/learn/learn_page.dart';
 import 'package:chords/presentation/features/live/live_page.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/router/route_paths.dart';
@@ -44,6 +46,16 @@ class AppRouter {
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
+                path: kLearnPath,
+                name: kLearnRouteName,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const LearnPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
                 path: kChordsPath,
                 name: kChordsRouteName,
                 builder: (BuildContext context, GoRouterState state) =>
@@ -54,6 +66,16 @@ class AppRouter {
                 name: kChordDetailRouteName,
                 builder: (BuildContext context, GoRouterState state) =>
                     const ChordDetailPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: kGamePath,
+                name: kGameRouteName,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const GamePage(),
               ),
             ],
           ),

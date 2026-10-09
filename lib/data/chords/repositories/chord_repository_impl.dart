@@ -1,6 +1,9 @@
 import 'package:chords/data/chords/datasources/chord_asset_datasource.dart';
 import 'package:chords/data/chords/models/chord_model.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/essential_chords.dart';
+import 'package:chords/domain/chords/entities/learning_level.dart';
+import 'package:chords/domain/chords/entities/pitch_classes.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 
 /// Implementación del repositorio de acordes basada en el asset JSON.
@@ -45,11 +48,48 @@ class ChordRepositoryImpl implements ChordRepository {
     }
     return _chords.where((Chord chord) {
       final Set<int> notes = chord.easiestVariant.notes
-          .map(_pitchClassOf)
+          .map(pitchClassOfNote)
           .toSet();
       return notes.containsAll(pitchClasses);
     }).toList();
   }
+
+  @override
+  List<Chord> chordsByGenre(String genre) => _chords
+      .where((Chord chord) => chord.quality.genres.contains(genre))
+      .toList();
+
+  @override
+  List<Chord> chordsByLevel(int level) =>
+      _chords
+          .where((Chord chord) => LearningLevel.of(chord).level == level)
+          .toList()
+        ..sort(
+          (Chord a, Chord b) => a.root.pitchClass.compareTo(b.root.pitchClass),
+        );
+
+  @override
+  List<Chord> essentialFirst(List<Chord> chords) {
+    final List<Chord> sorted = List<Chord>.of(chords)
+      ..sort((Chord a, Chord b) {
+        final int byEssential = _essentialRank(b) - _essentialRank(a);
+        if (byEssential != 0) {
+          return byEssential;
+        }
+        final int byDifficulty = a.difficulty.level.compareTo(
+          b.difficulty.level,
+        );
+        if (byDifficulty != 0) {
+          return byDifficulty;
+        }
+        return a.root.pitchClass.compareTo(b.root.pitchClass);
+      });
+    return sorted;
+  }
+
+  /// 0 si el acorde es esencial, 1 en caso contrario.
+  int _essentialRank(Chord chord) =>
+      kEssentialChordIds.contains(chord.id) ? 0 : 1;
 
   List<Chord> _parse(Map<String, Object?> database) {
     final Object? rawChords = database['chords'];
@@ -67,23 +107,5 @@ class ChordRepositoryImpl implements ChordRepository {
       }
     }
     return result;
-  }
-
-  int _pitchClassOf(String note) {
-    const List<String> names = <String>[
-      'C',
-      'C#',
-      'D',
-      'D#',
-      'E',
-      'F',
-      'F#',
-      'G',
-      'G#',
-      'A',
-      'A#',
-      'B',
-    ];
-    return names.indexOf(note);
   }
 }

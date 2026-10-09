@@ -1,27 +1,31 @@
+import 'dart:async' show unawaited;
+
 import 'package:chords/config/app_config.dart';
+import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// Ajustes de la aplicación: tema y modo de diagramas.
+/// Ajustes de la aplicación: tema, diagramas, sonido y onboarding.
 class SettingsPage extends StatelessWidget {
   /// Crea la pantalla de ajustes.
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController controller = context.watch<SettingsController>();
-
+    final SettingsController settings = context.watch<SettingsController>();
+    final OnboardingController onboarding = context
+        .watch<OnboardingController>();
     return Scaffold(
       appBar: AppBar(title: const Text('Ajustes')),
       body: ListView(
         children: <Widget>[
           _sectionTitle(context, 'Apariencia'),
           RadioGroup<ThemeMode>(
-            groupValue: controller.themeMode,
+            groupValue: settings.themeMode,
             onChanged: (ThemeMode? value) {
               if (value != null) {
-                controller.themeMode = value;
+                unawaited(settings.setThemeMode(value));
               }
             },
             child: const Column(
@@ -44,17 +48,38 @@ class SettingsPage extends StatelessWidget {
           const Divider(),
           _sectionTitle(context, 'Guitarra'),
           SwitchListTile(
-            value: controller.mirrorChords,
-            onChanged: (bool value) => controller.mirrorChords = value,
+            value: settings.mirrorChords,
+            onChanged: (bool value) => settings.setMirrorChords(value: value),
             title: const Text('Modo zurdo'),
             subtitle: const Text('Muestra los diagramas en espejo'),
           ),
           const Divider(),
-          _sectionTitle(context, 'Información'),
+          _sectionTitle(context, 'Sonido'),
+          SwitchListTile(
+            value: settings.soundEnabled,
+            onChanged: (bool value) => settings.setSoundEnabled(value: value),
+            title: const Text('Sonido de acordes'),
+            subtitle: const Text('Sintetiza rasgueos y arpegios'),
+          ),
+          const Divider(),
+          _sectionTitle(context, 'Aprendizaje'),
+          ListTile(
+            leading: const Icon(Icons.restart_alt_rounded),
+            title: const Text('Reiniciar onboarding'),
+            subtitle: const Text('Vuelve a ver la introducción'),
+            onTap: () async {
+              await onboarding.reset();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Onboarding reiniciado')),
+                );
+              }
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded),
             title: const Text('Versión'),
-            subtitle: Text('${const AppConfig.prod().appName} 1.0.0 (1)'),
+            subtitle: Text('${const AppConfig.prod().appName} 1.1.0 (2)'),
           ),
           const ListTile(
             leading: Icon(Icons.code_rounded),

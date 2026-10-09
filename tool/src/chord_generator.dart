@@ -181,14 +181,14 @@ List<ChordVariant> _buildVariantsFor(ChordRoot root, ChordQuality quality) {
     if (!seen.add(d.frets.join(','))) {
       continue;
     }
-    final BarreInfo? barreJson = switch (d.barreFret) {
-      final int fret when d.barreFrom != null => BarreInfo(
-        fret: fret,
-        fromString: d.barreFrom!,
-        lastString: d.barreToString ?? d.barreFrom!,
-      ),
-      _ => null,
-    };
+    final int? barreFrom = d.barreFrom;
+    final BarreInfo? barreJson = barreFrom == null
+        ? null
+        : BarreInfo(
+            fret: d.barreFret ?? 0,
+            fromString: barreFrom,
+            lastString: d.barreToString ?? barreFrom,
+          );
     variants.add(
       ChordVariant(
         id: '${root.name}-${quality.id}-${d.id}',

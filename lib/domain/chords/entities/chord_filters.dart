@@ -9,6 +9,8 @@ class ChordFilters {
   const ChordFilters({
     this.root,
     this.quality,
+    this.genre,
+    this.level,
     this.maxDifficulty,
     this.query = '',
   });
@@ -22,6 +24,12 @@ class ChordFilters {
   /// Calidad seleccionada (opcional).
   final ChordQuality? quality;
 
+  /// Género seleccionado (p. ej. `Blues`).
+  final String? genre;
+
+  /// Nivel de aprendizaje seleccionado (1-5).
+  final int? level;
+
   /// Dificultad máxima permitida (1-5).
   final int? maxDifficulty;
 
@@ -32,6 +40,8 @@ class ChordFilters {
   bool get isEmpty =>
       root == null &&
       quality == null &&
+      genre == null &&
+      level == null &&
       maxDifficulty == null &&
       query.trim().isEmpty;
 
@@ -39,13 +49,18 @@ class ChordFilters {
   ChordFilters copyWith({
     ChordRoot? root,
     ChordQuality? quality,
+    String? genre,
+    int? level,
     int? maxDifficulty,
     String? query,
     bool clearRoot = false,
     bool clearQuality = false,
+    bool clearGenre = false,
   }) => ChordFilters(
     root: clearRoot ? null : (root ?? this.root),
     quality: clearQuality ? null : (quality ?? this.quality),
+    genre: clearGenre ? null : (genre ?? this.genre),
+    level: level ?? this.level,
     maxDifficulty: maxDifficulty ?? this.maxDifficulty,
     query: query ?? this.query,
   );
@@ -55,14 +70,18 @@ class ChordFilters {
       other is ChordFilters &&
       other.root == root &&
       other.quality == quality &&
+      other.genre == genre &&
+      other.level == level &&
       other.maxDifficulty == maxDifficulty &&
       other.query == query;
 
   @override
-  int get hashCode => Object.hash(root, quality, maxDifficulty, query);
+  int get hashCode =>
+      Object.hash(root, quality, genre, level, maxDifficulty, query);
 
   @override
   String toString() =>
       'ChordFilters(root: ${root?.name}, quality: ${quality?.id}, '
-      'maxDifficulty: $maxDifficulty, query: $query)';
+      'genre: $genre, level: $level, maxDifficulty: $maxDifficulty, '
+      'query: $query)';
 }

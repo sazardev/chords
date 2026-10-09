@@ -6,8 +6,8 @@ import 'package:chords/domain/chords/entities/chord_variant.dart';
 /// Sintetizador de audio de guitararra para posiciones de acorde.
 ///
 /// Usa una cuerda tipo Karplus-Strong por cuerda pulsada: genera un
-/// "pluck" con mezcla de armónicos decrecientes, y suma todas las cuerdas
-/// con una ligera disonancia y retardo de rasgueo.
+/// "pluck" con parciales armónicos y envolvente decreciente, y suma todas las
+/// cuerdas con retardo configurable por cuerda.
 class ChordAudioSynthesizer {
   /// Crea el sintetizador.
   const ChordAudioSynthesizer({this.sampleRate = 44100});
@@ -20,8 +20,13 @@ class ChordAudioSynthesizer {
 
   /// Sintetiza la posición indicada y devuelve muestras normalizadas.
   ///
-  /// [duration] controla la duración total del acorde en segundos.
-  Float64List synthesize(ChordVariant variant, {double duration = 2.5}) {
+  /// [duration] controla la duración total y [offsetsMs] el retardo de cada
+  /// cuerda (rasgueo o arpegio).
+  Float64List synthesize(
+    ChordVariant variant, {
+    double duration = 2.5,
+    List<int?>? offsetsMs,
+  }) {
     final int total = (sampleRate * duration).round();
     final Float64List mix = Float64List(total);
     final math.Random random = math.Random(7);
@@ -33,7 +38,11 @@ class ChordAudioSynthesizer {
       }
       final double frequency = midiToFrequency(stringTuning[s] + fret);
       final double amplitude = s < 3 ? 0.5 : 0.36;
-      final int offset = s * (sampleRate ~/ 1200);
+      final int offset = ((offsetsMs?[s] ?? (s * 8)) * sampleRate / 1000)
+          .round();
+      if (offset >= total) {
+        continue;
+      }
       final Float64List voice = _pluck(frequency, total - offset, random);
       for (int i = 0; i < voice.length; i++) {
         mix[i + offset] += voice[i] * amplitude;
@@ -41,6 +50,24 @@ class ChordAudioSynthesizer {
     }
     _normalize(mix);
     return mix;
+  }
+
+  /// Sintetiza un arpegio: cada cuerda suena según el orden del patrón.
+  Float64List synthesizeArpeggio(
+    ChordVariant variant,
+    List<int> stringOrder,
+    int intervalMs, {
+    double duration = 3,
+  }) {
+    final List<int?> offsets = List<int?>.filled(stringTuning.length, null);
+    for (int step = 0; step < stringOrder.length; step++) {
+      final int stringIndex = stringOrder[step];
+      if (stringIndex < 0 || stringIndex >= offsets.length) {
+        continue;
+      }
+      offsets[stringIndex] = step * intervalMs;
+    }
+    return synthesize(variant, duration: duration, offsetsMs: offsets);
   }
 
   /// Genera una voz de cuerda pulsada con Karplus-Strong.

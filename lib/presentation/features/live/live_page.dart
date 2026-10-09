@@ -19,72 +19,66 @@ class LivePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final LiveController controller = context.watch<LiveController>();
     final bool listening = controller.status == MicStatus.listening;
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Afinación en vivo')),
+      appBar: AppBar(title: const Text('En vivo')),
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: LivePitchReadout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            children: <Widget>[
+              LivePitchReadout(
                 status: controller.status,
                 reading: controller.reading,
               ),
-            ),
-            const SizedBox(height: 8),
-            FilledButton.icon(
-              onPressed: controller.toggleListening,
-              icon: Icon(listening ? Icons.stop_rounded : Icons.mic_rounded),
-              label: Text(listening ? 'Detener' : 'Escuchar guitararra'),
-            ),
-            const SizedBox(height: 16),
-            Expanded(child: _suggestions(context, controller)),
-          ],
+              const SizedBox(height: 12),
+              FilledButton.icon(
+                onPressed: controller.toggleListening,
+                icon: Icon(listening ? Icons.stop_rounded : Icons.mic_rounded),
+                label: Text(listening ? 'Detener' : 'Escuchar guitararra'),
+              ),
+              const SizedBox(height: 20),
+              if (controller.suggestions.isEmpty)
+                const AppEmptyState(
+                  icon: Icons.music_note_rounded,
+                  title: 'Sin sugerencias aún',
+                  message:
+                      'Pulsa escuchar y toca un acorde para ver coincidencias.',
+                )
+              else
+                _Suggestions(chords: controller.suggestions),
+            ],
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget _suggestions(BuildContext context, LiveController controller) {
-    final List<Chord> suggestions = controller.suggestions;
-    if (suggestions.isEmpty) {
-      return const AppEmptyState(
-        icon: Icons.music_note_rounded,
-        title: 'Sin sugerencias aún',
-        message: 'Pulsa escuchar y toca un acorde para ver coincidencias.',
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: AppText('Sugerencias', variant: AppTextVariant.titleLarge),
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: suggestions.length,
-            itemBuilder: (BuildContext context, int index) {
-              final Chord chord = suggestions[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ChordCard(
-                  chord: chord,
-                  onTap: () => context.go(
-                    '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
-                  ),
-                  onPlay: () => context.go(
-                    '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
-                  ),
-                ),
-              );
-            },
+/// Lista de acordes sugeridos por la afinación en vivo.
+class _Suggestions extends StatelessWidget {
+  const _Suggestions({required this.chords});
+
+  final List<Chord> chords;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      const AppText('Sugerencias', variant: AppTextVariant.titleLarge),
+      const SizedBox(height: 8),
+      for (final Chord chord in chords)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: ChordCard(
+            chord: chord,
+            onTap: () => context.go(
+              '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
+            ),
+            onPlay: () => context.go(
+              '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
+            ),
           ),
         ),
-      ],
-    );
-  }
+    ],
+  );
 }

@@ -1,4 +1,6 @@
 import 'package:chords/config/app_config.dart';
+import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/onboarding/onboarding_page.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/theme/app_theme.dart';
 import 'package:chords/presentation/widgets/organisms/flavor_banner.dart';
@@ -8,8 +10,9 @@ import 'package:provider/provider.dart';
 
 /// Widget raíz de la aplicación.
 ///
-/// Monta `MaterialApp.router` con el tema claro/oscuro, el modo de tema
-/// seleccionado y el banner de flavor cuando corresponde.
+/// Monta `MaterialApp.router` con el tema claro/oscuro y el banner de flavor.
+/// Si el usuario no ha completado el onboarding, lo muestra a pantalla
+/// completa sobre el contenido.
 class ChordsApp extends StatelessWidget {
   /// Crea la aplicación.
   const ChordsApp({required this.config, required this.router, super.key});
@@ -23,6 +26,8 @@ class ChordsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SettingsController settings = context.watch<SettingsController>();
+    final OnboardingController onboarding = context
+        .watch<OnboardingController>();
     return MaterialApp.router(
       title: config.appName,
       debugShowCheckedModeBanner: false,
@@ -33,7 +38,9 @@ class ChordsApp extends StatelessWidget {
       builder: (BuildContext context, Widget? child) => FlavorBanner(
         visible: config.showFlavorBanner,
         text: config.appName,
-        child: child ?? const SizedBox.shrink(),
+        child: onboarding.isPending
+            ? const OnboardingPage()
+            : child ?? const SizedBox.shrink(),
       ),
     );
   }

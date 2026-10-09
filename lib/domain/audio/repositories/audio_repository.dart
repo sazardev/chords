@@ -1,5 +1,6 @@
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
+import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 
@@ -20,8 +21,15 @@ abstract interface class AudioRepository {
   /// Detiene la escucha del micrófono.
   Future<void> stopListening();
 
-  /// Reproduce el sonido de una posición de acorde.
+  /// Reproduce el sonido de una posición de acorde (rasgueo).
   Future<void> playChord(Chord chord, ChordVariant variant);
+
+  /// Reproduce la posición como arpegio siguiendo el patrón indicado.
+  Future<void> playArpeggio(
+    Chord chord,
+    ChordVariant variant,
+    ArpeggioPattern pattern,
+  );
 
   /// Libera los recursos de audio.
   Future<void> dispose();
