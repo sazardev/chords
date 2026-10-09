@@ -134,7 +134,7 @@ const FEATURES = [
   {
     icon: 'adaptive',
     title: 'Diseño adaptable',
-    text: 'Material 3 Expressive: barra inferior en móvil, rizado lateral en escritorio, diagramas en espejo para zurdos.',
+    text: 'Material 3 Expressive: barra inferior en móvil, rail lateral en escritorio, diagramas en espejo para zurdos.',
   },
   {
     icon: 'link',
@@ -358,7 +358,7 @@ function renderDesign() {
       .map((l, i) => '<span data-active="' + (i === 1) + '">' + l + '</span>')
       .join('') +
     '</div></article>' +
-    '<article class="mockup"><h4>Escritorio · riz lateral</h4><div class="rail-demo">' +
+    '<article class="mockup"><h4>Escritorio · rail lateral</h4><div class="rail-demo">' +
     '<nav>' + [0, 1, 2, 3].map((i) =>
       '<span class="rail-item" data-active="' + (i === 1) + '">●</span>'
     ).join('') + '</nav><div class="rail-content">Grid de 4-5 columnas</div></div></article>' +
