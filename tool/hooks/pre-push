@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Hook pre-push de Chords: análisis + tests antes de empujar.
+# Instalado por `make hooks` (chords_cli hooks install).
+set -euo pipefail
+
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+cd "$PROJECT_ROOT"
+
+echo "[pre-push] flutter analyze"
+flutter analyze --fatal-infos --fatal-warnings
+
+echo "[pre-push] banco de acordes"
+dart run bin/chords_cli.dart db validate
+
+echo "[pre-push] flutter test"
+flutter test
+
+echo "[pre-push] OK"

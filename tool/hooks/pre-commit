@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Hook pre-commit de Chords: formato + análisis estático estricto.
+# Instalado por `make hooks` (chords_cli hooks install).
+set -euo pipefail
+
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+cd "$PROJECT_ROOT"
+
+echo "[pre-commit] dart format"
+dart format --set-exit-if-changed .
+
+echo "[pre-commit] flutter analyze (fatal infos/warnings)"
+flutter analyze --fatal-infos --fatal-warnings
+
+echo "[pre-commit] validando banco de acordes"
+dart run bin/chords_cli.dart db validate
+
+echo "[pre-commit] OK"

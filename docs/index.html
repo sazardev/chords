@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chords — el banco de acordes de guitarra</title>
+    <meta
+      name="description"
+      content="156 acordes y 581 posiciones de guitarra con sonido, afinación en vivo por micrófono, Material 3 Expressive, deep links y flavors. Flutter para Android y Linux."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-bar" data-elevated="false">
+      <div class="app-bar-inner">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22">
+              <path
+                fill="currentColor"
+                d="M12 3a1 1 0 0 1 1 1v9.2a3.4 3.4 0 1 1-2-3.1V4a1 1 0 0 1 1-1Zm6.5 1.2a1 1 0 0 1 1.4.2A9.9 9.9 0 0 1 22 12a9.9 9.9 0 1 1-8.6-9.8 1 1 0 1 1 .4 2A7.9 7.9 0 1 0 20 12a7.9 7.9 0 0 0-1.3-4.4 1 1 0 0 1 .2-1.4Z"
+              />
+            </svg>
+          </span>
+          <span class="brand-name">Chords</span>
+          <span class="brand-version">v1.1.0</span>
+        </div>
+        <nav class="app-bar-nav" aria-label="Secciones">
+          <a href="#features">Funciones</a>
+          <a href="#library">Banco</a>
+          <a href="#design">Diseño</a>
+          <a href="#arch">Arquitectura</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="overline">Flutter · Material 3 Expressive</p>
+          <h1 class="display">Todos los acordes de guitarra. Todas las versiones.</h1>
+          <p class="lede">
+            156 acordes y 581 posiciones verificadas, organizados por raíz,
+            calidad y dificultad. Suena cada acorde con una cuerda tipo
+            Karplus‑Strong y detecta lo que tocas con el micrófono en vivo.
+          </p>
+          <div class="hero-actions">
+            <a class="btn filled" href="#library">Explorar el banco</a>
+            <a class="btn tonal" href="#features">Ver funciones</a>
+          </div>
+          <dl class="stats" aria-label="Métricas del banco">
+            <div class="stat">
+              <dt>Acordes</dt>
+              <dd>156</dd>
+            </div>
+            <div class="stat">
+              <dt>Posiciones</dt>
+              <dd>581</dd>
+            </div>
+            <div class="stat">
+              <dt>Raíces</dt>
+              <dd>12</dd>
+            </div>
+            <div class="stat">
+              <dt>Dificultades</dt>
+              <dd>5</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="hero-device" aria-hidden="true">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-title">Acordes</div>
+              <div class="phone-search">Buscar acordes</div>
+              <div class="phone-grid" data-grid></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FUNCIONES -->
+      <section id="features" class="section">
+        <h2 class="headline">Funciones</h2>
+        <p class="section-lede">
+          Cada pieza del sistema resuelve una sola cosa, con reglas estrictas
+          de Clean Code y lint de análisis estático sin excepciones.
+        </p>
+        <div class="feature-grid" data-features></div>
+      </section>
+
+      <!-- BANCO -->
+      <section id="library" class="section">
+        <h2 class="headline">Banco de acordes</h2>
+        <p class="section-lede">
+          El generador transpone 26 formas movibles a las 12 raíces y busca
+          tríadas e inversiones sobre grupos de cuerdas. Pulsa una tarjeta para
+          oír el acorde y ver sus posiciones.
+        </p>
+        <div class="chips" data-origins role="tablist" aria-label="Filtrar por raíz"></div>
+        <div class="chord-grid" data-chords></div>
+      </section>
+
+      <!-- DISEÑO -->
+      <section id="design" class="section">
+        <h2 class="headline">Diseño</h2>
+        <p class="section-lede">
+          Sistema de diseño atómico y Material 3 Expressive: esquemas dinámicos,
+          formas amplias, movimiento con curva de énfasis y adaptación de
+          navegación (barra en móvil, riz lateral en escritorio).
+        </p>
+        <div class="design-grid">
+          <article class="design-card">
+            <h3>Tokens</h3>
+            <ul class="token-list" data-tokens></ul>
+          </article>
+          <article class="design-card">
+            <h3>Niveles de dificultad</h3>
+            <ul class="difficulty-list" data-difficulty></ul>
+          </article>
+          <article class="design-card">
+            <h3>Adaptativo</h3>
+            <p class="body">
+              Layout adaptable desde 320 px hasta escritorio: barra de
+              navegación en móvil, riz extendido en pantallas anchas, diagramas
+              en espejo para zurdos y tema claro/oscuro.
+            </p>
+          </article>
+        </div>
+        <h3 class="subhead">Vista previa de la app</h3>
+        <div class="mockups" data-mockups></div>
+      </section>
+
+      <!-- ARQUITECTURA -->
+      <section id="arch" class="section">
+        <h2 class="headline">Arquitectura y plataformas</h2>
+        <div class="arch-grid">
+          <article class="arch-card">
+            <h3>Flavors</h3>
+            <pre class="code"><code>$ make setup
+$ flutter run -d linux --flavor dev -t lib/main_dev.dart
+
+Flavors: dev · staging · prod
+Android: app.chords.chords{.dev|.staging}</code></pre>
+          </article>
+          <article class="arch-card">
+            <h3>Calidad automática</h3>
+            <pre class="code"><code>$ make check        # formato + analyze + tests
+$ make build-apk   # APK release por flavor
+$ make build-linux # binario Linux
+
+pre-commit: format · analyze --fatal-infos · validate
+pre-push:   analyze · validate · flutter test</code></pre>
+          </article>
+          <article class="arch-card">
+            <h3>CLI propia</h3>
+            <pre class="code"><code>$ dart run bin/chords_cli.dart db generate
+Listo: 156 acordes, 581 posiciones.
+$ dart run bin/chords_cli.dart db validate
+OK: 156 acordes, 581 posiciones válidas.</code></pre>
+          </article>
+        </div>
+        <div class="footer-note">
+          <p>
+            Deep links: <code>chords://chords/detail?id=C-maj</code>,
+            <code>https://chords.app/chords?root=E&amp;quality=min</code>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Chords · fundación Flutter 3.47 · Dart 3.13 · MIT ·
+        <a href="https://github.com/anomalyco/opencode/issues">feedback</a>
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

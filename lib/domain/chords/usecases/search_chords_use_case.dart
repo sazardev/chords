@@ -1,0 +1,44 @@
+import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_filters.dart';
+
+import 'package:chords/domain/chords/entities/chord_variant.dart';
+
+/// Caso de uso: filtrar acordes por raíz, calidad, dificultad y texto.
+class SearchChordsUseCase {
+  /// Crea el caso de uso.
+  const SearchChordsUseCase();
+
+  /// Devuelve los acordes que cumplen los filtros indicados.
+  List<Chord> call(List<Chord> chords, ChordFilters filters) {
+    final String query = filters.query.trim().toLowerCase();
+    return chords.where((Chord chord) {
+      if (filters.root != null && chord.root != filters.root) {
+        return false;
+      }
+      if (filters.quality != null && chord.quality != filters.quality) {
+        return false;
+      }
+      if (filters.maxDifficulty != null &&
+          chord.difficulty.level > filters.maxDifficulty!) {
+        return false;
+      }
+      if (query.isNotEmpty && !_matchesQuery(chord, query)) {
+        return false;
+      }
+      return true;
+    }).toList();
+  }
+
+  /// Coincidencia del texto libre con nombre, alias y posiciones.
+  bool _matchesQuery(Chord chord, String query) {
+    final Iterable<String> haystack = <String>[
+      chord.name.toLowerCase(),
+      chord.displayName.toLowerCase(),
+      ...chord.aliases.map((String alias) => alias.toLowerCase()),
+      ...chord.variants.map(
+        (ChordVariant variant) => variant.positionLabel.toLowerCase(),
+      ),
+    ];
+    return haystack.any((String item) => item.contains(query));
+  }
+}

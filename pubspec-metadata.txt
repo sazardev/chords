@@ -1,0 +1,8 @@
+Name: Chords
+Description: >-
+  Banco extenso de acordes de guitarra (156 acordes, 581 posiciones), con
+  sonido por acorde, afinación en vivo por micrófono, Material 3 Expressive,
+  deep links, flavors y CLI propia. Fundación Flutter lista para Android y
+  Linux.
+Topics: flutter, dart, guitar, chords, material-3, clean-architecture
+License: MIT
