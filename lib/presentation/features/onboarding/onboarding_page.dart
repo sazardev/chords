@@ -80,85 +80,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 onPageChanged: (int value) {
                   setState(() => _index = value);
                 },
-                itemBuilder: (BuildContext context, int index) {
-                  final _Slide slide = slides[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: SizedBox(
-                            width: 108,
-                            height: 108,
-                            child: Icon(
-                              slide.icon,
-                              size: 48,
-                              color: theme.colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 28),
-                        Text(
-                          slide.title,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          slide.body,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                itemBuilder: (BuildContext context, int index) =>
+                    _SlideView(slide: slides[index], theme: theme),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                for (int i = 0; i < slides.length; i++)
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: i == _index ? 22 : 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: i == _index
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.outlineVariant,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => _next(slides),
-                  child: Text(
-                    _index == slides.length - 1 ? t.app.start : t.app.next,
-                  ),
-                ),
-              ),
-            ),
+            _Dots(count: slides.length, index: _index, theme: theme),
+            _finishButton(slides, t),
           ],
         ),
       ),
     );
   }
+
+  Widget _finishButton(List<_Slide> slides, Translations t) => Padding(
+    padding: const EdgeInsets.all(24),
+    child: SizedBox(
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: () => _next(slides),
+        child: Text(_index == slides.length - 1 ? t.app.start : t.app.next),
+      ),
+    ),
+  );
 }
 
 /// Diapositiva del onboarding.
@@ -168,4 +111,82 @@ class _Slide {
   final String title;
   final String body;
   final IconData icon;
+}
+
+/// Contenido visual de una diapositiva.
+class _SlideView extends StatelessWidget {
+  const _SlideView({required this.slide, required this.theme});
+
+  final _Slide slide;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 28),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(40),
+          ),
+          child: SizedBox(
+            width: 108,
+            height: 108,
+            child: Icon(
+              slide.icon,
+              size: 48,
+              color: theme.colorScheme.onPrimaryContainer,
+            ),
+          ),
+        ),
+        const SizedBox(height: 28),
+        Text(
+          slide.title,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          slide.body,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Indicadores de página del onboarding.
+class _Dots extends StatelessWidget {
+  const _Dots({required this.count, required this.index, required this.theme});
+
+  final int count;
+  final int index;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      for (int i = 0; i < count; i++)
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: i == index ? 22 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: i == index
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outlineVariant,
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+    ],
+  );
 }

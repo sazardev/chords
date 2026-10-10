@@ -24,28 +24,7 @@ class GamePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(t.game.title),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Row(
-              children: <Widget>[
-                Tooltip(
-                  message: t.game.streak,
-                  child: const Icon(Icons.local_fire_department_rounded),
-                ),
-                const SizedBox(width: 4),
-                AppText('${controller.streak}'),
-                const SizedBox(width: 12),
-                Tooltip(
-                  message: t.game.score,
-                  child: const Icon(Icons.star_rounded),
-                ),
-                const SizedBox(width: 4),
-                AppText('${controller.score}'),
-              ],
-            ),
-          ),
-        ],
+        actions: <Widget>[_scoreBadges(controller, t)],
       ),
       floatingActionButton: round == null
           ? FloatingActionButton.extended(
@@ -79,6 +58,24 @@ class GamePage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _scoreBadges(GameController controller, Translations t) => Padding(
+    padding: const EdgeInsets.only(right: 12),
+    child: Row(
+      children: <Widget>[
+        Tooltip(
+          message: t.game.streak,
+          child: const Icon(Icons.local_fire_department_rounded),
+        ),
+        const SizedBox(width: 4),
+        AppText('${controller.streak}'),
+        const SizedBox(width: 12),
+        Tooltip(message: t.game.score, child: const Icon(Icons.star_rounded)),
+        const SizedBox(width: 4),
+        AppText('${controller.score}'),
+      ],
+    ),
+  );
 }
 
 /// Estado de la ronda actual.
