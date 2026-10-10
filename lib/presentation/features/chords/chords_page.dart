@@ -1,9 +1,9 @@
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
-import 'package:chords/presentation/router/route_paths.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
 import 'package:chords/presentation/widgets/molecules/filter_chip_row.dart';

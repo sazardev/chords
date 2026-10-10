@@ -1,6 +1,6 @@
-import 'package:chords/data/local/preferences_service.dart';
-import 'package:chords/presentation/theme/app_accent_color.dart';
-import 'package:chords/presentation/theme/app_font_scale.dart';
+import 'package:chords/domain/preferences/entities/app_accent_color.dart';
+import 'package:chords/domain/preferences/entities/app_font_scale.dart';
+import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:chords/presentation/theme/app_theme_options.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ class SettingsController extends ChangeNotifier {
   /// Crea el controlador con las preferencias locales.
   SettingsController(this._preferences);
 
-  final PreferencesService _preferences;
+  final PreferencesRepository _preferences;
 
   ThemeMode _themeMode = ThemeMode.system;
   AppAccentColor _accentColor = AppAccentColor.violeta;

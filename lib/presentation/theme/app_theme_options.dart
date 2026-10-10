@@ -1,5 +1,5 @@
-import 'package:chords/presentation/theme/app_accent_color.dart';
-import 'package:chords/presentation/theme/app_font_scale.dart';
+import 'package:chords/domain/preferences/entities/app_accent_color.dart';
+import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:flutter/material.dart';
 
 /// Opciones de personalización del sistema de diseño.

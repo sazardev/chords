@@ -1,8 +1,8 @@
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
-import 'package:chords/presentation/router/route_paths.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';

@@ -26,33 +26,37 @@ enum LearningLevel {
   const LearningLevel(this.level, this.title, this.goal, this.emoji);
 
   /// Nivel de aprendizaje de un acorde según su dificultad y su calidad.
-  factory LearningLevel.of(Chord chord) {
-    final bool basic =
-        chord.quality == ChordQuality.major ||
-        chord.quality == ChordQuality.minor;
-    final bool easy =
-        chord.quality == ChordQuality.seven ||
-        chord.quality == ChordQuality.power;
-    final bool color =
-        chord.quality == ChordQuality.minorSeven ||
-        chord.quality == ChordQuality.majorSeven ||
-        chord.quality == ChordQuality.suspendedSecond ||
-        chord.quality == ChordQuality.suspendedFourth ||
-        chord.quality == ChordQuality.sixth;
-    if (basic && chord.difficulty.level <= 1) {
+  factory LearningLevel.of(Chord chord) => _resolve(chord);
+
+  static LearningLevel _resolve(Chord chord) {
+    final int level = chord.difficulty.level;
+    final ChordQuality quality = chord.quality;
+    if (level <= 1 && _isBasic(quality)) {
       return LearningLevel.first;
     }
-    if (easy && chord.difficulty.level <= 2) {
+    if (level <= 2 && _isEasy(quality)) {
       return LearningLevel.second;
     }
-    if (chord.difficulty.level == 3) {
+    if (level == 3) {
       return LearningLevel.third;
     }
-    if (color) {
-      return LearningLevel.fourth;
-    }
-    return LearningLevel.fifth;
+    return _isColor(quality) ? LearningLevel.fourth : LearningLevel.fifth;
   }
+
+  static bool _isBasic(ChordQuality quality) =>
+      quality == ChordQuality.major || quality == ChordQuality.minor;
+
+  static bool _isEasy(ChordQuality quality) =>
+      quality == ChordQuality.seven || quality == ChordQuality.power;
+
+  static bool _isColor(ChordQuality quality) => switch (quality) {
+    ChordQuality.minorSeven ||
+    ChordQuality.majorSeven ||
+    ChordQuality.suspendedSecond ||
+    ChordQuality.suspendedFourth ||
+    ChordQuality.sixth => true,
+    _ => false,
+  };
 
   /// Número de nivel (1-5).
   final int level;

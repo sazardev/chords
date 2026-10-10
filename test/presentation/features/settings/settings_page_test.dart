@@ -1,12 +1,12 @@
 import 'package:chords/data/l10n/locale_repository_impl.dart';
 import 'package:chords/data/local/preferences_service.dart';
+import 'package:chords/domain/preferences/entities/app_accent_color.dart';
+import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
-import 'package:chords/presentation/theme/app_accent_color.dart';
-import 'package:chords/presentation/theme/app_font_scale.dart';
 import 'package:chords/presentation/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

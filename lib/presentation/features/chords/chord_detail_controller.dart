@@ -1,11 +1,11 @@
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
-import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Problema al cargar el detalle de un acorde.
@@ -31,7 +31,7 @@ class ChordDetailController extends ChangeNotifier {
 
   final ChordRepository _repository;
   final AudioRepository _audioRepository;
-  final PreferencesService _preferences;
+  final PreferencesRepository _preferences;
 
   Chord? _chord;
   int _selectedIndex = 0;

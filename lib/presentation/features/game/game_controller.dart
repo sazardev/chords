@@ -1,16 +1,15 @@
 import 'dart:async' show StreamSubscription, unawaited;
 
-import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
-
 import 'package:chords/domain/chords/entities/game_round.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/build_game_sequence_use_case.dart';
 import 'package:chords/domain/chords/usecases/evaluate_chord_match_use_case.dart';
+import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Fase del modo juego.
@@ -37,7 +36,7 @@ class GameController extends ChangeNotifier {
 
   final AudioRepository _audio;
   final ChordRepository _chords;
-  final PreferencesService _preferences;
+  final PreferencesRepository _preferences;
   final BuildGameSequenceUseCase _buildSequence;
   final EvaluateChordMatchUseCase _evaluate;
 

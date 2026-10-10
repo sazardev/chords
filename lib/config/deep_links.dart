@@ -1,4 +1,4 @@
-import 'package:chords/presentation/router/route_paths.dart';
+import 'package:chords/config/route_paths.dart';
 
 /// Esquema de deep link propio (p. ej. `chords://chords/C-maj`).
 const String kDeepLinkScheme = 'chords';

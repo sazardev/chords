@@ -1,12 +1,12 @@
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
-import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_filters.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
+import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Estado de la carga de la biblioteca.
@@ -28,7 +28,7 @@ class ChordsController extends ChangeNotifier {
 
   final ChordRepository _repository;
   final SearchChordsUseCase _searchChords;
-  final PreferencesService _preferences;
+  final PreferencesRepository _preferences;
 
   ChordsStatus _status = ChordsStatus.loading;
   ChordFilters _filters = const ChordFilters.empty();

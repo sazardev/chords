@@ -1,5 +1,6 @@
 import 'package:chords/app/app.dart';
 import 'package:chords/config/app_config.dart';
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/data/audio/audio_repository_impl.dart';
 import 'package:chords/data/chords/repositories/chord_repository_impl.dart';
 import 'package:chords/data/l10n/locale_repository_impl.dart';
@@ -17,7 +18,6 @@ import 'package:chords/presentation/features/onboarding/onboarding_controller.da
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
-import 'package:chords/presentation/router/route_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';

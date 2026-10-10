@@ -1,5 +1,5 @@
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/l10n/translations.g.dart';
-import 'package:chords/presentation/router/route_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

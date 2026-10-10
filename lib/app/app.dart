@@ -1,4 +1,3 @@
-import 'package:chords/app/system_color_scope.dart';
 import 'package:chords/config/app_config.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
@@ -8,6 +7,7 @@ import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/theme/app_system_colors.dart';
 import 'package:chords/presentation/theme/app_theme.dart';
 import 'package:chords/presentation/theme/app_theme_options.dart';
+import 'package:chords/presentation/theme/system_color_scope.dart';
 import 'package:chords/presentation/widgets/organisms/flavor_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

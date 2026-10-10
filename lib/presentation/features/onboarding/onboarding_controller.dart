@@ -1,4 +1,4 @@
-import 'package:chords/data/local/preferences_service.dart';
+import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Estado del onboarding de primer uso.
@@ -19,7 +19,7 @@ class OnboardingController extends ChangeNotifier {
   /// Crea el controlador.
   OnboardingController(this._preferences);
 
-  final PreferencesService _preferences;
+  final PreferencesRepository _preferences;
 
   OnboardingStatus _status = OnboardingStatus.pending;
 

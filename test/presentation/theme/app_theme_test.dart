@@ -1,9 +1,9 @@
-import 'package:chords/app/system_color_scope.dart';
-import 'package:chords/presentation/theme/app_accent_color.dart';
-import 'package:chords/presentation/theme/app_font_scale.dart';
+import 'package:chords/domain/preferences/entities/app_accent_color.dart';
+import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/presentation/theme/app_system_colors.dart';
 import 'package:chords/presentation/theme/app_theme.dart';
 import 'package:chords/presentation/theme/app_theme_options.dart';
+import 'package:chords/presentation/theme/system_color_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

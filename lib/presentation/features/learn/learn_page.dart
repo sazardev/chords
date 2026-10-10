@@ -1,10 +1,10 @@
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
-import 'package:chords/presentation/router/route_paths.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';

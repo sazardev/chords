@@ -7,9 +7,9 @@
 library;
 
 import 'package:chords/domain/l10n/entities/app_language.dart';
+import 'package:chords/domain/preferences/entities/app_accent_color.dart';
+import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/l10n/translations.g.dart';
-import 'package:chords/presentation/theme/app_accent_color.dart';
-import 'package:chords/presentation/theme/app_font_scale.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 
 /// Nombre del idioma en su propio idioma.

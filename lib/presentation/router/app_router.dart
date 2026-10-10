@@ -1,4 +1,5 @@
 import 'package:chords/config/app_config.dart';
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/presentation/features/chords/chord_detail_page.dart';
@@ -10,7 +11,6 @@ import 'package:chords/presentation/features/live/live_page.dart';
 import 'package:chords/presentation/features/logs/logs_page.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/router/logging_navigator_observer.dart';
-import 'package:chords/presentation/router/route_paths.dart';
 import 'package:chords/presentation/router/router_error_screen.dart';
 import 'package:chords/presentation/widgets/organisms/adaptive_navigation_shell.dart';
 import 'package:flutter/material.dart';

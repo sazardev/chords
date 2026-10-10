@@ -1,9 +1,9 @@
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
-import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Estado de la pantalla de aprendizaje.
@@ -24,7 +24,7 @@ class LearnController extends ChangeNotifier {
   LearnController(this._repository, this._preferences);
 
   final ChordRepository _repository;
-  final PreferencesService _preferences;
+  final PreferencesRepository _preferences;
 
   Set<String> _mastered = <String>{};
   LearnStatus _status = LearnStatus.loading;
