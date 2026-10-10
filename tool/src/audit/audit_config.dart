@@ -1,9 +1,8 @@
 /// Presupuestos de tamaño y forma que hace cumplir la auditoría.
 ///
-/// Los valores son el estándar del proyecto: obligan a archivos y clases
-/// pequeñas y a cuerpos de función legibles sin fragmentar el código. Los
-/// controladores de UI (`ChangeNotifier`) concentran estado y acciones, así
-/// que se concede un tope algo más holgado de miembros públicos.
+/// Son el estándar del proyecto: fuerzan responsabilidades únicas y
+/// colaboradores pequeños (cada controlador por debajo del tope de miembros
+/// públicos tras dividir apariencia, filtros y las fases del juego).
 class AuditConfig {
   /// Crea la configuración.
   const AuditConfig({
@@ -12,7 +11,7 @@ class AuditConfig {
     this.maxFunctionLines = 60,
     this.maxBranches = 10,
     this.maxSwitchCases = 7,
-    this.maxPublicMembers = 16,
+    this.maxPublicMembers = 12,
     this.excludedDirectories = const <String>{
       'build',
       'ios',

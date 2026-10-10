@@ -20,7 +20,9 @@ import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
+import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
+import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
@@ -52,38 +54,7 @@ Future<void> bootstrap(AppConfig config) async {
   );
   final Widget app = TranslationProvider(
     child: MultiProvider(
-      providers: <SingleChildWidget>[
-        ChangeNotifierProvider<LocaleController>(
-          create: (_) => dependencies.localeController,
-        ),
-        ChangeNotifierProvider<AppearanceController>(
-          create: (_) => dependencies.appearanceController,
-        ),
-        ChangeNotifierProvider<SettingsController>(
-          create: (_) => dependencies.settingsController,
-        ),
-        ChangeNotifierProvider<OnboardingController>(
-          create: (_) => dependencies.onboardingController,
-        ),
-        ChangeNotifierProvider<ChordsController>(
-          create: (_) => dependencies.chordsController,
-        ),
-        ChangeNotifierProvider<ChordFilterController>(
-          create: (_) => dependencies.chordFilterController,
-        ),
-        ChangeNotifierProvider<ChordDetailController>(
-          create: (_) => dependencies.chordDetailController,
-        ),
-        ChangeNotifierProvider<LearnController>(
-          create: (_) => dependencies.learnController,
-        ),
-        ChangeNotifierProvider<GameController>(
-          create: (_) => dependencies.gameController,
-        ),
-        ChangeNotifierProvider<LiveController>(
-          create: (_) => dependencies.liveController,
-        ),
-      ],
+      providers: _appProviders(dependencies),
       child: ChordsApp(
         config: config,
         router: AppRouter(config: config).router,
@@ -92,6 +63,47 @@ Future<void> bootstrap(AppConfig config) async {
   );
   runAppGuarded(logger, app);
 }
+
+/// Providers de la aplicación a partir de las dependencias compuestas.
+List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
+    <SingleChildWidget>[
+      ChangeNotifierProvider<LocaleController>(
+        create: (_) => dependencies.localeController,
+      ),
+      ChangeNotifierProvider<AppearanceController>(
+        create: (_) => dependencies.appearanceController,
+      ),
+      ChangeNotifierProvider<SettingsController>(
+        create: (_) => dependencies.settingsController,
+      ),
+      ChangeNotifierProvider<OnboardingController>(
+        create: (_) => dependencies.onboardingController,
+      ),
+      ChangeNotifierProvider<ChordsController>(
+        create: (_) => dependencies.chordsController,
+      ),
+      ChangeNotifierProvider<ChordFilterController>(
+        create: (_) => dependencies.chordFilterController,
+      ),
+      ChangeNotifierProvider<ChordDetailController>(
+        create: (_) => dependencies.chordDetailController,
+      ),
+      ChangeNotifierProvider<LearnController>(
+        create: (_) => dependencies.learnController,
+      ),
+      ChangeNotifierProvider<GameController>(
+        create: (_) => dependencies.gameController,
+      ),
+      ChangeNotifierProvider<GameScoreController>(
+        create: (_) => dependencies.gameScoreController,
+      ),
+      ChangeNotifierProvider<GameAudioController>(
+        create: (_) => dependencies.gameAudioController,
+      ),
+      ChangeNotifierProvider<LiveController>(
+        create: (_) => dependencies.liveController,
+      ),
+    ];
 
 /// Severidad mínima de log según el flavor activo.
 AppLogLevel _minLevelFor(Flavor flavor) => switch (flavor) {
@@ -115,6 +127,8 @@ class AppDependencies {
     required this.chordDetailController,
     required this.learnController,
     required this.gameController,
+    required this.gameScoreController,
+    required this.gameAudioController,
     required this.liveController,
   });
 
@@ -140,10 +154,13 @@ class AppDependencies {
       preferences,
     );
     final LearnController learn = LearnController(chordRepository, preferences);
+    final GameScoreController gameScore = GameScoreController(preferences);
+    final GameAudioController gameTuner = GameAudioController(audioRepository);
     final GameController game = GameController(
       audioRepository,
       chordRepository,
-      preferences,
+      gameScore,
+      gameTuner,
     );
     final LiveController live = LiveController(
       audioRepository,
@@ -155,7 +172,7 @@ class AppDependencies {
     onboarding.load();
     unawaited(chords.load());
     unawaited(learn.load());
-    game.loadBestScore();
+    gameScore.loadBestScore();
     return AppDependencies._(
       localeController: locale,
       appearanceController: appearance,
@@ -166,6 +183,8 @@ class AppDependencies {
       chordDetailController: chordDetail,
       learnController: learn,
       gameController: game,
+      gameScoreController: gameScore,
+      gameAudioController: gameTuner,
       liveController: live,
     );
   }
@@ -196,6 +215,12 @@ class AppDependencies {
 
   /// Controlador del modo juego.
   final GameController gameController;
+
+  /// Controlador de la puntuación y el récord del juego.
+  final GameScoreController gameScoreController;
+
+  /// Controlador de la escucha y afinación del juego.
+  final GameAudioController gameAudioController;
 
   /// Controlador de la afinación en vivo.
   final LiveController liveController;

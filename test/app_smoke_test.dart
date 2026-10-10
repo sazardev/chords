@@ -16,7 +16,9 @@ import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
+import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
+import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
@@ -65,7 +67,14 @@ void main() {
       preferences,
     );
     final LearnController learn = LearnController(chords, preferences);
-    final GameController game = GameController(audio, chords, preferences);
+    final GameScoreController gameScore = GameScoreController(preferences);
+    final GameAudioController gameTuner = GameAudioController(audio);
+    final GameController game = GameController(
+      audio,
+      chords,
+      gameScore,
+      gameTuner,
+    );
     final LiveController live = LiveController(audio, chords);
 
     await tester.runAsync(() async {
@@ -86,6 +95,8 @@ void main() {
       ChangeNotifierProvider<ChordDetailController>.value(value: chordDetail),
       ChangeNotifierProvider<LearnController>.value(value: learn),
       ChangeNotifierProvider<GameController>.value(value: game),
+      ChangeNotifierProvider<GameScoreController>.value(value: gameScore),
+      ChangeNotifierProvider<GameAudioController>.value(value: gameTuner),
       ChangeNotifierProvider<LiveController>.value(value: live),
     ];
 

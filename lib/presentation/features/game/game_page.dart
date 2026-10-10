@@ -2,7 +2,9 @@ import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
 import 'package:chords/domain/chords/entities/game_round.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
+import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
@@ -20,11 +22,13 @@ class GamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final GameController controller = context.watch<GameController>();
+    final GameScoreController score = context.watch<GameScoreController>();
+    final GameAudioController tuner = context.watch<GameAudioController>();
     final GameRound? round = controller.currentRound;
     return Scaffold(
       appBar: AppBar(
         title: Text(t.game.title),
-        actions: <Widget>[_scoreBadges(controller, t)],
+        actions: <Widget>[_scoreBadges(score, t)],
       ),
       floatingActionButton: round == null
           ? FloatingActionButton.extended(
@@ -38,7 +42,7 @@ class GamePage extends StatelessWidget {
             ? AppEmptyState(
                 icon: Icons.sports_esports_rounded,
                 title: t.game.emptyTitle,
-                message: t.game.emptyMessage(best: controller.bestScore),
+                message: t.game.emptyMessage(best: score.bestScore),
               )
             : ListView(
                 padding: const EdgeInsets.all(20),
@@ -48,7 +52,7 @@ class GamePage extends StatelessWidget {
                   _TargetCard(round: round, controller: controller),
                   const SizedBox(height: 20),
                   if (controller.phase == GamePhase.listening)
-                    _ListeningCard(controller: controller)
+                    _ListeningCard(tuner: tuner)
                   else
                     _ActionButton(controller: controller),
                   const SizedBox(height: 16),
@@ -59,7 +63,7 @@ class GamePage extends StatelessWidget {
     );
   }
 
-  Widget _scoreBadges(GameController controller, Translations t) => Padding(
+  Widget _scoreBadges(GameScoreController score, Translations t) => Padding(
     padding: const EdgeInsets.only(right: 12),
     child: Row(
       children: <Widget>[
@@ -68,11 +72,11 @@ class GamePage extends StatelessWidget {
           child: const Icon(Icons.local_fire_department_rounded),
         ),
         const SizedBox(width: 4),
-        AppText('${controller.streak}'),
+        AppText('${score.streak}'),
         const SizedBox(width: 12),
         Tooltip(message: t.game.score, child: const Icon(Icons.star_rounded)),
         const SizedBox(width: 4),
-        AppText('${controller.score}'),
+        AppText('${score.score}'),
       ],
     ),
   );
@@ -145,9 +149,9 @@ class _TargetCard extends StatelessWidget {
 
 /// Indicador de escucha activa.
 class _ListeningCard extends StatelessWidget {
-  const _ListeningCard({required this.controller});
+  const _ListeningCard({required this.tuner});
 
-  final GameController controller;
+  final GameAudioController tuner;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +170,7 @@ class _ListeningCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: LinearProgressIndicator(
-              value: controller.matchRatio.clamp(0.0, 1.0),
+              value: tuner.matchRatio.clamp(0.0, 1.0),
               minHeight: 12,
             ),
           ),

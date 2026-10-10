@@ -9,7 +9,9 @@ import 'package:chords/domain/chords/entities/difficulty.dart';
 import 'package:chords/domain/chords/entities/game_round.dart';
 import 'package:chords/domain/chords/usecases/build_game_sequence_use_case.dart';
 import 'package:chords/domain/chords/usecases/evaluate_chord_match_use_case.dart';
+import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
+import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,10 +75,14 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     final PreferencesService preferences = await PreferencesService.create();
     final FakeAudioRepository audio = FakeAudioRepository();
+    final GameScoreController score = GameScoreController(preferences)
+      ..loadBestScore();
+    final GameAudioController tuner = GameAudioController(audio);
     final GameController controller = GameController(
       audio,
       repository,
-      preferences,
+      score,
+      tuner,
     )..start(level: 1);
     final List<GameRound> rounds = controller.rounds;
     expect(rounds.length, 5);
@@ -93,10 +99,10 @@ void main() {
     targetNotes.forEach(audio.emitReading);
     unawaited(playing);
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    expect(controller.matchRatio, greaterThan(0.5));
+    expect(tuner.matchRatio, greaterThan(0.5));
     await Future<void>.delayed(const Duration(seconds: 6));
-    expect(controller.score, greaterThan(0));
-    expect(controller.streak, 1);
+    expect(score.score, greaterThan(0));
+    expect(score.streak, 1);
     expect(controller.phase, GamePhase.won);
   });
 }
