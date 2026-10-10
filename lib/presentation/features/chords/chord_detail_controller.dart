@@ -1,3 +1,5 @@
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
@@ -5,6 +7,18 @@ import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:flutter/foundation.dart';
+
+/// Problema al cargar el detalle de un acorde.
+///
+/// El controlador describe *qué* ha pasado; la vista decide *cómo* contarlo en
+/// el idioma activo.
+enum ChordDetailProblem {
+  /// El identificador no existe en el banco.
+  notFound,
+
+  /// Fallo inesperado al leer el banco.
+  failed,
+}
 
 /// Controlador del detalle de un acorde.
 class ChordDetailController extends ChangeNotifier {
@@ -22,7 +36,7 @@ class ChordDetailController extends ChangeNotifier {
   Chord? _chord;
   int _selectedIndex = 0;
   bool _loading = false;
-  String? _error;
+  ChordDetailProblem? _problem;
   String? _playingId;
 
   /// Acorde cargado.
@@ -34,8 +48,8 @@ class ChordDetailController extends ChangeNotifier {
   /// Si está cargando.
   bool get loading => _loading;
 
-  /// Mensaje de error.
-  String? get error => _error;
+  /// Problema de la última carga, si la hubo.
+  ChordDetailProblem? get problem => _problem;
 
   /// Identificador del sonido que está sonando.
   String? get playingId => _playingId;
@@ -56,7 +70,7 @@ class ChordDetailController extends ChangeNotifier {
   /// Carga el acorde por identificador.
   Future<void> load(String chordId) async {
     _loading = true;
-    _error = null;
+    _problem = null;
     notifyListeners();
     try {
       if (!_repository.isLoaded) {
@@ -64,14 +78,24 @@ class ChordDetailController extends ChangeNotifier {
       }
       final Chord? chord = _repository.chordById(chordId);
       if (chord == null) {
-        _error = 'No se encontró el acorde $chordId';
+        appLogger.warning(
+          'acorde no encontrado: $chordId',
+          channel: LogChannel.chords,
+        );
+        _problem = ChordDetailProblem.notFound;
         _chord = null;
       } else {
         _chord = chord;
         _selectedIndex = 0;
       }
-    } on Object catch (error) {
-      _error = '$error';
+    } on Object catch (error, stackTrace) {
+      appLogger.error(
+        'fallo al cargar el detalle de $chordId',
+        channel: LogChannel.chords,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _problem = ChordDetailProblem.failed;
     } finally {
       _loading = false;
       notifyListeners();

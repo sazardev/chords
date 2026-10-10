@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/audio/chord_audio_synthesizer.dart';
 import 'package:chords/data/audio/microphone_stream_service.dart';
 import 'package:chords/data/audio/pcm_decoder.dart';
@@ -71,8 +73,18 @@ class AudioRepositoryImpl implements AudioRepository {
       await _micSubscription?.cancel();
       _micSubscription = stream.listen(_onMicData);
       _statusController.add(MicStatus.listening);
+      appLogger.info(
+        'micrófono: escucha iniciada',
+        channel: LogChannel.microphone,
+      );
       return MicStatus.listening;
-    } on Exception {
+    } on Exception catch (error, stackTrace) {
+      appLogger.warning(
+        'micrófono: acceso denegado o fallo al iniciar',
+        channel: LogChannel.microphone,
+        error: error,
+        stackTrace: stackTrace,
+      );
       _statusController.add(MicStatus.permissionDenied);
       return MicStatus.permissionDenied;
     }
@@ -90,10 +102,15 @@ class AudioRepositoryImpl implements AudioRepository {
     await _mic.stop();
     _window.clear();
     _statusController.add(MicStatus.idle);
+    appLogger.info(
+      'micrófono: escucha detenida',
+      channel: LogChannel.microphone,
+    );
   }
 
   @override
   Future<void> playChord(Chord chord, ChordVariant variant) async {
+    appLogger.debug('reproducir acorde ${chord.id}', channel: LogChannel.audio);
     await _ensureEngine();
     final AudioSource source = await _loadCached(
       key: '${chord.id}:${variant.id}',
@@ -108,6 +125,10 @@ class AudioRepositoryImpl implements AudioRepository {
     ChordVariant variant,
     ArpeggioPattern pattern,
   ) async {
+    appLogger.debug(
+      'reproducir arpegio ${chord.id}/${pattern.id}',
+      channel: LogChannel.audio,
+    );
     await _ensureEngine();
     final AudioSource source = await _loadCached(
       key: '${chord.id}:${variant.id}:arp-${pattern.id}',
@@ -137,6 +158,10 @@ class AudioRepositoryImpl implements AudioRepository {
     }
     await SoLoud.instance.init();
     _engineReady = true;
+    appLogger.debug(
+      'motor de audio (SoLoud) iniciado',
+      channel: LogChannel.audio,
+    );
   }
 
   Future<AudioSource> _loadCached({

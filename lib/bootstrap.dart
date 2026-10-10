@@ -2,12 +2,21 @@ import 'dart:async' show unawaited;
 
 import 'package:chords/app/app.dart';
 import 'package:chords/config/app_config.dart';
+import 'package:chords/config/flavor.dart';
+import 'package:chords/core/logging/app_log_level.dart';
+import 'package:chords/core/logging/app_logger.dart';
+import 'package:chords/core/logging/log_channel.dart';
+import 'package:chords/core/logging/runtime/app_error_zone.dart';
+import 'package:chords/core/logging/runtime/logging_bootstrap.dart';
 import 'package:chords/data/audio/audio_repository_impl.dart';
 import 'package:chords/data/chords/repositories/chord_repository_impl.dart';
+import 'package:chords/data/l10n/locale_repository_impl.dart';
 import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
+import 'package:chords/domain/l10n/repositories/locale_repository.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
@@ -15,6 +24,7 @@ import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,13 +32,28 @@ import 'package:provider/single_child_widget.dart';
 
 /// Punto de entrada de arranque de la aplicación.
 ///
-/// Compone las dependencias, registra los controladores y monta la app.
+/// Activa el logging global, cronometra la composición de dependencias, monta
+/// la app bajo una zona protegida de errores y deja rastro de todo el proceso.
 Future<void> bootstrap(AppConfig config) async {
   WidgetsFlutterBinding.ensureInitialized();
-  final AppDependencies dependencies = await AppDependencies.create();
-  runApp(
-    MultiProvider(
+  final AppLogger logger = bootstrapLogging(
+    minLevel: _minLevelFor(config.flavor),
+    appName: config.appName,
+    inAppDiagnostics: config.enableRouteLogs,
+  );
+  final AppDependencies dependencies = await logger.track(
+    AppDependencies.create,
+    name: 'composición de dependencias',
+    channel: LogChannel.boot,
+    slowThreshold: const Duration(milliseconds: 800),
+    context: <String, Object?>{'flavor': config.flavor.name},
+  );
+  final Widget app = TranslationProvider(
+    child: MultiProvider(
       providers: <SingleChildWidget>[
+        ChangeNotifierProvider<LocaleController>(
+          create: (_) => dependencies.localeController,
+        ),
         ChangeNotifierProvider<SettingsController>(
           create: (_) => dependencies.settingsController,
         ),
@@ -57,7 +82,15 @@ Future<void> bootstrap(AppConfig config) async {
       ),
     ),
   );
+  runAppGuarded(logger, app);
 }
+
+/// Severidad mínima de log según el flavor activo.
+AppLogLevel _minLevelFor(Flavor flavor) => switch (flavor) {
+  Flavor.dev => AppLogLevel.debug,
+  Flavor.staging => AppLogLevel.info,
+  Flavor.prod => AppLogLevel.warning,
+};
 
 /// Composición de dependencias de la aplicación.
 ///
@@ -65,6 +98,7 @@ Future<void> bootstrap(AppConfig config) async {
 /// que el arranque sea el único lugar con lógica de construcción.
 class AppDependencies {
   AppDependencies._({
+    required this.localeController,
     required this.settingsController,
     required this.onboardingController,
     required this.chordsController,
@@ -77,8 +111,10 @@ class AppDependencies {
   /// Crea el grafo de dependencias por defecto.
   static Future<AppDependencies> create() async {
     final PreferencesService preferences = await PreferencesService.create();
+    final LocaleRepository localeRepository = LocaleRepositoryImpl(preferences);
     final ChordRepository chordRepository = ChordRepositoryImpl();
     final AudioRepository audioRepository = AudioRepositoryImpl();
+    final LocaleController locale = LocaleController(localeRepository);
     final SettingsController settings = SettingsController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
     final ChordsController chords = ChordsController(
@@ -101,12 +137,14 @@ class AppDependencies {
       audioRepository,
       chordRepository,
     );
+    unawaited(locale.load());
     unawaited(settings.load());
     onboarding.load();
     unawaited(chords.load());
     unawaited(learn.load());
     game.loadBestScore();
     return AppDependencies._(
+      localeController: locale,
       settingsController: settings,
       onboardingController: onboarding,
       chordsController: chords,
@@ -116,6 +154,9 @@ class AppDependencies {
       liveController: live,
     );
   }
+
+  /// Controlador del idioma de la interfaz.
+  final LocaleController localeController;
 
   /// Controlador de ajustes.
   final SettingsController settingsController;

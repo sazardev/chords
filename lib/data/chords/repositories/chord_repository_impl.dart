@@ -1,3 +1,5 @@
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/chords/datasources/chord_asset_datasource.dart';
 import 'package:chords/data/chords/models/chord_model.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
@@ -27,6 +29,7 @@ class ChordRepositoryImpl implements ChordRepository {
     if (isLoaded) {
       return;
     }
+    final Stopwatch watch = Stopwatch()..start();
     final Map<String, Object?> database = await _dataSource.fetchDatabase();
     final List<Chord> parsed = _parse(database);
     if (parsed.isEmpty) {
@@ -36,6 +39,15 @@ class ChordRepositoryImpl implements ChordRepository {
     _byId
       ..clear()
       ..addEntries(parsed.map((Chord c) => MapEntry<String, Chord>(c.id, c)));
+    watch.stop();
+    appLogger.info(
+      'banco de acordes cargado',
+      channel: LogChannel.chords,
+      context: <String, Object?>{
+        'count': parsed.length,
+        'durationMs': watch.elapsed.inMilliseconds,
+      },
+    );
   }
 
   @override
@@ -97,14 +109,28 @@ class ChordRepositoryImpl implements ChordRepository {
       throw const FormatException('Falta la lista de acordes');
     }
     final List<Chord> result = <Chord>[];
+    int discarded = 0;
     for (final Object? item in rawChords) {
       if (item is! Map<String, Object?>) {
+        discarded++;
         continue;
       }
       final Chord? chord = ChordModel.fromJson(item).toEntity();
       if (chord != null) {
         result.add(chord);
+      } else {
+        discarded++;
       }
+    }
+    if (discarded > 0) {
+      appLogger.warning(
+        '$discarded elementos del banco descartados',
+        channel: LogChannel.chords,
+        context: <String, Object?>{
+          'discarded': discarded,
+          'parsed': result.length,
+        },
+      );
     }
     return result;
   }

@@ -25,6 +25,9 @@ const String kLivePath = '/live';
 /// Ajustes de la aplicación.
 const String kSettingsPath = '/settings';
 
+/// Visor de diagnóstico de logs dentro de ajustes.
+const String kLogsPath = '/settings/logs';
+
 /// Nombre interno de la ruta de inicio.
 const String kHomeRouteName = 'home';
 
@@ -45,6 +48,9 @@ const String kLiveRouteName = 'live';
 
 /// Nombre interno de la ruta de ajustes.
 const String kSettingsRouteName = 'settings';
+
+/// Nombre interno de la ruta del visor de diagnóstico.
+const String kLogsRouteName = 'logs';
 
 /// Destinos de navegación en orden de pestaña.
 const List<String> kNavigationDestinations = <String>[

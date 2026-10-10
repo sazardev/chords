@@ -1,3 +1,5 @@
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_filters.dart';
@@ -55,7 +57,13 @@ class ChordsController extends ChangeNotifier {
       await _repository.load();
       _applyFilters();
       _status = ChordsStatus.ready;
-    } on Object {
+    } on Object catch (error, stackTrace) {
+      appLogger.error(
+        'no se pudo cargar la biblioteca de acordes',
+        channel: LogChannel.chords,
+        error: error,
+        stackTrace: stackTrace,
+      );
       _status = ChordsStatus.error;
     }
     notifyListeners();

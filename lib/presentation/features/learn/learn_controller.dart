@@ -1,3 +1,5 @@
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
@@ -93,7 +95,13 @@ class LearnController extends ChangeNotifier {
       }
       _mastered = _preferences.masteredChordIds;
       _status = LearnStatus.ready;
-    } on Object {
+    } on Object catch (error, stackTrace) {
+      appLogger.error(
+        'no se pudo cargar el itinerario de aprendizaje',
+        channel: LogChannel.learn,
+        error: error,
+        stackTrace: stackTrace,
+      );
       _status = LearnStatus.error;
     }
     notifyListeners();
