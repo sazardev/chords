@@ -1,6 +1,7 @@
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
 import 'package:chords/domain/chords/entities/game_round.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
@@ -17,21 +18,28 @@ class GamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final GameController controller = context.watch<GameController>();
     final GameRound? round = controller.currentRound;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Jugar'),
+        title: Text(t.game.title),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: Row(
               children: <Widget>[
-                const Icon(Icons.local_fire_department_rounded),
+                Tooltip(
+                  message: t.game.streak,
+                  child: const Icon(Icons.local_fire_department_rounded),
+                ),
                 const SizedBox(width: 4),
                 AppText('${controller.streak}'),
                 const SizedBox(width: 12),
-                const Icon(Icons.star_rounded),
+                Tooltip(
+                  message: t.game.score,
+                  child: const Icon(Icons.star_rounded),
+                ),
                 const SizedBox(width: 4),
                 AppText('${controller.score}'),
               ],
@@ -43,17 +51,15 @@ class GamePage extends StatelessWidget {
           ? FloatingActionButton.extended(
               onPressed: () => controller.start(level: 1),
               icon: const Icon(Icons.play_arrow_rounded),
-              label: const Text('Empezar serie'),
+              label: Text(t.game.start),
             )
           : null,
       body: SafeArea(
         child: round == null
             ? AppEmptyState(
                 icon: Icons.sports_esports_rounded,
-                title: 'Toca el acorde',
-                message:
-                    'Encadena una serie de acordes con el micrófono. '
-                    'Récord: ${controller.bestScore} puntos.',
+                title: t.game.emptyTitle,
+                message: t.game.emptyMessage(best: controller.bestScore),
               )
             : ListView(
                 padding: const EdgeInsets.all(20),
@@ -82,16 +88,22 @@ class _RoundHeader extends StatelessWidget {
   final GameRound round;
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: <Widget>[
-      AppText('Ronda ${round.index + 1}', variant: AppTextVariant.titleLarge),
-      const Spacer(),
-      Chip(
-        avatar: const Icon(Icons.timer_outlined),
-        label: Text('${round.timeLimitMs ~/ 1000}s'),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return Row(
+      children: <Widget>[
+        AppText(
+          t.game.round(number: round.index + 1),
+          variant: AppTextVariant.titleLarge,
+        ),
+        const Spacer(),
+        Chip(
+          avatar: const Icon(Icons.timer_outlined),
+          label: Text('${round.timeLimitMs ~/ 1000}s'),
+        ),
+      ],
+    );
+  }
 }
 
 /// Acorde objetivo con su diagrama.
@@ -103,11 +115,12 @@ class _TargetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final Chord? chord = controller.chordOf(round.chordId);
     return AppCard(
       child: Column(
         children: <Widget>[
-          const AppText('Toca este acorde', variant: AppTextVariant.titleLarge),
+          AppText(t.game.playThisChord, variant: AppTextVariant.titleLarge),
           const SizedBox(height: 4),
           AppText(
             controller.nameOf(round.chordId),
@@ -120,7 +133,7 @@ class _TargetCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           if (chord == null)
-            const AppText('Cargando acorde…')
+            AppText(t.game.loadingChord)
           else
             ChordDiagram(
               variant: chord.easiestVariant,
@@ -140,30 +153,30 @@ class _ListeningCard extends StatelessWidget {
   final GameController controller;
 
   @override
-  Widget build(BuildContext context) => AppCard(
-    child: Column(
-      children: <Widget>[
-        const SizedBox(
-          width: 28,
-          height: 28,
-          child: CircularProgressIndicator(strokeWidth: 3),
-        ),
-        const SizedBox(height: 12),
-        const AppText(
-          'Escuchando tu guitararra…',
-          variant: AppTextVariant.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(999),
-          child: LinearProgressIndicator(
-            value: controller.matchRatio.clamp(0.0, 1.0),
-            minHeight: 12,
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return AppCard(
+      child: Column(
+        children: <Widget>[
+          const SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(strokeWidth: 3),
           ),
-        ),
-      ],
-    ),
-  );
+          const SizedBox(height: 12),
+          AppText(t.game.listening, variant: AppTextVariant.titleMedium),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: controller.matchRatio.clamp(0.0, 1.0),
+              minHeight: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Botón principal de acción según la fase.
@@ -174,11 +187,12 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     if (controller.phase == GamePhase.won) {
       return FilledButton.icon(
         onPressed: controller.next,
         icon: const Icon(Icons.check_rounded),
-        label: const Text('¡Correcto! Siguiente'),
+        label: Text(t.game.correctNext),
       );
     }
     if (controller.phase == GamePhase.lost) {
@@ -189,13 +203,13 @@ class _ActionButton extends StatelessWidget {
         ),
         onPressed: controller.next,
         icon: const Icon(Icons.refresh_rounded),
-        label: const Text('Inténtalo otra vez'),
+        label: Text(t.game.retry),
       );
     }
     return FilledButton.icon(
       onPressed: controller.playRound,
       icon: const Icon(Icons.mic_rounded),
-      label: const Text('Estoy listo'),
+      label: Text(t.game.ready),
     );
   }
 }

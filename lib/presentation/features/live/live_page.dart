@@ -1,5 +1,6 @@
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/router/route_paths.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
@@ -17,10 +18,11 @@ class LivePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final LiveController controller = context.watch<LiveController>();
     final bool listening = controller.status == MicStatus.listening;
     return Scaffold(
-      appBar: AppBar(title: const Text('En vivo')),
+      appBar: AppBar(title: Text(t.live.title)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -34,15 +36,14 @@ class LivePage extends StatelessWidget {
               FilledButton.icon(
                 onPressed: controller.toggleListening,
                 icon: Icon(listening ? Icons.stop_rounded : Icons.mic_rounded),
-                label: Text(listening ? 'Detener' : 'Escuchar guitararra'),
+                label: Text(listening ? t.live.stop : t.live.listen),
               ),
               const SizedBox(height: 20),
               if (controller.suggestions.isEmpty)
-                const AppEmptyState(
+                AppEmptyState(
                   icon: Icons.music_note_rounded,
-                  title: 'Sin sugerencias aún',
-                  message:
-                      'Pulsa escuchar y toca un acorde para ver coincidencias.',
+                  title: t.live.emptyTitle,
+                  message: t.live.emptyMessage,
                 )
               else
                 _Suggestions(chords: controller.suggestions),
@@ -61,24 +62,27 @@ class _Suggestions extends StatelessWidget {
   final List<Chord> chords;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      const AppText('Sugerencias', variant: AppTextVariant.titleLarge),
-      const SizedBox(height: 8),
-      for (final Chord chord in chords)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: ChordCard(
-            chord: chord,
-            onTap: () => context.go(
-              '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
-            ),
-            onPlay: () => context.go(
-              '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        AppText(t.live.suggestions, variant: AppTextVariant.titleLarge),
+        const SizedBox(height: 8),
+        for (final Chord chord in chords)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: ChordCard(
+              chord: chord,
+              onTap: () => context.go(
+                '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
+              ),
+              onPlay: () => context.go(
+                '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
+              ),
             ),
           ),
-        ),
-    ],
-  );
+      ],
+    );
+  }
 }

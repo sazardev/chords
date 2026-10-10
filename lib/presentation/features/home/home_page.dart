@@ -1,7 +1,9 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/router/route_paths.dart';
+import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/progress_ring.dart';
 import 'package:chords/presentation/widgets/molecules/quick_action_card.dart';
@@ -16,11 +18,12 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final ChordsController chords = context.watch<ChordsController>();
     final LearnController learn = context.watch<LearnController>();
     final String? nextId = learn.nextChordId;
     return Scaffold(
-      appBar: AppBar(title: const Text('Chords')),
+      appBar: AppBar(title: Text(t.app.title)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),
@@ -31,12 +34,12 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   AppText(
-                    'Hola, guitararrista',
+                    t.home.greeting,
                     variant: AppTextVariant.bodyLarge,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  const AppText(
-                    '¿Qué tocas hoy?',
+                  AppText(
+                    t.home.question,
                     variant: AppTextVariant.displayLarge,
                   ),
                 ],
@@ -51,10 +54,10 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: QuickActionCard(
                 icon: Icons.school_rounded,
-                title: 'Continúa aprendiendo',
+                title: t.home.continueLearning,
                 subtitle: nextId == null
-                    ? '¡Itinerario completo!'
-                    : 'Siguiente: ${_nameOf(chords, nextId)}',
+                    ? t.home.itineraryComplete
+                    : t.home.nextChord(name: _nameOf(chords, nextId)),
                 onTap: () => context.go(kLearnPath),
               ),
             ),
@@ -63,9 +66,10 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: QuickActionCard(
                 icon: Icons.library_music_rounded,
-                title: 'Biblioteca de acordes',
-                subtitle:
-                    '${chords.allChords.length} acordes por género y nivel',
+                title: t.home.library,
+                subtitle: t.home.librarySubtitle(
+                  count: chords.allChords.length,
+                ),
                 onTap: () => context.go(kChordsPath),
               ),
             ),
@@ -74,8 +78,8 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: QuickActionCard(
                 icon: Icons.sports_esports_rounded,
-                title: 'Modo juego',
-                subtitle: 'Toca el acorde y encadena la serie',
+                title: t.home.gameMode,
+                subtitle: t.home.gameSubtitle,
                 onTap: () => context.go(kGamePath),
               ),
             ),
@@ -84,8 +88,8 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: QuickActionCard(
                 icon: Icons.graphic_eq_rounded,
-                title: 'Afinación en vivo',
-                subtitle: 'Detecta la nota con tu micrófono',
+                title: t.home.liveTitle,
+                subtitle: t.home.liveSubtitle,
                 onTap: () => context.go(kLivePath),
                 color: Theme.of(context).colorScheme.secondaryContainer,
               ),
@@ -114,34 +118,33 @@ class _ProgressSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: <Color>[scheme.primaryContainer, scheme.tertiaryContainer],
-        ),
-        borderRadius: BorderRadius.circular(28),
-      ),
+    return AppCard(
+      borderRadius: 28,
+      padding: const EdgeInsets.all(20),
+      color: scheme.primaryContainer,
       child: Row(
         children: <Widget>[
           ProgressRing(
             progress: learn.progress,
             size: 76,
             label: '${(learn.progress * 100).round()}%',
+            trackColor: scheme.onPrimaryContainer.withValues(alpha: 0.24),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const AppText(
-                  'Progreso del itinerario',
+                AppText(
+                  t.home.progressTitle,
                   variant: AppTextVariant.titleMedium,
+                  color: scheme.onPrimaryContainer,
                 ),
                 const SizedBox(height: 4),
                 AppText(
-                  '${learn.mastered.length} acordes dominados',
+                  t.home.masteredCount(n: learn.mastered.length),
                   color: scheme.onPrimaryContainer,
                 ),
               ],

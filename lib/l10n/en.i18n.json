@@ -1,0 +1,300 @@
+{
+  "app": {
+    "title": "Chords",
+    "chordFallback": "Chord",
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Start"
+  },
+  "nav": {
+    "home": "Home",
+    "learn": "Learn",
+    "chords": "Chords",
+    "game": "Play",
+    "live": "Live",
+    "settings": "Settings"
+  },
+  "home": {
+    "greeting": "Hello, guitarist",
+    "question": "What are you playing today?",
+    "progressTitle": "Itinerary progress",
+    "masteredCount": {
+      "one": "$n chord mastered",
+      "other": "$n chords mastered"
+    },
+    "continueLearning": "Keep learning",
+    "itineraryComplete": "Itinerary complete!",
+    "nextChord": "Next: $name",
+    "library": "Chord library",
+    "librarySubtitle": "$count chords by genre and level",
+    "gameMode": "Game mode",
+    "gameSubtitle": "Play the chord and build a streak",
+    "liveTitle": "Live tuning",
+    "liveSubtitle": "Detect the note with your microphone"
+  },
+  "chords": {
+    "title": "Chords",
+    "clearFilters": "Clear filters",
+    "searchHint": "Search chords",
+    "filterAll": "All",
+    "filterAllQualities": "All",
+    "positionCount": {
+      "one": "$n position",
+      "other": "$n positions"
+    },
+    "levelShort": "Lv $level",
+    "maxDifficulty": "Max difficulty: $level",
+    "loading": "Loading chords…",
+    "loadErrorTitle": "Could not load the chord bank",
+    "loadErrorMessage": "Restart the app to try loading the bank again.",
+    "emptyTitle": "No results",
+    "emptyMessage": "Adjust the search or the filters to see more chords."
+  },
+  "chordDetail": {
+    "titleFallback": "Chord",
+    "markMastered": "Mark as mastered",
+    "unmarkMastered": "Remove from mastered",
+    "leftHandMode": "Left-handed mode",
+    "leftHandModeOff": "Disable left-handed mode",
+    "loading": "Loading chord…",
+    "errorTitle": "Chord unavailable",
+    "notFoundMessage": "Chord $chordId not found",
+    "loadFailed": "The chord bank could not be read.",
+    "noChordTitle": "No chord selected",
+    "noChordMessage": "Go back to the list and pick a chord.",
+    "listen": "Listen to chord",
+    "listenPosition": "Listen to $position",
+    "arpeggios": "Arpeggios",
+    "positions": "Positions",
+    "notes": "Notes: $notes",
+    "arpeggioChip": "$label · Lv $level"
+  },
+  "game": {
+    "title": "Play",
+    "start": "Start streak",
+    "emptyTitle": "Play the chord",
+    "emptyMessage": "Chain a series of chords with the microphone. Best: $best points.",
+    "round": "Round $number",
+    "playThisChord": "Play this chord",
+    "loadingChord": "Loading chord…",
+    "listening": "Listening to your guitar…",
+    "correctNext": "Correct! Next",
+    "retry": "Try again",
+    "ready": "I'm ready",
+    "streak": "Streak",
+    "score": "Score"
+  },
+  "chordDiagram": {
+    "stringLabel": "string $number: $fret",
+    "muted": "muted",
+    "open": "open",
+    "fret": "fret $value",
+    "description": "Diagram of $position, $details"
+  },
+  "live": {
+    "title": "Live",
+    "listen": "Listen to guitar",
+    "stop": "Stop",
+    "emptyTitle": "No suggestions yet",
+    "emptyMessage": "Press listen and play a chord to see matches.",
+    "suggestions": "Suggestions",
+    "idleTitle": "Microphone idle",
+    "idleMessage": "Play a note on the guitar",
+    "listening": "Listening…",
+    "deniedTitle": "Permission denied",
+    "errorTitle": "Capture error"
+  },
+  "learn": {
+    "title": "Learn",
+    "loading": "Preparing levels…",
+    "errorTitle": "Could not load the itinerary",
+    "errorMessage": "Restart the app to try again.",
+    "yourProgress": "Your progress",
+    "masteredCount": {
+      "one": "$n chord mastered",
+      "other": "$n chords mastered"
+    },
+    "stepByStep": "Step by step",
+    "stepFingers": "Place your fingers one by one on the fretboard",
+    "stepStrum": "Slow strum: listen to every string",
+    "stepChange": "Move to the next chord without stopping the rhythm",
+    "guidedArpeggios": "Guided arpeggios",
+    "levelSection": "$emoji  Level $level: $title",
+    "arpeggioHint": "Open the chord and play its $label arpeggio"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": {
+      "title": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark",
+      "summarySystem": "Follows the system theme",
+      "summaryLight": "Always light",
+      "summaryDark": "Always dark",
+      "valueSystem": "System theme",
+      "valueLight": "Light theme",
+      "valueDark": "Dark theme"
+    },
+    "color": {
+      "title": "App colour",
+      "dynamicActive": "System dynamic colour active",
+      "systemTitle": "System colour",
+      "systemSubtitle": "Uses your device wallpaper",
+      "systemUnavailable": "Not available on this platform",
+      "accentDisabledNote": "The manual accent is disabled while the system colour is active."
+    },
+    "text": {
+      "title": "Text",
+      "fontSize": "Font size",
+      "preview": "Preview",
+      "previewSample": "C major · barre at fret 3"
+    },
+    "language": {
+      "title": "Language"
+    },
+    "accent": {
+      "violeta": "Violet",
+      "azul": "Blue",
+      "anil": "Indigo",
+      "cian": "Cyan",
+      "verde": "Green",
+      "lima": "Lime",
+      "ambar": "Amber",
+      "naranja": "Orange",
+      "rojo": "Red",
+      "rosa": "Pink"
+    },
+    "fontScale": {
+      "pequena": "Small",
+      "normal": "Normal",
+      "grande": "Large",
+      "extraGrande": "Extra large"
+    },
+    "guitar": "Guitar",
+    "leftHandMode": "Left-handed mode",
+    "leftHandModeSubtitle": "Mirrors the chord diagrams",
+    "sound": "Sound",
+    "chordSound": "Chord sound",
+    "chordSoundSubtitle": "Synthesizes strums and arpeggios",
+    "learning": "Learning",
+    "resetOnboarding": "Reset onboarding",
+    "resetOnboardingSubtitle": "Show the introduction again",
+    "onboardingReset": "Onboarding reset",
+    "version": "Version",
+    "cli": "Development CLI",
+    "cliCommand": "dart run bin/chords_cli.dart db generate"
+  },
+  "onboarding": {
+    "slideOneTitle": "Every chord, every position",
+    "slideOneBody": "156 chords and 581 verified positions, from the essential open shapes to jazz voicings.",
+    "slideTwoTitle": "Listen to every chord and its arpeggio",
+    "slideTwoBody": "We synthesize each string so you can recognise the sound before playing.",
+    "slideThreeTitle": "Learn by levels and practise",
+    "slideThreeBody": "Step-by-step itinerary, genre filter and game mode to chain chord streaks."
+  },
+  "data": {
+    "language": {
+      "system": "System language",
+      "es": "Spanish",
+      "en": "English"
+    },
+    "genre": {
+      "pop": "Pop",
+      "rock": "Rock",
+      "blues": "Blues",
+      "jazz": "Jazz",
+      "funk": "Funk",
+      "ballad": "Ballad",
+      "latin": "Latin",
+      "metal": "Metal",
+      "rnb": "R&B",
+      "soul": "Soul",
+      "bossa": "Bossa",
+      "country": "Country",
+      "kids": "Kids",
+      "ambient": "Ambient",
+      "classical": "Classical",
+      "gospel": "Gospel",
+      "punk": "Punk"
+    },
+    "quality": {
+      "major": "Major",
+      "minor": "Minor",
+      "seven": "Dominant seventh",
+      "minorSeven": "Minor seventh",
+      "majorSeven": "Major seventh",
+      "suspendedFourth": "Suspended 4",
+      "suspendedSecond": "Suspended 2",
+      "power": "Fifth",
+      "sixth": "Sixth",
+      "minorSixth": "Minor sixth",
+      "diminished": "Diminished",
+      "augmented": "Augmented",
+      "ninth": "Ninth"
+    },
+    "qualityDescription": {
+      "major": "Major triad; the foundation of almost everything.",
+      "minor": "Minor triad; sad or intimate colour.",
+      "seven": "Blues and funk; tension with a strong resolution.",
+      "minorSeven": "Soft and versatile; the backbone of ii-V-I.",
+      "majorSeven": "Dreamy pop and jazz colour.",
+      "suspendedFourth": "Open suspension; usually resolves to major.",
+      "suspendedSecond": "Open and ethereal; common in pop and rock.",
+      "power": "Two notes; rock, metal and distortion.",
+      "sixth": "Vintage feel; frequent in funk and folk.",
+      "minorSixth": "Latin and jazz colour; very expressive.",
+      "diminished": "Unstable tension; passing chord.",
+      "augmented": "Symmetric and bright; chromatic links.",
+      "ninth": "Rich and modern; funk and r&b."
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "easy": "Easy",
+      "medium": "Intermediate",
+      "hard": "Hard",
+      "expert": "Expert"
+    },
+    "difficultyHint": {
+      "beginner": "Open, no barre",
+      "easy": "Triads or short shapes",
+      "medium": "Full barre",
+      "hard": "Big stretch or high barre",
+      "expert": "Advanced or jazz voicing"
+    },
+    "level": {
+      "first": "First chords",
+      "second": "Easy sevenths",
+      "third": "Barre chords",
+      "fourth": "Colour and suspension",
+      "fifth": "Jazz and voicings"
+    },
+    "levelGoal": {
+      "first": "Open major and minor chords",
+      "second": "Dominant seventh without barre",
+      "third": "Full movable shapes",
+      "fourth": "m7, maj7, sus2, sus4, 6",
+      "fifth": "9, dim, aug and advanced voicings"
+    },
+    "arpeggio": {
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "alternating": "Alternating",
+      "fingerstyle": "Fingerstyle"
+    }
+  },
+  "logs": {
+    "title": "Diagnostics",
+    "clear": "Clear log",
+    "total": "Total",
+    "errors": "Errors",
+    "warnings": "Warnings",
+    "allLevels": "All",
+    "empty": "No events recorded"
+  },
+  "router": {
+    "notFound": "Route not found",
+    "goHome": "Go to home"
+  }
+}

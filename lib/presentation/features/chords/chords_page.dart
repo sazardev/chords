@@ -1,5 +1,6 @@
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/router/route_paths.dart';
@@ -68,16 +69,17 @@ class _ChordsPageState extends State<ChordsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final ChordsController controller = context.watch<ChordsController>();
     final bool mirror = context.select<SettingsController, bool>(
       (SettingsController settings) => settings.mirrorChords,
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Acordes'),
+        title: Text(t.chords.title),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Limpiar filtros',
+            tooltip: t.chords.clearFilters,
             icon: const Icon(Icons.filter_alt_off_outlined),
             onPressed: controller.clearFilters,
           ),
@@ -90,6 +92,7 @@ class _ChordsPageState extends State<ChordsPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: SearchField(
+                hintText: t.chords.searchHint,
                 initialValue: controller.filters.query,
                 onChanged: controller.setQuery,
               ),
@@ -118,29 +121,30 @@ class _ChordsPageState extends State<ChordsPage> {
     );
   }
 
-  Widget _body(ChordsController controller, bool mirror) =>
-      switch (controller.status) {
-        ChordsStatus.loading => const AppLoading(message: 'Cargando acordes…'),
-        ChordsStatus.error => const AppEmptyState(
-          icon: Icons.error_outline_rounded,
-          title: 'No se pudo cargar el banco',
-          message: 'Reinicia la app para reintentar la carga del banco.',
-        ),
-        ChordsStatus.ready when controller.visibleChords.isEmpty =>
-          const AppEmptyState(
-            icon: Icons.search_off_rounded,
-            title: 'Sin resultados',
-            message: 'Ajusta la búsqueda o los filtros para ver más acordes.',
-          ),
-        ChordsStatus.ready => ChordGrid(
-          chords: controller.visibleChords,
-          mirror: mirror,
-          onSelect: (String id) =>
-              context.go('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
-          onPlay: (String id) =>
-              context.go('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
-        ),
-      };
+  Widget _body(ChordsController controller, bool mirror) {
+    final Translations t = context.t;
+    return switch (controller.status) {
+      ChordsStatus.loading => AppLoading(message: t.chords.loading),
+      ChordsStatus.error => AppEmptyState(
+        icon: Icons.error_outline_rounded,
+        title: t.chords.loadErrorTitle,
+        message: t.chords.loadErrorMessage,
+      ),
+      ChordsStatus.ready when controller.visibleChords.isEmpty => AppEmptyState(
+        icon: Icons.search_off_rounded,
+        title: t.chords.emptyTitle,
+        message: t.chords.emptyMessage,
+      ),
+      ChordsStatus.ready => ChordGrid(
+        chords: controller.visibleChords,
+        mirror: mirror,
+        onSelect: (String id) =>
+            context.go('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
+        onPlay: (String id) =>
+            context.go('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
+      ),
+    };
+  }
 }
 
 /// Slider de dificultad máxima.
@@ -151,13 +155,14 @@ class _DifficultySlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final int? max = controller.filters.maxDifficulty;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: <Widget>[
           Text(
-            'Dificultad máx: ${max ?? 5}',
+            t.chords.maxDifficulty(level: max ?? 5),
             style: Theme.of(context).textTheme.labelLarge,
           ),
           Expanded(

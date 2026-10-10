@@ -1,0 +1,44 @@
+# Configuración de slang (internacionalización).
+# Documentación: https://pub.dev/packages/slang
+#
+# Regenerar el código tipado:  `dart run slang`  (o `make l10n`)
+# Añadir un idioma: crear `lib/l10n/<código>.json` y ejecutar de nuevo.
+
+base_locale: es
+fallback_strategy: base_locale
+
+# Entradas: un JSON por idioma dentro de lib/l10n.
+input_directory: lib/l10n
+input_file_pattern: .i18n.json
+
+# Salida generada (versionada, no requiere codegen al compilar).
+output_directory: lib/l10n
+output_file_name: translations.g.dart
+
+# Con 2 idiomas ligeros compensa empaquetarlos todos: el cambio de idioma es
+# instantáneo y síncrono (no hay hueco de carga asíncrona).
+lazy: false
+
+# `Translations` pública: los mappers pueden tipar el parámetro (SOLID).
+translation_class_visibility: public
+
+# Integración con Flutter (TranslationProvider, AppLocale con flutterLocale).
+flutter_integration: true
+
+# Nombres estables del código generado.
+enum_name: AppLocale
+class_name: Translations
+translate_var: t
+
+# Sustituye cualquier clave no traducida en lugar de romper la compilación.
+string_interpolation: dart
+
+# Formato del código generado (evita diffs con `dart format`).
+format:
+  enabled: true
+  width: 80
+
+# Sin marca de tiempo: el código generado solo cambia si cambian los JSON,
+# así se puede verificar en el pre-commit que está sincronizado.
+timestamp: false
+statistics: true

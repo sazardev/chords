@@ -2,8 +2,10 @@ import 'dart:async' show unawaited;
 
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
@@ -48,6 +50,7 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final ChordDetailController controller = context
         .watch<ChordDetailController>();
     final bool mirror = context.select<SettingsController, bool>(
@@ -56,13 +59,13 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(controller.chord?.name ?? 'Acorde'),
+        title: Text(controller.chord?.name ?? t.chordDetail.titleFallback),
         actions: <Widget>[
           if (controller.chord != null)
             IconButton(
               tooltip: controller.isMastered
-                  ? 'Quitar de dominados'
-                  : 'Marcar como dominado',
+                  ? t.chordDetail.unmarkMastered
+                  : t.chordDetail.markMastered,
               icon: Icon(
                 controller.isMastered
                     ? Icons.check_circle_rounded
@@ -74,7 +77,9 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
               onPressed: () => unawaited(controller.toggleMastered()),
             ),
           IconButton(
-            tooltip: mirror ? 'Desactivar modo zurdo' : 'Modo zurdo',
+            tooltip: mirror
+                ? t.chordDetail.leftHandModeOff
+                : t.chordDetail.leftHandMode,
             icon: Icon(
               Icons.flip_rounded,
               color: mirror ? Theme.of(context).colorScheme.primary : null,
@@ -95,28 +100,38 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
 
   /// Selecciona el contenido según el estado del controlador.
   Widget _resolveBody(ChordDetailController controller, bool mirror) {
+    final Translations t = context.t;
     if (controller.loading) {
-      return const AppLoading(message: 'Cargando acorde…');
+      return AppLoading(message: t.chordDetail.loading);
     }
-    final String? error = controller.error;
-    if (error != null) {
+    final ChordDetailProblem? problem = controller.problem;
+    if (problem != null) {
+      final String? chordId = GoRouterState.of(context)
+          .uri
+          .queryParameters['id'];
       return AppEmptyState(
         icon: Icons.music_off_rounded,
-        title: 'Acorde no disponible',
-        message: error,
+        title: t.chordDetail.errorTitle,
+        message: switch (problem) {
+          ChordDetailProblem.notFound => t.chordDetail.notFoundMessage(
+            chordId: chordId ?? '',
+          ),
+          ChordDetailProblem.failed => t.chordDetail.loadFailed,
+        },
       );
     }
     if (controller.chord == null) {
-      return const AppEmptyState(
+      return AppEmptyState(
         icon: Icons.music_off_rounded,
-        title: 'Sin acorde seleccionado',
-        message: 'Vuelve al listado y elige un acorde.',
+        title: t.chordDetail.noChordTitle,
+        message: t.chordDetail.noChordMessage,
       );
     }
     return _chordBody(controller, mirror);
   }
 
   Widget _chordBody(ChordDetailController controller, bool mirror) {
+    final Translations t = context.t;
     final ThemeData theme = Theme.of(context);
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
@@ -149,14 +164,14 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
               FilledButton.icon(
                 onPressed: controller.playSelected,
                 icon: const Icon(Icons.play_arrow_rounded),
-                label: const Text('Escuchar acorde'),
+                label: Text(t.chordDetail.listen),
               ),
             ],
           ),
         ),
-        const SectionHeader(title: 'Arpegios'),
+        SectionHeader(title: t.chordDetail.arpeggios),
         _ArpeggioRow(controller: controller),
-        const SectionHeader(title: 'Posiciones'),
+        SectionHeader(title: t.chordDetail.positions),
         for (int i = 0; i < controller.chord!.variants.length; i++)
           _variantTile(controller, i, theme),
       ],
@@ -168,6 +183,7 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
     int index,
     ThemeData theme,
   ) {
+    final Translations t = context.t;
     final ChordVariant variant = controller.chord!.variants[index];
     final bool selected = index == controller.selectedIndex;
     return ListTile(
@@ -179,7 +195,7 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
         height: 56,
       ),
       title: Text(variant.positionLabel),
-      subtitle: Text('Notas: ${variant.notes.join(' · ')}'),
+      subtitle: Text(t.chordDetail.notes(notes: variant.notes.join(' · '))),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -187,7 +203,9 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
           const SizedBox(width: 8),
           ChordPlayButton(
             size: 36,
-            tooltip: 'Escuchar ${variant.positionLabel}',
+            tooltip: t.chordDetail.listenPosition(
+              position: variant.positionLabel,
+            ),
             onPressed: () {
               controller.selectVariant(index);
               unawaited(controller.playSelected());
@@ -209,20 +227,29 @@ class _ArpeggioRow extends StatelessWidget {
   final ChordDetailController controller;
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Row(
-      children: <Widget>[
-        for (final ArpeggioPattern pattern in ArpeggioPattern.all) ...<Widget>[
-          ActionChip(
-            avatar: const Icon(Icons.music_note_rounded),
-            label: Text('${pattern.label} · Nv ${pattern.difficulty}'),
-            onPressed: () => unawaited(controller.playArpeggio(pattern)),
-          ),
-          const SizedBox(width: 8),
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: <Widget>[
+          for (final ArpeggioPattern pattern
+              in ArpeggioPattern.all) ...<Widget>[
+            ActionChip(
+              avatar: const Icon(Icons.music_note_rounded),
+              label: Text(
+                t.chordDetail.arpeggioChip(
+                  label: arpeggioLabel(t, pattern),
+                  level: pattern.difficulty,
+                ),
+              ),
+              onPressed: () => unawaited(controller.playArpeggio(pattern)),
+            ),
+            const SizedBox(width: 8),
+          ],
         ],
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }

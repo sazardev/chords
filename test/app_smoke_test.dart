@@ -3,6 +3,7 @@ import 'package:chords/config/app_config.dart';
 import 'package:chords/data/audio/audio_repository_impl.dart';
 import 'package:chords/data/chords/datasources/chord_asset_datasource.dart';
 import 'package:chords/data/chords/repositories/chord_repository_impl.dart';
+import 'package:chords/data/l10n/locale_repository_impl.dart';
 import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
@@ -10,6 +11,7 @@ import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
@@ -17,6 +19,7 @@ import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
 import 'package:chords/presentation/router/route_paths.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';
@@ -32,8 +35,15 @@ void main() {
   testWidgets('la app arranca, carga el banco y navega', (
     WidgetTester tester,
   ) async {
-    SharedPreferences.setMockInitialValues(<String, Object>{});
+    // El entorno de pruebas arranca en inglés: fijamos el español,
+    // idioma base de la app, para que los textos sean deterministas.
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      PreferencesService.kLanguageKey: 'spanish',
+    });
     final PreferencesService preferences = await PreferencesService.create();
+    final LocaleController localeController = LocaleController(
+      LocaleRepositoryImpl(preferences),
+    );
     final ChordRepository chords = ChordRepositoryImpl(
       dataSource: const ChordAssetDataSource(),
     );
@@ -59,9 +69,11 @@ void main() {
       await chordsController.load();
       await learn.load();
       onboarding.load();
+      await localeController.load();
     });
 
     final List<SingleChildWidget> providers = <SingleChildWidget>[
+      ChangeNotifierProvider<LocaleController>.value(value: localeController),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
       ChangeNotifierProvider<ChordsController>.value(value: chordsController),
@@ -72,11 +84,13 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      MultiProvider(
-        providers: providers,
-        child: ChordsApp(
-          config: const AppConfig.dev(),
-          router: AppRouter(config: const AppConfig.dev()).router,
+      TranslationProvider(
+        child: MultiProvider(
+          providers: providers,
+          child: ChordsApp(
+            config: const AppConfig.dev(),
+            router: AppRouter(config: const AppConfig.dev()).router,
+          ),
         ),
       ),
     );
@@ -121,6 +135,22 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Ronda 1'), findsOneWidget);
     expect(find.text('Estoy listo'), findsOneWidget);
+
+    // Cambio de idioma en caliente: la interfaz pasa a inglés.
+    routerOf(tester).go(kSettingsPath);
+    await tester.pumpAndSettle();
+    final Finder english = find.text('Inglés');
+    await tester.scrollUntilVisible(
+      english,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(english);
+    await tester.pumpAndSettle();
+    routerOf(tester).go(kHomePath);
+    await tester.pumpAndSettle();
+    expect(find.text('What are you playing today?'), findsOneWidget);
 
     // Deep link con parámetros de consulta: /chords?root=E&quality=min.
     routerOf(tester).go('$kChordsPath?root=E&quality=min');

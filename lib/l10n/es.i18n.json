@@ -1,0 +1,300 @@
+{
+  "app": {
+    "title": "Chords",
+    "chordFallback": "Acorde",
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "start": "Empezar"
+  },
+  "nav": {
+    "home": "Inicio",
+    "learn": "Aprender",
+    "chords": "Acordes",
+    "game": "Jugar",
+    "live": "En vivo",
+    "settings": "Ajustes"
+  },
+  "home": {
+    "greeting": "Hola, guitararrista",
+    "question": "¿Qué tocas hoy?",
+    "progressTitle": "Progreso del itinerario",
+    "masteredCount": {
+      "one": "$n acorde dominado",
+      "other": "$n acordes dominados"
+    },
+    "continueLearning": "Continúa aprendiendo",
+    "itineraryComplete": "¡Itinerario completo!",
+    "nextChord": "Siguiente: $name",
+    "library": "Biblioteca de acordes",
+    "librarySubtitle": "$count acordes por género y nivel",
+    "gameMode": "Modo juego",
+    "gameSubtitle": "Toca el acorde y encadena la serie",
+    "liveTitle": "Afinación en vivo",
+    "liveSubtitle": "Detecta la nota con tu micrófono"
+  },
+  "chords": {
+    "title": "Acordes",
+    "clearFilters": "Limpiar filtros",
+    "searchHint": "Buscar acordes",
+    "filterAll": "Todos",
+    "filterAllQualities": "Todas",
+    "positionCount": {
+      "one": "$n posición",
+      "other": "$n posiciones"
+    },
+    "levelShort": "Nv $level",
+    "maxDifficulty": "Dificultad máx: $level",
+    "loading": "Cargando acordes…",
+    "loadErrorTitle": "No se pudo cargar el banco",
+    "loadErrorMessage": "Reinicia la app para reintentar la carga del banco.",
+    "emptyTitle": "Sin resultados",
+    "emptyMessage": "Ajusta la búsqueda o los filtros para ver más acordes."
+  },
+  "chordDetail": {
+    "titleFallback": "Acorde",
+    "markMastered": "Marcar como dominado",
+    "unmarkMastered": "Quitar de dominados",
+    "leftHandMode": "Modo zurdo",
+    "leftHandModeOff": "Desactivar modo zurdo",
+    "loading": "Cargando acorde…",
+    "errorTitle": "Acorde no disponible",
+    "notFoundMessage": "No se encontró el acorde $chordId",
+    "loadFailed": "No se pudo leer el banco de acordes.",
+    "noChordTitle": "Sin acorde seleccionado",
+    "noChordMessage": "Vuelve al listado y elige un acorde.",
+    "listen": "Escuchar acorde",
+    "listenPosition": "Escuchar $position",
+    "arpeggios": "Arpegios",
+    "positions": "Posiciones",
+    "notes": "Notas: $notes",
+    "arpeggioChip": "$label · Nv $level"
+  },
+  "game": {
+    "title": "Jugar",
+    "start": "Empezar serie",
+    "emptyTitle": "Toca el acorde",
+    "emptyMessage": "Encadena una serie de acordes con el micrófono. Récord: $best puntos.",
+    "round": "Ronda $number",
+    "playThisChord": "Toca este acorde",
+    "loadingChord": "Cargando acorde…",
+    "listening": "Escuchando tu guitarra…",
+    "correctNext": "¡Correcto! Siguiente",
+    "retry": "Inténtalo otra vez",
+    "ready": "Estoy listo",
+    "streak": "Racha",
+    "score": "Puntos"
+  },
+  "chordDiagram": {
+    "stringLabel": "cuerda $number: $fret",
+    "muted": "muda",
+    "open": "al aire",
+    "fret": "traste $value",
+    "description": "Diagrama de $position, $details"
+  },
+  "live": {
+    "title": "En vivo",
+    "listen": "Escuchar guitarra",
+    "stop": "Detener",
+    "emptyTitle": "Sin sugerencias aún",
+    "emptyMessage": "Pulsa escuchar y toca un acorde para ver coincidencias.",
+    "suggestions": "Sugerencias",
+    "idleTitle": "Micrófono en espera",
+    "idleMessage": "Toca una nota en la guitarra",
+    "listening": "Escuchando…",
+    "deniedTitle": "Permiso denegado",
+    "errorTitle": "Error de captura"
+  },
+  "learn": {
+    "title": "Aprender",
+    "loading": "Preparando niveles…",
+    "errorTitle": "No se pudo cargar el itinerario",
+    "errorMessage": "Reinicia la app para reintentar.",
+    "yourProgress": "Tu progreso",
+    "masteredCount": {
+      "one": "$n acorde dominado",
+      "other": "$n acordes dominados"
+    },
+    "stepByStep": "Paso a paso",
+    "stepFingers": "Coloca los dedos uno a uno sobre el diapasón",
+    "stepStrum": "Rasgueo lento: escucha cada cuerda",
+    "stepChange": "Cambia al acorde siguiente sin parar el ritmo",
+    "guidedArpeggios": "Arpegios guiados",
+    "levelSection": "$emoji  Nivel $level: $title",
+    "arpeggioHint": "Abre el acorde y toca su arpegio $label"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "appearance": "Apariencia",
+    "theme": {
+      "title": "Tema",
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "summarySystem": "Se adapta al tema del sistema",
+      "summaryLight": "Siempre claro",
+      "summaryDark": "Siempre oscuro",
+      "valueSystem": "Tema del sistema",
+      "valueLight": "Tema claro",
+      "valueDark": "Tema oscuro"
+    },
+    "color": {
+      "title": "Color de la app",
+      "dynamicActive": "Color dinámico del sistema activo",
+      "systemTitle": "Color del sistema",
+      "systemSubtitle": "Usa el fondo de pantalla de tu dispositivo",
+      "systemUnavailable": "No disponible en esta plataforma",
+      "accentDisabledNote": "El acento manual se desactiva mientras el color del sistema esté activo."
+    },
+    "text": {
+      "title": "Texto",
+      "fontSize": "Tamaño de letra",
+      "preview": "Vista previa",
+      "previewSample": "Do mayor · cejilla en el traste 3"
+    },
+    "language": {
+      "title": "Idioma"
+    },
+    "accent": {
+      "violeta": "Violeta",
+      "azul": "Azul",
+      "anil": "Añil",
+      "cian": "Cian",
+      "verde": "Verde",
+      "lima": "Lima",
+      "ambar": "Ámbar",
+      "naranja": "Naranja",
+      "rojo": "Rojo",
+      "rosa": "Rosa"
+    },
+    "fontScale": {
+      "pequena": "Pequeño",
+      "normal": "Normal",
+      "grande": "Grande",
+      "extraGrande": "Muy grande"
+    },
+    "guitar": "Guitarra",
+    "leftHandMode": "Modo zurdo",
+    "leftHandModeSubtitle": "Muestra los diagramas en espejo",
+    "sound": "Sonido",
+    "chordSound": "Sonido de acordes",
+    "chordSoundSubtitle": "Sintetiza rasgueos y arpegios",
+    "learning": "Aprendizaje",
+    "resetOnboarding": "Reiniciar onboarding",
+    "resetOnboardingSubtitle": "Vuelve a ver la introducción",
+    "onboardingReset": "Onboarding reiniciado",
+    "version": "Versión",
+    "cli": "CLI de desarrollo",
+    "cliCommand": "dart run bin/chords_cli.dart db generate"
+  },
+  "onboarding": {
+    "slideOneTitle": "Todos los acordes, todas las posiciones",
+    "slideOneBody": "156 acordes y 581 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.",
+    "slideTwoTitle": "Escucha cada acorde y su arpegio",
+    "slideTwoBody": "Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.",
+    "slideThreeTitle": "Aprende por niveles y practica",
+    "slideThreeBody": "Itinerario paso a paso, filtro por género y modo juego para encadenar series de acordes."
+  },
+  "data": {
+    "language": {
+      "system": "Idioma del sistema",
+      "es": "Español",
+      "en": "Inglés"
+    },
+    "genre": {
+      "pop": "Pop",
+      "rock": "Rock",
+      "blues": "Blues",
+      "jazz": "Jazz",
+      "funk": "Funk",
+      "ballad": "Balada",
+      "latin": "Latino",
+      "metal": "Metal",
+      "rnb": "R&B",
+      "soul": "Soul",
+      "bossa": "Bossa",
+      "country": "Country",
+      "kids": "Infantil",
+      "ambient": "Ambient",
+      "classical": "Clásico",
+      "gospel": "Gospel",
+      "punk": "Punk"
+    },
+    "quality": {
+      "major": "Mayor",
+      "minor": "Menor",
+      "seven": "Séptima de dominante",
+      "minorSeven": "Séptima menor",
+      "majorSeven": "Séptima mayor",
+      "suspendedFourth": "Suspendida 4",
+      "suspendedSecond": "Suspendida 2",
+      "power": "Quinta",
+      "sixth": "Sexta",
+      "minorSixth": "Sexta menor",
+      "diminished": "Disminuido",
+      "augmented": "Aumentado",
+      "ninth": "Novena"
+    },
+    "qualityDescription": {
+      "major": "Triada mayor; base de casi todo.",
+      "minor": "Triada menor; color triste o íntimo.",
+      "seven": "Blues y funk; tensión con resolución fuerte.",
+      "minorSeven": "Suave y versátil; columna vertebral del ii-V-I.",
+      "majorSeven": "Color soñador de pop y jazz.",
+      "suspendedFourth": "Suspensión abierta; suele resolver a mayor.",
+      "suspendedSecond": "Abierta y etérea; habitual en pop y rock.",
+      "power": "Dos notas; rock, metal y distorsión.",
+      "sixth": "Aire vintage; frecuente en funk y folk.",
+      "minorSixth": "Color latino y jazz; muy expresiva.",
+      "diminished": "Tensión inestable; acorde de paso.",
+      "augmented": "Simétrico y luminoso; enlaces cromáticos.",
+      "ninth": "Rica y moderna; funk y r&b."
+    },
+    "difficulty": {
+      "beginner": "Principiante",
+      "easy": "Fácil",
+      "medium": "Intermedio",
+      "hard": "Difícil",
+      "expert": "Experto"
+    },
+    "difficultyHint": {
+      "beginner": "Abierto, sin cejillo",
+      "easy": "Tríadas o formas cortas",
+      "medium": "Cejillo completo",
+      "hard": "Gran estiramiento o cejillo alto",
+      "expert": "Voicing avanzado o jazz"
+    },
+    "level": {
+      "first": "Primeros acordes",
+      "second": "Séptimas fáciles",
+      "third": "Cejilla",
+      "fourth": "Color y suspensión",
+      "fifth": "Jazz y voicings"
+    },
+    "levelGoal": {
+      "first": "Mayores y menores abiertos",
+      "second": "Séptima de dominante sin cejilla",
+      "third": "Formas movibles completas",
+      "fourth": "m7, maj7, sus2, sus4, 6",
+      "fifth": "9, dim, aug y voicings avanzados"
+    },
+    "arpeggio": {
+      "ascending": "Ascendente",
+      "descending": "Descendente",
+      "alternating": "Alterno",
+      "fingerstyle": "Fingerstyle"
+    }
+  },
+  "logs": {
+    "title": "Diagnóstico",
+    "clear": "Vaciar registro",
+    "total": "Total",
+    "errors": "Errores",
+    "warnings": "Avisos",
+    "allLevels": "Todo",
+    "empty": "Sin eventos registrados"
+  },
+  "router": {
+    "notFound": "Ruta no encontrada",
+    "goHome": "Ir al inicio"
+  }
+}

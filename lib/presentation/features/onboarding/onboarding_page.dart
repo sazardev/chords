@@ -1,5 +1,6 @@
 import 'dart:async' show unawaited;
 
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,26 +18,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _controller = PageController();
   int _index = 0;
 
-  static const List<_Slide> _slides = <_Slide>[
+  List<_Slide> _slides(Translations t) => <_Slide>[
     _Slide(
-      title: 'Todos los acordes, todas las posiciones',
-      body:
-          '156 acordes y 581 posiciones verificadas, de los abiertos '
-          'esenciales a los voicings de jazz.',
+      title: t.onboarding.slideOneTitle,
+      body: t.onboarding.slideOneBody,
       icon: Icons.library_music_rounded,
     ),
     _Slide(
-      title: 'Escucha cada acorde y su arpegio',
-      body:
-          'Sintetizamos cada cuerda para que reconozcas el sonido antes '
-          'de tocar.',
+      title: t.onboarding.slideTwoTitle,
+      body: t.onboarding.slideTwoBody,
       icon: Icons.graphic_eq_rounded,
     ),
     _Slide(
-      title: 'Aprende por niveles y practica',
-      body:
-          'Itinerario paso a paso, filtro por género y modo juego para '
-          'encadenar series de acordes.',
+      title: t.onboarding.slideThreeTitle,
+      body: t.onboarding.slideThreeBody,
       icon: Icons.sports_esports_rounded,
     ),
   ];
@@ -47,8 +42,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     super.dispose();
   }
 
-  void _next() {
-    if (_index < _slides.length - 1) {
+  void _next(List<_Slide> slides) {
+    if (_index < slides.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeInOut,
@@ -64,6 +59,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final List<_Slide> slides = _slides(t);
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(
@@ -73,31 +70,37 @@ class _OnboardingPageState extends State<OnboardingPage> {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: TextButton(
-                  onPressed: _finish,
-                  child: const Text('Omitir'),
-                ),
+                child: TextButton(onPressed: _finish, child: Text(t.app.skip)),
               ),
             ),
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                itemCount: _slides.length,
+                itemCount: slides.length,
                 onPageChanged: (int value) {
                   setState(() => _index = value);
                 },
                 itemBuilder: (BuildContext context, int index) {
-                  final _Slide slide = _slides[index];
+                  final _Slide slide = slides[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 28),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        CircleAvatar(
-                          radius: 54,
-                          backgroundColor: theme.colorScheme.primaryContainer,
-                          foregroundColor: theme.colorScheme.onPrimaryContainer,
-                          child: Icon(slide.icon, size: 44),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: SizedBox(
+                            width: 108,
+                            height: 108,
+                            child: Icon(
+                              slide.icon,
+                              size: 48,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 28),
                         Text(
@@ -124,7 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                for (int i = 0; i < _slides.length; i++)
+                for (int i = 0; i < slides.length; i++)
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -144,9 +147,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: _next,
+                  onPressed: () => _next(slides),
                   child: Text(
-                    _index == _slides.length - 1 ? 'Empezar' : 'Siguiente',
+                    _index == slides.length - 1 ? t.app.start : t.app.next,
                   ),
                 ),
               ),

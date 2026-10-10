@@ -1,8 +1,11 @@
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
+import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/router/route_paths.dart';
+import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
@@ -20,28 +23,27 @@ class LearnPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final LearnController controller = context.watch<LearnController>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Aprender')),
+      appBar: AppBar(title: Text(t.learn.title)),
       body: SafeArea(
         child: switch (controller.status) {
-          LearnStatus.loading => const AppLoading(
-            message: 'Preparando niveles…',
-          ),
-          LearnStatus.error => const AppEmptyState(
+          LearnStatus.loading => AppLoading(message: t.learn.loading),
+          LearnStatus.error => AppEmptyState(
             icon: Icons.error_outline_rounded,
-            title: 'No se pudo cargar el itinerario',
-            message: 'Reinicia la app para reintentar.',
+            title: t.learn.errorTitle,
+            message: t.learn.errorMessage,
           ),
           LearnStatus.ready => ListView(
             padding: const EdgeInsets.only(bottom: 32),
             children: <Widget>[
               _ProgressCard(controller: controller),
-              const SectionHeader(title: 'Paso a paso'),
+              SectionHeader(title: t.learn.stepByStep),
               const _StepsCard(),
               for (final LearningLevel level in LearningLevel.values)
                 _LevelSection(controller: controller, level: level),
-              const SectionHeader(title: 'Arpegios guiados'),
+              SectionHeader(title: t.learn.guidedArpeggios),
               const _ArpeggioRow(),
             ],
           ),
@@ -58,50 +60,50 @@ class _ProgressCard extends StatelessWidget {
   final LearnController controller;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-    child: _PlainCard(
-      child: Row(
-        children: <Widget>[
-          ProgressRing(
-            progress: controller.progress,
-            label: '${(controller.progress * 100).round()}%',
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const AppText(
-                  'Tu progreso',
-                  variant: AppTextVariant.titleLarge,
-                ),
-                AppText(
-                  '${controller.mastered.length} acordes dominados',
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ],
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+      child: _PlainCard(
+        child: Row(
+          children: <Widget>[
+            ProgressRing(
+              progress: controller.progress,
+              label: '${(controller.progress * 100).round()}%',
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  AppText(
+                    t.learn.yourProgress,
+                    variant: AppTextVariant.titleLarge,
+                  ),
+                  AppText(
+                    t.learn.masteredCount(n: controller.mastered.length),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
-/// Tarjeta con contenedor sencillo reutilizable.
+/// Tarjeta plana reutilizable con la superficie del contenedor del tema.
 class _PlainCard extends StatelessWidget {
   const _PlainCard({required this.child});
 
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      borderRadius: BorderRadius.circular(24),
-    ),
+  Widget build(BuildContext context) => AppCard(
+    borderRadius: 24,
+    color: Theme.of(context).colorScheme.surfaceContainer,
     child: child,
   );
 }
@@ -112,10 +114,11 @@ class _StepsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const List<String> steps = <String>[
-      'Coloca los dedos uno a uno sobre el diapasón',
-      'Rasgueo lento: escucha cada cuerda',
-      'Cambia al acorde siguiente sin parar el ritmo',
+    final Translations t = context.t;
+    final List<String> steps = <String>[
+      t.learn.stepFingers,
+      t.learn.stepStrum,
+      t.learn.stepChange,
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -150,13 +153,18 @@ class _LevelSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final List<Chord> chords = controller.chordsOfLevel(level.level);
     final int percent = (controller.progressOfLevel(level.level) * 100).round();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         SectionHeader(
-          title: '${level.emoji}  Nivel ${level.level}: ${level.title}',
+          title: t.learn.levelSection(
+            emoji: level.emoji,
+            level: level.level,
+            title: learningLevelTitle(t, level),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
@@ -164,7 +172,7 @@ class _LevelSection extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: AppText(
-                  level.goal,
+                  learningLevelGoal(t, level),
                   variant: AppTextVariant.labelMedium,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -196,29 +204,34 @@ class _ArpeggioRow extends StatelessWidget {
   const _ArpeggioRow();
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: Row(
-      children: <Widget>[
-        for (final ArpeggioPattern pattern in ArpeggioPattern.all) ...<Widget>[
-          ActionChip(
-            avatar: const Icon(Icons.music_note_rounded),
-            label: Text(pattern.label),
-            onPressed: () => _openChord(context, pattern.label),
-          ),
-          const SizedBox(width: 8),
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: <Widget>[
+          for (final ArpeggioPattern pattern
+              in ArpeggioPattern.all) ...<Widget>[
+            ActionChip(
+              avatar: const Icon(Icons.music_note_rounded),
+              label: Text(arpeggioLabel(t, pattern)),
+              onPressed: () => _openChord(context, arpeggioLabel(t, pattern)),
+            ),
+            const SizedBox(width: 8),
+          ],
         ],
-      ],
-    ),
-  );
+      ),
+    );
+  }
 
   void _openChord(BuildContext context, String label) {
+    final Translations t = context.t;
     final LearnController controller = context.read<LearnController>();
     final String target = controller.nextChordId ?? 'C-maj';
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Abre el acorde y toca su arpegio $label')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.learn.arpeggioHint(label: label))));
     context.go('$kChordDetailPath?id=${Uri.encodeComponent(target)}');
   }
 }
