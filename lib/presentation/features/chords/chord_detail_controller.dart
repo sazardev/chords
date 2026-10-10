@@ -37,7 +37,6 @@ class ChordDetailController extends ChangeNotifier {
   int _selectedIndex = 0;
   bool _loading = false;
   ChordDetailProblem? _problem;
-  String? _playingId;
 
   /// Acorde cargado.
   Chord? get chord => _chord;
@@ -50,12 +49,6 @@ class ChordDetailController extends ChangeNotifier {
 
   /// Problema de la última carga, si la hubo.
   ChordDetailProblem? get problem => _problem;
-
-  /// Identificador del sonido que está sonando.
-  String? get playingId => _playingId;
-
-  /// `true` si el sonido está activado en ajustes.
-  bool get soundEnabled => _preferences.soundEnabled;
 
   /// Posición seleccionada actualmente.
   ChordVariant? get selectedVariant =>
@@ -118,14 +111,7 @@ class ChordDetailController extends ChangeNotifier {
     if (chord == null || variant == null || !_preferences.soundEnabled) {
       return;
     }
-    _playingId = variant.id;
-    notifyListeners();
-    try {
-      await _audioRepository.playChord(chord, variant);
-    } finally {
-      _playingId = null;
-      notifyListeners();
-    }
+    await _audioRepository.playChord(chord, variant);
   }
 
   /// Reproduce la posición seleccionada como arpegio.
@@ -135,14 +121,7 @@ class ChordDetailController extends ChangeNotifier {
     if (chord == null || variant == null || !_preferences.soundEnabled) {
       return;
     }
-    _playingId = '${variant.id}-${pattern.id}';
-    notifyListeners();
-    try {
-      await _audioRepository.playArpeggio(chord, variant, pattern);
-    } finally {
-      _playingId = null;
-      notifyListeners();
-    }
+    await _audioRepository.playArpeggio(chord, variant, pattern);
   }
 
   /// Marca o desmarca el acorde como dominado.

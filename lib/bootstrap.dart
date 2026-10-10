@@ -120,7 +120,6 @@ class AppDependencies {
     final ChordsController chords = ChordsController(
       chordRepository,
       const SearchChordsUseCase(),
-      preferences,
     );
     final ChordDetailController chordDetail = ChordDetailController(
       chordRepository,

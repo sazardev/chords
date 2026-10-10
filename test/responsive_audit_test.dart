@@ -42,7 +42,6 @@ void main() {
     final ChordsController chordsController = ChordsController(
       chords,
       const SearchChordsUseCase(),
-      preferences,
     );
     final LearnController learn = LearnController(chords, preferences);
     final GameController game = GameController(audio, chords, preferences);

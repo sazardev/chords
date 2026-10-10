@@ -1,6 +1,5 @@
 import 'dart:async' show StreamSubscription, unawaited;
 
-import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
@@ -45,18 +44,13 @@ class GameController extends ChangeNotifier {
   int _score = 0;
   int _streak = 0;
   GamePhase _phase = GamePhase.idle;
-  MicStatus _micStatus = MicStatus.idle;
   double _match = 0;
   int _best = 0;
 
   StreamSubscription<PitchReading>? _subscription;
-  StreamSubscription<MicStatus>? _statusSubscription;
 
   /// Rondas de la serie actual.
   List<GameRound> get rounds => _rounds;
-
-  /// Índice de la ronda en curso.
-  int get currentIndex => _current;
 
   /// Puntuación de la partida.
   int get score => _score;
@@ -69,9 +63,6 @@ class GameController extends ChangeNotifier {
 
   /// Fase actual.
   GamePhase get phase => _phase;
-
-  /// Estado del micrófono.
-  MicStatus get micStatus => _micStatus;
 
   /// Proporción de notas detectadas (0-1).
   double get matchRatio => _match;
@@ -121,19 +112,11 @@ class GameController extends ChangeNotifier {
       notifyListeners();
     });
     unawaited(_audio.startListening());
-    _micStatus = MicStatus.listening;
-    _statusSubscription = _audio.statusStream.listen((MicStatus next) {
-      _micStatus = next;
-      notifyListeners();
-    });
 
     await Future<void>.delayed(Duration(milliseconds: round.timeLimitMs));
     await _audio.stopListening();
     await _subscription?.cancel();
     _subscription = null;
-    await _statusSubscription?.cancel();
-    _statusSubscription = null;
-    _micStatus = MicStatus.idle;
     _resolveRound(round);
   }
 
@@ -216,7 +199,6 @@ class GameController extends ChangeNotifier {
   @override
   void dispose() {
     unawaited(_subscription?.cancel());
-    unawaited(_statusSubscription?.cancel());
     super.dispose();
   }
 }

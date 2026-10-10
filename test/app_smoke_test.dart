@@ -53,7 +53,6 @@ void main() {
     final ChordsController chordsController = ChordsController(
       chords,
       const SearchChordsUseCase(),
-      preferences,
     );
     final ChordDetailController chordDetail = ChordDetailController(
       chords,

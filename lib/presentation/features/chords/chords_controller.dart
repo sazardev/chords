@@ -6,7 +6,6 @@ import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
-import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
 /// Estado de la carga de la biblioteca.
@@ -24,11 +23,10 @@ enum ChordsStatus {
 /// Controlador de la biblioteca de acordes y sus filtros.
 class ChordsController extends ChangeNotifier {
   /// Crea el controlador.
-  ChordsController(this._repository, this._searchChords, this._preferences);
+  ChordsController(this._repository, this._searchChords);
 
   final ChordRepository _repository;
   final SearchChordsUseCase _searchChords;
-  final PreferencesRepository _preferences;
 
   ChordsStatus _status = ChordsStatus.loading;
   ChordFilters _filters = const ChordFilters.empty();
@@ -45,9 +43,6 @@ class ChordsController extends ChangeNotifier {
 
   /// Todos los acordes del banco.
   List<Chord> get allChords => _repository.chords;
-
-  /// Si el sonido está activado.
-  bool get soundEnabled => _preferences.soundEnabled;
 
   /// Carga inicial del banco de acordes.
   Future<void> load() async {
