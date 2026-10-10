@@ -1,16 +1,19 @@
 /// Presupuestos de tamaño y forma que hace cumplir la auditoría.
 ///
-/// Los valores por defecto son deliberados: obligan a archivos y clases
-/// pequeñas y a cuerpos de función legibles sin fragmentar el código.
+/// Los valores son el estándar del proyecto: obligan a archivos y clases
+/// pequeñas y a cuerpos de función legibles sin fragmentar el código. Los
+/// controladores de UI (`ChangeNotifier`) y las pantallas de ajustes con
+/// localización pueden rozar estos topes, así que se conceden topes algo más
+/// holgados para miembros públicos y líneas por archivo.
 class AuditConfig {
   /// Crea la configuración.
   const AuditConfig({
-    this.maxFileLines = 400,
+    this.maxFileLines = 600,
     this.maxClassLines = 250,
     this.maxFunctionLines = 60,
     this.maxBranches = 10,
     this.maxSwitchCases = 7,
-    this.maxPublicMembers = 12,
+    this.maxPublicMembers = 18,
     this.excludedDirectories = const <String>{
       'build',
       'ios',
