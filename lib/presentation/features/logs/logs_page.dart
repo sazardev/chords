@@ -33,9 +33,8 @@ class _LogsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Translations t = context.t;
     final LogsViewModel model = context.watch<LogsViewModel>();
-    final ThemeData theme = Theme.of(context);
+    final Translations t = context.t;
     return Scaffold(
       appBar: AppBar(
         title: Text(t.logs.title),
@@ -49,55 +48,66 @@ class _LogsView extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Row(
-              children: <Widget>[
-                _SummaryChip(
-                  label: t.logs.total,
-                  value: model.total,
-                  icon: Icons.list_alt_rounded,
-                ),
-                const SizedBox(width: 8),
-                _SummaryChip(
-                  label: t.logs.errors,
-                  value: model.errorCount,
-                  icon: Icons.error_outline_rounded,
-                  color: theme.colorScheme.error,
-                ),
-                const SizedBox(width: 8),
-                _SummaryChip(
-                  label: t.logs.warnings,
-                  value: model.warningCount,
-                  icon: Icons.warning_amber_rounded,
-                  color: theme.colorScheme.tertiary,
-                ),
-              ],
-            ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: <Widget>[
-                FilterChip(
-                  label: Text(t.logs.allLevels),
-                  selected: model.levelFilter == null,
-                  onSelected: (_) => model.setLevelFilter(null),
-                ),
-                for (final AppLogLevel level in AppLogLevel.values) ...<Widget>[
-                  const SizedBox(width: 8),
-                  FilterChip(
-                    label: Text(level.label),
-                    selected: model.levelFilter == level,
-                    onSelected: (_) => model.setLevelFilter(level),
-                  ),
-                ],
-              ],
-            ),
-          ),
+          _summaryRow(context, model),
+          _filterRow(context, model),
           const Divider(height: 8),
           Expanded(child: _LogList(entries: model.entries)),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryRow(BuildContext context, LogsViewModel model) {
+    final ThemeData theme = Theme.of(context);
+    final Translations t = context.t;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: Row(
+        children: <Widget>[
+          _SummaryChip(
+            label: t.logs.total,
+            value: model.total,
+            icon: Icons.list_alt_rounded,
+          ),
+          const SizedBox(width: 8),
+          _SummaryChip(
+            label: t.logs.errors,
+            value: model.errorCount,
+            icon: Icons.error_outline_rounded,
+            color: theme.colorScheme.error,
+          ),
+          const SizedBox(width: 8),
+          _SummaryChip(
+            label: t.logs.warnings,
+            value: model.warningCount,
+            icon: Icons.warning_amber_rounded,
+            color: theme.colorScheme.tertiary,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _filterRow(BuildContext context, LogsViewModel model) {
+    final Translations t = context.t;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: <Widget>[
+          FilterChip(
+            label: Text(t.logs.allLevels),
+            selected: model.levelFilter == null,
+            onSelected: (_) => model.setLevelFilter(null),
+          ),
+          for (final AppLogLevel level in AppLogLevel.values) ...<Widget>[
+            const SizedBox(width: 8),
+            FilterChip(
+              label: Text(level.label),
+              selected: model.levelFilter == level,
+              onSelected: (_) => model.setLevelFilter(level),
+            ),
+          ],
         ],
       ),
     );

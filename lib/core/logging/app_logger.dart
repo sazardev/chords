@@ -57,33 +57,15 @@ class AppLogger {
   void debug(
     String message, {
     LogChannel channel = LogChannel.ui,
-    Object? error,
-    StackTrace? stackTrace,
     Map<String, Object?> context = const <String, Object?>{},
-  }) => log(
-    AppLogLevel.debug,
-    message,
-    channel: channel,
-    error: error,
-    stackTrace: stackTrace,
-    context: context,
-  );
+  }) => log(AppLogLevel.debug, message, channel: channel, context: context);
 
   /// Registra un suceso informativo.
   void info(
     String message, {
     LogChannel channel = LogChannel.ui,
-    Object? error,
-    StackTrace? stackTrace,
     Map<String, Object?> context = const <String, Object?>{},
-  }) => log(
-    AppLogLevel.info,
-    message,
-    channel: channel,
-    error: error,
-    stackTrace: stackTrace,
-    context: context,
-  );
+  }) => log(AppLogLevel.info, message, channel: channel, context: context);
 
   /// Registra un aviso recuperable.
   void warning(
