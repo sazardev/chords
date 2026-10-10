@@ -2,13 +2,12 @@
 ///
 /// Los valores son el estándar del proyecto: obligan a archivos y clases
 /// pequeñas y a cuerpos de función legibles sin fragmentar el código. Los
-/// controladores de UI (`ChangeNotifier`) y las pantallas de ajustes con
-/// localización pueden rozar estos topes, así que se conceden topes algo más
-/// holgados para miembros públicos y líneas por archivo.
+/// controladores de UI (`ChangeNotifier`) concentran estado y acciones, así
+/// que se concede un tope algo más holgado de miembros públicos.
 class AuditConfig {
   /// Crea la configuración.
   const AuditConfig({
-    this.maxFileLines = 600,
+    this.maxFileLines = 400,
     this.maxClassLines = 250,
     this.maxFunctionLines = 60,
     this.maxBranches = 10,
