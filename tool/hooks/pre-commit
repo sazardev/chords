@@ -12,7 +12,24 @@ dart format --set-exit-if-changed .
 echo "[pre-commit] flutter analyze (fatal infos/warnings)"
 flutter analyze --fatal-infos --fatal-warnings
 
+echo "[pre-commit] compilando traducciones (make l10n)"
+dart run slang
+if ! git diff --exit-code -- lib/l10n > /dev/null; then
+  echo "[pre-commit] lib/l10n desincronizado: ejecuta 'make l10n' y añádelo al commit"
+  exit 1
+fi
+
 echo "[pre-commit] validando banco de acordes"
 dart run bin/chords_cli.dart db validate
+
+echo "[pre-commit] auditoría de arquitectura"
+if dart run bin/chords_cli.dart audit --root . --fail-on error; then
+  :
+elif [ "${CHORDS_AUDIT_STRICT:-0}" = "1" ]; then
+  echo "[pre-commit] la auditoría falla: corrige los hallazgos o ejecuta 'make audit'"
+  exit 1
+else
+  echo "[pre-commit] deuda de auditoría pendiente (CHORDS_AUDIT_STRICT=1 para bloquear)"
+fi
 
 echo "[pre-commit] OK"
