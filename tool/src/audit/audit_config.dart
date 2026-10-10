@@ -12,7 +12,7 @@ class AuditConfig {
     this.maxFunctionLines = 60,
     this.maxBranches = 10,
     this.maxSwitchCases = 7,
-    this.maxPublicMembers = 18,
+    this.maxPublicMembers = 16,
     this.excludedDirectories = const <String>{
       'build',
       'ios',
