@@ -2,9 +2,9 @@ part of 'settings_page.dart';
 
 /// Sección de apariencia: tema, color de acento y color del sistema.
 class _AppearanceSection extends StatelessWidget {
-  const _AppearanceSection({required this.settings});
+  const _AppearanceSection({required this.appearance});
 
-  final SettingsController settings;
+  final AppearanceController appearance;
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +14,17 @@ class _AppearanceSection extends StatelessWidget {
       children: <Widget>[
         _SettingTile(
           title: t.settings.theme.title,
-          subtitle: themeModeSummary(t, settings.themeMode),
-          child: _ThemeModeSelector(settings: settings),
+          subtitle: themeModeSummary(t, appearance.themeMode),
+          child: _ThemeModeSelector(appearance: appearance),
         ),
         const _TileSeparator(),
         _SettingTile(
           title: t.settings.color.title,
-          subtitle: settings.dynamicColor
+          subtitle: appearance.dynamicColor
               ? t.settings.color.dynamicActive
-              : accentColorLabel(t, settings.accentColor),
+              : accentColorLabel(t, appearance.accentColor),
           child: _AppearanceControls(
-            settings: settings,
+            appearance: appearance,
             dynamicSupported: SystemColorScope.systemColorsOf(context) != null,
           ),
         ),
@@ -36,11 +36,11 @@ class _AppearanceSection extends StatelessWidget {
 /// Controles de color dinámico y acento.
 class _AppearanceControls extends StatelessWidget {
   const _AppearanceControls({
-    required this.settings,
+    required this.appearance,
     required this.dynamicSupported,
   });
 
-  final SettingsController settings;
+  final AppearanceController appearance;
 
   /// Si la plataforma expone un color de sistema (Material You).
   final bool dynamicSupported;
@@ -49,7 +49,7 @@ class _AppearanceControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final ThemeData theme = Theme.of(context);
-    final bool dynamicOn = settings.dynamicColor && dynamicSupported;
+    final bool dynamicOn = appearance.dynamicColor && dynamicSupported;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -57,7 +57,7 @@ class _AppearanceControls extends StatelessWidget {
           value: dynamicOn,
           onChanged: dynamicSupported
               ? (bool value) =>
-                    unawaited(settings.setDynamicColor(value: value))
+                    unawaited(appearance.setDynamicColor(value: value))
               : null,
           title: Text(t.settings.color.systemTitle),
           subtitle: Text(
@@ -79,7 +79,7 @@ class _AppearanceControls extends StatelessWidget {
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 )
-              : _AccentColorPicker(settings: settings),
+              : _AccentColorPicker(appearance: appearance),
         ),
       ],
     );
@@ -88,9 +88,9 @@ class _AppearanceControls extends StatelessWidget {
 
 /// Selector del modo de tema con botones segmentados.
 class _ThemeModeSelector extends StatelessWidget {
-  const _ThemeModeSelector({required this.settings});
+  const _ThemeModeSelector({required this.appearance});
 
-  final SettingsController settings;
+  final AppearanceController appearance;
 
   /// Opciones disponibles del selector de tema.
   List<_ThemeOption> _options(Translations t) => <_ThemeOption>[
@@ -130,15 +130,15 @@ class _ThemeModeSelector extends StatelessWidget {
                 tooltip: option.label,
               ),
           ],
-          selected: <ThemeMode>{settings.themeMode},
+          selected: <ThemeMode>{appearance.themeMode},
           onSelectionChanged: (Set<ThemeMode> selection) =>
-              unawaited(settings.setThemeMode(selection.first)),
+              unawaited(appearance.setThemeMode(selection.first)),
         ),
         const SizedBox(height: 8),
         Align(
           alignment: Alignment.centerRight,
           child: AppText(
-            themeModeValue(t, settings.themeMode),
+            themeModeValue(t, appearance.themeMode),
             variant: AppTextVariant.labelMedium,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -150,9 +150,9 @@ class _ThemeModeSelector extends StatelessWidget {
 
 /// Selector de color de acento.
 class _AccentColorPicker extends StatelessWidget {
-  const _AccentColorPicker({required this.settings});
+  const _AccentColorPicker({required this.appearance});
 
-  final SettingsController settings;
+  final AppearanceController appearance;
 
   @override
   Widget build(BuildContext context) {
@@ -167,22 +167,22 @@ class _AccentColorPicker extends StatelessWidget {
           for (final AppAccentColor accent in AppAccentColor.values)
             Semantics(
               label: accentColorLabel(t, accent),
-              selected: accent == settings.accentColor,
+              selected: accent == appearance.accentColor,
               button: true,
               child: Tooltip(
                 message: accentColorLabel(t, accent),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () => unawaited(settings.setAccentColor(accent)),
+                  onTap: () => unawaited(appearance.setAccentColor(accent)),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
                     width: 48,
                     height: 48,
-                    padding: accent == settings.accentColor
+                    padding: accent == appearance.accentColor
                         ? const EdgeInsets.all(3)
                         : EdgeInsets.zero,
                     decoration: BoxDecoration(
-                      color: accent == settings.accentColor
+                      color: accent == appearance.accentColor
                           ? scheme.primary
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
@@ -192,7 +192,7 @@ class _AccentColorPicker extends StatelessWidget {
                         color: accent.seed,
                         borderRadius: BorderRadius.circular(13),
                       ),
-                      child: accent == settings.accentColor
+                      child: accent == appearance.accentColor
                           ? Icon(
                               Icons.check_rounded,
                               size: 20,

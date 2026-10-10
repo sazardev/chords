@@ -2,7 +2,7 @@ import 'package:chords/config/app_config.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_page.dart';
-import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/theme/app_system_colors.dart';
 import 'package:chords/presentation/theme/app_theme.dart';
@@ -31,18 +31,19 @@ class ChordsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController settings = context.watch<SettingsController>();
+    final AppearanceController appearance = context
+        .watch<AppearanceController>();
     final LocaleController locale = context.watch<LocaleController>();
     final OnboardingController onboarding = context
         .watch<OnboardingController>();
     return SystemColorScope(
       builder: (AppSystemColors? systemColors) {
-        final AppThemeOptions options = settings.themeOptions;
+        final AppThemeOptions options = appearance.themeOptions;
         final bool useDynamic = options.dynamicColor && systemColors != null;
         return MaterialApp.router(
           title: config.appName,
           debugShowCheckedModeBanner: false,
-          themeMode: settings.themeMode,
+          themeMode: appearance.themeMode,
           locale: locale.locale,
           supportedLocales: AppLocaleUtils.supportedLocales,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,

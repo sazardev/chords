@@ -15,6 +15,7 @@ import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
@@ -61,6 +62,9 @@ void main() {
       ChangeNotifierProvider<LocaleController>.value(value: locale),
       ChangeNotifierProvider<SettingsController>.value(
         value: SettingsController(preferences),
+      ),
+      ChangeNotifierProvider<AppearanceController>.value(
+        value: AppearanceController(preferences),
       ),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
       ChangeNotifierProvider<ChordsController>.value(value: chordsController),

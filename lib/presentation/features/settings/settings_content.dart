@@ -2,9 +2,9 @@ part of 'settings_page.dart';
 
 /// Sección de tamaño de texto.
 class _TextSection extends StatelessWidget {
-  const _TextSection({required this.settings});
+  const _TextSection({required this.appearance});
 
-  final SettingsController settings;
+  final AppearanceController appearance;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class _TextSection extends StatelessWidget {
       children: <Widget>[
         _SettingTile(
           title: t.settings.text.fontSize,
-          subtitle: fontScaleLabel(t, settings.fontScale),
+          subtitle: fontScaleLabel(t, appearance.fontScale),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
             child: Wrap(
@@ -24,8 +24,9 @@ class _TextSection extends StatelessWidget {
                 for (final AppFontScale scale in AppFontScale.values)
                   ChoiceChip(
                     label: Text(fontScaleLabel(t, scale)),
-                    selected: scale == settings.fontScale,
-                    onSelected: (_) => unawaited(settings.setFontScale(scale)),
+                    selected: scale == appearance.fontScale,
+                    onSelected: (_) =>
+                        unawaited(appearance.setFontScale(scale)),
                   ),
               ],
             ),

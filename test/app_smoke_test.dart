@@ -19,6 +19,7 @@ import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
@@ -49,6 +50,7 @@ void main() {
     );
     final AudioRepository audio = AudioRepositoryImpl();
     final SettingsController settings = SettingsController(preferences);
+    final AppearanceController appearance = AppearanceController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
     final ChordsController chordsController = ChordsController(
       chords,
@@ -74,6 +76,7 @@ void main() {
     final List<SingleChildWidget> providers = <SingleChildWidget>[
       ChangeNotifierProvider<LocaleController>.value(value: localeController),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
       ChangeNotifierProvider<ChordsController>.value(value: chordsController),
       ChangeNotifierProvider<ChordDetailController>.value(value: chordDetail),

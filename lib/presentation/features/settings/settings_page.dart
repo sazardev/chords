@@ -8,6 +8,7 @@ import 'package:chords/domain/preferences/entities/app_accent_color.dart';
 import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/l10n/preference_labels.dart';
@@ -33,6 +34,8 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
+    final AppearanceController appearance = context
+        .watch<AppearanceController>();
     final SettingsController settings = context.watch<SettingsController>();
     final LocaleController locale = context.watch<LocaleController>();
     final OnboardingController onboarding = context
@@ -42,8 +45,8 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 32),
         children: <Widget>[
-          _AppearanceSection(settings: settings),
-          _TextSection(settings: settings),
+          _AppearanceSection(appearance: appearance),
+          _TextSection(appearance: appearance),
           _LanguageSection(locale: locale),
           _GuitarSection(settings: settings),
           _SoundSection(settings: settings),

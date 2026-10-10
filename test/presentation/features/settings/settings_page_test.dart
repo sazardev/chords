@@ -4,6 +4,7 @@ import 'package:chords/domain/preferences/entities/app_accent_color.dart';
 import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
@@ -20,17 +21,9 @@ void main() {
     WidgetTester tester,
   ) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
-    final PreferencesService preferences = await PreferencesService.create();
-    final SettingsController settings = SettingsController(preferences);
-    await settings.load();
+    final _Host host = await _host(tester);
 
-    await tester.pumpWidget(
-      _SettingsHost(
-        settings: settings,
-        locale: LocaleController(LocaleRepositoryImpl(preferences)),
-        onboarding: OnboardingController(preferences),
-      ),
-    );
+    await tester.pumpWidget(host.widget);
     await tester.pumpAndSettle();
 
     final Color? initial = _primaryOf(tester);
@@ -41,7 +34,7 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Verde'));
     await tester.pumpAndSettle();
 
-    expect(settings.accentColor, AppAccentColor.verde);
+    expect(host.appearance.accentColor, AppAccentColor.verde);
     expect(_primaryOf(tester), isNot(equals(initial)));
   });
 
@@ -49,17 +42,9 @@ void main() {
     WidgetTester tester,
   ) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
-    final PreferencesService preferences = await PreferencesService.create();
-    final SettingsController settings = SettingsController(preferences);
-    await settings.load();
+    final _Host host = await _host(tester);
 
-    await tester.pumpWidget(
-      _SettingsHost(
-        settings: settings,
-        locale: LocaleController(LocaleRepositoryImpl(preferences)),
-        onboarding: OnboardingController(preferences),
-      ),
-    );
+    await tester.pumpWidget(host.widget);
     await tester.pumpAndSettle();
 
     final double before = _bodyFontSize(tester);
@@ -70,7 +55,7 @@ void main() {
     await tester.tap(chip);
     await tester.pumpAndSettle();
 
-    expect(settings.fontScale, AppFontScale.grande);
+    expect(host.appearance.fontScale, AppFontScale.grande);
     expect(_bodyFontSize(tester), greaterThan(before));
   });
 
@@ -78,17 +63,9 @@ void main() {
     WidgetTester tester,
   ) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
-    final PreferencesService preferences = await PreferencesService.create();
-    final SettingsController settings = SettingsController(preferences);
-    await settings.load();
+    final _Host host = await _host(tester);
 
-    await tester.pumpWidget(
-      _SettingsHost(
-        settings: settings,
-        locale: LocaleController(LocaleRepositoryImpl(preferences)),
-        onboarding: OnboardingController(preferences),
-      ),
-    );
+    await tester.pumpWidget(host.widget);
     await tester.pumpAndSettle();
 
     final Finder dark = find.byTooltip('Oscuro');
@@ -97,7 +74,7 @@ void main() {
     await tester.tap(dark);
     await tester.pumpAndSettle();
 
-    expect(settings.themeMode, ThemeMode.dark);
+    expect(host.appearance.themeMode, ThemeMode.dark);
     expect(
       Theme.of(tester.element(find.byType(SettingsPage))).brightness,
       Brightness.dark,
@@ -116,13 +93,50 @@ double _bodyFontSize(WidgetTester tester) =>
         .bodyMedium!
         .fontSize!;
 
+/// Prepara los controladores y el widget de la pantalla de ajustes.
+Future<_Host> _host(WidgetTester tester) async {
+  final PreferencesService preferences = await PreferencesService.create();
+  final AppearanceController appearance = AppearanceController(preferences);
+  final SettingsController settings = SettingsController(preferences);
+  await appearance.load();
+  await settings.load();
+  return _Host(
+    appearance: appearance,
+    settings: settings,
+    widget: _SettingsHost(
+      appearance: appearance,
+      settings: settings,
+      locale: LocaleController(LocaleRepositoryImpl(preferences)),
+      onboarding: OnboardingController(preferences),
+    ),
+  );
+}
+
+/// Controladores y widget listos para un caso.
+class _Host {
+  const _Host({
+    required this.appearance,
+    required this.settings,
+    required this.widget,
+  });
+
+  final AppearanceController appearance;
+
+  final SettingsController settings;
+
+  final Widget widget;
+}
+
 /// Monta la pantalla de ajustes con el tema de la aplicación.
 class _SettingsHost extends StatelessWidget {
   const _SettingsHost({
+    required this.appearance,
     required this.settings,
     required this.locale,
     required this.onboarding,
   });
+
+  final AppearanceController appearance;
 
   final SettingsController settings;
 
@@ -133,13 +147,15 @@ class _SettingsHost extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
     providers: <SingleChildWidget>[
+      ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
       ChangeNotifierProvider<LocaleController>.value(value: locale),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
     ],
     child: Builder(
       builder: (BuildContext context) {
-        final SettingsController current = context.watch<SettingsController>();
+        final AppearanceController current = context
+            .watch<AppearanceController>();
         final ThemeData theme = current.themeMode == ThemeMode.dark
             ? buildDarkTheme(options: current.themeOptions)
             : buildLightTheme(options: current.themeOptions);

@@ -23,6 +23,7 @@ import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
@@ -53,6 +54,9 @@ Future<void> bootstrap(AppConfig config) async {
       providers: <SingleChildWidget>[
         ChangeNotifierProvider<LocaleController>(
           create: (_) => dependencies.localeController,
+        ),
+        ChangeNotifierProvider<AppearanceController>(
+          create: (_) => dependencies.appearanceController,
         ),
         ChangeNotifierProvider<SettingsController>(
           create: (_) => dependencies.settingsController,
@@ -99,6 +103,7 @@ AppLogLevel _minLevelFor(Flavor flavor) => switch (flavor) {
 class AppDependencies {
   AppDependencies._({
     required this.localeController,
+    required this.appearanceController,
     required this.settingsController,
     required this.onboardingController,
     required this.chordsController,
@@ -115,6 +120,7 @@ class AppDependencies {
     final ChordRepository chordRepository = ChordRepositoryImpl();
     final AudioRepository audioRepository = AudioRepositoryImpl();
     final LocaleController locale = LocaleController(localeRepository);
+    final AppearanceController appearance = AppearanceController(preferences);
     final SettingsController settings = SettingsController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
     final ChordsController chords = ChordsController(
@@ -137,6 +143,7 @@ class AppDependencies {
       chordRepository,
     );
     unawaited(locale.load());
+    unawaited(appearance.load());
     unawaited(settings.load());
     onboarding.load();
     unawaited(chords.load());
@@ -144,6 +151,7 @@ class AppDependencies {
     game.loadBestScore();
     return AppDependencies._(
       localeController: locale,
+      appearanceController: appearance,
       settingsController: settings,
       onboardingController: onboarding,
       chordsController: chords,
@@ -156,6 +164,9 @@ class AppDependencies {
 
   /// Controlador del idioma de la interfaz.
   final LocaleController localeController;
+
+  /// Controlador de la apariencia (tema, acento, texto y color dinámico).
+  final AppearanceController appearanceController;
 
   /// Controlador de ajustes.
   final SettingsController settingsController;

@@ -3,6 +3,7 @@ import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/l10n/entities/app_language.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
@@ -21,6 +22,7 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     final PreferencesService preferences = await PreferencesService.create();
     final SettingsController settings = SettingsController(preferences);
+    final AppearanceController appearance = AppearanceController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
     final LocaleController locale = LocaleController(
       LocaleRepositoryImpl(preferences),
@@ -30,6 +32,7 @@ void main() {
     final List<SingleChildWidget> providers = <SingleChildWidget>[
       ChangeNotifierProvider<LocaleController>.value(value: locale),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
     ];
 
