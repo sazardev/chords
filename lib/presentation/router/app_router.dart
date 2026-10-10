@@ -27,28 +27,13 @@ class AppRouter {
   final AppConfig _config;
 
   /// Enrutador listo para `MaterialApp.router`.
-  late final GoRouter router = GoRouter(
+  late final GoRouter router = _build();
+
+  GoRouter _build() => GoRouter(
     initialLocation: kHomePath,
     debugLogDiagnostics: _config.enableRouteLogs,
     observers: <NavigatorObserver>[LoggingNavigatorObserver()],
-    errorBuilder: (BuildContext context, GoRouterState state) {
-      final GoException? exception = state.error;
-      if (exception != null) {
-        appLogger.error(
-          'excepción de navegación',
-          channel: LogChannel.router,
-          error: exception,
-          context: <String, Object?>{'location': state.uri.toString()},
-        );
-      } else {
-        appLogger.warning(
-          'ruta no encontrada',
-          channel: LogChannel.router,
-          context: <String, Object?>{'location': state.uri.toString()},
-        );
-      }
-      return RouterErrorScreen(location: state.uri.toString());
-    },
+    errorBuilder: _errorBuilder,
     routes: <RouteBase>[
       StatefulShellRoute.indexedStack(
         builder: (
@@ -57,80 +42,69 @@ class AppRouter {
           StatefulNavigationShell shell,
         ) => AdaptiveNavigationShell(shell: shell),
         branches: <StatefulShellBranch>[
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: kHomePath,
-                name: kHomeRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const HomePage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: kLearnPath,
-                name: kLearnRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const LearnPage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: kChordsPath,
-                name: kChordsRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const ChordsPage(),
-              ),
-              GoRoute(
-                path: kChordDetailPath,
-                name: kChordDetailRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const ChordDetailPage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: kGamePath,
-                name: kGameRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const GamePage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: kLivePath,
-                name: kLiveRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const LivePage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: kSettingsPath,
-                name: kSettingsRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const SettingsPage(),
-              ),
-              GoRoute(
-                path: kLogsPath,
-                name: kLogsRouteName,
-                builder: (BuildContext context, GoRouterState state) =>
-                    const LogsPage(),
-              ),
-            ],
-          ),
+          _homeBranch(),
+          _learnBranch(),
+          _chordsBranch(),
+          _gameBranch(),
+          _liveBranch(),
+          _settingsBranch(),
         ],
       ),
     ],
   );
+
+  StatefulShellBranch _homeBranch() => StatefulShellBranch(
+    routes: <RouteBase>[_route(kHomePath, kHomeRouteName, const HomePage())],
+  );
+
+  StatefulShellBranch _learnBranch() => StatefulShellBranch(
+    routes: <RouteBase>[_route(kLearnPath, kLearnRouteName, const LearnPage())],
+  );
+
+  StatefulShellBranch _chordsBranch() => StatefulShellBranch(
+    routes: <RouteBase>[
+      _route(kChordsPath, kChordsRouteName, const ChordsPage()),
+      _route(kChordDetailPath, kChordDetailRouteName, const ChordDetailPage()),
+    ],
+  );
+
+  StatefulShellBranch _gameBranch() => StatefulShellBranch(
+    routes: <RouteBase>[_route(kGamePath, kGameRouteName, const GamePage())],
+  );
+
+  StatefulShellBranch _liveBranch() => StatefulShellBranch(
+    routes: <RouteBase>[_route(kLivePath, kLiveRouteName, const LivePage())],
+  );
+
+  StatefulShellBranch _settingsBranch() => StatefulShellBranch(
+    routes: <RouteBase>[
+      _route(kSettingsPath, kSettingsRouteName, const SettingsPage()),
+      _route(kLogsPath, kLogsRouteName, const LogsPage()),
+    ],
+  );
+
+  GoRoute _route(String path, String name, Widget page) => GoRoute(
+    path: path,
+    name: name,
+    builder: (BuildContext context, GoRouterState state) => page,
+  );
+
+  Widget _errorBuilder(BuildContext context, GoRouterState state) {
+    final GoException? exception = state.error;
+    if (exception != null) {
+      appLogger.error(
+        'excepción de navegación',
+        channel: LogChannel.router,
+        error: exception,
+        context: <String, Object?>{'location': state.uri.toString()},
+      );
+    } else {
+      appLogger.warning(
+        'ruta no encontrada',
+        channel: LogChannel.router,
+        context: <String, Object?>{'location': state.uri.toString()},
+      );
+    }
+    return RouterErrorScreen(location: state.uri.toString());
+  }
 }
