@@ -1,3 +1,5 @@
+import 'package:chords/presentation/theme/app_accent_color.dart';
+import 'package:chords/presentation/theme/app_font_scale.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +35,18 @@ class PreferencesService {
 
   /// Clave del modo espejo.
   static const String kMirrorKey = 'mirror_chords_v1';
+
+  /// Clave del idioma de la interfaz.
+  static const String kLanguageKey = 'app_language_v1';
+
+  /// Clave del color de acento.
+  static const String kAccentColorKey = 'accent_color_v1';
+
+  /// Clave del color dinámico del sistema.
+  static const String kDynamicColorKey = 'dynamic_color_v1';
+
+  /// Clave de la escala de tamaño de texto.
+  static const String kFontScaleKey = 'font_scale_v1';
 
   /// `true` si el usuario ya vio el onboarding.
   bool get onboardingCompleted => _prefs.getBool(kOnboardingKey) ?? false;
@@ -85,4 +99,48 @@ class PreferencesService {
   /// Guarda el modo espejo.
   Future<void> setMirrorChords({required bool value}) =>
       _prefs.setBool(kMirrorKey, value);
+
+  /// Color de acento persistido.
+  AppAccentColor get accentColor => switch (_prefs.getString(kAccentColorKey)) {
+    'azul' => AppAccentColor.azul,
+    'anil' => AppAccentColor.anil,
+    'cian' => AppAccentColor.cian,
+    'verde' => AppAccentColor.verde,
+    'lima' => AppAccentColor.lima,
+    'ambar' => AppAccentColor.ambar,
+    'naranja' => AppAccentColor.naranja,
+    'rojo' => AppAccentColor.rojo,
+    'rosa' => AppAccentColor.rosa,
+    _ => AppAccentColor.violeta,
+  };
+
+  /// Guarda el color de acento.
+  Future<void> setAccentColor(AppAccentColor accent) =>
+      _prefs.setString(kAccentColorKey, accent.name);
+
+  /// Si se usa el color dinámico del sistema cuando está disponible.
+  bool get dynamicColor => _prefs.getBool(kDynamicColorKey) ?? false;
+
+  /// Guarda la preferencia de color dinámico.
+  Future<void> setDynamicColor({required bool value}) =>
+      _prefs.setBool(kDynamicColorKey, value);
+
+  /// Escala de tamaño de texto persistida.
+  AppFontScale get fontScale => switch (_prefs.getString(kFontScaleKey)) {
+    'pequena' => AppFontScale.pequena,
+    'grande' => AppFontScale.grande,
+    'extraGrande' => AppFontScale.extraGrande,
+    _ => AppFontScale.normal,
+  };
+
+  /// Guarda la escala de tamaño de texto.
+  Future<void> setFontScale(AppFontScale scale) =>
+      _prefs.setString(kFontScaleKey, scale.name);
+
+  /// Nombre del idioma guardado o `null` si sigue al sistema.
+  String? get languageName => _prefs.getString(kLanguageKey);
+
+  /// Guarda el idioma de la interfaz por nombre de valor.
+  Future<void> setLanguageName(String name) =>
+      _prefs.setString(kLanguageKey, name);
 }

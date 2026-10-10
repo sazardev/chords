@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 /// Colores de dominio no cubiertos por `ColorScheme`.
@@ -86,6 +87,21 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     4 => difficulty4,
     _ => difficulty5,
   };
+
+  /// Ajusta los colores de dominio hacia [towards] para que convivan con el
+  /// color dinámico del sistema sin perder su significado semántico.
+  AppChordColors harmonizedWith(Color towards) => AppChordColors(
+    openString: openString.harmonizeWith(towards),
+    mutedString: mutedString.harmonizeWith(towards),
+    fretPressed: fretPressed.harmonizeWith(towards),
+    difficulty1: difficulty1.harmonizeWith(towards),
+    difficulty2: difficulty2.harmonizeWith(towards),
+    difficulty3: difficulty3.harmonizeWith(towards),
+    difficulty4: difficulty4.harmonizeWith(towards),
+    difficulty5: difficulty5.harmonizeWith(towards),
+    inTune: inTune.harmonizeWith(towards),
+    outOfTune: outOfTune.harmonizeWith(towards),
+  );
 
   @override
   AppChordColors copyWith({

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Tarjeta base con esquinas amplias y respuesta táctil opcional.
+/// Tarjeta plana del sistema de diseño.
+///
+/// Usa una superficie de color uniforme, sin elevaciones, sombras, degradados
+/// ni bordes: la jerarquía se expresa solo con el rol de color.
 class AppCard extends StatelessWidget {
   /// Crea la tarjeta.
   const AppCard({
@@ -9,6 +12,7 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.padding = const EdgeInsets.all(16),
     this.borderRadius = 20,
+    this.color,
   });
 
   /// Contenido de la tarjeta.
@@ -23,21 +27,18 @@ class AppCard extends StatelessWidget {
   /// Radio de las esquinas.
   final double borderRadius;
 
+  /// Color de fondo (por defecto `surfaceContainerLow` del tema).
+  final Color? color;
+
   @override
   Widget build(BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
     final Widget content = Padding(padding: padding, child: child);
-    return Card(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      child: onTap == null
-          ? content
-          : InkWell(
-              borderRadius: BorderRadius.circular(borderRadius),
-              onTap: onTap,
-              child: content,
-            ),
+    return Material(
+      color: color ?? scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(borderRadius),
+      clipBehavior: Clip.antiAlias,
+      child: onTap == null ? content : InkWell(onTap: onTap, child: content),
     );
   }
 }

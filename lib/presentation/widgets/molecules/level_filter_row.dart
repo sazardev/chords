@@ -1,3 +1,4 @@
+import 'package:chords/l10n/translations.g.dart';
 import 'package:flutter/material.dart';
 
 /// Fila de chips para filtrar por nivel de aprendizaje.
@@ -15,29 +16,25 @@ class LevelFilterRow extends StatelessWidget {
   /// Callback de selección (recibe `null` para "todos").
   final ValueChanged<int?> onSelected;
 
-  static const List<String> _labels = <String>[
-    'Todos',
-    'Nv 1',
-    'Nv 2',
-    'Nv 3',
-    'Nv 4',
-    'Nv 5',
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: <Widget>[
-          for (int i = 0; i < _labels.length; i++) ...<Widget>[
-            if (i > 0) const SizedBox(width: 8),
+          for (int level = 0; level <= 5; level++) ...<Widget>[
+            if (level > 0) const SizedBox(width: 8),
             ChoiceChip(
-              label: Text(_labels[i]),
-              selected: (i == 0 && selected == null) || i == selected,
-              onSelected: (_) => onSelected(i == 0 ? null : i),
+              label: Text(
+                level == 0
+                    ? t.chords.filterAll
+                    : t.chords.levelShort(level: level),
+              ),
+              selected: (level == 0 && selected == null) || level == selected,
+              onSelected: (_) => onSelected(level == 0 ? null : level),
               selectedColor: scheme.primaryContainer,
             ),
           ],

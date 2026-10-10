@@ -1,5 +1,6 @@
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class LivePitchReadout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final AppChordColors colors = chordColorsOf(context);
     final ColorScheme scheme = Theme.of(context).colorScheme;
     final String note = reading?.note ?? '—';
@@ -29,7 +31,9 @@ class LivePitchReadout extends StatelessWidget {
     return Column(
       children: <Widget>[
         AppText(
-          status == MicStatus.listening ? 'Escuchando…' : _statusLabel(status),
+          status == MicStatus.listening
+              ? t.live.listening
+              : _statusLabel(t, status),
           variant: AppTextVariant.labelLarge,
           color: scheme.onSurfaceVariant,
         ),
@@ -42,7 +46,7 @@ class LivePitchReadout extends StatelessWidget {
         const SizedBox(height: 4),
         AppText(
           reading == null
-              ? 'Toca una nota en la guitararra'
+              ? t.live.idleMessage
               : '${reading!.frequency.toStringAsFixed(1)} Hz · '
                     '${cents.toStringAsFixed(0)} cents',
           color: scheme.onSurfaceVariant,
@@ -53,11 +57,11 @@ class LivePitchReadout extends StatelessWidget {
     );
   }
 
-  String _statusLabel(MicStatus status) => switch (status) {
-    MicStatus.idle => 'Micrófono en espera',
-    MicStatus.listening => 'Escuchando…',
-    MicStatus.permissionDenied => 'Permiso denegado',
-    MicStatus.error => 'Error de captura',
+  String _statusLabel(Translations t, MicStatus status) => switch (status) {
+    MicStatus.idle => t.live.idleTitle,
+    MicStatus.listening => t.live.listening,
+    MicStatus.permissionDenied => t.live.deniedTitle,
+    MicStatus.error => t.live.errorTitle,
   };
 }
 

@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/chord_play_button.dart';
@@ -34,43 +35,46 @@ class ChordCard extends StatelessWidget {
   final bool mirror;
 
   @override
-  Widget build(BuildContext context) => AppCard(
-    onTap: onTap,
-    padding: const EdgeInsets.all(12),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          child: Center(
-            child: ChordDiagram(
-              variant: chord.easiestVariant,
-              mirror: mirror,
-              width: 96,
-              height: 120,
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: Center(
+              child: ChordDiagram(
+                variant: chord.easiestVariant,
+                mirror: mirror,
+                width: 96,
+                height: 120,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        AppText(chord.name, variant: AppTextVariant.titleLarge),
-        AppText(
-          '${chord.variantCount} posiciones',
-          variant: AppTextVariant.labelMedium,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-        const SizedBox(height: 6),
-        Row(
-          children: <Widget>[
-            DifficultyBadge(difficulty: chord.difficulty, compact: true),
-            const Spacer(),
-            ChordPlayButton(
-              onPressed: onPlay,
-              loading: playing,
-              size: 36,
-              tooltip: 'Escuchar ${chord.name}',
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+          const SizedBox(height: 8),
+          AppText(chord.name, variant: AppTextVariant.titleLarge),
+          AppText(
+            t.chords.positionCount(n: chord.variantCount),
+            variant: AppTextVariant.labelMedium,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: <Widget>[
+              DifficultyBadge(difficulty: chord.difficulty, compact: true),
+              const Spacer(),
+              ChordPlayButton(
+                onPressed: onPlay,
+                loading: playing,
+                size: 36,
+                tooltip: t.chordDetail.listenPosition(position: chord.name),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

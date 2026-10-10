@@ -41,11 +41,20 @@ class QuickActionCard extends StatelessWidget {
           padding: const EdgeInsets.all(18),
           child: Row(
             children: <Widget>[
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: scheme.primaryContainer,
-                foregroundColor: scheme.onPrimaryContainer,
-                child: Icon(icon),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: SizedBox(
+                  width: 52,
+                  height: 52,
+                  child: Icon(
+                    icon,
+                    color: scheme.onSecondaryContainer,
+                    size: 26,
+                  ),
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(

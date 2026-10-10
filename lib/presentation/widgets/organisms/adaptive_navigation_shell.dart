@@ -1,3 +1,4 @@
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -13,36 +14,36 @@ class AdaptiveNavigationShell extends StatelessWidget {
   /// Shell de rutas con estado.
   final StatefulNavigationShell shell;
 
-  static const List<_Destination> _destinations = <_Destination>[
+  List<_Destination> _destinations(Translations t) => <_Destination>[
     _Destination(
       icon: Icons.home_outlined,
       selectedIcon: Icons.home_rounded,
-      label: 'Inicio',
+      label: t.nav.home,
     ),
     _Destination(
       icon: Icons.school_outlined,
       selectedIcon: Icons.school_rounded,
-      label: 'Aprender',
+      label: t.nav.learn,
     ),
     _Destination(
       icon: Icons.library_music_outlined,
       selectedIcon: Icons.library_music_rounded,
-      label: 'Acordes',
+      label: t.nav.chords,
     ),
     _Destination(
       icon: Icons.sports_esports_outlined,
       selectedIcon: Icons.sports_esports_rounded,
-      label: 'Jugar',
+      label: t.nav.game,
     ),
     _Destination(
       icon: Icons.graphic_eq_outlined,
       selectedIcon: Icons.graphic_eq_rounded,
-      label: 'En vivo',
+      label: t.nav.live,
     ),
     _Destination(
       icon: Icons.settings_outlined,
       selectedIcon: Icons.settings_rounded,
-      label: 'Ajustes',
+      label: t.nav.settings,
     ),
   ];
 
@@ -52,6 +53,8 @@ class AdaptiveNavigationShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final List<_Destination> destinations = _destinations(t);
     final double width = MediaQuery.sizeOf(context).width;
     if (width >= 600) {
       return Scaffold(
@@ -65,7 +68,7 @@ class AdaptiveNavigationShell extends StatelessWidget {
                   : NavigationRailLabelType.all,
               extended: width >= 1100,
               destinations: <NavigationRailDestination>[
-                for (final _Destination destination in _destinations)
+                for (final _Destination destination in destinations)
                   NavigationRailDestination(
                     icon: Icon(destination.icon),
                     selectedIcon: Icon(destination.selectedIcon),
@@ -87,7 +90,7 @@ class AdaptiveNavigationShell extends StatelessWidget {
         animationDuration: kMotionMedium,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: <Widget>[
-          for (final _Destination destination in _destinations)
+          for (final _Destination destination in destinations)
             NavigationDestination(
               icon: Icon(destination.icon),
               selectedIcon: Icon(destination.selectedIcon),
@@ -99,6 +102,7 @@ class AdaptiveNavigationShell extends StatelessWidget {
   }
 }
 
+/// Destino de navegación con sus iconos y etiqueta.
 class _Destination {
   const _Destination({
     required this.icon,

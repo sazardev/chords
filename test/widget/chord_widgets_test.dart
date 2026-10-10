@@ -3,6 +3,7 @@ import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';
 import 'package:chords/presentation/widgets/organisms/chord_diagram.dart';
@@ -32,10 +33,12 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: ChordDiagram(variant: buildChord().easiestVariant),
+      TranslationProvider(
+        child: MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: ChordDiagram(variant: buildChord().easiestVariant),
+            ),
           ),
         ),
       ),
@@ -53,15 +56,17 @@ void main() {
     bool played = false;
     bool tapped = false;
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: SizedBox(
-              width: 200,
-              child: ChordCard(
-                chord: buildChord(),
-                onTap: () => tapped = true,
-                onPlay: () => played = true,
+      TranslationProvider(
+        child: MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: ChordCard(
+                  chord: buildChord(),
+                  onTap: () => tapped = true,
+                  onPlay: () => played = true,
+                ),
               ),
             ),
           ),
@@ -69,7 +74,7 @@ void main() {
       ),
     );
     expect(find.text('C'), findsOneWidget);
-    expect(find.text('1 posiciones'), findsOneWidget);
+    expect(find.text('1 posición'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.play_arrow_rounded));
     expect(played, isTrue);
     await tester.tap(find.byType(AppCard));

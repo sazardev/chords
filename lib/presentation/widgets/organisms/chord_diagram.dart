@@ -1,5 +1,6 @@
 import 'package:chords/domain/chords/entities/barre_info.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -31,31 +32,40 @@ class ChordDiagram extends StatelessWidget {
   final double height;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: _semanticLabel,
-    child: CustomPaint(
-      size: Size(width, height),
-      painter: _ChordDiagramPainter(
-        variant: variant,
-        mirror: mirror,
-        showFingers: showFingers,
-        colors: chordColorsOf(context),
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return Semantics(
+      label: _semanticLabel(t),
+      child: CustomPaint(
+        size: Size(width, height),
+        painter: _ChordDiagramPainter(
+          variant: variant,
+          mirror: mirror,
+          showFingers: showFingers,
+          colors: chordColorsOf(context),
+        ),
       ),
-    ),
-  );
-
-  String get _semanticLabel {
-    final List<String> parts = <String>[
-      for (int s = 0; s < variant.frets.length; s++)
-        'cuerda ${s + 1}: ${_fretLabel(variant.frets[s])}',
-    ];
-    return 'Diagrama de ${variant.positionLabel}, $parts';
+    );
   }
 
-  String _fretLabel(int fret) => switch (fret) {
-    -1 => 'muda',
-    0 => 'al aire',
-    final int value => 'traste $value',
+  String _semanticLabel(Translations t) {
+    final List<String> parts = <String>[
+      for (int s = 0; s < variant.frets.length; s++)
+        t.chordDiagram.stringLabel(
+          number: s + 1,
+          fret: _fretLabel(t, variant.frets[s]),
+        ),
+    ];
+    return t.chordDiagram.description(
+      position: variant.positionLabel,
+      details: parts.join(', '),
+    );
+  }
+
+  String _fretLabel(Translations t, int fret) => switch (fret) {
+    -1 => t.chordDiagram.muted,
+    0 => t.chordDiagram.open,
+    final int value => t.chordDiagram.fret(value: value),
   };
 }
 

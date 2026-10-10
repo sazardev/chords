@@ -24,18 +24,23 @@ class FlavorBanner extends StatelessWidget {
     if (!visible) {
       return child;
     }
+    final ColorScheme scheme = Theme.of(context).colorScheme;
     return Column(
       children: <Widget>[
         Container(
           width: double.infinity,
-          color: Colors.deepPurple,
+          color: scheme.tertiaryContainer,
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: SafeArea(
             bottom: false,
             child: Text(
               text,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: TextStyle(
+                color: scheme.onTertiaryContainer,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

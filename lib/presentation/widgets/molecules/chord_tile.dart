@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/chord_play_button.dart';
@@ -39,6 +40,7 @@ class ChordTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Translations t = context.t;
     final AppChordColors colors = chordColorsOf(context);
     return ListTile(
       onTap: onTap,
@@ -55,7 +57,7 @@ class ChordTile extends StatelessWidget {
         maxLines: 1,
       ),
       subtitle: AppText(
-        trailingNote ?? '${chord.variantCount} posiciones',
+        trailingNote ?? t.chords.positionCount(n: chord.variantCount),
         variant: AppTextVariant.labelMedium,
         maxLines: 1,
         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -68,11 +70,13 @@ class ChordTile extends StatelessWidget {
           ChordPlayButton(
             onPressed: onPlay,
             size: 38,
-            tooltip: 'Escuchar ${chord.name}',
+            tooltip: t.chordDetail.listenPosition(position: chord.name),
           ),
           if (onToggleMastered != null)
             IconButton(
-              tooltip: mastered ? 'Quitar de dominados' : 'Marcar dominado',
+              tooltip: mastered
+                  ? t.chordDetail.unmarkMastered
+                  : t.chordDetail.markMastered,
               icon: Icon(
                 mastered ? Icons.check_circle_rounded : Icons.circle_outlined,
                 color: mastered ? colors.openString : null,

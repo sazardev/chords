@@ -5,8 +5,8 @@ class SearchField extends StatelessWidget {
   /// Crea el campo de búsqueda.
   const SearchField({
     required this.onChanged,
+    required this.hintText,
     super.key,
-    this.hintText = 'Buscar acordes',
     this.initialValue = '',
   });
 

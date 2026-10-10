@@ -8,6 +8,8 @@ class ProgressRing extends StatelessWidget {
     super.key,
     this.size = 96,
     this.label,
+    this.color,
+    this.trackColor,
   });
 
   /// Progreso entre 0 y 1.
@@ -18,6 +20,12 @@ class ProgressRing extends StatelessWidget {
 
   /// Texto grande central.
   final String? label;
+
+  /// Color del arco de progreso (por defecto `primary` del tema).
+  final Color? color;
+
+  /// Color de la pista de fondo (por defecto `surfaceContainerHighest`).
+  final Color? trackColor;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +43,9 @@ class ProgressRing extends StatelessWidget {
             child: CircularProgressIndicator(
               value: value,
               strokeWidth: 9,
-              backgroundColor: scheme.surfaceContainerHighest,
               strokeCap: StrokeCap.round,
+              color: color ?? scheme.primary,
+              backgroundColor: trackColor ?? scheme.surfaceContainerHighest,
             ),
           ),
           if (label != null)

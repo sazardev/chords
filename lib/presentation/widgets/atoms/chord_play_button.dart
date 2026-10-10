@@ -1,3 +1,4 @@
+import 'package:chords/l10n/translations.g.dart';
 import 'package:flutter/material.dart';
 
 /// Botón circular para reproducir el sonido de un acorde.
@@ -8,7 +9,7 @@ class ChordPlayButton extends StatelessWidget {
     super.key,
     this.loading = false,
     this.size = 44,
-    this.tooltip = 'Escuchar acorde',
+    this.tooltip,
   });
 
   /// Acción al pulsar.
@@ -20,17 +21,19 @@ class ChordPlayButton extends StatelessWidget {
   /// Diámetro del botón.
   final double size;
 
-  /// Texto de ayuda.
-  final String tooltip;
+  /// Texto de ayuda (por defecto, la acción genérica de escuchar).
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
+    final Translations t = context.t;
+    final String message = tooltip ?? t.chordDetail.listen;
     return Semantics(
       button: true,
-      label: tooltip,
+      label: message,
       child: Tooltip(
-        message: tooltip,
+        message: message,
         child: SizedBox(
           width: size,
           height: size,

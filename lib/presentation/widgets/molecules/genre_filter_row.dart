@@ -1,3 +1,5 @@
+import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/widgets/atoms/genre_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -33,25 +35,28 @@ class GenreFilterRow extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Row(
-      children: <Widget>[
-        GenreChip(
-          label: 'Todos',
-          selected: selected == null,
-          onSelected: () => onSelected(null),
-        ),
-        for (final String genre in genres) ...<Widget>[
-          const SizedBox(width: 8),
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: <Widget>[
           GenreChip(
-            label: genre,
-            selected: selected == genre,
-            onSelected: () => onSelected(selected == genre ? null : genre),
+            label: t.chords.filterAll,
+            selected: selected == null,
+            onSelected: () => onSelected(null),
           ),
+          for (final String genre in genres) ...<Widget>[
+            const SizedBox(width: 8),
+            GenreChip(
+              label: genreLabel(t, genre),
+              selected: selected == genre,
+              onSelected: () => onSelected(selected == genre ? null : genre),
+            ),
+          ],
         ],
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
