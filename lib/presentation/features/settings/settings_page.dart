@@ -421,7 +421,7 @@ class _AboutSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.info_outline_rounded),
           title: Text(t.settings.version),
-          subtitle: Text('${const AppConfig.prod().appName} 1.1.0 (2)'),
+          subtitle: Text('${const AppConfig.prod().appName} 1.2.0 (3)'),
         ),
         const _TileSeparator(),
         ListTile(
