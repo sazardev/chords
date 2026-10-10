@@ -18,6 +18,7 @@ import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
 import 'package:chords/domain/l10n/repositories/locale_repository.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
@@ -67,6 +68,9 @@ Future<void> bootstrap(AppConfig config) async {
         ChangeNotifierProvider<ChordsController>(
           create: (_) => dependencies.chordsController,
         ),
+        ChangeNotifierProvider<ChordFilterController>(
+          create: (_) => dependencies.chordFilterController,
+        ),
         ChangeNotifierProvider<ChordDetailController>(
           create: (_) => dependencies.chordDetailController,
         ),
@@ -107,6 +111,7 @@ class AppDependencies {
     required this.settingsController,
     required this.onboardingController,
     required this.chordsController,
+    required this.chordFilterController,
     required this.chordDetailController,
     required this.learnController,
     required this.gameController,
@@ -123,9 +128,11 @@ class AppDependencies {
     final AppearanceController appearance = AppearanceController(preferences);
     final SettingsController settings = SettingsController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
+    final ChordFilterController chordFilters = ChordFilterController();
     final ChordsController chords = ChordsController(
       chordRepository,
       const SearchChordsUseCase(),
+      chordFilters,
     );
     final ChordDetailController chordDetail = ChordDetailController(
       chordRepository,
@@ -155,6 +162,7 @@ class AppDependencies {
       settingsController: settings,
       onboardingController: onboarding,
       chordsController: chords,
+      chordFilterController: chordFilters,
       chordDetailController: chordDetail,
       learnController: learn,
       gameController: game,
@@ -176,6 +184,9 @@ class AppDependencies {
 
   /// Controlador del listado de acordes.
   final ChordsController chordsController;
+
+  /// Controlador de los filtros de la biblioteca de acordes.
+  final ChordFilterController chordFilterController;
 
   /// Controlador del detalle de acorde.
   final ChordDetailController chordDetailController;

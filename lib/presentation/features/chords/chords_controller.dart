@@ -1,11 +1,9 @@
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
-import 'package:chords/domain/chords/entities/chord_filters.dart';
-import 'package:chords/domain/chords/entities/chord_quality.dart';
-import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
+import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:flutter/foundation.dart';
 
 /// Estado de la carga de la biblioteca.
@@ -20,23 +18,26 @@ enum ChordsStatus {
   error,
 }
 
-/// Controlador de la biblioteca de acordes y sus filtros.
+/// Controlador de la biblioteca de acordes.
+///
+/// Responsabilidad única: cargar el banco y mantener la lista visible, que
+/// deriva de los filtros que publica [ChordFilterController]. Los filtros y sus
+/// controles viven en ese otro controlador.
 class ChordsController extends ChangeNotifier {
-  /// Crea el controlador.
-  ChordsController(this._repository, this._searchChords);
+  /// Crea el controlador con el banco, la búsqueda y los filtros a observar.
+  ChordsController(this._repository, this._searchChords, this._filters) {
+    _filters.addListener(_onFiltersChanged);
+  }
 
   final ChordRepository _repository;
   final SearchChordsUseCase _searchChords;
+  final ChordFilterController _filters;
 
   ChordsStatus _status = ChordsStatus.loading;
-  ChordFilters _filters = const ChordFilters.empty();
   List<Chord> _visible = const <Chord>[];
 
   /// Estado de carga.
   ChordsStatus get status => _status;
-
-  /// Filtros activos.
-  ChordFilters get filters => _filters;
 
   /// Acordes que cumplen los filtros (esenciales primero).
   List<Chord> get visibleChords => _visible;
@@ -64,55 +65,18 @@ class ChordsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Cambia el texto de búsqueda.
-  void setQuery(String value) {
-    _filters = _filters.copyWith(query: value);
-    _applyFilters();
-  }
-
-  /// Selecciona o deselecciona la raíz.
-  void selectRoot(ChordRoot? root) {
-    _filters = _filters.copyWith(root: root, clearRoot: root == null);
-    _applyFilters();
-  }
-
-  /// Selecciona o deselecciona la calidad.
-  void selectQuality(ChordQuality? quality) {
-    _filters = _filters.copyWith(
-      quality: quality,
-      clearQuality: quality == null,
-    );
-    _applyFilters();
-  }
-
-  /// Selecciona o deselecciona el género.
-  void selectGenre(String? genre) {
-    _filters = _filters.copyWith(genre: genre, clearGenre: genre == null);
-    _applyFilters();
-  }
-
-  /// Selecciona o deselecciona el nivel de aprendizaje.
-  void selectLevel(int? level) {
-    _filters = _filters.copyWith(level: level);
-    _applyFilters();
-  }
-
-  /// Ajusta la dificultad máxima (nulo = sin límite).
-  void setMaxDifficulty(int? level) {
-    _filters = _filters.copyWith(maxDifficulty: level);
-    _applyFilters();
-  }
-
-  /// Limpia todos los filtros.
-  void clearFilters() {
-    _filters = const ChordFilters.empty();
-    _applyFilters();
-  }
+  void _onFiltersChanged() => _applyFilters();
 
   void _applyFilters() {
     _visible = _repository.essentialFirst(
-      _searchChords(_repository.chords, _filters),
+      _searchChords(_repository.chords, _filters.filters),
     );
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _filters.removeListener(_onFiltersChanged);
+    super.dispose();
   }
 }

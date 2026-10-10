@@ -2,6 +2,7 @@ import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
@@ -48,22 +49,22 @@ class _ChordsPageState extends State<ChordsPage> {
     final Map<String, String> params = GoRouterState.of(context)
         .uri
         .queryParameters;
-    final ChordsController controller = context.read<ChordsController>();
+    final ChordFilterController filters = context.read<ChordFilterController>();
     final String? root = params['root'];
     final String? quality = params['quality'];
     final String? difficulty = params['difficulty'];
     final String? query = params['q'];
     if (root != null) {
-      controller.selectRoot(ChordRoot.fromName(root));
+      filters.selectRoot(ChordRoot.fromName(root));
     }
     if (quality != null && quality.isNotEmpty) {
-      controller.selectQuality(ChordQuality.fromId(quality));
+      filters.selectQuality(ChordQuality.fromId(quality));
     }
     if (difficulty != null) {
-      controller.setMaxDifficulty(int.tryParse(difficulty));
+      filters.setMaxDifficulty(int.tryParse(difficulty));
     }
     if (query != null && query.isNotEmpty) {
-      controller.setQuery(query);
+      filters.setQuery(query);
     }
   }
 
@@ -71,6 +72,8 @@ class _ChordsPageState extends State<ChordsPage> {
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final ChordsController controller = context.watch<ChordsController>();
+    final ChordFilterController filters = context
+        .watch<ChordFilterController>();
     final bool mirror = context.select<SettingsController, bool>(
       (SettingsController settings) => settings.mirrorChords,
     );
@@ -81,7 +84,7 @@ class _ChordsPageState extends State<ChordsPage> {
           IconButton(
             tooltip: t.chords.clearFilters,
             icon: const Icon(Icons.filter_alt_off_outlined),
-            onPressed: controller.clearFilters,
+            onPressed: filters.clearFilters,
           ),
         ],
       ),
@@ -93,26 +96,26 @@ class _ChordsPageState extends State<ChordsPage> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: SearchField(
                 hintText: t.chords.searchHint,
-                initialValue: controller.filters.query,
-                onChanged: controller.setQuery,
+                initialValue: filters.filters.query,
+                onChanged: filters.setQuery,
               ),
             ),
             GenreFilterRow(
-              selected: controller.filters.genre,
-              onSelected: controller.selectGenre,
+              selected: filters.filters.genre,
+              onSelected: filters.selectGenre,
             ),
             const SizedBox(height: 8),
             LevelFilterRow(
-              selected: controller.filters.level,
-              onSelected: controller.selectLevel,
+              selected: filters.filters.level,
+              onSelected: filters.selectLevel,
             ),
             const SizedBox(height: 8),
             FilterChipRow(
-              selected: controller.filters.quality,
-              onSelected: controller.selectQuality,
+              selected: filters.filters.quality,
+              onSelected: filters.selectQuality,
             ),
             const SizedBox(height: 4),
-            _DifficultySlider(controller: controller),
+            _DifficultySlider(filters: filters),
             const SizedBox(height: 8),
             Expanded(child: _body(controller, mirror)),
           ],
@@ -149,14 +152,14 @@ class _ChordsPageState extends State<ChordsPage> {
 
 /// Slider de dificultad máxima.
 class _DifficultySlider extends StatelessWidget {
-  const _DifficultySlider({required this.controller});
+  const _DifficultySlider({required this.filters});
 
-  final ChordsController controller;
+  final ChordFilterController filters;
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final int? max = controller.filters.maxDifficulty;
+    final int? max = filters.filters.maxDifficulty;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -173,7 +176,7 @@ class _DifficultySlider extends StatelessWidget {
               value: (max ?? 5).toDouble(),
               label: '${max ?? 5}',
               onChanged: (double value) {
-                controller.setMaxDifficulty(value == 5 ? null : value.round());
+                filters.setMaxDifficulty(value == 5 ? null : value.round());
               },
             ),
           ),

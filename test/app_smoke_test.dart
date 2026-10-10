@@ -14,6 +14,7 @@ import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
@@ -52,9 +53,11 @@ void main() {
     final SettingsController settings = SettingsController(preferences);
     final AppearanceController appearance = AppearanceController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
+    final ChordFilterController chordFilters = ChordFilterController();
     final ChordsController chordsController = ChordsController(
       chords,
       const SearchChordsUseCase(),
+      chordFilters,
     );
     final ChordDetailController chordDetail = ChordDetailController(
       chords,
@@ -79,6 +82,7 @@ void main() {
       ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
       ChangeNotifierProvider<ChordsController>.value(value: chordsController),
+      ChangeNotifierProvider<ChordFilterController>.value(value: chordFilters),
       ChangeNotifierProvider<ChordDetailController>.value(value: chordDetail),
       ChangeNotifierProvider<LearnController>.value(value: learn),
       ChangeNotifierProvider<GameController>.value(value: game),
