@@ -1,11 +1,11 @@
 {
-    "name": "chords",
-    "short_name": "chords",
+    "name": "Chords: acordes de guitarra",
+    "short_name": "Chords",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#fffbfe",
+    "theme_color": "#6750A4",
+    "description": "Banco de acordes de guitarra con sonido real, arpegios y afinación en vivo por micrófono.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

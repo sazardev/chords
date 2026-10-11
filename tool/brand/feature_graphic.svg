@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8E7BC6"/>
+      <stop offset="0.55" stop-color="#6750A4"/>
+      <stop offset="1" stop-color="#4A3385"/>
+    </linearGradient>
+    <linearGradient id="tile" x1="88" y1="110" x2="368" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a995dc"/>
+      <stop offset="1" stop-color="#5B4397"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="500" fill="url(#bg)"/>
+  <circle cx="0" cy="0" r="360" fill="#ffffff" opacity="0.05"/>
+  <circle cx="1024" cy="500" r="440" fill="#ffffff" opacity="0.06"/>
+  <circle cx="880" cy="80" r="120" fill="#ffffff" opacity="0.04"/>
+  <g>
+    <rect x="88" y="110" width="280" height="280" rx="62" fill="url(#tile)"/>
+    <g transform="translate(228 250) scale(6.1) translate(-12 -12)" fill="#ffffff">
+      <path d="M12 3a1 1 0 0 1 1 1v9.2a3.4 3.4 0 1 1-2-3.1V4a1 1 0 0 1 1-1Zm6.5 1.2a1 1 0 0 1 1.4.2A9.9 9.9 0 0 1 22 12a9.9 9.9 0 1 1-8.6-9.8 1 1 0 1 1 .4 2A7.9 7.9 0 1 0 20 12a7.9 7.9 0 0 0-1.3-4.4 1 1 0 0 1 .2-1.4Z"/>
+    </g>
+  </g>
+  <g font-family="Geist, Noto Sans, DejaVu Sans, sans-serif" fill="#ffffff">
+    <text x="428" y="252" font-size="104" font-weight="800" letter-spacing="-2">Chords</text>
+    <text x="432" y="318" font-size="31" font-weight="600" opacity="0.95">156 acordes · 581 posiciones</text>
+    <text x="432" y="364" font-size="31" font-weight="500" opacity="0.78">Sonido real y afinador en vivo</text>
+  </g>
+</svg>
