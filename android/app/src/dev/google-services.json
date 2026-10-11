@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "481297674153",
+    "project_id": "chords-qa",
+    "storage_bucket": "chords-qa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481297674153:android:876ba8839136450f0a1eb8",
+        "android_client_info": {
+          "package_name": "app.chords.chords"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTJkNI-0IHeCFJCbvmJ9koC4e8XayYSkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481297674153:android:a3c20703a5ae4ccf0a1eb8",
+        "android_client_info": {
+          "package_name": "app.chords.chords.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTJkNI-0IHeCFJCbvmJ9koC4e8XayYSkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481297674153:android:bad77a2ff9b0d3d90a1eb8",
+        "android_client_info": {
+          "package_name": "app.chords.chords.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTJkNI-0IHeCFJCbvmJ9koC4e8XayYSkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -122,7 +122,11 @@ class _Greeting extends StatelessWidget {
           variant: AppTextVariant.bodyLarge,
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
-        AppText(t.home.question, variant: AppTextVariant.displayLarge),
+        AppText(
+          t.home.question,
+          variant: AppTextVariant.displayLarge,
+          maxLines: 2,
+        ),
       ],
     ),
   );

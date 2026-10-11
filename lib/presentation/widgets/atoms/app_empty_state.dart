@@ -31,12 +31,13 @@ class AppEmptyState extends StatelessWidget {
           children: <Widget>[
             Icon(icon, size: 56, color: scheme.outline),
             const SizedBox(height: 12),
-            AppText(title, variant: AppTextVariant.titleLarge),
+            AppText(title, variant: AppTextVariant.titleLarge, maxLines: 2),
             const SizedBox(height: 6),
             AppText(
               message,
               color: scheme.onSurfaceVariant,
               align: TextAlign.center,
+              maxLines: 3,
             ),
           ],
         ),
