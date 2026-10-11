@@ -44,5 +44,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Firma de release: NUNCA subir la keystore ni sus credenciales al repo
+/android/key.properties
+*.jks
+*.keystore
+*.p12
+
 # Widget Preview related
 .widget_preview/

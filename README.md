@@ -182,9 +182,10 @@ mientras se migra deuda existente, y `--fail-on` decide qué gravedad bloquea.
 ## Build
 
 ```bash
-make build-linux   # binario Linux release por flavor
-make build-apk     # APK release por flavor
-make build-web     # web de release
+make build-linux       # binario Linux release por flavor
+make build-apk         # APK release por flavor
+make build-appbundle   # AAB release para Play Store (usa android/key.properties)
+make build-web         # web de release
 ```
 
 ## Compatibilidad

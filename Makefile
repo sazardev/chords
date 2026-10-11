@@ -6,7 +6,7 @@ FLAVOR ?= dev
 DEVICE ?= linux
 
 .PHONY: help setup deps gen validate audit audit-report fmt analyze test check run \
-         run-linux run-android hooks build-apk build-linux clean version
+         run-linux run-android hooks build-apk build-appbundle build-linux build-web clean version
 
 help: ## Muestra esta ayuda
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
@@ -56,8 +56,14 @@ run-android: flutter ## Ejecuta flavour dev en Android (móvil)
 build-apk: ## Compila APK de release por flavor
 	flutter build apk --release --flavor $(FLAVOR) -t lib/main_$(FLAVOR).dart
 
+build-appbundle: ## Compila el App Bundle (AAB) de release por flavor (Play Store)
+	flutter build appbundle --release --flavor $(FLAVOR) -t lib/main_$(FLAVOR).dart
+
 build-linux: ## Compila binario Linux de release por flavor
 	flutter build linux --release --flavor $(FLAVOR) -t lib/main_$(FLAVOR).dart
+
+build-web: ## Compila la web de release (entrada del flavor)
+	flutter build web --release -t lib/main_$(FLAVOR).dart
 
 hooks: ## Instala los git hooks (pre-commit y pre-push)
 	bash tool/hooks/install_hooks.sh
