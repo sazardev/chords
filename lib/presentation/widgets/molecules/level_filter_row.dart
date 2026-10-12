@@ -8,6 +8,7 @@ class LevelFilterRow extends StatelessWidget {
     required this.selected,
     required this.onSelected,
     super.key,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
   });
 
   /// Nivel seleccionado (o `null` = todos).
@@ -16,13 +17,16 @@ class LevelFilterRow extends StatelessWidget {
   /// Callback de selección (recibe `null` para "todos").
   final ValueChanged<int?> onSelected;
 
+  /// Relleno horizontal de la fila.
+  final EdgeInsetsGeometry padding;
+
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: padding,
       child: Row(
         children: <Widget>[
           for (int level = 0; level <= 5; level++) ...<Widget>[

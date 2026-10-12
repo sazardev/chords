@@ -10,6 +10,7 @@ import 'package:chords/presentation/features/learn/learn_page.dart';
 import 'package:chords/presentation/features/live/live_page.dart';
 import 'package:chords/presentation/features/logs/logs_page.dart';
 import 'package:chords/presentation/features/practice/chord_practice_page.dart';
+import 'package:chords/presentation/features/profile/profile_page.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/router/logging_navigator_observer.dart';
 import 'package:chords/presentation/router/router_error_screen.dart';
@@ -58,6 +59,7 @@ class AppRouter {
       ),
       _chordDetailRoute(),
       _chordPracticeRoute(),
+      _profileRoute(),
     ],
   );
 
@@ -104,6 +106,13 @@ class AppRouter {
     parentNavigatorKey: _rootKey,
     builder: (BuildContext context, GoRouterState state) =>
         const ChordPracticePage(),
+  );
+
+  GoRoute _profileRoute() => GoRoute(
+    path: kProfilePath,
+    name: kProfileRouteName,
+    parentNavigatorKey: _rootKey,
+    builder: (BuildContext context, GoRouterState state) => const ProfilePage(),
   );
 
   GoRoute _route(String path, String name, Widget page) => GoRoute(

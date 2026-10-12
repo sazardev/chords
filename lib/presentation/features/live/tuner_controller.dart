@@ -85,6 +85,7 @@ class TunerController extends ChangeNotifier {
     this.signalTimeout = const Duration(milliseconds: 1200),
     this.referenceMute = const Duration(milliseconds: 2200),
     this.lockReadings = 4,
+    this.onStringTuned,
   });
 
   final AudioRepository _audio;
@@ -97,6 +98,9 @@ class TunerController extends ChangeNotifier {
 
   /// Lecturas seguidas dentro de tolerancia para dar la cuerda por afinada.
   final int lockReadings;
+
+  /// Se llama cada vez que una cuerda queda afinada (p. ej. para vibrar).
+  final VoidCallback? onStringTuned;
 
   final AnalyzeTuningUseCase _analyze = const AnalyzeTuningUseCase();
   final TuningSmoother _smoother = TuningSmoother();
@@ -182,19 +186,18 @@ class TunerController extends ChangeNotifier {
     );
   }
 
-  /// Reproduce la nota de [string] para afinar de oído.
-  Future<void> playReference(GuitarString string) async {
-    _mutedUntil = DateTime.now().add(referenceMute);
-    _smoother.reset();
-    _stableCount = 0;
-    _setState(_state.copyWith(clearReading: true, clearHeardOther: true));
-    await _audio.playReferenceTone(string.frequency);
+  /// Toque sobre una clavija: la fija y suena su nota de referencia; tocarla
+  /// de nuevo vuelve al modo automático.
+  Future<void> tapString(GuitarString string) async {
+    selectString(string);
+    if (_state.target == string) {
+      await _playReference(string);
+    }
   }
 
-  /// Borra las cuerdas ya afinadas para empezar de nuevo.
-  void resetProgress() {
-    _resetProgress();
-    notifyListeners();
+  Future<void> _playReference(GuitarString string) async {
+    _mutedUntil = DateTime.now().add(referenceMute);
+    await _audio.playReferenceTone(string.frequency);
   }
 
   void _resetProgress() {
@@ -251,8 +254,8 @@ class TunerController extends ChangeNotifier {
     final int number = reading.string.number;
     if (reading.isInTune) {
       _stableCount++;
-      if (_stableCount >= lockReadings) {
-        tuned.add(number);
+      if (_stableCount >= lockReadings && tuned.add(number)) {
+        onStringTuned?.call();
       }
     } else {
       _stableCount = 0;

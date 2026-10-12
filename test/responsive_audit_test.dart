@@ -20,6 +20,7 @@ import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
@@ -72,10 +73,12 @@ void main() {
       LocaleRepositoryImpl(preferences),
     );
 
+    final SettingsController settings = SettingsController(preferences);
     final List<SingleChildWidget> providers = <SingleChildWidget>[
       ChangeNotifierProvider<LocaleController>.value(value: locale),
-      ChangeNotifierProvider<SettingsController>.value(
-        value: SettingsController(preferences),
+      ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<ProfileController>.value(
+        value: ProfileController(preferences, settings),
       ),
       ChangeNotifierProvider<AppearanceController>.value(
         value: AppearanceController(preferences),

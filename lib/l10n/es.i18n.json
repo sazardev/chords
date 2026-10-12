@@ -30,7 +30,20 @@
     "gameMode": "Modo juego",
     "gameSubtitle": "Toca el acorde y encadena la serie",
     "liveTitle": "Afinador y escucha",
-    "liveSubtitle": "Afina cuerda a cuerda con tu micrófono"
+    "liveSubtitle": "Afina cuerda a cuerda con tu micrófono",
+    "greetingMorning": "Buenos días",
+    "greetingAfternoon": "Buenas tardes",
+    "greetingEvening": "Buenas noches",
+    "nextUp": "Tu siguiente acorde",
+    "practiceCta": "Practicar",
+    "statMastered": "Dominados",
+    "statBest": "Mejor puntaje",
+    "statLevel": "Nivel",
+    "recommendedTitle": "Para ti",
+    "recommendedEmpty": "Completa tu perfil para ver recomendaciones.",
+    "toolsTitle": "Herramientas",
+    "seeAll": "Ver todo",
+    "learnSubtitle": "Tu ruta paso a paso"
   },
   "chords": {
     "title": "Acordes",
@@ -48,7 +61,18 @@
     "loadErrorTitle": "No se pudo cargar el banco",
     "loadErrorMessage": "Reinicia la app para reintentar la carga del banco.",
     "emptyTitle": "Sin resultados",
-    "emptyMessage": "Ajusta la búsqueda o los filtros para ver más acordes."
+    "emptyMessage": "Ajusta la búsqueda o los filtros para ver más acordes.",
+    "filters": "Filtros",
+    "filterLevel": "Nivel",
+    "filterQuality": "Tipo de acorde",
+    "filterDifficulty": "Dificultad máxima",
+    "forMyLevel": "Para mi nivel",
+    "apply": "Ver resultados",
+    "reset": "Restablecer",
+    "results": {
+      "one": "$n acorde",
+      "other": "$n acordes"
+    }
   },
   "chordDetail": {
     "titleFallback": "Acorde",
@@ -106,8 +130,6 @@
   },
   "live": {
     "title": "Afinador",
-    "listen": "Escuchar guitarra",
-    "stop": "Detener",
     "emptyTitle": "Sin sugerencias aún",
     "emptyMessage": "Pulsa escuchar y toca un acorde para ver coincidencias.",
     "suggestions": "Sugerencias",
@@ -205,7 +227,46 @@
     "slideTwoTitle": "Escucha cada acorde y su arpegio",
     "slideTwoBody": "Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.",
     "slideThreeTitle": "Aprende por niveles y practica",
-    "slideThreeBody": "Itinerario paso a paso, filtro por género y modo juego para encadenar series de acordes."
+    "slideThreeBody": "Itinerario paso a paso, filtro por género y modo juego para encadenar series de acordes.",
+    "welcomeTitle": "Tu guitarra, a tu medida",
+    "welcomeBody": "Cinco preguntas rápidas y te recomiendo los acordes ideales para ti.",
+    "welcomeCta": "Empezar",
+    "stepOf": "Paso $current de $total",
+    "back": "Atrás",
+    "proceed": "Continuar",
+    "finish": "Empezar a tocar",
+    "guitarTitle": "¿Qué guitarra tocas?",
+    "guitarBody": "Cada una pide acordes distintos.",
+    "guitarAcoustic": "Acústica",
+    "guitarAcousticHint": "Cuerdas de acero y acordes abiertos",
+    "guitarElectric": "Eléctrica",
+    "guitarElectricHint": "Power chords y riffs",
+    "guitarClassical": "Clásica",
+    "guitarClassicalHint": "Cuerdas de nailon y dedos",
+    "playTitle": "¿Cómo la tocas?",
+    "playBody": "Ajusto los diagramas y los arpegios a tu forma de tocar.",
+    "handLabel": "Tu mano",
+    "handRight": "Diestro",
+    "handRightHint": "Diagramas normales",
+    "handLeft": "Zurdo",
+    "handLeftHint": "Diagramas en espejo",
+    "styleLabel": "Cómo atacas las cuerdas",
+    "stylePick": "Púa",
+    "styleFingers": "Dedos",
+    "styleBoth": "Ambos",
+    "genresTitle": "¿Qué música te gusta?",
+    "genresBody": "Elige los que quieras: recomiendo acordes de esos estilos.",
+    "levelTitle": "¿Cuánta experiencia tienes?",
+    "levelBody": "Ajusto la dificultad para que avances sin frustrarte.",
+    "levelBeginner": "Estoy empezando",
+    "levelBeginnerHint": "Acordes abiertos, sin cejilla",
+    "levelIntermediate": "Ya toco canciones",
+    "levelIntermediateHint": "Cambio de acorde y cejillas básicas",
+    "levelAdvanced": "Toco con soltura",
+    "levelAdvancedHint": "Cejillas, séptimas y voicings",
+    "planTitle": "Tu plan está listo",
+    "planBody": "Empieza por estos acordes, elegidos para ti.",
+    "planEmpty": "Explora la biblioteca y empieza por el que más te guste."
   },
   "data": {
     "language": {
@@ -323,12 +384,6 @@
     "levelLoud": "Suena muy fuerte: aleja un poco la guitarra"
   },
   "tuner": {
-    "tabTune": "Afinar",
-    "tabListen": "Acordes",
-    "start": "Empezar a afinar",
-    "stop": "Detener",
-    "auto": "Automático",
-    "autoHint": "Toca cualquier cuerda: la reconozco sola",
     "pluckPrompt": "Toca una cuerda al aire",
     "pluckString": "Toca la $string",
     "stringTitle": "$ordinal cuerda · $note",
@@ -351,14 +406,16 @@
     "flat": "Floja",
     "sharp": "Alta",
     "cents": "$cents cents",
-    "progress": "$count de 6 afinadas",
     "allTunedTitle": "¡Guitarra afinada!",
     "allTunedMessage": "Las seis cuerdas están en su sitio. ¡A tocar!",
-    "playReference": "Escuchar nota",
-    "startOver": "Empezar de nuevo",
-    "selectHint": "Toca una clavija para afinar solo esa cuerda",
     "peg": "Clavija de la $string",
-    "meterLabel": "Afinación: $cents cents"
+    "meterLabel": "Afinación: $cents cents",
+    "activate": "Activar micrófono",
+    "modeAuto": "Automático · toca una clavija para fijarla",
+    "modeManual": "Fijada: $string",
+    "chordsTitle": "Detectar acordes",
+    "switchToChords": "Detectar acordes",
+    "switchToTuner": "Volver al afinador"
   },
   "practice": {
     "title": "Practicar acorde",
@@ -397,5 +454,16 @@
     "tipRetuneUp": "La $string al aire suena baja: sube un poco la clavija.",
     "tipRetuneDown": "La $string al aire suena alta: baja un poco la clavija.",
     "tipUnknown": "No reconozco esa nota. Toca solo la $string, con calma."
+  },
+  "profile": {
+    "title": "Tu perfil",
+    "edit": "Editar perfil",
+    "summary": "$guitar · $level",
+    "guitar": "Guitarra",
+    "play": "Forma de tocar",
+    "genres": "Géneros",
+    "experience": "Experiencia",
+    "personalizedHint": "Recomendaciones según tu perfil",
+    "setupHint": "Cuéntame cómo tocas y personalizo todo"
   }
 }

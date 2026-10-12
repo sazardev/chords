@@ -84,6 +84,9 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   );
   late final Translations$practice$es practice =
       Translations$practice$es.internal(_root);
+  late final Translations$profile$es profile = Translations$profile$es.internal(
+    _root,
+  );
 }
 
 // Path: app
@@ -189,6 +192,45 @@ class Translations$home$es {
 
   /// es: 'Afina cuerda a cuerda con tu micrófono'
   String get liveSubtitle => 'Afina cuerda a cuerda con tu micrófono';
+
+  /// es: 'Buenos días'
+  String get greetingMorning => 'Buenos días';
+
+  /// es: 'Buenas tardes'
+  String get greetingAfternoon => 'Buenas tardes';
+
+  /// es: 'Buenas noches'
+  String get greetingEvening => 'Buenas noches';
+
+  /// es: 'Tu siguiente acorde'
+  String get nextUp => 'Tu siguiente acorde';
+
+  /// es: 'Practicar'
+  String get practiceCta => 'Practicar';
+
+  /// es: 'Dominados'
+  String get statMastered => 'Dominados';
+
+  /// es: 'Mejor puntaje'
+  String get statBest => 'Mejor puntaje';
+
+  /// es: 'Nivel'
+  String get statLevel => 'Nivel';
+
+  /// es: 'Para ti'
+  String get recommendedTitle => 'Para ti';
+
+  /// es: 'Completa tu perfil para ver recomendaciones.'
+  String get recommendedEmpty => 'Completa tu perfil para ver recomendaciones.';
+
+  /// es: 'Herramientas'
+  String get toolsTitle => 'Herramientas';
+
+  /// es: 'Ver todo'
+  String get seeAll => 'Ver todo';
+
+  /// es: 'Tu ruta paso a paso'
+  String get learnSubtitle => 'Tu ruta paso a paso';
 }
 
 // Path: chords
@@ -244,6 +286,35 @@ class Translations$chords$es {
   /// es: 'Ajusta la búsqueda o los filtros para ver más acordes.'
   String get emptyMessage =>
       'Ajusta la búsqueda o los filtros para ver más acordes.';
+
+  /// es: 'Filtros'
+  String get filters => 'Filtros';
+
+  /// es: 'Nivel'
+  String get filterLevel => 'Nivel';
+
+  /// es: 'Tipo de acorde'
+  String get filterQuality => 'Tipo de acorde';
+
+  /// es: 'Dificultad máxima'
+  String get filterDifficulty => 'Dificultad máxima';
+
+  /// es: 'Para mi nivel'
+  String get forMyLevel => 'Para mi nivel';
+
+  /// es: 'Ver resultados'
+  String get apply => 'Ver resultados';
+
+  /// es: 'Restablecer'
+  String get reset => 'Restablecer';
+
+  /// es: '(one) {$n acorde} (other) {$n acordes}'
+  String results({required num n}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: '${n} acorde',
+        other: '${n} acordes',
+      );
 }
 
 // Path: chordDetail
@@ -434,12 +505,6 @@ class Translations$live$es {
   /// es: 'Afinador'
   String get title => 'Afinador';
 
-  /// es: 'Escuchar guitarra'
-  String get listen => 'Escuchar guitarra';
-
-  /// es: 'Detener'
-  String get stop => 'Detener';
-
   /// es: 'Sin sugerencias aún'
   String get emptyTitle => 'Sin sugerencias aún';
 
@@ -619,6 +684,129 @@ class Translations$onboarding$es {
   /// es: 'Itinerario paso a paso, filtro por género y modo juego para encadenar series de acordes.'
   String get slideThreeBody =>
       'Itinerario paso a paso, filtro por género y modo juego para encadenar series de acordes.';
+
+  /// es: 'Tu guitarra, a tu medida'
+  String get welcomeTitle => 'Tu guitarra, a tu medida';
+
+  /// es: 'Cinco preguntas rápidas y te recomiendo los acordes ideales para ti.'
+  String get welcomeBody =>
+      'Cinco preguntas rápidas y te recomiendo los acordes ideales para ti.';
+
+  /// es: 'Empezar'
+  String get welcomeCta => 'Empezar';
+
+  /// es: 'Paso $current de $total'
+  String stepOf({required Object current, required Object total}) =>
+      'Paso ${current} de ${total}';
+
+  /// es: 'Atrás'
+  String get back => 'Atrás';
+
+  /// es: 'Continuar'
+  String get proceed => 'Continuar';
+
+  /// es: 'Empezar a tocar'
+  String get finish => 'Empezar a tocar';
+
+  /// es: '¿Qué guitarra tocas?'
+  String get guitarTitle => '¿Qué guitarra tocas?';
+
+  /// es: 'Cada una pide acordes distintos.'
+  String get guitarBody => 'Cada una pide acordes distintos.';
+
+  /// es: 'Acústica'
+  String get guitarAcoustic => 'Acústica';
+
+  /// es: 'Cuerdas de acero y acordes abiertos'
+  String get guitarAcousticHint => 'Cuerdas de acero y acordes abiertos';
+
+  /// es: 'Eléctrica'
+  String get guitarElectric => 'Eléctrica';
+
+  /// es: 'Power chords y riffs'
+  String get guitarElectricHint => 'Power chords y riffs';
+
+  /// es: 'Clásica'
+  String get guitarClassical => 'Clásica';
+
+  /// es: 'Cuerdas de nailon y dedos'
+  String get guitarClassicalHint => 'Cuerdas de nailon y dedos';
+
+  /// es: '¿Cómo la tocas?'
+  String get playTitle => '¿Cómo la tocas?';
+
+  /// es: 'Ajusto los diagramas y los arpegios a tu forma de tocar.'
+  String get playBody =>
+      'Ajusto los diagramas y los arpegios a tu forma de tocar.';
+
+  /// es: 'Tu mano'
+  String get handLabel => 'Tu mano';
+
+  /// es: 'Diestro'
+  String get handRight => 'Diestro';
+
+  /// es: 'Diagramas normales'
+  String get handRightHint => 'Diagramas normales';
+
+  /// es: 'Zurdo'
+  String get handLeft => 'Zurdo';
+
+  /// es: 'Diagramas en espejo'
+  String get handLeftHint => 'Diagramas en espejo';
+
+  /// es: 'Cómo atacas las cuerdas'
+  String get styleLabel => 'Cómo atacas las cuerdas';
+
+  /// es: 'Púa'
+  String get stylePick => 'Púa';
+
+  /// es: 'Dedos'
+  String get styleFingers => 'Dedos';
+
+  /// es: 'Ambos'
+  String get styleBoth => 'Ambos';
+
+  /// es: '¿Qué música te gusta?'
+  String get genresTitle => '¿Qué música te gusta?';
+
+  /// es: 'Elige los que quieras: recomiendo acordes de esos estilos.'
+  String get genresBody =>
+      'Elige los que quieras: recomiendo acordes de esos estilos.';
+
+  /// es: '¿Cuánta experiencia tienes?'
+  String get levelTitle => '¿Cuánta experiencia tienes?';
+
+  /// es: 'Ajusto la dificultad para que avances sin frustrarte.'
+  String get levelBody =>
+      'Ajusto la dificultad para que avances sin frustrarte.';
+
+  /// es: 'Estoy empezando'
+  String get levelBeginner => 'Estoy empezando';
+
+  /// es: 'Acordes abiertos, sin cejilla'
+  String get levelBeginnerHint => 'Acordes abiertos, sin cejilla';
+
+  /// es: 'Ya toco canciones'
+  String get levelIntermediate => 'Ya toco canciones';
+
+  /// es: 'Cambio de acorde y cejillas básicas'
+  String get levelIntermediateHint => 'Cambio de acorde y cejillas básicas';
+
+  /// es: 'Toco con soltura'
+  String get levelAdvanced => 'Toco con soltura';
+
+  /// es: 'Cejillas, séptimas y voicings'
+  String get levelAdvancedHint => 'Cejillas, séptimas y voicings';
+
+  /// es: 'Tu plan está listo'
+  String get planTitle => 'Tu plan está listo';
+
+  /// es: 'Empieza por estos acordes, elegidos para ti.'
+  String get planBody => 'Empieza por estos acordes, elegidos para ti.';
+
+  /// es: 'Explora la biblioteca y empieza por el que más te guste.'
+  String get planEmpty =>
+      'Explora la biblioteca y empieza por el que más te guste.';
 }
 
 // Path: data
@@ -742,24 +930,6 @@ class Translations$tuner$es {
 
   // Translations
 
-  /// es: 'Afinar'
-  String get tabTune => 'Afinar';
-
-  /// es: 'Acordes'
-  String get tabListen => 'Acordes';
-
-  /// es: 'Empezar a afinar'
-  String get start => 'Empezar a afinar';
-
-  /// es: 'Detener'
-  String get stop => 'Detener';
-
-  /// es: 'Automático'
-  String get auto => 'Automático';
-
-  /// es: 'Toca cualquier cuerda: la reconozco sola'
-  String get autoHint => 'Toca cualquier cuerda: la reconozco sola';
-
   /// es: 'Toca una cuerda al aire'
   String get pluckPrompt => 'Toca una cuerda al aire';
 
@@ -828,29 +998,35 @@ class Translations$tuner$es {
   /// es: '$cents cents'
   String cents({required Object cents}) => '${cents} cents';
 
-  /// es: '$count de 6 afinadas'
-  String progress({required Object count}) => '${count} de 6 afinadas';
-
   /// es: '¡Guitarra afinada!'
   String get allTunedTitle => '¡Guitarra afinada!';
 
   /// es: 'Las seis cuerdas están en su sitio. ¡A tocar!'
   String get allTunedMessage => 'Las seis cuerdas están en su sitio. ¡A tocar!';
 
-  /// es: 'Escuchar nota'
-  String get playReference => 'Escuchar nota';
-
-  /// es: 'Empezar de nuevo'
-  String get startOver => 'Empezar de nuevo';
-
-  /// es: 'Toca una clavija para afinar solo esa cuerda'
-  String get selectHint => 'Toca una clavija para afinar solo esa cuerda';
-
   /// es: 'Clavija de la $string'
   String peg({required Object string}) => 'Clavija de la ${string}';
 
   /// es: 'Afinación: $cents cents'
   String meterLabel({required Object cents}) => 'Afinación: ${cents} cents';
+
+  /// es: 'Activar micrófono'
+  String get activate => 'Activar micrófono';
+
+  /// es: 'Automático · toca una clavija para fijarla'
+  String get modeAuto => 'Automático · toca una clavija para fijarla';
+
+  /// es: 'Fijada: $string'
+  String modeManual({required Object string}) => 'Fijada: ${string}';
+
+  /// es: 'Detectar acordes'
+  String get chordsTitle => 'Detectar acordes';
+
+  /// es: 'Detectar acordes'
+  String get switchToChords => 'Detectar acordes';
+
+  /// es: 'Volver al afinador'
+  String get switchToTuner => 'Volver al afinador';
 }
 
 // Path: practice
@@ -979,6 +1155,43 @@ class Translations$practice$es {
   /// es: 'No reconozco esa nota. Toca solo la $string, con calma.'
   String tipUnknown({required Object string}) =>
       'No reconozco esa nota. Toca solo la ${string}, con calma.';
+}
+
+// Path: profile
+class Translations$profile$es {
+  Translations$profile$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Tu perfil'
+  String get title => 'Tu perfil';
+
+  /// es: 'Editar perfil'
+  String get edit => 'Editar perfil';
+
+  /// es: '$guitar · $level'
+  String summary({required Object guitar, required Object level}) =>
+      '${guitar} · ${level}';
+
+  /// es: 'Guitarra'
+  String get guitar => 'Guitarra';
+
+  /// es: 'Forma de tocar'
+  String get play => 'Forma de tocar';
+
+  /// es: 'Géneros'
+  String get genres => 'Géneros';
+
+  /// es: 'Experiencia'
+  String get experience => 'Experiencia';
+
+  /// es: 'Recomendaciones según tu perfil'
+  String get personalizedHint => 'Recomendaciones según tu perfil';
+
+  /// es: 'Cuéntame cómo tocas y personalizo todo'
+  String get setupHint => 'Cuéntame cómo tocas y personalizo todo';
 }
 
 // Path: settings.theme
@@ -1472,6 +1685,19 @@ extension on Translations {
       'home.gameSubtitle' => 'Toca el acorde y encadena la serie',
       'home.liveTitle' => 'Afinador y escucha',
       'home.liveSubtitle' => 'Afina cuerda a cuerda con tu micrófono',
+      'home.greetingMorning' => 'Buenos días',
+      'home.greetingAfternoon' => 'Buenas tardes',
+      'home.greetingEvening' => 'Buenas noches',
+      'home.nextUp' => 'Tu siguiente acorde',
+      'home.practiceCta' => 'Practicar',
+      'home.statMastered' => 'Dominados',
+      'home.statBest' => 'Mejor puntaje',
+      'home.statLevel' => 'Nivel',
+      'home.recommendedTitle' => 'Para ti',
+      'home.recommendedEmpty' => 'Completa tu perfil para ver recomendaciones.',
+      'home.toolsTitle' => 'Herramientas',
+      'home.seeAll' => 'Ver todo',
+      'home.learnSubtitle' => 'Tu ruta paso a paso',
       'chords.title' => 'Acordes',
       'chords.clearFilters' => 'Limpiar filtros',
       'chords.searchHint' => 'Buscar acordes',
@@ -1495,6 +1721,20 @@ extension on Translations {
       'chords.emptyTitle' => 'Sin resultados',
       'chords.emptyMessage' =>
         'Ajusta la búsqueda o los filtros para ver más acordes.',
+      'chords.filters' => 'Filtros',
+      'chords.filterLevel' => 'Nivel',
+      'chords.filterQuality' => 'Tipo de acorde',
+      'chords.filterDifficulty' => 'Dificultad máxima',
+      'chords.forMyLevel' => 'Para mi nivel',
+      'chords.apply' => 'Ver resultados',
+      'chords.reset' => 'Restablecer',
+      'chords.results' =>
+        ({required num n}) =>
+            (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+              n,
+              one: '${n} acorde',
+              other: '${n} acordes',
+            ),
       'chordDetail.titleFallback' => 'Acorde',
       'chordDetail.markMastered' => 'Marcar como dominado',
       'chordDetail.unmarkMastered' => 'Quitar de dominados',
@@ -1566,8 +1806,6 @@ extension on Translations {
         required Object details,
       }) => 'Diagrama de ${position}, ${details}',
       'live.title' => 'Afinador',
-      'live.listen' => 'Escuchar guitarra',
-      'live.stop' => 'Detener',
       'live.emptyTitle' => 'Sin sugerencias aún',
       'live.emptyMessage' =>
         'Pulsa escuchar y toca un acorde para ver coincidencias.',
@@ -1659,6 +1897,54 @@ extension on Translations {
       'onboarding.slideTwoBody' => 'Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.',
       'onboarding.slideThreeTitle' => 'Aprende por niveles y practica',
       'onboarding.slideThreeBody' => 'Itinerario paso a paso, filtro por género y modo juego para encadenar series de acordes.',
+      'onboarding.welcomeTitle' => 'Tu guitarra, a tu medida',
+      'onboarding.welcomeBody' =>
+        'Cinco preguntas rápidas y te recomiendo los acordes ideales para ti.',
+      'onboarding.welcomeCta' => 'Empezar',
+      'onboarding.stepOf' => ({
+        required Object current,
+        required Object total,
+      }) => 'Paso ${current} de ${total}',
+      'onboarding.back' => 'Atrás',
+      'onboarding.proceed' => 'Continuar',
+      'onboarding.finish' => 'Empezar a tocar',
+      'onboarding.guitarTitle' => '¿Qué guitarra tocas?',
+      'onboarding.guitarBody' => 'Cada una pide acordes distintos.',
+      'onboarding.guitarAcoustic' => 'Acústica',
+      'onboarding.guitarAcousticHint' => 'Cuerdas de acero y acordes abiertos',
+      'onboarding.guitarElectric' => 'Eléctrica',
+      'onboarding.guitarElectricHint' => 'Power chords y riffs',
+      'onboarding.guitarClassical' => 'Clásica',
+      'onboarding.guitarClassicalHint' => 'Cuerdas de nailon y dedos',
+      'onboarding.playTitle' => '¿Cómo la tocas?',
+      'onboarding.playBody' =>
+        'Ajusto los diagramas y los arpegios a tu forma de tocar.',
+      'onboarding.handLabel' => 'Tu mano',
+      'onboarding.handRight' => 'Diestro',
+      'onboarding.handRightHint' => 'Diagramas normales',
+      'onboarding.handLeft' => 'Zurdo',
+      'onboarding.handLeftHint' => 'Diagramas en espejo',
+      'onboarding.styleLabel' => 'Cómo atacas las cuerdas',
+      'onboarding.stylePick' => 'Púa',
+      'onboarding.styleFingers' => 'Dedos',
+      'onboarding.styleBoth' => 'Ambos',
+      'onboarding.genresTitle' => '¿Qué música te gusta?',
+      'onboarding.genresBody' =>
+        'Elige los que quieras: recomiendo acordes de esos estilos.',
+      'onboarding.levelTitle' => '¿Cuánta experiencia tienes?',
+      'onboarding.levelBody' =>
+        'Ajusto la dificultad para que avances sin frustrarte.',
+      'onboarding.levelBeginner' => 'Estoy empezando',
+      'onboarding.levelBeginnerHint' => 'Acordes abiertos, sin cejilla',
+      'onboarding.levelIntermediate' => 'Ya toco canciones',
+      'onboarding.levelIntermediateHint' =>
+        'Cambio de acorde y cejillas básicas',
+      'onboarding.levelAdvanced' => 'Toco con soltura',
+      'onboarding.levelAdvancedHint' => 'Cejillas, séptimas y voicings',
+      'onboarding.planTitle' => 'Tu plan está listo',
+      'onboarding.planBody' => 'Empieza por estos acordes, elegidos para ti.',
+      'onboarding.planEmpty' =>
+        'Explora la biblioteca y empieza por el que más te guste.',
       'data.language.system' => 'Idioma del sistema',
       'data.language.es' => 'Español',
       'data.language.en' => 'Inglés',
@@ -1756,12 +2042,6 @@ extension on Translations {
       'mic.levelQuiet' => 'Apenas te oigo: acerca la guitarra al micrófono',
       'mic.levelGood' => 'Te escucho bien',
       'mic.levelLoud' => 'Suena muy fuerte: aleja un poco la guitarra',
-      'tuner.tabTune' => 'Afinar',
-      'tuner.tabListen' => 'Acordes',
-      'tuner.start' => 'Empezar a afinar',
-      'tuner.stop' => 'Detener',
-      'tuner.auto' => 'Automático',
-      'tuner.autoHint' => 'Toca cualquier cuerda: la reconozco sola',
       'tuner.pluckPrompt' => 'Toca una cuerda al aire',
       'tuner.pluckString' => ({required Object string}) => 'Toca la ${string}',
       'tuner.stringTitle' => ({
@@ -1790,17 +2070,19 @@ extension on Translations {
       'tuner.flat' => 'Floja',
       'tuner.sharp' => 'Alta',
       'tuner.cents' => ({required Object cents}) => '${cents} cents',
-      'tuner.progress' => ({required Object count}) => '${count} de 6 afinadas',
       'tuner.allTunedTitle' => '¡Guitarra afinada!',
       'tuner.allTunedMessage' =>
         'Las seis cuerdas están en su sitio. ¡A tocar!',
-      'tuner.playReference' => 'Escuchar nota',
-      'tuner.startOver' => 'Empezar de nuevo',
-      'tuner.selectHint' => 'Toca una clavija para afinar solo esa cuerda',
       'tuner.peg' => ({required Object string}) => 'Clavija de la ${string}',
       'tuner.meterLabel' => ({
         required Object cents,
       }) => 'Afinación: ${cents} cents',
+      'tuner.activate' => 'Activar micrófono',
+      'tuner.modeAuto' => 'Automático · toca una clavija para fijarla',
+      'tuner.modeManual' => ({required Object string}) => 'Fijada: ${string}',
+      'tuner.chordsTitle' => 'Detectar acordes',
+      'tuner.switchToChords' => 'Detectar acordes',
+      'tuner.switchToTuner' => 'Volver al afinador',
       'practice.title' => 'Practicar acorde',
       'practice.intro' =>
         'Toca las cuerdas una a una. Las reconozco en el orden que quieras.',
@@ -1872,6 +2154,18 @@ extension on Translations {
       'practice.tipUnknown' => ({
         required Object string,
       }) => 'No reconozco esa nota. Toca solo la ${string}, con calma.',
+      'profile.title' => 'Tu perfil',
+      'profile.edit' => 'Editar perfil',
+      'profile.summary' => ({
+        required Object guitar,
+        required Object level,
+      }) => '${guitar} · ${level}',
+      'profile.guitar' => 'Guitarra',
+      'profile.play' => 'Forma de tocar',
+      'profile.genres' => 'Géneros',
+      'profile.experience' => 'Experiencia',
+      'profile.personalizedHint' => 'Recomendaciones según tu perfil',
+      'profile.setupHint' => 'Cuéntame cómo tocas y personalizo todo',
       _ => null,
     };
   }

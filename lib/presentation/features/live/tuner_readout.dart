@@ -4,61 +4,69 @@ import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/l10n/tuner_labels.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
-import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/molecules/mic_level_bar.dart';
-import 'package:chords/presentation/widgets/organisms/tuning_meter.dart';
 import 'package:flutter/material.dart';
 
-/// Zona central del afinador: qué cuerda suena y qué hacer con la clavija.
+/// Instrucción bajo el dial: qué hacer con la clavija o qué tocar.
 ///
-/// Mantiene una altura mínima para que la pantalla no salte al aparecer o
-/// desaparecer la lectura.
+/// Mantiene una altura mínima para que la pantalla no salte al cambiar de
+/// estado.
 class TunerReadout extends StatelessWidget {
-  /// Crea la zona de lectura.
-  const TunerReadout({required this.state, super.key});
+  /// Crea la zona de instrucción.
+  const TunerReadout({
+    required this.state,
+    required this.onActivate,
+    super.key,
+  });
 
   /// Estado del afinador.
   final TunerState state;
 
+  /// Acción para activar el micrófono cuando está en reposo.
+  final VoidCallback onActivate;
+
   @override
   Widget build(BuildContext context) => ConstrainedBox(
-    constraints: const BoxConstraints(minHeight: 215),
+    constraints: const BoxConstraints(minHeight: 120),
     child: AnimatedSwitcher(
       duration: const Duration(milliseconds: 180),
-      child: KeyedSubtree(
-        key: ValueKey<String>(_keyOf()),
-        child: _content(context),
-      ),
+      child: KeyedSubtree(key: ValueKey<String>(_keyOf()), child: _content()),
     ),
   );
 
   String _keyOf() {
+    final StringTuningReading? reading = state.reading;
+    if (reading != null) {
+      return 'reading-${reading.zone.name}-${reading.direction.name}';
+    }
     if (state.allTuned) {
       return 'done';
     }
-    final StringTuningReading? reading = state.reading;
-    if (reading != null) {
-      return 'reading';
+    if (!state.isListening) {
+      return 'idle';
     }
     return state.heardOther != null ? 'other' : 'prompt';
   }
 
-  Widget _content(BuildContext context) {
-    if (state.allTuned) {
-      return const _AllTunedCard();
-    }
+  Widget _content() {
     final StringTuningReading? reading = state.reading;
     if (reading != null) {
-      return _ReadingPanel(reading: reading);
+      return _Instruction(reading: reading);
     }
-    return _PromptPanel(state: state);
+    if (state.allTuned) {
+      return const _AllTuned();
+    }
+    if (!state.isListening) {
+      return _Activate(onActivate: onActivate);
+    }
+    return _Prompt(state: state);
   }
 }
 
-/// Lectura activa: nota, cuerda, instrucción y medidor.
-class _ReadingPanel extends StatelessWidget {
-  const _ReadingPanel({required this.reading});
+/// Titular grande con flecha y la acción sobre la clavija.
+class _Instruction extends StatelessWidget {
+  const _Instruction({required this.reading});
 
   final StringTuningReading reading;
 
@@ -76,66 +84,7 @@ class _ReadingPanel extends StatelessWidget {
       TuningZone.near => colors.nearTune,
       TuningZone.off || TuningZone.far => colors.outOfTune,
     };
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: <Widget>[
-            Text(
-              openNoteName(t, reading.string),
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: tone,
-                fontWeight: FontWeight.w800,
-                fontSize: 72,
-                height: 1,
-              ),
-            ),
-            const SizedBox(width: 8),
-            AppText(
-              '${reading.frequency.toStringAsFixed(1)} Hz',
-              color: scheme.onSurfaceVariant,
-            ),
-          ],
-        ),
-        AppText(
-          stringTitle(t, reading.string),
-          variant: AppTextVariant.titleMedium,
-          color: scheme.onSurfaceVariant,
-        ),
-        const SizedBox(height: 12),
-        TuningMeter(reading: reading),
-        const SizedBox(height: 12),
-        _Instruction(
-          headline: message.headline,
-          action: message.action,
-          direction: reading.direction,
-          tone: tone,
-        ),
-      ],
-    );
-  }
-}
-
-/// Titular grande con flecha y la acción sobre la clavija.
-class _Instruction extends StatelessWidget {
-  const _Instruction({
-    required this.headline,
-    required this.action,
-    required this.direction,
-    required this.tone,
-  });
-
-  final String headline;
-  final String? action;
-  final TuneDirection direction;
-  final Color tone;
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    final IconData icon = switch (direction) {
+    final IconData icon = switch (reading.direction) {
       TuneDirection.up => Icons.arrow_upward_rounded,
       TuneDirection.down => Icons.arrow_downward_rounded,
       TuneDirection.none => Icons.check_circle_rounded,
@@ -145,11 +94,11 @@ class _Instruction extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(icon, color: tone, size: 34),
+            Icon(icon, color: tone, size: 40),
             const SizedBox(width: 8),
             Flexible(
               child: AppText(
-                headline,
+                message.headline,
                 variant: AppTextVariant.headlineMedium,
                 color: tone,
                 weight: FontWeight.w800,
@@ -157,9 +106,9 @@ class _Instruction extends StatelessWidget {
             ),
           ],
         ),
-        if (action != null)
+        if (message.action != null)
           AppText(
-            action!,
+            message.action!,
             color: scheme.onSurfaceVariant,
             align: TextAlign.center,
           ),
@@ -169,8 +118,8 @@ class _Instruction extends StatelessWidget {
 }
 
 /// Qué hacer cuando aún no suena nada reconocible.
-class _PromptPanel extends StatelessWidget {
-  const _PromptPanel({required this.state});
+class _Prompt extends StatelessWidget {
+  const _Prompt({required this.state});
 
   final TunerState state;
 
@@ -180,21 +129,11 @@ class _PromptPanel extends StatelessWidget {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     final GuitarString? target = state.target;
     final GuitarString? other = state.heardOther;
-    final String prompt = state.isListening
-        ? (target == null
-              ? t.tuner.pluckPrompt
-              : t.tuner.pluckString(string: stringShort(t, target.number)))
-        : t.tuner.autoHint;
+    final String prompt = target == null
+        ? t.tuner.pluckPrompt
+        : t.tuner.pluckString(string: stringShort(t, target.number));
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const SizedBox(height: 28),
-        Icon(
-          state.isListening ? Icons.graphic_eq_rounded : Icons.mic_none_rounded,
-          size: 44,
-          color: scheme.primary,
-        ),
-        const SizedBox(height: 12),
         AppText(
           prompt,
           variant: AppTextVariant.titleLarge,
@@ -202,7 +141,7 @@ class _PromptPanel extends StatelessWidget {
           overflow: TextOverflow.visible,
         ),
         if (other != null && target != null) ...<Widget>[
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           AppText(
             t.tuner.heardOther(
               heard: stringShort(t, other.number),
@@ -213,47 +152,54 @@ class _PromptPanel extends StatelessWidget {
             overflow: TextOverflow.visible,
           ),
         ],
-        const SizedBox(height: 20),
-        if (state.isListening) MicLevelBar(level: state.level),
+        const SizedBox(height: 16),
+        MicLevelBar(level: state.level),
       ],
     );
   }
 }
 
-/// Celebración al tener las seis cuerdas afinadas.
-class _AllTunedCard extends StatelessWidget {
-  const _AllTunedCard();
+/// Las seis cuerdas afinadas.
+class _AllTuned extends StatelessWidget {
+  const _AllTuned();
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    return AppCard(
-      color: scheme.primaryContainer,
-      child: Column(
-        children: <Widget>[
-          Icon(
-            Icons.celebration_rounded,
-            size: 48,
-            color: scheme.onPrimaryContainer,
-          ),
-          const SizedBox(height: 8),
-          AppText(
-            t.tuner.allTunedTitle,
-            variant: AppTextVariant.headlineMedium,
-            color: scheme.onPrimaryContainer,
-            weight: FontWeight.w800,
-            align: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          AppText(
-            t.tuner.allTunedMessage,
-            color: scheme.onPrimaryContainer,
-            align: TextAlign.center,
-            overflow: TextOverflow.visible,
-          ),
-        ],
-      ),
+    final AppChordColors colors = chordColorsOf(context);
+    return Column(
+      children: <Widget>[
+        Icon(Icons.celebration_rounded, size: 44, color: colors.inTune),
+        AppText(
+          t.tuner.allTunedTitle,
+          variant: AppTextVariant.headlineMedium,
+          color: colors.inTune,
+          weight: FontWeight.w800,
+          align: TextAlign.center,
+        ),
+        AppText(
+          t.tuner.allTunedMessage,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          align: TextAlign.center,
+          overflow: TextOverflow.visible,
+        ),
+      ],
     );
   }
+}
+
+/// Micrófono en reposo: único botón de la pantalla.
+class _Activate extends StatelessWidget {
+  const _Activate({required this.onActivate});
+
+  final VoidCallback onActivate;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: FilledButton.icon(
+      onPressed: onActivate,
+      icon: const Icon(Icons.mic_rounded),
+      label: Text(context.t.tuner.activate),
+    ),
+  );
 }

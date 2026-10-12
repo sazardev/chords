@@ -76,8 +76,18 @@ class LearnController extends ChangeNotifier {
   }
 
   /// Siguiente acorde pendiente del itinerario.
-  String? get nextChordId {
-    for (final LearningLevel level in LearningLevel.values) {
+  String? get nextChordId => nextChordIdFrom(1);
+
+  /// Siguiente acorde pendiente empezando por el nivel [startLevel].
+  ///
+  /// Si todo lo de ese nivel en adelante está dominado, vuelve a revisar los
+  /// niveles anteriores.
+  String? nextChordIdFrom(int startLevel) {
+    final List<LearningLevel> ordered = <LearningLevel>[
+      ...LearningLevel.values.where((LearningLevel l) => l.level >= startLevel),
+      ...LearningLevel.values.where((LearningLevel l) => l.level < startLevel),
+    ];
+    for (final LearningLevel level in ordered) {
       for (final Chord chord in chordsOfLevel(level.level)) {
         if (!_mastered.contains(chord.id)) {
           return chord.id;

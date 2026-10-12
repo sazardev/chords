@@ -1,3 +1,4 @@
+import 'package:chords/presentation/widgets/atoms/press_scale.dart';
 import 'package:flutter/material.dart';
 
 /// Tarjeta plana del sistema de diseño.
@@ -11,7 +12,7 @@ class AppCard extends StatelessWidget {
     super.key,
     this.onTap,
     this.padding = const EdgeInsets.all(16),
-    this.borderRadius = 20,
+    this.borderRadius = 28,
     this.color,
   });
 
@@ -27,18 +28,19 @@ class AppCard extends StatelessWidget {
   /// Radio de las esquinas.
   final double borderRadius;
 
-  /// Color de fondo (por defecto `surfaceContainerLow` del tema).
+  /// Color de fondo (por defecto `surfaceContainer` del tema).
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     final Widget content = Padding(padding: padding, child: child);
-    return Material(
-      color: color ?? scheme.surfaceContainerLow,
+    final Widget card = Material(
+      color: color ?? scheme.surfaceContainer,
       borderRadius: BorderRadius.circular(borderRadius),
       clipBehavior: Clip.antiAlias,
       child: onTap == null ? content : InkWell(onTap: onTap, child: content),
     );
+    return onTap == null ? card : PressScale(child: card);
   }
 }

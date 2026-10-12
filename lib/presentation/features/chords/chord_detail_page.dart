@@ -4,8 +4,10 @@ import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
+import 'package:chords/domain/profile/entities/playing_style.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
@@ -253,10 +255,24 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
 }
 
 /// Fila de patrones de arpegio del acorde.
+///
+/// Si la persona toca con los dedos, el fingerstyle va el primero.
 class _ArpeggioRow extends StatelessWidget {
   const _ArpeggioRow({required this.controller});
 
   final ChordDetailController controller;
+
+  List<ArpeggioPattern> _ordered(PlayingStyle style) {
+    if (style != PlayingStyle.fingers) {
+      return ArpeggioPattern.all;
+    }
+    return <ArpeggioPattern>[
+      ArpeggioPattern.fingerstyle,
+      ...ArpeggioPattern.all.where(
+        (ArpeggioPattern p) => p != ArpeggioPattern.fingerstyle,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,8 +282,9 @@ class _ArpeggioRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: <Widget>[
-          for (final ArpeggioPattern pattern
-              in ArpeggioPattern.all) ...<Widget>[
+          for (final ArpeggioPattern pattern in _ordered(
+            context.watch<ProfileController>().profile.style,
+          )) ...<Widget>[
             ActionChip(
               avatar: const Icon(Icons.music_note_rounded),
               label: Text(

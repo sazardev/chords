@@ -32,11 +32,13 @@ import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -121,6 +123,9 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
       ChangeNotifierProvider<ChordPracticeController>(
         create: (_) => dependencies.chordPracticeController,
       ),
+      ChangeNotifierProvider<ProfileController>(
+        create: (_) => dependencies.profileController,
+      ),
     ];
 
 /// Severidad mínima de log según el flavor activo.
@@ -176,6 +181,7 @@ class AppDependencies {
     required this.liveController,
     required this.tunerController,
     required this.chordPracticeController,
+    required this.profileController,
   });
 
   /// Crea el grafo de dependencias por defecto.
@@ -212,11 +218,16 @@ class AppDependencies {
       audioRepository,
       chordRepository,
     );
-    final TunerController tuner = TunerController(audioRepository);
+    final TunerController tuner = TunerController(
+      audioRepository,
+      onStringTuned: HapticFeedback.mediumImpact,
+    );
     final ChordPracticeController practice = ChordPracticeController(
       audioRepository,
       chordRepository,
     );
+    final ProfileController profile = ProfileController(preferences, settings)
+      ..load();
     unawaited(locale.load());
     unawaited(appearance.load());
     unawaited(settings.load());
@@ -239,6 +250,7 @@ class AppDependencies {
       liveController: live,
       tunerController: tuner,
       chordPracticeController: practice,
+      profileController: profile,
     );
   }
 
@@ -283,4 +295,7 @@ class AppDependencies {
 
   /// Controlador de la práctica de acordes cuerda a cuerda.
   final ChordPracticeController chordPracticeController;
+
+  /// Controlador del perfil de la persona.
+  final ProfileController profileController;
 }

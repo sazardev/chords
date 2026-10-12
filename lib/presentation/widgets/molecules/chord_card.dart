@@ -8,6 +8,9 @@ import 'package:chords/presentation/widgets/organisms/chord_diagram.dart';
 import 'package:flutter/material.dart';
 
 /// Tarjeta de acorde para listados y sugerencias en vivo.
+///
+/// Limpia y jerarquizada: el diagrama manda, debajo el nombre grande, y en la
+/// base la dificultad a la izquierda y el botón de escuchar a la derecha.
 class ChordCard extends StatelessWidget {
   /// Crea la tarjeta.
   const ChordCard({
@@ -39,7 +42,7 @@ class ChordCard extends StatelessWidget {
     final Translations t = context.t;
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(12, 14, 10, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -54,11 +57,10 @@ class ChordCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          AppText(chord.name, variant: AppTextVariant.titleLarge),
           AppText(
-            t.chords.positionCount(n: chord.variantCount),
-            variant: AppTextVariant.labelMedium,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            chord.name,
+            variant: AppTextVariant.titleLarge,
+            weight: FontWeight.w800,
           ),
           const SizedBox(height: 6),
           Row(

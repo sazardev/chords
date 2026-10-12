@@ -97,6 +97,8 @@ class TranslationsEn extends Translations
   late final Translations$practice$en practice = Translations$practice$en._(
     _root,
   );
+  @override
+  late final Translations$profile$en profile = Translations$profile$en._(_root);
 }
 
 // Path: app
@@ -184,6 +186,33 @@ class Translations$home$en extends Translations$home$es {
   String get liveTitle => 'Tuner and listening';
   @override
   String get liveSubtitle => 'Tune string by string with your microphone';
+  @override
+  String get greetingMorning => 'Good morning';
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+  @override
+  String get greetingEvening => 'Good evening';
+  @override
+  String get nextUp => 'Your next chord';
+  @override
+  String get practiceCta => 'Practice';
+  @override
+  String get statMastered => 'Mastered';
+  @override
+  String get statBest => 'Best score';
+  @override
+  String get statLevel => 'Level';
+  @override
+  String get recommendedTitle => 'For you';
+  @override
+  String get recommendedEmpty =>
+      'Complete your profile to see recommendations.';
+  @override
+  String get toolsTitle => 'Tools';
+  @override
+  String get seeAll => 'See all';
+  @override
+  String get learnSubtitle => 'Your step-by-step path';
 }
 
 // Path: chords
@@ -228,6 +257,27 @@ class Translations$chords$en extends Translations$chords$es {
   @override
   String get emptyMessage =>
       'Adjust the search or the filters to see more chords.';
+  @override
+  String get filters => 'Filters';
+  @override
+  String get filterLevel => 'Level';
+  @override
+  String get filterQuality => 'Chord type';
+  @override
+  String get filterDifficulty => 'Max difficulty';
+  @override
+  String get forMyLevel => 'For my level';
+  @override
+  String get apply => 'Show results';
+  @override
+  String get reset => 'Reset';
+  @override
+  String results({required num n}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+        n,
+        one: '${n} chord',
+        other: '${n} chords',
+      );
 }
 
 // Path: chordDetail
@@ -377,10 +427,6 @@ class Translations$live$en extends Translations$live$es {
   @override
   String get title => 'Tuner';
   @override
-  String get listen => 'Listen to guitar';
-  @override
-  String get stop => 'Stop';
-  @override
   String get emptyTitle => 'No suggestions yet';
   @override
   String get emptyMessage => 'Press listen and play a chord to see matches.';
@@ -528,6 +574,89 @@ class Translations$onboarding$en extends Translations$onboarding$es {
   @override
   String get slideThreeBody =>
       'Step-by-step itinerary, genre filter and game mode to chain chord streaks.';
+  @override
+  String get welcomeTitle => 'Your guitar, made to measure';
+  @override
+  String get welcomeBody =>
+      'Five quick questions and I will recommend the chords that suit you best.';
+  @override
+  String get welcomeCta => 'Get started';
+  @override
+  String stepOf({required Object current, required Object total}) =>
+      'Step ${current} of ${total}';
+  @override
+  String get back => 'Back';
+  @override
+  String get proceed => 'Continue';
+  @override
+  String get finish => 'Start playing';
+  @override
+  String get guitarTitle => 'Which guitar do you play?';
+  @override
+  String get guitarBody => 'Each one calls for different chords.';
+  @override
+  String get guitarAcoustic => 'Acoustic';
+  @override
+  String get guitarAcousticHint => 'Steel strings and open chords';
+  @override
+  String get guitarElectric => 'Electric';
+  @override
+  String get guitarElectricHint => 'Power chords and riffs';
+  @override
+  String get guitarClassical => 'Classical';
+  @override
+  String get guitarClassicalHint => 'Nylon strings and fingers';
+  @override
+  String get playTitle => 'How do you play it?';
+  @override
+  String get playBody => 'I adapt the diagrams and arpeggios to your playing.';
+  @override
+  String get handLabel => 'Your hand';
+  @override
+  String get handRight => 'Right-handed';
+  @override
+  String get handRightHint => 'Regular diagrams';
+  @override
+  String get handLeft => 'Left-handed';
+  @override
+  String get handLeftHint => 'Mirrored diagrams';
+  @override
+  String get styleLabel => 'How you pluck the strings';
+  @override
+  String get stylePick => 'Pick';
+  @override
+  String get styleFingers => 'Fingers';
+  @override
+  String get styleBoth => 'Both';
+  @override
+  String get genresTitle => 'What music do you like?';
+  @override
+  String get genresBody =>
+      'Pick as many as you like: I recommend chords from those styles.';
+  @override
+  String get levelTitle => 'How much experience do you have?';
+  @override
+  String get levelBody =>
+      'I tune the difficulty so you progress without frustration.';
+  @override
+  String get levelBeginner => 'I\'m just starting';
+  @override
+  String get levelBeginnerHint => 'Open chords, no barre';
+  @override
+  String get levelIntermediate => 'I already play songs';
+  @override
+  String get levelIntermediateHint => 'Chord changes and basic barres';
+  @override
+  String get levelAdvanced => 'I play fluently';
+  @override
+  String get levelAdvancedHint => 'Barres, sevenths and voicings';
+  @override
+  String get planTitle => 'Your plan is ready';
+  @override
+  String get planBody => 'Start with these chords, picked for you.';
+  @override
+  String get planEmpty =>
+      'Explore the library and start with the one you like most.';
 }
 
 // Path: data
@@ -654,18 +783,6 @@ class Translations$tuner$en extends Translations$tuner$es {
 
   // Translations
   @override
-  String get tabTune => 'Tune';
-  @override
-  String get tabListen => 'Chords';
-  @override
-  String get start => 'Start tuning';
-  @override
-  String get stop => 'Stop';
-  @override
-  String get auto => 'Automatic';
-  @override
-  String get autoHint => 'Play any string: I recognize it on my own';
-  @override
   String get pluckPrompt => 'Play an open string';
   @override
   String pluckString({required Object string}) => 'Play the ${string}';
@@ -712,21 +829,25 @@ class Translations$tuner$en extends Translations$tuner$es {
   @override
   String cents({required Object cents}) => '${cents} cents';
   @override
-  String progress({required Object count}) => '${count} of 6 in tune';
-  @override
   String get allTunedTitle => 'Guitar in tune!';
   @override
   String get allTunedMessage => 'All six strings are in place. Time to play!';
   @override
-  String get playReference => 'Hear note';
-  @override
-  String get startOver => 'Start over';
-  @override
-  String get selectHint => 'Tap a peg to tune just that string';
-  @override
   String peg({required Object string}) => 'Tuning peg of the ${string}';
   @override
   String meterLabel({required Object cents}) => 'Tuning: ${cents} cents';
+  @override
+  String get activate => 'Enable microphone';
+  @override
+  String get modeAuto => 'Automatic · tap a peg to lock a string';
+  @override
+  String modeManual({required Object string}) => 'Locked: ${string}';
+  @override
+  String get chordsTitle => 'Detect chords';
+  @override
+  String get switchToChords => 'Detect chords';
+  @override
+  String get switchToTuner => 'Back to tuner';
 }
 
 // Path: practice
@@ -828,6 +949,37 @@ class Translations$practice$en extends Translations$practice$es {
   @override
   String tipUnknown({required Object string}) =>
       'I don\'t recognize that note. Play only the ${string}, calmly.';
+}
+
+// Path: profile
+class Translations$profile$en extends Translations$profile$es {
+  Translations$profile$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get title => 'Your profile';
+  @override
+  String get edit => 'Edit profile';
+  @override
+  String summary({required Object guitar, required Object level}) =>
+      '${guitar} · ${level}';
+  @override
+  String get guitar => 'Guitar';
+  @override
+  String get play => 'Playing style';
+  @override
+  String get genres => 'Genres';
+  @override
+  String get experience => 'Experience';
+  @override
+  String get personalizedHint => 'Recommendations based on your profile';
+  @override
+  String get setupHint =>
+      'Tell me how you play and I will personalize everything';
 }
 
 // Path: settings.theme
@@ -1250,6 +1402,20 @@ extension on TranslationsEn {
       'home.gameSubtitle' => 'Play the chord and build a streak',
       'home.liveTitle' => 'Tuner and listening',
       'home.liveSubtitle' => 'Tune string by string with your microphone',
+      'home.greetingMorning' => 'Good morning',
+      'home.greetingAfternoon' => 'Good afternoon',
+      'home.greetingEvening' => 'Good evening',
+      'home.nextUp' => 'Your next chord',
+      'home.practiceCta' => 'Practice',
+      'home.statMastered' => 'Mastered',
+      'home.statBest' => 'Best score',
+      'home.statLevel' => 'Level',
+      'home.recommendedTitle' => 'For you',
+      'home.recommendedEmpty' =>
+        'Complete your profile to see recommendations.',
+      'home.toolsTitle' => 'Tools',
+      'home.seeAll' => 'See all',
+      'home.learnSubtitle' => 'Your step-by-step path',
       'chords.title' => 'Chords',
       'chords.clearFilters' => 'Clear filters',
       'chords.searchHint' => 'Search chords',
@@ -1273,6 +1439,20 @@ extension on TranslationsEn {
       'chords.emptyTitle' => 'No results',
       'chords.emptyMessage' =>
         'Adjust the search or the filters to see more chords.',
+      'chords.filters' => 'Filters',
+      'chords.filterLevel' => 'Level',
+      'chords.filterQuality' => 'Chord type',
+      'chords.filterDifficulty' => 'Max difficulty',
+      'chords.forMyLevel' => 'For my level',
+      'chords.apply' => 'Show results',
+      'chords.reset' => 'Reset',
+      'chords.results' =>
+        ({required num n}) =>
+            (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+              n,
+              one: '${n} chord',
+              other: '${n} chords',
+            ),
       'chordDetail.titleFallback' => 'Chord',
       'chordDetail.markMastered' => 'Mark as mastered',
       'chordDetail.unmarkMastered' => 'Remove from mastered',
@@ -1344,8 +1524,6 @@ extension on TranslationsEn {
         required Object details,
       }) => 'Diagram of ${position}, ${details}',
       'live.title' => 'Tuner',
-      'live.listen' => 'Listen to guitar',
-      'live.stop' => 'Stop',
       'live.emptyTitle' => 'No suggestions yet',
       'live.emptyMessage' => 'Press listen and play a chord to see matches.',
       'live.suggestions' => 'Suggestions',
@@ -1437,6 +1615,52 @@ extension on TranslationsEn {
       'onboarding.slideTwoBody' => 'We synthesize each string so you can recognise the sound before playing.',
       'onboarding.slideThreeTitle' => 'Learn by levels and practise',
       'onboarding.slideThreeBody' => 'Step-by-step itinerary, genre filter and game mode to chain chord streaks.',
+      'onboarding.welcomeTitle' => 'Your guitar, made to measure',
+      'onboarding.welcomeBody' => 'Five quick questions and I will recommend the chords that suit you best.',
+      'onboarding.welcomeCta' => 'Get started',
+      'onboarding.stepOf' => ({
+        required Object current,
+        required Object total,
+      }) => 'Step ${current} of ${total}',
+      'onboarding.back' => 'Back',
+      'onboarding.proceed' => 'Continue',
+      'onboarding.finish' => 'Start playing',
+      'onboarding.guitarTitle' => 'Which guitar do you play?',
+      'onboarding.guitarBody' => 'Each one calls for different chords.',
+      'onboarding.guitarAcoustic' => 'Acoustic',
+      'onboarding.guitarAcousticHint' => 'Steel strings and open chords',
+      'onboarding.guitarElectric' => 'Electric',
+      'onboarding.guitarElectricHint' => 'Power chords and riffs',
+      'onboarding.guitarClassical' => 'Classical',
+      'onboarding.guitarClassicalHint' => 'Nylon strings and fingers',
+      'onboarding.playTitle' => 'How do you play it?',
+      'onboarding.playBody' =>
+        'I adapt the diagrams and arpeggios to your playing.',
+      'onboarding.handLabel' => 'Your hand',
+      'onboarding.handRight' => 'Right-handed',
+      'onboarding.handRightHint' => 'Regular diagrams',
+      'onboarding.handLeft' => 'Left-handed',
+      'onboarding.handLeftHint' => 'Mirrored diagrams',
+      'onboarding.styleLabel' => 'How you pluck the strings',
+      'onboarding.stylePick' => 'Pick',
+      'onboarding.styleFingers' => 'Fingers',
+      'onboarding.styleBoth' => 'Both',
+      'onboarding.genresTitle' => 'What music do you like?',
+      'onboarding.genresBody' =>
+        'Pick as many as you like: I recommend chords from those styles.',
+      'onboarding.levelTitle' => 'How much experience do you have?',
+      'onboarding.levelBody' =>
+        'I tune the difficulty so you progress without frustration.',
+      'onboarding.levelBeginner' => 'I\'m just starting',
+      'onboarding.levelBeginnerHint' => 'Open chords, no barre',
+      'onboarding.levelIntermediate' => 'I already play songs',
+      'onboarding.levelIntermediateHint' => 'Chord changes and basic barres',
+      'onboarding.levelAdvanced' => 'I play fluently',
+      'onboarding.levelAdvancedHint' => 'Barres, sevenths and voicings',
+      'onboarding.planTitle' => 'Your plan is ready',
+      'onboarding.planBody' => 'Start with these chords, picked for you.',
+      'onboarding.planEmpty' =>
+        'Explore the library and start with the one you like most.',
       'data.language.system' => 'System language',
       'data.language.es' => 'Spanish',
       'data.language.en' => 'English',
@@ -1538,12 +1762,6 @@ extension on TranslationsEn {
         'I can barely hear you: bring the guitar closer to the microphone',
       'mic.levelGood' => 'I can hear you well',
       'mic.levelLoud' => 'Too loud: move the guitar a little farther away',
-      'tuner.tabTune' => 'Tune',
-      'tuner.tabListen' => 'Chords',
-      'tuner.start' => 'Start tuning',
-      'tuner.stop' => 'Stop',
-      'tuner.auto' => 'Automatic',
-      'tuner.autoHint' => 'Play any string: I recognize it on my own',
       'tuner.pluckPrompt' => 'Play an open string',
       'tuner.pluckString' => ({required Object string}) => 'Play the ${string}',
       'tuner.stringTitle' => ({
@@ -1572,18 +1790,20 @@ extension on TranslationsEn {
       'tuner.flat' => 'Flat',
       'tuner.sharp' => 'Sharp',
       'tuner.cents' => ({required Object cents}) => '${cents} cents',
-      'tuner.progress' => ({required Object count}) => '${count} of 6 in tune',
       'tuner.allTunedTitle' => 'Guitar in tune!',
       'tuner.allTunedMessage' => 'All six strings are in place. Time to play!',
-      'tuner.playReference' => 'Hear note',
-      'tuner.startOver' => 'Start over',
-      'tuner.selectHint' => 'Tap a peg to tune just that string',
       'tuner.peg' => ({
         required Object string,
       }) => 'Tuning peg of the ${string}',
       'tuner.meterLabel' => ({
         required Object cents,
       }) => 'Tuning: ${cents} cents',
+      'tuner.activate' => 'Enable microphone',
+      'tuner.modeAuto' => 'Automatic · tap a peg to lock a string',
+      'tuner.modeManual' => ({required Object string}) => 'Locked: ${string}',
+      'tuner.chordsTitle' => 'Detect chords',
+      'tuner.switchToChords' => 'Detect chords',
+      'tuner.switchToTuner' => 'Back to tuner',
       'practice.title' => 'Practice chord',
       'practice.intro' =>
         'Play the strings one by one. I recognize them in any order.',
@@ -1658,6 +1878,19 @@ extension on TranslationsEn {
       'practice.tipUnknown' => ({
         required Object string,
       }) => 'I don\'t recognize that note. Play only the ${string}, calmly.',
+      'profile.title' => 'Your profile',
+      'profile.edit' => 'Edit profile',
+      'profile.summary' => ({
+        required Object guitar,
+        required Object level,
+      }) => '${guitar} · ${level}',
+      'profile.guitar' => 'Guitar',
+      'profile.play' => 'Playing style',
+      'profile.genres' => 'Genres',
+      'profile.experience' => 'Experience',
+      'profile.personalizedHint' => 'Recommendations based on your profile',
+      'profile.setupHint' =>
+        'Tell me how you play and I will personalize everything',
       _ => null,
     };
   }

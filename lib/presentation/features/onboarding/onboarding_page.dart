@@ -4,10 +4,18 @@ import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/core/analytics/settings_analytics_events.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/onboarding/onboarding_steps.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
+import 'package:chords/presentation/features/profile/profile_pickers.dart';
+import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// Página de introducción (onboarding) de primer uso.
+/// Onboarding de primer uso: conoce a la persona y prepara su plan.
+///
+/// Seis pasos —bienvenida, guitarra, cómo toca, géneros, experiencia y plan—
+/// con transición animada entre ellos. Cada elección se guarda al momento y
+/// se puede omitir todo el recorrido.
 class OnboardingPage extends StatefulWidget {
   /// Crea la página de onboarding.
   const OnboardingPage({super.key});
@@ -17,26 +25,10 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
+  static const int _stepCount = 6;
+
   final PageController _controller = PageController();
   int _index = 0;
-
-  List<_Slide> _slides(Translations t) => <_Slide>[
-    _Slide(
-      title: t.onboarding.slideOneTitle,
-      body: t.onboarding.slideOneBody,
-      icon: Icons.library_music_rounded,
-    ),
-    _Slide(
-      title: t.onboarding.slideTwoTitle,
-      body: t.onboarding.slideTwoBody,
-      icon: Icons.graphic_eq_rounded,
-    ),
-    _Slide(
-      title: t.onboarding.slideThreeTitle,
-      body: t.onboarding.slideThreeBody,
-      icon: Icons.sports_esports_rounded,
-    ),
-  ];
 
   @override
   void dispose() {
@@ -44,14 +36,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
     super.dispose();
   }
 
-  void _next(List<_Slide> slides) {
-    if (_index < slides.length - 1) {
-      _controller.nextPage(
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeInOut,
-      );
-    } else {
+  bool get _isLast => _index == _stepCount - 1;
+
+  void _move(int delta) {
+    final int target = (_index + delta).clamp(0, _stepCount - 1);
+    unawaited(
+      _controller.animateToPage(
+        target,
+        duration: kMotionSlow,
+        curve: kEmphasizedCurve,
+      ),
+    );
+  }
+
+  void _next() {
+    if (_isLast) {
+      context.read<ProfileController>().confirm();
       _finish();
+    } else {
+      _move(1);
     }
   }
 
@@ -62,134 +65,145 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final List<_Slide> slides = _slides(t);
-    final ThemeData theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: TextButton(onPressed: _finish, child: Text(t.app.skip)),
-              ),
+            _TopBar(
+              index: _index,
+              count: _stepCount,
+              onBack: () => _move(-1),
+              onSkip: _finish,
             ),
             Expanded(
-              child: PageView.builder(
+              child: PageView(
                 controller: _controller,
-                itemCount: slides.length,
+                physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (int value) {
                   setState(() => _index = value);
                   analytics.onboardingStep(step: value + 1);
                 },
-                itemBuilder: (BuildContext context, int index) =>
-                    _SlideView(slide: slides[index], theme: theme),
+                children: _pages(t),
               ),
             ),
-            _Dots(count: slides.length, index: _index, theme: theme),
-            _finishButton(slides, t),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _next,
+                  child: AnimatedSwitcher(
+                    duration: kMotionMedium,
+                    child: Text(_label(t), key: ValueKey<String>(_label(t))),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _finishButton(List<_Slide> slides, Translations t) => Padding(
-    padding: const EdgeInsets.all(24),
-    child: SizedBox(
-      width: double.infinity,
-      child: FilledButton(
-        onPressed: () => _next(slides),
-        child: Text(_index == slides.length - 1 ? t.app.start : t.app.next),
-      ),
+  List<Widget> _pages(Translations t) => <Widget>[
+    const WelcomeStep(),
+    OnboardingStep(
+      title: t.onboarding.guitarTitle,
+      body: t.onboarding.guitarBody,
+      child: const GuitarPicker(),
     ),
-  );
+    OnboardingStep(
+      title: t.onboarding.playTitle,
+      body: t.onboarding.playBody,
+      child: const PlayPicker(),
+    ),
+    OnboardingStep(
+      title: t.onboarding.genresTitle,
+      body: t.onboarding.genresBody,
+      child: const GenrePicker(),
+    ),
+    OnboardingStep(
+      title: t.onboarding.levelTitle,
+      body: t.onboarding.levelBody,
+      child: const ExperiencePicker(),
+    ),
+    const PlanStep(),
+  ];
+
+  String _label(Translations t) {
+    if (_index == 0) {
+      return t.onboarding.welcomeCta;
+    }
+    return _isLast ? t.onboarding.finish : t.onboarding.proceed;
+  }
 }
 
-/// Diapositiva del onboarding.
-class _Slide {
-  const _Slide({required this.title, required this.body, required this.icon});
+/// Barra superior: volver, progreso por segmentos y omitir.
+class _TopBar extends StatelessWidget {
+  const _TopBar({
+    required this.index,
+    required this.count,
+    required this.onBack,
+    required this.onSkip,
+  });
 
-  final String title;
-  final String body;
-  final IconData icon;
-}
-
-/// Contenido visual de una diapositiva.
-class _SlideView extends StatelessWidget {
-  const _SlideView({required this.slide, required this.theme});
-
-  final _Slide slide;
-  final ThemeData theme;
+  final int index;
+  final int count;
+  final VoidCallback onBack;
+  final VoidCallback onSkip;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 28),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: SizedBox(
-            width: 108,
-            height: 108,
-            child: Icon(
-              slide.icon,
-              size: 48,
-              color: theme.colorScheme.onPrimaryContainer,
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    return SizedBox(
+      height: 56,
+      child: Row(
+        children: <Widget>[
+          AnimatedOpacity(
+            opacity: index == 0 ? 0 : 1,
+            duration: kMotionMedium,
+            // Sin tooltip: el onboarding vive sobre el navegador y no tiene
+            // un Overlay donde mostrarlo.
+            child: IconButton(
+              onPressed: index == 0 ? null : onBack,
+              icon: Semantics(
+                label: t.onboarding.back,
+                child: const Icon(Icons.arrow_back_rounded),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 28),
-        Text(
-          slide.title,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w800,
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                for (int i = 1; i < count; i++)
+                  Expanded(
+                    child: AnimatedContainer(
+                      duration: kMotionSlow,
+                      curve: kEmphasizedCurve,
+                      height: 6,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      decoration: BoxDecoration(
+                        color: i <= index
+                            ? scheme.primary
+                            : scheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          slide.body,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+          AnimatedOpacity(
+            opacity: index == count - 1 ? 0 : 1,
+            duration: kMotionMedium,
+            child: TextButton(
+              onPressed: index == count - 1 ? null : onSkip,
+              child: Text(t.app.skip),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-/// Indicadores de página del onboarding.
-class _Dots extends StatelessWidget {
-  const _Dots({required this.count, required this.index, required this.theme});
-
-  final int count;
-  final int index;
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-      for (int i = 0; i < count; i++)
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: i == index ? 22 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: i == index
-                ? theme.colorScheme.primary
-                : theme.colorScheme.outlineVariant,
-            borderRadius: BorderRadius.circular(999),
-          ),
-        ),
-    ],
-  );
+        ],
+      ),
+    );
+  }
 }

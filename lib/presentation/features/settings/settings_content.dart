@@ -1,5 +1,39 @@
 part of 'settings_page.dart';
 
+/// Acceso al perfil: guitarra, mano, géneros y experiencia.
+class _ProfileSection extends StatelessWidget {
+  const _ProfileSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final ProfileController controller = context.watch<ProfileController>();
+    final PlayerProfile profile = controller.profile;
+    return _Section(
+      title: t.profile.title,
+      children: <Widget>[
+        ListTile(
+          leading: GuitarGlyph(
+            type: profile.guitar,
+            size: 40,
+            body: scheme.primary,
+            detail: scheme.surfaceContainerLow,
+          ),
+          title: Text(t.profile.edit),
+          subtitle: Text(
+            profile.personalized
+                ? profileSummary(t, profile)
+                : t.profile.setupHint,
+          ),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push(kProfilePath),
+        ),
+      ],
+    );
+  }
+}
+
 /// Sección de tamaño de texto.
 class _TextSection extends StatelessWidget {
   const _TextSection({required this.appearance});

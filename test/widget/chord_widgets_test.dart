@@ -5,6 +5,7 @@ import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
+import 'package:chords/presentation/widgets/atoms/difficulty_badge.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';
 import 'package:chords/presentation/widgets/organisms/chord_diagram.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ void main() {
     );
   });
 
-  testWidgets('ChordCard muestra nombre, posiciones y botón de play', (
+  testWidgets('ChordCard muestra nombre, dificultad y botón de play', (
     WidgetTester tester,
   ) async {
     bool played = false;
@@ -74,7 +75,7 @@ void main() {
       ),
     );
     expect(find.text('C'), findsOneWidget);
-    expect(find.text('1 posición'), findsOneWidget);
+    expect(find.byType(DifficultyBadge), findsOneWidget);
     await tester.tap(find.byIcon(Icons.play_arrow_rounded));
     expect(played, isTrue);
     await tester.tap(find.byType(AppCard));

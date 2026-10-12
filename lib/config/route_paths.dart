@@ -19,6 +19,9 @@ const String kChordDetailPath = '/chords/detail';
 /// Práctica de un acorde cuerda a cuerda (query `?id=C-maj&v=0`).
 const String kChordPracticePath = '/chords/practice';
 
+/// Perfil de la persona (guitarra, mano, géneros y experiencia).
+const String kProfilePath = '/profile';
+
 /// Modo juego.
 const String kGamePath = '/game';
 
@@ -45,6 +48,9 @@ const String kChordDetailRouteName = 'chord-detail';
 
 /// Nombre interno de la ruta de práctica de acorde.
 const String kChordPracticeRouteName = 'chord-practice';
+
+/// Nombre interno de la ruta del perfil.
+const String kProfileRouteName = 'profile';
 
 /// Nombre interno de la ruta del juego.
 const String kGameRouteName = 'game';

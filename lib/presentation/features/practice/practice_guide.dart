@@ -98,22 +98,10 @@ class _NextCard extends StatelessWidget {
             overflow: TextOverflow.visible,
           ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
-            children: <Widget>[
-              FilledButton.tonalIcon(
-                onPressed: () => unawaited(controller.playString(focus)),
-                icon: const Icon(Icons.volume_up_rounded),
-                label: Text(t.practice.listenString),
-              ),
-              TextButton.icon(
-                onPressed: controller.stop,
-                icon: const Icon(Icons.stop_rounded),
-                label: Text(t.practice.stop),
-              ),
-            ],
+          FilledButton.tonalIcon(
+            onPressed: () => unawaited(controller.playString(focus)),
+            icon: const Icon(Icons.volume_up_rounded),
+            label: Text(t.practice.listenString),
           ),
         ],
       ),

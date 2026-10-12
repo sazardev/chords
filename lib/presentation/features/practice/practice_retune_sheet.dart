@@ -56,7 +56,7 @@ class _RetuneSheet extends StatelessWidget {
           children: <Widget>[
             AppText(
               string == null
-                  ? t.tuner.tabTune
+                  ? t.live.title
                   : '${t.practice.retune} · ${stringTitle(t, string!)}',
               variant: AppTextVariant.titleLarge,
               align: TextAlign.center,

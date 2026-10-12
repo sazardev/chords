@@ -11,6 +11,8 @@ class GenreFilterRow extends StatelessWidget {
     required this.onSelected,
     super.key,
     this.genres = kDefaultGenreFilters,
+    this.leading = const <Widget>[],
+    this.highlighted = const <String>{},
   });
 
   /// Género seleccionado (o `null` = todos).
@@ -21,6 +23,12 @@ class GenreFilterRow extends StatelessWidget {
 
   /// Géneros mostrados.
   final List<String> genres;
+
+  /// Chips previos a "todos" (p. ej. un atajo "para mi nivel").
+  final List<Widget> leading;
+
+  /// Géneros a destacar con una estrella (los favoritos de la persona).
+  final Set<String> highlighted;
 
   /// Géneros por defecto de la biblioteca.
   static const List<String> kDefaultGenreFilters = <String>[
@@ -42,6 +50,10 @@ class GenreFilterRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: <Widget>[
+          for (final Widget chip in leading) ...<Widget>[
+            chip,
+            const SizedBox(width: 8),
+          ],
           GenreChip(
             label: t.chords.filterAll,
             selected: selected == null,
@@ -51,6 +63,7 @@ class GenreFilterRow extends StatelessWidget {
             const SizedBox(width: 8),
             GenreChip(
               label: genreLabel(t, genre),
+              starred: highlighted.contains(genre),
               selected: selected == genre,
               onSelected: () => onSelected(selected == genre ? null : genre),
             ),

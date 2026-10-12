@@ -30,7 +30,20 @@
     "gameMode": "Game mode",
     "gameSubtitle": "Play the chord and build a streak",
     "liveTitle": "Tuner and listening",
-    "liveSubtitle": "Tune string by string with your microphone"
+    "liveSubtitle": "Tune string by string with your microphone",
+    "greetingMorning": "Good morning",
+    "greetingAfternoon": "Good afternoon",
+    "greetingEvening": "Good evening",
+    "nextUp": "Your next chord",
+    "practiceCta": "Practice",
+    "statMastered": "Mastered",
+    "statBest": "Best score",
+    "statLevel": "Level",
+    "recommendedTitle": "For you",
+    "recommendedEmpty": "Complete your profile to see recommendations.",
+    "toolsTitle": "Tools",
+    "seeAll": "See all",
+    "learnSubtitle": "Your step-by-step path"
   },
   "chords": {
     "title": "Chords",
@@ -48,7 +61,18 @@
     "loadErrorTitle": "Could not load the chord bank",
     "loadErrorMessage": "Restart the app to try loading the bank again.",
     "emptyTitle": "No results",
-    "emptyMessage": "Adjust the search or the filters to see more chords."
+    "emptyMessage": "Adjust the search or the filters to see more chords.",
+    "filters": "Filters",
+    "filterLevel": "Level",
+    "filterQuality": "Chord type",
+    "filterDifficulty": "Max difficulty",
+    "forMyLevel": "For my level",
+    "apply": "Show results",
+    "reset": "Reset",
+    "results": {
+      "one": "$n chord",
+      "other": "$n chords"
+    }
   },
   "chordDetail": {
     "titleFallback": "Chord",
@@ -106,8 +130,6 @@
   },
   "live": {
     "title": "Tuner",
-    "listen": "Listen to guitar",
-    "stop": "Stop",
     "emptyTitle": "No suggestions yet",
     "emptyMessage": "Press listen and play a chord to see matches.",
     "suggestions": "Suggestions",
@@ -205,7 +227,46 @@
     "slideTwoTitle": "Listen to every chord and its arpeggio",
     "slideTwoBody": "We synthesize each string so you can recognise the sound before playing.",
     "slideThreeTitle": "Learn by levels and practise",
-    "slideThreeBody": "Step-by-step itinerary, genre filter and game mode to chain chord streaks."
+    "slideThreeBody": "Step-by-step itinerary, genre filter and game mode to chain chord streaks.",
+    "welcomeTitle": "Your guitar, made to measure",
+    "welcomeBody": "Five quick questions and I will recommend the chords that suit you best.",
+    "welcomeCta": "Get started",
+    "stepOf": "Step $current of $total",
+    "back": "Back",
+    "proceed": "Continue",
+    "finish": "Start playing",
+    "guitarTitle": "Which guitar do you play?",
+    "guitarBody": "Each one calls for different chords.",
+    "guitarAcoustic": "Acoustic",
+    "guitarAcousticHint": "Steel strings and open chords",
+    "guitarElectric": "Electric",
+    "guitarElectricHint": "Power chords and riffs",
+    "guitarClassical": "Classical",
+    "guitarClassicalHint": "Nylon strings and fingers",
+    "playTitle": "How do you play it?",
+    "playBody": "I adapt the diagrams and arpeggios to your playing.",
+    "handLabel": "Your hand",
+    "handRight": "Right-handed",
+    "handRightHint": "Regular diagrams",
+    "handLeft": "Left-handed",
+    "handLeftHint": "Mirrored diagrams",
+    "styleLabel": "How you pluck the strings",
+    "stylePick": "Pick",
+    "styleFingers": "Fingers",
+    "styleBoth": "Both",
+    "genresTitle": "What music do you like?",
+    "genresBody": "Pick as many as you like: I recommend chords from those styles.",
+    "levelTitle": "How much experience do you have?",
+    "levelBody": "I tune the difficulty so you progress without frustration.",
+    "levelBeginner": "I'm just starting",
+    "levelBeginnerHint": "Open chords, no barre",
+    "levelIntermediate": "I already play songs",
+    "levelIntermediateHint": "Chord changes and basic barres",
+    "levelAdvanced": "I play fluently",
+    "levelAdvancedHint": "Barres, sevenths and voicings",
+    "planTitle": "Your plan is ready",
+    "planBody": "Start with these chords, picked for you.",
+    "planEmpty": "Explore the library and start with the one you like most."
   },
   "data": {
     "language": {
@@ -323,12 +384,6 @@
     "levelLoud": "Too loud: move the guitar a little farther away"
   },
   "tuner": {
-    "tabTune": "Tune",
-    "tabListen": "Chords",
-    "start": "Start tuning",
-    "stop": "Stop",
-    "auto": "Automatic",
-    "autoHint": "Play any string: I recognize it on my own",
     "pluckPrompt": "Play an open string",
     "pluckString": "Play the $string",
     "stringTitle": "$ordinal string · $note",
@@ -351,14 +406,16 @@
     "flat": "Flat",
     "sharp": "Sharp",
     "cents": "$cents cents",
-    "progress": "$count of 6 in tune",
     "allTunedTitle": "Guitar in tune!",
     "allTunedMessage": "All six strings are in place. Time to play!",
-    "playReference": "Hear note",
-    "startOver": "Start over",
-    "selectHint": "Tap a peg to tune just that string",
     "peg": "Tuning peg of the $string",
-    "meterLabel": "Tuning: $cents cents"
+    "meterLabel": "Tuning: $cents cents",
+    "activate": "Enable microphone",
+    "modeAuto": "Automatic · tap a peg to lock a string",
+    "modeManual": "Locked: $string",
+    "chordsTitle": "Detect chords",
+    "switchToChords": "Detect chords",
+    "switchToTuner": "Back to tuner"
   },
   "practice": {
     "title": "Practice chord",
@@ -397,5 +454,16 @@
     "tipRetuneUp": "The open $string sounds flat: tighten the peg a little.",
     "tipRetuneDown": "The open $string sounds sharp: loosen the peg a little.",
     "tipUnknown": "I don't recognize that note. Play only the $string, calmly."
+  },
+  "profile": {
+    "title": "Your profile",
+    "edit": "Edit profile",
+    "summary": "$guitar · $level",
+    "guitar": "Guitar",
+    "play": "Playing style",
+    "genres": "Genres",
+    "experience": "Experience",
+    "personalizedHint": "Recommendations based on your profile",
+    "setupHint": "Tell me how you play and I will personalize everything"
   }
 }

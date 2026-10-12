@@ -8,6 +8,7 @@ class GenreChip extends StatelessWidget {
     required this.selected,
     required this.onSelected,
     super.key,
+    this.starred = false,
   });
 
   /// Nombre del género.
@@ -19,8 +20,12 @@ class GenreChip extends StatelessWidget {
   /// Callback al pulsar.
   final VoidCallback onSelected;
 
+  /// Si se marca con una estrella (género favorito).
+  final bool starred;
+
   @override
   Widget build(BuildContext context) => FilterChip(
+    avatar: starred ? const Icon(Icons.star_rounded, size: 16) : null,
     label: Text(label),
     selected: selected,
     onSelected: (_) => onSelected(),

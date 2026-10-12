@@ -1,6 +1,7 @@
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/theme/app_theme_options.dart';
 import 'package:chords/presentation/theme/app_typography.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 /// Construye el tema claro a partir de las opciones de personalización.
@@ -52,6 +53,15 @@ ThemeData _baseTheme(
     canvasColor: scheme.surface,
     shadowColor: Colors.transparent,
     splashFactory: InkSparkle.splashFactory,
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: <TargetPlatform, PageTransitionsBuilder>{
+        TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+        TargetPlatform.linux: FadeForwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.windows: FadeForwardsPageTransitionsBuilder(),
+      },
+    ),
     dividerTheme: DividerThemeData(
       color: scheme.outlineVariant,
       thickness: 1,

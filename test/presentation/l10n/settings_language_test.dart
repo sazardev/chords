@@ -3,6 +3,7 @@ import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/l10n/entities/app_language.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
@@ -32,6 +33,9 @@ void main() {
     final List<SingleChildWidget> providers = <SingleChildWidget>[
       ChangeNotifierProvider<LocaleController>.value(value: locale),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<ProfileController>.value(
+        value: ProfileController(preferences, settings),
+      ),
       ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
     ];

@@ -15,6 +15,24 @@ extension SettingsAnalyticsEvents on AnalyticsService {
     },
   );
 
+  /// La persona ha elegido o cambiado su perfil de guitarrista.
+  void profileUpdated({
+    required String guitar,
+    required String hand,
+    required String style,
+    required String experience,
+    required int genres,
+  }) => event(
+    AnalyticsEventName.profileUpdated,
+    parameters: <String, Object?>{
+      AnalyticsParam.guitar: guitar,
+      AnalyticsParam.hand: hand,
+      AnalyticsParam.playStyle: style,
+      AnalyticsParam.experience: experience,
+      AnalyticsParam.genreCount: genres,
+    },
+  );
+
   /// El usuario ha alcanzado el paso [step] del onboarding.
   void onboardingStep({required int step}) => event(
     AnalyticsEventName.onboardingStep,

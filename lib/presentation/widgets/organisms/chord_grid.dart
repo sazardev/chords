@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/presentation/widgets/atoms/entrance.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';
 import 'package:flutter/material.dart';
 
@@ -41,17 +42,20 @@ class ChordGrid extends StatelessWidget {
         crossAxisCount: columns,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 0.85,
+        childAspectRatio: 0.8,
       ),
       itemCount: chords.length,
       itemBuilder: (BuildContext context, int index) {
         final Chord chord = chords[index];
-        return ChordCard(
-          chord: chord,
-          mirror: mirror,
-          playing: playingChordId == chord.id,
-          onTap: () => onSelect(chord.id),
-          onPlay: () => onPlay(chord.id),
+        return Entrance(
+          index: index % columns,
+          child: ChordCard(
+            chord: chord,
+            mirror: mirror,
+            playing: playingChordId == chord.id,
+            onTap: () => onSelect(chord.id),
+            onPlay: () => onPlay(chord.id),
+          ),
         );
       },
     );

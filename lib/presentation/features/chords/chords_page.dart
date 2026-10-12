@@ -1,15 +1,21 @@
+import 'dart:async' show unawaited;
+
 import 'package:chords/config/route_paths.dart';
+import 'package:chords/domain/chords/entities/chord_filters.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
+import 'package:chords/domain/profile/entities/player_profile.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
+import 'package:chords/presentation/features/chords/chord_filters_sheet.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
-import 'package:chords/presentation/widgets/molecules/filter_chip_row.dart';
+import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/molecules/genre_filter_row.dart';
-import 'package:chords/presentation/widgets/molecules/level_filter_row.dart';
 import 'package:chords/presentation/widgets/molecules/search_field.dart';
 import 'package:chords/presentation/widgets/organisms/chord_grid.dart';
 import 'package:flutter/material.dart';
@@ -75,17 +81,23 @@ class _ChordsPageState extends State<ChordsPage> {
     final ChordsController controller = context.watch<ChordsController>();
     final ChordFilterController filters = context
         .watch<ChordFilterController>();
+    final PlayerProfile profile = context.watch<ProfileController>().profile;
     final bool mirror = context.select<SettingsController, bool>(
       (SettingsController settings) => settings.mirrorChords,
     );
+    final int advanced = _advancedFilterCount(filters.filters);
     return Scaffold(
       appBar: AppBar(
         title: Text(t.chords.title),
         actions: <Widget>[
           IconButton(
-            tooltip: t.chords.clearFilters,
-            icon: const Icon(Icons.filter_alt_off_outlined),
-            onPressed: filters.clearFilters,
+            tooltip: t.chords.filters,
+            icon: Badge(
+              isLabelVisible: advanced > 0,
+              label: Text('$advanced'),
+              child: const Icon(Icons.tune_rounded),
+            ),
+            onPressed: () => unawaited(showChordFiltersSheet(context)),
           ),
         ],
       ),
@@ -94,7 +106,7 @@ class _ChordsPageState extends State<ChordsPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
               child: SearchField(
                 hintText: t.chords.searchHint,
                 initialValue: filters.filters.query,
@@ -104,26 +116,36 @@ class _ChordsPageState extends State<ChordsPage> {
             GenreFilterRow(
               selected: filters.filters.genre,
               onSelected: filters.selectGenre,
+              genres: _orderedGenres(profile),
+              highlighted: profile.genres,
+              leading: <Widget>[
+                _LevelShortcut(filters: filters, profile: profile),
+              ],
             ),
-            const SizedBox(height: 8),
-            LevelFilterRow(
-              selected: filters.filters.level,
-              onSelected: filters.selectLevel,
+            _ResultsBar(
+              count: controller.visibleChords.length,
+              filters: filters,
             ),
-            const SizedBox(height: 8),
-            FilterChipRow(
-              selected: filters.filters.quality,
-              onSelected: filters.selectQuality,
-            ),
-            const SizedBox(height: 4),
-            _DifficultySlider(filters: filters),
-            const SizedBox(height: 8),
             Expanded(child: _body(controller, mirror)),
           ],
         ),
       ),
     );
   }
+
+  /// Número de filtros avanzados activos (los que viven en la hoja).
+  int _advancedFilterCount(ChordFilters filters) =>
+      (filters.level != null ? 1 : 0) +
+      (filters.quality != null ? 1 : 0) +
+      (filters.maxDifficulty != null ? 1 : 0);
+
+  /// Géneros con los favoritos de la persona primero.
+  List<String> _orderedGenres(PlayerProfile profile) => <String>[
+    ...GenreFilterRow.kDefaultGenreFilters.where(profile.genres.contains),
+    ...GenreFilterRow.kDefaultGenreFilters.where(
+      (String g) => !profile.genres.contains(g),
+    ),
+  ];
 
   Widget _body(ChordsController controller, bool mirror) {
     final Translations t = context.t;
@@ -151,34 +173,57 @@ class _ChordsPageState extends State<ChordsPage> {
   }
 }
 
-/// Slider de dificultad máxima.
-class _DifficultySlider extends StatelessWidget {
-  const _DifficultySlider({required this.filters});
+/// Atajo: limita la dificultad a la que corresponde a la experiencia.
+class _LevelShortcut extends StatelessWidget {
+  const _LevelShortcut({required this.filters, required this.profile});
 
+  final ChordFilterController filters;
+  final PlayerProfile profile;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final int max = profile.experience.maxDifficulty;
+    final bool active = filters.filters.maxDifficulty == max;
+    return FilterChip(
+      avatar: const Icon(Icons.auto_awesome_rounded, size: 16),
+      label: Text(t.chords.forMyLevel),
+      selected: active,
+      showCheckmark: false,
+      selectedColor: Theme.of(context).colorScheme.primaryContainer,
+      onSelected: (_) => filters.setMaxDifficulty(active ? null : max),
+    );
+  }
+}
+
+/// Recuento de resultados y atajo para limpiar los filtros.
+class _ResultsBar extends StatelessWidget {
+  const _ResultsBar({required this.count, required this.filters});
+
+  final int count;
   final ChordFilterController filters;
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final int? max = filters.filters.maxDifficulty;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(20, 8, 12, 0),
       child: Row(
         children: <Widget>[
-          Text(
-            t.chords.maxDifficulty(level: max ?? 5),
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
           Expanded(
-            child: Slider(
-              min: 1,
-              max: 5,
-              divisions: 4,
-              value: (max ?? 5).toDouble(),
-              label: '${max ?? 5}',
-              onChanged: (double value) {
-                filters.setMaxDifficulty(value == 5 ? null : value.round());
-              },
+            child: AppText(
+              t.chords.results(n: count),
+              variant: AppTextVariant.labelLarge,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          AnimatedOpacity(
+            opacity: filters.filters.isEmpty ? 0 : 1,
+            duration: kMotionMedium,
+            child: TextButton.icon(
+              onPressed: filters.filters.isEmpty ? null : filters.clearFilters,
+              icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
+              label: Text(t.chords.clearFilters),
             ),
           ),
         ],

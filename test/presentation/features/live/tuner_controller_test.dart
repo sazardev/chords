@@ -135,15 +135,19 @@ void main() {
     expect(tuner.state.isListening, isFalse);
   });
 
-  test('al reproducir una referencia ignora el micrófono un rato', () async {
-    await tuner.start();
-    await tuner.playReference(kStandardTuning[0]);
-    expect(audio.tones, <double>[kStandardTuning[0].frequency]);
+  test(
+    'al tocar una clavija la fija, suena y se ignora el micrófono',
+    () async {
+      await tuner.start();
+      await tuner.tapString(kStandardTuning[0]);
+      expect(tuner.state.target, kStandardTuning[0]);
+      expect(audio.tones, <double>[kStandardTuning[0].frequency]);
 
-    audio.emitFrequency(kStandardTuning[0].frequency);
-    await _settle();
-    expect(tuner.state.reading, isNull);
-  });
+      audio.emitFrequency(kStandardTuning[0].frequency);
+      await _settle();
+      expect(tuner.state.reading, isNull);
+    },
+  );
 
   test('stop deja el estado en reposo y conserva lo afinado', () async {
     await tuner.start();
@@ -154,5 +158,28 @@ void main() {
     await tuner.stop();
     expect(tuner.state.status, MicStatus.idle);
     expect(tuner.state.tuned, <int>{2});
+  });
+
+  test('tocar de nuevo la clavija vuelve al automático sin sonar', () async {
+    await tuner.start();
+    await tuner.tapString(kStandardTuning[2]);
+    await tuner.tapString(kStandardTuning[2]);
+    expect(tuner.state.target, isNull);
+    expect(audio.tones, hasLength(1));
+  });
+
+  test('avisa una sola vez cuando una cuerda queda afinada', () async {
+    int vibrations = 0;
+    final TunerController haptic = TunerController(
+      audio,
+      onStringTuned: () => vibrations++,
+    );
+    await haptic.start();
+    for (int i = 0; i < 8; i++) {
+      audio.emitFrequency(kStandardTuning[1].frequency);
+      await _settle();
+    }
+    expect(vibrations, 1);
+    haptic.dispose();
   });
 }

@@ -4,6 +4,7 @@ import 'package:chords/domain/preferences/entities/app_accent_color.dart';
 import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
@@ -108,6 +109,7 @@ Future<_Host> _host(WidgetTester tester) async {
       settings: settings,
       locale: LocaleController(LocaleRepositoryImpl(preferences)),
       onboarding: OnboardingController(preferences),
+      profile: ProfileController(preferences, settings),
     ),
   );
 }
@@ -134,6 +136,7 @@ class _SettingsHost extends StatelessWidget {
     required this.settings,
     required this.locale,
     required this.onboarding,
+    required this.profile,
   });
 
   final AppearanceController appearance;
@@ -144,11 +147,14 @@ class _SettingsHost extends StatelessWidget {
 
   final OnboardingController onboarding;
 
+  final ProfileController profile;
+
   @override
   Widget build(BuildContext context) => MultiProvider(
     providers: <SingleChildWidget>[
       ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<ProfileController>.value(value: profile),
       ChangeNotifierProvider<LocaleController>.value(value: locale),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
     ],

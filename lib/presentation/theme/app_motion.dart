@@ -10,8 +10,18 @@ const Duration kMotionMedium = Duration(milliseconds: 280);
 /// Duración larga (expresiva/hero).
 const Duration kMotionSlow = Duration(milliseconds: 450);
 
+/// Duración de las animaciones de entrada de contenido.
+const Duration kMotionEntrance = Duration(milliseconds: 520);
+
+/// Retardo entre elementos consecutivos de una entrada escalonada.
+const Duration kMotionStagger = Duration(milliseconds: 55);
+
 /// Curva de énfasis (aceleración suave y desaceleración marcada).
 const Curve kEmphasizedCurve = Cubic(0.2, 0, 0, 1);
 
 /// Curva estándar para transiciones de entrada/salida.
 const Curve kStandardCurve = Cubic(0.2, 0, 0, 1);
+
+/// Curva "resorte": sobrepasa un poco y asienta. Da la sensación expresiva
+/// de los cambios de selección y los elementos que aparecen.
+const Curve kSpringCurve = Cubic(0.34, 1.56, 0.64, 1);

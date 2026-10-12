@@ -56,6 +56,9 @@ abstract final class AnalyticsEventName {
   /// Resultado de la solicitud de permiso de micrófono.
   static const String micPermission = 'mic_permission';
 
+  /// La persona ha elegido o cambiado su perfil de guitarrista.
+  static const String profileUpdated = 'profile_updated';
+
   /// Ha cambiado un ajuste de la aplicación.
   static const String settingChanged = 'setting_changed';
 
@@ -90,6 +93,7 @@ const List<String> kAllAnalyticsEventNames = <String>[
   AnalyticsEventName.tunerSessionEnded,
   AnalyticsEventName.practiceSessionEnded,
   AnalyticsEventName.micPermission,
+  AnalyticsEventName.profileUpdated,
   AnalyticsEventName.settingChanged,
   AnalyticsEventName.onboardingStep,
   AnalyticsEventName.onboardingCompleted,
@@ -227,6 +231,21 @@ abstract final class AnalyticsParam {
 
   /// Si el permiso se concedió.
   static const String granted = 'granted';
+
+  /// Tipo de guitarra del perfil.
+  static const String guitar = 'guitar';
+
+  /// Mano con la que toca.
+  static const String hand = 'hand';
+
+  /// Estilo de ataque.
+  static const String playStyle = 'play_style';
+
+  /// Experiencia declarada.
+  static const String experience = 'experience';
+
+  /// Número de géneros favoritos.
+  static const String genreCount = 'genre_count';
 
   /// Ajuste modificado.
   static const String setting = 'setting';

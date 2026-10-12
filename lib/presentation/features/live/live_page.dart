@@ -7,6 +7,8 @@ import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/live/tuner_view.dart';
+import 'package:chords/presentation/theme/app_chord_colors.dart';
+import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';
@@ -17,11 +19,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-/// Afinador por cuerdas y escucha de acordes con el micrófono.
+/// Afinador automático con micrófono, y detección de acordes.
 ///
-/// Dos pestañas: "Afinar" guía cuerda a cuerda con el cabezal de la guitarra
-/// y "Acordes" detecta una nota y sugiere acordes. Solo una escucha a la vez:
-/// al cambiar de pestaña se detiene el micrófono de la otra.
+/// Escucha sola al entrar en la pestaña y se detiene al salir: no hay botón
+/// de empezar. Un único icono en la barra alterna entre el afinador por
+/// cuerdas y la detección de acordes; solo uno escucha a la vez.
 class LivePage extends StatefulWidget {
   /// Crea la pantalla en vivo.
   const LivePage({super.key});
@@ -31,127 +33,140 @@ class LivePage extends StatefulWidget {
 }
 
 class _LivePageState extends State<LivePage> {
-  int _tab = 0;
+  bool _chords = false;
+  bool _visible = false;
 
-  void _select(int tab) {
-    if (tab == _tab) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Dentro de las pestañas, la rama inactiva tiene los tickers apagados:
+    // sirve para saber cuándo la pantalla se ve y empezar a escuchar.
+    final bool visible = TickerMode.valuesOf(context).enabled;
+    if (visible == _visible) {
       return;
     }
-    if (tab == 0) {
-      unawaited(context.read<LiveController>().stopIfListening());
-    } else {
-      unawaited(context.read<TunerController>().stopIfListening());
+    _visible = visible;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(visible ? _listen() : _stopAll());
+    });
+  }
+
+  Future<void> _listen() => _chords
+      ? context.read<LiveController>().start()
+      : context.read<TunerController>().start();
+
+  Future<void> _stopAll() async {
+    await context.read<LiveController>().stopIfListening();
+    if (mounted) {
+      await context.read<TunerController>().stopIfListening();
     }
-    setState(() => _tab = tab);
+  }
+
+  Future<void> _toggleMode() async {
+    await _stopAll();
+    if (!mounted) {
+      return;
+    }
+    setState(() => _chords = !_chords);
+    await _listen();
   }
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    return Scaffold(
-      appBar: AppBar(title: Text(t.live.title)),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: SizedBox(
-                width: double.infinity,
-                child: SegmentedButton<int>(
-                  showSelectedIcon: false,
-                  segments: <ButtonSegment<int>>[
-                    ButtonSegment<int>(
-                      value: 0,
-                      icon: const Icon(Icons.tune_rounded),
-                      label: Text(t.tuner.tabTune),
-                    ),
-                    ButtonSegment<int>(
-                      value: 1,
-                      icon: const Icon(Icons.library_music_rounded),
-                      label: Text(t.tuner.tabListen),
-                    ),
-                  ],
-                  selected: <int>{_tab},
-                  onSelectionChanged: (Set<int> value) => _select(value.first),
-                ),
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final bool glow =
+        !_chords &&
+        context.select<TunerController, bool>(
+          (TunerController c) =>
+              c.state.reading?.isInTune ??
+              (c.state.allTuned && c.state.isListening),
+        );
+    final Color tint = Color.alphaBlend(
+      chordColorsOf(context).inTune.withValues(alpha: 0.18),
+      scheme.surface,
+    );
+    // El fondo se tiñe de verde al afinar, también tras la barra superior.
+    return AnimatedContainer(
+      duration: kMotionSlow,
+      curve: kEmphasizedCurve,
+      color: glow ? tint : scheme.surface,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: Text(_chords ? t.tuner.chordsTitle : t.live.title),
+          actions: <Widget>[
+            IconButton(
+              tooltip: _chords ? t.tuner.switchToTuner : t.tuner.switchToChords,
+              icon: Icon(
+                _chords ? Icons.tune_rounded : Icons.library_music_rounded,
               ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                child: _tab == 0
-                    ? const TunerView(showToggle: false)
-                    : const _ListenTab(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-              child: _tab == 0
-                  ? const TunerToggleButton()
-                  : const _ListenToggleButton(),
+              onPressed: () => unawaited(_toggleMode()),
             ),
           ],
+        ),
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints box) =>
+                SingleChildScrollView(
+                  child: _chords
+                      ? const _ChordsView()
+                      : TunerView(minHeight: box.maxHeight),
+                ),
+          ),
         ),
       ),
     );
   }
 }
 
-/// Escucha libre: lectura de la nota, medidor y acordes sugeridos.
-class _ListenTab extends StatelessWidget {
-  const _ListenTab();
+/// Detección libre: nota, nivel y acordes sugeridos.
+class _ChordsView extends StatelessWidget {
+  const _ChordsView();
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final LiveController controller = context.watch<LiveController>();
     final bool listening = controller.status == MicStatus.listening;
-    return Column(
-      children: <Widget>[
-        if (MicProblemCard.isProblem(controller.status)) ...<Widget>[
-          MicProblemCard(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      child: Column(
+        children: <Widget>[
+          if (MicProblemCard.isProblem(controller.status)) ...<Widget>[
+            MicProblemCard(
+              status: controller.status,
+              onRetry: () => unawaited(controller.start()),
+            ),
+            const SizedBox(height: 12),
+          ],
+          LivePitchReadout(
             status: controller.status,
-            onRetry: () => unawaited(controller.start()),
+            reading: controller.reading,
           ),
           const SizedBox(height: 12),
+          if (listening)
+            MicLevelBar(level: controller.level)
+          else if (!MicProblemCard.isProblem(controller.status))
+            FilledButton.icon(
+              onPressed: controller.start,
+              icon: const Icon(Icons.mic_rounded),
+              label: Text(t.tuner.activate),
+            ),
+          const SizedBox(height: 20),
+          if (controller.suggestions.isEmpty)
+            AppEmptyState(
+              icon: Icons.music_note_rounded,
+              title: t.live.emptyTitle,
+              message: t.live.emptyMessage,
+            )
+          else
+            _Suggestions(chords: controller.suggestions),
         ],
-        LivePitchReadout(
-          status: controller.status,
-          reading: controller.reading,
-        ),
-        if (listening) ...<Widget>[
-          const SizedBox(height: 12),
-          MicLevelBar(level: controller.level),
-        ],
-        const SizedBox(height: 20),
-        if (controller.suggestions.isEmpty)
-          AppEmptyState(
-            icon: Icons.music_note_rounded,
-            title: t.live.emptyTitle,
-            message: t.live.emptyMessage,
-          )
-        else
-          _Suggestions(chords: controller.suggestions),
-      ],
-    );
-  }
-}
-
-/// Botón fijo para empezar o detener la escucha libre.
-class _ListenToggleButton extends StatelessWidget {
-  const _ListenToggleButton();
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final LiveController controller = context.watch<LiveController>();
-    final bool listening = controller.status == MicStatus.listening;
-    return SizedBox(
-      width: double.infinity,
-      child: FilledButton.icon(
-        onPressed: controller.toggleListening,
-        icon: Icon(listening ? Icons.stop_rounded : Icons.mic_rounded),
-        label: Text(listening ? t.live.stop : t.live.listen),
       ),
     );
   }

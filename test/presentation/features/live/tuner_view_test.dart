@@ -22,7 +22,7 @@ void main() {
 
   setUp(() {
     audio = FakeAudioRepository();
-    tuner = TunerController(audio);
+    tuner = TunerController(audio, referenceMute: Duration.zero);
   });
 
   Future<void> pumpTuner(WidgetTester tester) async {
@@ -41,6 +41,12 @@ void main() {
     );
   }
 
+  /// Activa el micrófono como lo haría la pantalla al hacerse visible.
+  Future<void> startTuner(WidgetTester tester) async {
+    await tester.runAsync(tuner.start);
+    await tester.pump();
+  }
+
   /// Emite lecturas seguidas de [frequency].
   Future<void> play(WidgetTester tester, double frequency, int times) async {
     for (int i = 0; i < times; i++) {
@@ -55,14 +61,13 @@ void main() {
   Future<void> drain(WidgetTester tester) =>
       tester.pump(const Duration(seconds: 3));
 
-  testWidgets('en reposo explica cómo empezar y ofrece el botón', (
+  testWidgets('en reposo ofrece activar el micrófono y muestra las clavijas', (
     WidgetTester tester,
   ) async {
     await pumpTuner(tester);
 
-    expect(find.text('Toca cualquier cuerda: la reconozco sola'), findsOne);
-    expect(find.text('Empezar a afinar'), findsOne);
-    expect(find.text('0 de 6 afinadas'), findsOne);
+    expect(find.text('Activar micrófono'), findsOne);
+    expect(find.textContaining('Automático'), findsOne);
     for (final String note in <String>['Re', 'La', 'Mi', 'Sol', 'Si']) {
       expect(find.text(note), findsWidgets);
     }
@@ -72,16 +77,13 @@ void main() {
     WidgetTester tester,
   ) async {
     await pumpTuner(tester);
-    await tester.tap(find.text('Empezar a afinar'));
-    await tester.pump();
-    await tester.pump();
+    await startTuner(tester);
 
     await play(tester, _hz(5, -22), 6);
 
-    expect(find.text('5ª cuerda · La'), findsOne);
+    expect(find.text('5ª cuerda · 108.6 Hz'), findsOne);
     expect(find.text('Sube'), findsOne);
     expect(find.text('Aprieta la clavija'), findsOne);
-    expect(find.text('-22 cents'), findsOne);
     await drain(tester);
   });
 
@@ -89,8 +91,7 @@ void main() {
     WidgetTester tester,
   ) async {
     await pumpTuner(tester);
-    await tester.tap(find.text('Empezar a afinar'));
-    await tester.pump();
+    await startTuner(tester);
 
     await play(tester, _hz(2, 30), 6);
 
@@ -103,13 +104,11 @@ void main() {
     WidgetTester tester,
   ) async {
     await pumpTuner(tester);
-    await tester.tap(find.text('Empezar a afinar'));
-    await tester.pump();
+    await startTuner(tester);
 
     await play(tester, _hz(3), 8);
 
     expect(find.text('¡Afinada!'), findsOne);
-    expect(find.text('1 de 6 afinadas'), findsOne);
     expect(find.byIcon(Icons.check_rounded), findsOne);
     await drain(tester);
   });
@@ -117,29 +116,37 @@ void main() {
   testWidgets('las seis cuerdas afinadas muestran el mensaje final', (
     WidgetTester tester,
   ) async {
+    tuner = TunerController(
+      audio,
+      referenceMute: Duration.zero,
+      signalTimeout: const Duration(milliseconds: 20),
+    );
     await pumpTuner(tester);
-    await tester.tap(find.text('Empezar a afinar'));
-    await tester.pump();
+    await startTuner(tester);
 
     for (final GuitarString string in kStandardTuning) {
       await play(tester, string.frequency, 6);
     }
-    await tester.pump(const Duration(milliseconds: 300));
+    // El temporizador de señal perdida corre en tiempo real (vive en runAsync).
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 80)),
+    );
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text('¡Guitarra afinada!'), findsOne);
-    await drain(tester);
   });
 
   testWidgets('pulsar una clavija elige la cuerda y avisa si suena otra', (
     WidgetTester tester,
   ) async {
     await pumpTuner(tester);
-    await tester.tap(find.text('Empezar a afinar'));
-    await tester.pump();
+    await startTuner(tester);
 
     await tester.tap(find.bySemanticsLabel(RegExp('Clavija de la 4ª')));
     await tester.pump();
     expect(find.text('Toca la 4ª cuerda'), findsOne);
+    expect(find.text('Fijada: 4ª cuerda'), findsOne);
+    expect(audio.tones, hasLength(1));
 
     await play(tester, _hz(1), 4);
     expect(
@@ -154,9 +161,7 @@ void main() {
   ) async {
     audio.accessResult = MicStatus.permissionDenied;
     await pumpTuner(tester);
-    await tester.tap(find.text('Empezar a afinar'));
-    await tester.pump();
-    await tester.pump();
+    await startTuner(tester);
 
     expect(find.text('Necesito tu micrófono'), findsOne);
     expect(find.text('Reintentar'), findsOne);

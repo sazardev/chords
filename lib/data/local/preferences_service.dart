@@ -1,6 +1,11 @@
 import 'package:chords/domain/preferences/entities/app_accent_color.dart';
 import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
+import 'package:chords/domain/profile/entities/experience_level.dart';
+import 'package:chords/domain/profile/entities/guitar_type.dart';
+import 'package:chords/domain/profile/entities/player_profile.dart';
+import 'package:chords/domain/profile/entities/playing_hand.dart';
+import 'package:chords/domain/profile/entities/playing_style.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,6 +53,24 @@ class PreferencesService implements PreferencesRepository {
 
   /// Clave de la escala de tamaño de texto.
   static const String kFontScaleKey = 'font_scale_v1';
+
+  /// Clave del tipo de guitarra.
+  static const String kGuitarKey = 'profile_guitar_v1';
+
+  /// Clave de la mano con la que se toca.
+  static const String kHandKey = 'profile_hand_v1';
+
+  /// Clave del estilo de ataque.
+  static const String kStyleKey = 'profile_style_v1';
+
+  /// Clave de los géneros favoritos.
+  static const String kGenresKey = 'profile_genres_v1';
+
+  /// Clave de la experiencia.
+  static const String kExperienceKey = 'profile_experience_v1';
+
+  /// Clave que marca el perfil como elegido por la persona.
+  static const String kPersonalizedKey = 'profile_personalized_v1';
 
   /// `true` si el usuario ya vio el onboarding.
   @override
@@ -163,4 +186,51 @@ class PreferencesService implements PreferencesRepository {
   /// Guarda el idioma de la interfaz por nombre de valor.
   Future<void> setLanguageName(String name) =>
       _prefs.setString(kLanguageKey, name);
+
+  /// Perfil de la persona (el inicial si nunca se guardó).
+  @override
+  PlayerProfile get playerProfile => PlayerProfile(
+    guitar: _enumByName(
+      GuitarType.values,
+      _prefs.getString(kGuitarKey),
+      GuitarType.acoustic,
+    ),
+    hand: _enumByName(
+      PlayingHand.values,
+      _prefs.getString(kHandKey),
+      PlayingHand.right,
+    ),
+    style: _enumByName(
+      PlayingStyle.values,
+      _prefs.getString(kStyleKey),
+      PlayingStyle.both,
+    ),
+    genres: _prefs.getStringList(kGenresKey)?.toSet() ?? <String>{},
+    experience: _enumByName(
+      ExperienceLevel.values,
+      _prefs.getString(kExperienceKey),
+      ExperienceLevel.beginner,
+    ),
+    personalized: _prefs.getBool(kPersonalizedKey) ?? false,
+  );
+
+  /// Guarda el perfil completo.
+  @override
+  Future<void> setPlayerProfile(PlayerProfile profile) async {
+    await _prefs.setString(kGuitarKey, profile.guitar.name);
+    await _prefs.setString(kHandKey, profile.hand.name);
+    await _prefs.setString(kStyleKey, profile.style.name);
+    await _prefs.setStringList(kGenresKey, profile.genres.toList()..sort());
+    await _prefs.setString(kExperienceKey, profile.experience.name);
+    await _prefs.setBool(kPersonalizedKey, profile.personalized);
+  }
+
+  T _enumByName<T extends Enum>(List<T> values, String? name, T fallback) {
+    for (final T value in values) {
+      if (value.name == name) {
+        return value;
+      }
+    }
+    return fallback;
+  }
 }

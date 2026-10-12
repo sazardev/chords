@@ -24,6 +24,7 @@ import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
+import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
@@ -92,6 +93,9 @@ void main() {
     final List<SingleChildWidget> providers = <SingleChildWidget>[
       ChangeNotifierProvider<LocaleController>.value(value: localeController),
       ChangeNotifierProvider<SettingsController>.value(value: settings),
+      ChangeNotifierProvider<ProfileController>.value(
+        value: ProfileController(preferences, settings),
+      ),
       ChangeNotifierProvider<AppearanceController>.value(value: appearance),
       ChangeNotifierProvider<OnboardingController>.value(value: onboarding),
       ChangeNotifierProvider<ChordsController>.value(value: chordsController),
@@ -181,7 +185,7 @@ void main() {
     routerOf(tester).go(kLivePath);
     await tester.pumpAndSettle();
     expect(find.text('Afinador'), findsWidgets);
-    expect(find.text('Empezar a afinar'), findsOneWidget);
+    expect(find.text('Activar micrófono'), findsOneWidget);
 
     // Modo juego: iniciar serie y ver el objetivo.
     routerOf(tester).go(kGamePath);
