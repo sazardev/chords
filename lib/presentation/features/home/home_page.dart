@@ -2,6 +2,7 @@ import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
 import 'package:chords/domain/chords/usecases/recommend_chords_use_case.dart';
+import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/profile/entities/player_profile.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
@@ -211,7 +212,7 @@ class _Tools extends StatelessWidget {
       HomeToolTile(
         icon: Icons.sports_esports_rounded,
         title: t.home.gameMode,
-        subtitle: t.home.gameSubtitle,
+        subtitle: t.home.gameSubtitle(count: MiniGameKind.values.length + 1),
         background: scheme.secondaryContainer,
         ink: scheme.onSecondaryContainer,
         onTap: () => context.go(kGamePath),

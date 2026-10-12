@@ -41,6 +41,12 @@ abstract final class AnalyticsEventName {
   /// Ha terminado la serie de rondas del modo juego.
   static const String gameFinished = 'game_finished';
 
+  /// Ha comenzado una partida de un minijuego.
+  static const String miniGameStarted = 'minigame_started';
+
+  /// Ha terminado una partida de un minijuego.
+  static const String miniGameFinished = 'minigame_finished';
+
   /// Ha comenzado una sesión de afinación en vivo.
   static const String liveSessionStarted = 'live_session_started';
 
@@ -88,6 +94,8 @@ const List<String> kAllAnalyticsEventNames = <String>[
   AnalyticsEventName.gameStarted,
   AnalyticsEventName.gameRoundPlayed,
   AnalyticsEventName.gameFinished,
+  AnalyticsEventName.miniGameStarted,
+  AnalyticsEventName.miniGameFinished,
   AnalyticsEventName.liveSessionStarted,
   AnalyticsEventName.liveSessionEnded,
   AnalyticsEventName.tunerSessionEnded,
@@ -255,4 +263,25 @@ abstract final class AnalyticsParam {
 
   /// Paso del onboarding.
   static const String step = 'step';
+
+  /// Identificador del minijuego.
+  static const String gameId = 'game_id';
+
+  /// Dificultad elegida en el minijuego (easy, medium, hard).
+  static const String gameLevel = 'game_level';
+
+  /// Porcentaje de acierto de la partida (0-100).
+  static const String percent = 'percent';
+
+  /// Estrellas ganadas en la partida (0-3).
+  static const String stars = 'stars';
+
+  /// Respuestas acertadas de la partida.
+  static const String correct = 'correct';
+
+  /// Preguntas respondidas en la partida.
+  static const String total = 'total';
+
+  /// Mejor racha de aciertos de la partida.
+  static const String bestStreak = 'best_streak';
 }

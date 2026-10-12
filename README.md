@@ -6,7 +6,7 @@ diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
-![tests](https://img.shields.io/badge/tests-25-1DB954)
+![tests](https://img.shields.io/badge/tests-381-1DB954)
 ![acordes](https://img.shields.io/badge/acordes-156-8B5CF6)
 ![posiciones](https://img.shields.io/badge/posiciones-581-8B5CF6)
 
@@ -21,8 +21,21 @@ diseño atómico y Material 3 Expressive.
   progreso persistente por acorde dominado, guía paso a paso
   (dedos → rasgueo → cambio) y **arpegios guiados** (ascendente, descendente,
   alterno y fingerstyle) con audio real por cuerda.
-- **Modo juego "toca el acorde"**: elige el acorde, escucha 5 s por el
-  micrófono, puntúa por notas reconocidas y encadena series con racha y récord.
+- **17 minijuegos** (pestaña *Jugar*), cada uno con tres dificultades,
+  partidas de 6-10 preguntas, racha, puntos y hasta 3 estrellas guardadas:
+  - **Entrena el oído** (sin guitarra): adivina la nota, qué cuerda suena, qué
+    traste es, intervalos, agudo o grave, mayor o menor (calidad del acorde),
+    reconoce el acorde, oído de afinador (¿floja, afinada o alta?) y memoria
+    de cuerdas (repite la secuencia).
+  - **Mástil y dedos**: notas del mástil (cuerda + traste → nota), busca la
+    nota (cuerda + nota → traste), ¿qué dedo?, lee el diagrama (forma → acorde)
+    y **arma el acorde** (nombre → coloca los dedos en un tablero tocable y,
+    después, practícalo con el micrófono).
+  - **Toca la guitarra** (micrófono): toca la nota, cuerda y traste exactos y
+    eco de guitarra (escucha una melodía y tócala).
+  - Además, el modo **"toca el acorde"**: elige el acorde, escucha 5 s por el
+    micrófono, puntúa por notas reconocidas y encadena series con racha y
+    récord.
 - **Sonido de cada acorde**: síntesis por cuerda tipo Karplus-Strong con
   envolvente realista, codificada a WAV (SoLoud). Funciona en Android, Linux
   y Web (WASM).
@@ -85,7 +98,7 @@ lib/
 │   ├── theme/         Color, tipografía, formas, movimiento, tema M3
 │   ├── router/        Rutas, rutas profundas y deep links
 │   ├── widgets/       Sistema de diseño atómico (atoms→organisms)
-│   └── features/      home · chords · chords/detalle · live · settings
+│   └── features/      home · chords · learn · game · minigames · live · settings
 ├── app/               Widget raíz (MaterialApp.router)
 ├── di/                Composición de dependencias
 └── main_dev.dart      Puntos de entrada por flavor (dev/staging/prod)

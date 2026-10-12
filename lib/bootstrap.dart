@@ -30,6 +30,11 @@ import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
+import 'package:chords/presentation/features/minigames/build_chord_controller.dart';
+import 'package:chords/presentation/features/minigames/mic_game_controller.dart';
+import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
+import 'package:chords/presentation/features/minigames/quiz_controller.dart';
+import 'package:chords/presentation/features/minigames/sound_cue_player.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
@@ -114,6 +119,18 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
       ChangeNotifierProvider<GameAudioController>(
         create: (_) => dependencies.gameAudioController,
       ),
+      ChangeNotifierProvider<MiniGameProgressController>(
+        create: (_) => dependencies.miniGameProgressController,
+      ),
+      ChangeNotifierProvider<QuizController>(
+        create: (_) => dependencies.quizController,
+      ),
+      ChangeNotifierProvider<BuildChordController>(
+        create: (_) => dependencies.buildChordController,
+      ),
+      ChangeNotifierProvider<MicGameController>(
+        create: (_) => dependencies.micGameController,
+      ),
       ChangeNotifierProvider<LiveController>(
         create: (_) => dependencies.liveController,
       ),
@@ -178,6 +195,10 @@ class AppDependencies {
     required this.gameController,
     required this.gameScoreController,
     required this.gameAudioController,
+    required this.miniGameProgressController,
+    required this.quizController,
+    required this.buildChordController,
+    required this.micGameController,
     required this.liveController,
     required this.tunerController,
     required this.chordPracticeController,
@@ -214,6 +235,27 @@ class AppDependencies {
       gameScore,
       gameTuner,
     );
+    final MiniGameProgressController miniGameProgress =
+        MiniGameProgressController(preferences);
+    final SoundCuePlayer cuePlayer = SoundCuePlayer(
+      audioRepository,
+      chordRepository,
+    );
+    final QuizController quiz = QuizController(
+      chordRepository,
+      cuePlayer,
+      miniGameProgress,
+    );
+    final BuildChordController buildChord = BuildChordController(
+      chordRepository,
+      audioRepository,
+      miniGameProgress,
+    );
+    final MicGameController micGame = MicGameController(
+      audioRepository,
+      cuePlayer,
+      miniGameProgress,
+    );
     final LiveController live = LiveController(
       audioRepository,
       chordRepository,
@@ -247,6 +289,10 @@ class AppDependencies {
       gameController: game,
       gameScoreController: gameScore,
       gameAudioController: gameTuner,
+      miniGameProgressController: miniGameProgress,
+      quizController: quiz,
+      buildChordController: buildChord,
+      micGameController: micGame,
       liveController: live,
       tunerController: tuner,
       chordPracticeController: practice,
@@ -286,6 +332,18 @@ class AppDependencies {
 
   /// Controlador de la escucha y afinación del juego.
   final GameAudioController gameAudioController;
+
+  /// Controlador del progreso y las estrellas de los minijuegos.
+  final MiniGameProgressController miniGameProgressController;
+
+  /// Controlador de los minijuegos de preguntas de opciones.
+  final QuizController quizController;
+
+  /// Controlador del minijuego "arma el acorde".
+  final BuildChordController buildChordController;
+
+  /// Controlador de los minijuegos con micrófono.
+  final MicGameController micGameController;
 
   /// Controlador de la afinación en vivo.
   final LiveController liveController;

@@ -8,6 +8,7 @@ import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
+import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
@@ -31,6 +32,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'fakes/mini_game_kit.dart';
 
 /// Audit responsive: recorre todas las pantallas en tamaños de móvil
 /// comprobando que no haya desbordes ni errores de layout.
@@ -62,6 +65,11 @@ void main() {
       gameTuner,
     );
     final OnboardingController onboarding = OnboardingController(preferences);
+    final MiniGameKit miniGames = MiniGameKit(
+      chords: chords,
+      audio: audio,
+      preferences: preferences,
+    );
 
     await tester.runAsync(() async {
       await chordsController.load();
@@ -93,6 +101,7 @@ void main() {
       ChangeNotifierProvider<GameController>.value(value: game),
       ChangeNotifierProvider<GameScoreController>.value(value: gameScore),
       ChangeNotifierProvider<GameAudioController>.value(value: gameTuner),
+      ...miniGames.providers,
       ChangeNotifierProvider<LiveController>.value(
         value: LiveController(audio, chords),
       ),
@@ -139,6 +148,20 @@ void main() {
       await _visit(tester, kLearnPath, expectText: 'Aprender', size: size);
       await _visit(tester, kChordsPath, expectText: 'Acordes', size: size);
       await _visit(tester, kGamePath, expectText: 'Jugar', size: size);
+      await _visit(
+        tester,
+        kChordGamePath,
+        expectText: 'Empezar serie',
+        size: size,
+      );
+      for (final MiniGameKind kind in MiniGameKind.values) {
+        await _visit(
+          tester,
+          '$kMiniGamePath?kind=${kind.id}',
+          expectText: 'Cómo se juega',
+          size: size,
+        );
+      }
       await _visit(tester, kLivePath, expectText: 'Afinador', size: size);
       await _visit(
         tester,

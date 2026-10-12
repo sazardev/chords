@@ -33,6 +33,9 @@ class PreferencesService implements PreferencesRepository {
   /// Clave de la mejor puntuación del juego.
   static const String kBestScoreKey = 'best_score_v1';
 
+  /// Prefijo de las claves del mejor resultado de cada minijuego.
+  static const String kMiniGameBestPrefix = 'minigame_best_v1_';
+
   /// Clave del sonido activado.
   static const String kSoundKey = 'sound_enabled_v1';
 
@@ -103,6 +106,19 @@ class PreferencesService implements PreferencesRepository {
   Future<void> saveBestScore(int score) async {
     if (score > bestScore) {
       await _prefs.setInt(kBestScoreKey, score);
+    }
+  }
+
+  /// Mejor porcentaje de acierto de un minijuego y nivel.
+  @override
+  int miniGameBest(String gameKey) =>
+      _prefs.getInt('$kMiniGameBestPrefix$gameKey') ?? 0;
+
+  /// Guarda el porcentaje si supera el anterior.
+  @override
+  Future<void> saveMiniGameBest(String gameKey, int percent) async {
+    if (percent > miniGameBest(gameKey)) {
+      await _prefs.setInt('$kMiniGameBestPrefix$gameKey', percent);
     }
   }
 

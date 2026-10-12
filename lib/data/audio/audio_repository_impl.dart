@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:chords/core/analytics/analytics.dart' show analytics;
@@ -44,6 +45,12 @@ class AudioRepositoryImpl implements AudioRepository {
   final StreamController<MicStatus> _statusController =
       StreamController<MicStatus>.broadcast();
   final Map<String, AudioSource> _sources = <String, AudioSource>{};
+
+  /// Notas sueltas en caché, de la más antigua a la más reciente.
+  final Queue<String> _toneKeys = Queue<String>();
+
+  /// Máximo de notas sueltas guardadas a la vez.
+  static const int _maxToneSources = 48;
 
   StreamSubscription<Uint8List>? _micSubscription;
   bool _engineReady = false;
@@ -123,7 +130,7 @@ class AudioRepositoryImpl implements AudioRepository {
     await _ensureEngine();
     final AudioSource source = await _loadCached(
       key: '${chord.id}:${variant.id}',
-      samples: _synthesizer.synthesize(variant),
+      samples: () => _synthesizer.synthesize(variant),
     );
     _play(source);
   }
@@ -141,7 +148,7 @@ class AudioRepositoryImpl implements AudioRepository {
     await _ensureEngine();
     final AudioSource source = await _loadCached(
       key: '${chord.id}:${variant.id}:arp-${pattern.id}',
-      samples: _synthesizer.synthesizeArpeggio(
+      samples: () => _synthesizer.synthesizeArpeggio(
         variant,
         pattern.stringOrder,
         pattern.intervalMs,
@@ -157,10 +164,12 @@ class AudioRepositoryImpl implements AudioRepository {
       channel: LogChannel.audio,
     );
     await _ensureEngine();
+    final String key = 'tone:${frequency.toStringAsFixed(1)}';
     final AudioSource source = await _loadCached(
-      key: 'tone:${frequency.toStringAsFixed(1)}',
-      samples: _synthesizer.synthesizeNote(frequency),
+      key: key,
+      samples: () => _synthesizer.synthesizeNote(frequency),
     );
+    _rememberTone(key);
     _play(source);
   }
 
@@ -187,15 +196,31 @@ class AudioRepositoryImpl implements AudioRepository {
     );
   }
 
+  /// Marca una nota como la más reciente y libera las más antiguas.
+  ///
+  /// Los minijuegos de oído piden cientos de frecuencias distintas; sin tope
+  /// la memoria crecería con cada partida.
+  void _rememberTone(String key) {
+    _toneKeys
+      ..remove(key)
+      ..addLast(key);
+    while (_toneKeys.length > _maxToneSources) {
+      final AudioSource? stale = _sources.remove(_toneKeys.removeFirst());
+      if (stale != null) {
+        unawaited(SoLoud.instance.disposeSource(stale));
+      }
+    }
+  }
+
   Future<AudioSource> _loadCached({
     required String key,
-    required Float64List samples,
+    required Float64List Function() samples,
   }) async {
     final AudioSource? cached = _sources[key];
     if (cached != null) {
       return cached;
     }
-    final Uint8List wav = _encoder.encode(samples);
+    final Uint8List wav = _encoder.encode(samples());
     final AudioSource source = await SoLoud.instance.loadMem('$key.wav', wav);
     _sources[key] = source;
     return source;

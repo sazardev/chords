@@ -9,6 +9,8 @@ import 'package:chords/presentation/features/home/home_page.dart';
 import 'package:chords/presentation/features/learn/learn_page.dart';
 import 'package:chords/presentation/features/live/live_page.dart';
 import 'package:chords/presentation/features/logs/logs_page.dart';
+import 'package:chords/presentation/features/minigames/mini_game_page.dart';
+import 'package:chords/presentation/features/minigames/mini_games_hub_page.dart';
 import 'package:chords/presentation/features/practice/chord_practice_page.dart';
 import 'package:chords/presentation/features/profile/profile_page.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
@@ -59,6 +61,8 @@ class AppRouter {
       ),
       _chordDetailRoute(),
       _chordPracticeRoute(),
+      _chordGameRoute(),
+      _miniGameRoute(),
       _profileRoute(),
     ],
   );
@@ -78,7 +82,9 @@ class AppRouter {
   );
 
   StatefulShellBranch _gameBranch() => StatefulShellBranch(
-    routes: <RouteBase>[_route(kGamePath, kGameRouteName, const GamePage())],
+    routes: <RouteBase>[
+      _route(kGamePath, kGameRouteName, const MiniGamesHubPage()),
+    ],
   );
 
   StatefulShellBranch _liveBranch() => StatefulShellBranch(
@@ -106,6 +112,21 @@ class AppRouter {
     parentNavigatorKey: _rootKey,
     builder: (BuildContext context, GoRouterState state) =>
         const ChordPracticePage(),
+  );
+
+  GoRoute _chordGameRoute() => GoRoute(
+    path: kChordGamePath,
+    name: kChordGameRouteName,
+    parentNavigatorKey: _rootKey,
+    builder: (BuildContext context, GoRouterState state) => const GamePage(),
+  );
+
+  GoRoute _miniGameRoute() => GoRoute(
+    path: kMiniGamePath,
+    name: kMiniGameRouteName,
+    parentNavigatorKey: _rootKey,
+    builder: (BuildContext context, GoRouterState state) =>
+        MiniGamePage(gameId: state.uri.queryParameters['kind']),
   );
 
   GoRoute _profileRoute() => GoRoute(

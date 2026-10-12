@@ -161,8 +161,8 @@ const LEARN_FEATURES = [
   },
   {
     icon: 'game',
-    title: 'Modo juego',
-    text: 'Toca el acorde, el micrófono valida las notas y encadenas serie con racha y récord.',
+    title: '17 minijuegos',
+    text: 'Adivina la nota, reconoce acordes, aprende el mástil y los dedos, y toca con el micrófono: tres dificultades y estrellas por juego.',
   },
   {
     icon: 'genre',

@@ -38,6 +38,8 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'fakes/mini_game_kit.dart';
+
 /// Smoke test de la aplicación completa (arranque, assets y navegación).
 void main() {
   testWidgets('la app arranca, carga el banco y navega', (
@@ -81,6 +83,11 @@ void main() {
       gameTuner,
     );
     final LiveController live = LiveController(audio, chords);
+    final MiniGameKit miniGames = MiniGameKit(
+      chords: chords,
+      audio: audio,
+      preferences: preferences,
+    );
 
     await tester.runAsync(() async {
       await chords.load();
@@ -105,6 +112,7 @@ void main() {
       ChangeNotifierProvider<GameController>.value(value: game),
       ChangeNotifierProvider<GameScoreController>.value(value: gameScore),
       ChangeNotifierProvider<GameAudioController>.value(value: gameTuner),
+      ...miniGames.providers,
       ChangeNotifierProvider<LiveController>.value(value: live),
       ChangeNotifierProvider<TunerController>.value(
         value: TunerController(audio),
@@ -187,8 +195,15 @@ void main() {
     expect(find.text('Afinador'), findsWidgets);
     expect(find.text('Activar micrófono'), findsOneWidget);
 
-    // Modo juego: iniciar serie y ver el objetivo.
+    // Catálogo de juegos: las tres familias y el modo "toca el acorde".
     routerOf(tester).go(kGamePath);
+    await tester.pumpAndSettle();
+    expect(find.text('Toca el acorde'), findsOneWidget);
+    expect(find.text('Entrena el oído'), findsOneWidget);
+    expect(find.text('Adivina la nota'), findsOneWidget);
+
+    // Modo "toca el acorde": iniciar serie y ver el objetivo.
+    await tester.tap(find.text('Toca el acorde'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Empezar serie'));
     await tester.pumpAndSettle();

@@ -22,8 +22,14 @@ const String kChordPracticePath = '/chords/practice';
 /// Perfil de la persona (guitarra, mano, géneros y experiencia).
 const String kProfilePath = '/profile';
 
-/// Modo juego.
+/// Catálogo de juegos (minijuegos y modo "toca el acorde").
 const String kGamePath = '/game';
+
+/// Serie "toca el acorde" con el micrófono.
+const String kChordGamePath = '/game/chords';
+
+/// Un minijuego (query `?kind=guessNote`; ver `MiniGameKind`).
+const String kMiniGamePath = '/game/play';
 
 /// Afinación en vivo con micrófono.
 const String kLivePath = '/live';
@@ -52,8 +58,14 @@ const String kChordPracticeRouteName = 'chord-practice';
 /// Nombre interno de la ruta del perfil.
 const String kProfileRouteName = 'profile';
 
-/// Nombre interno de la ruta del juego.
+/// Nombre interno de la ruta del catálogo de juegos.
 const String kGameRouteName = 'game';
+
+/// Nombre interno de la ruta de la serie "toca el acorde".
+const String kChordGameRouteName = 'chord-game';
+
+/// Nombre interno de la ruta de un minijuego.
+const String kMiniGameRouteName = 'minigame';
 
 /// Nombre interno de la ruta en vivo.
 const String kLiveRouteName = 'live';
