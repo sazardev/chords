@@ -29,7 +29,9 @@ import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
+import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
@@ -113,6 +115,12 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
       ChangeNotifierProvider<LiveController>(
         create: (_) => dependencies.liveController,
       ),
+      ChangeNotifierProvider<TunerController>(
+        create: (_) => dependencies.tunerController,
+      ),
+      ChangeNotifierProvider<ChordPracticeController>(
+        create: (_) => dependencies.chordPracticeController,
+      ),
     ];
 
 /// Severidad mínima de log según el flavor activo.
@@ -166,6 +174,8 @@ class AppDependencies {
     required this.gameScoreController,
     required this.gameAudioController,
     required this.liveController,
+    required this.tunerController,
+    required this.chordPracticeController,
   });
 
   /// Crea el grafo de dependencias por defecto.
@@ -202,6 +212,11 @@ class AppDependencies {
       audioRepository,
       chordRepository,
     );
+    final TunerController tuner = TunerController(audioRepository);
+    final ChordPracticeController practice = ChordPracticeController(
+      audioRepository,
+      chordRepository,
+    );
     unawaited(locale.load());
     unawaited(appearance.load());
     unawaited(settings.load());
@@ -222,6 +237,8 @@ class AppDependencies {
       gameScoreController: gameScore,
       gameAudioController: gameTuner,
       liveController: live,
+      tunerController: tuner,
+      chordPracticeController: practice,
     );
   }
 
@@ -260,4 +277,10 @@ class AppDependencies {
 
   /// Controlador de la afinación en vivo.
   final LiveController liveController;
+
+  /// Controlador del afinador por cuerdas.
+  final TunerController tunerController;
+
+  /// Controlador de la práctica de acordes cuerda a cuerda.
+  final ChordPracticeController chordPracticeController;
 }

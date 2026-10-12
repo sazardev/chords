@@ -16,6 +16,9 @@ const String kChordsPath = '/chords';
 /// Detalle de un acorde (query `?id=C-maj`).
 const String kChordDetailPath = '/chords/detail';
 
+/// Práctica de un acorde cuerda a cuerda (query `?id=C-maj&v=0`).
+const String kChordPracticePath = '/chords/practice';
+
 /// Modo juego.
 const String kGamePath = '/game';
 
@@ -39,6 +42,9 @@ const String kChordsRouteName = 'chords';
 
 /// Nombre interno de la ruta de detalle.
 const String kChordDetailRouteName = 'chord-detail';
+
+/// Nombre interno de la ruta de práctica de acorde.
+const String kChordPracticeRouteName = 'chord-practice';
 
 /// Nombre interno de la ruta del juego.
 const String kGameRouteName = 'game';

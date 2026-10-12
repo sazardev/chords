@@ -122,3 +122,15 @@ String arpeggioLabel(Translations translations, ArpeggioPattern pattern) =>
       ArpeggioPattern.fingerstyle => translations.data.arpeggio.fingerstyle,
       _ => pattern.label,
     };
+
+/// Etiqueta traducida de un número de cuerda (1 = primera).
+String guitarStringLabel(Translations translations, int stringNumber) =>
+    switch (stringNumber) {
+      1 => translations.game.stringFirst,
+      2 => translations.game.stringSecond,
+      3 => translations.game.stringThird,
+      4 => translations.game.stringFourth,
+      5 => translations.game.stringFifth,
+      6 => translations.game.stringSixth,
+      _ => '$stringNumber',
+    };

@@ -18,6 +18,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     required this.difficulty4,
     required this.difficulty5,
     required this.inTune,
+    required this.nearTune,
     required this.outOfTune,
   });
 
@@ -32,6 +33,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     difficulty4: Color(0xFFEF6C00),
     difficulty5: Color(0xFFE53935),
     inTune: Color(0xFF1DB954),
+    nearTune: Color(0xFFF9A825),
     outOfTune: Color(0xFFE53935),
   );
 
@@ -46,6 +48,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     difficulty4: Color(0xFFFB923C),
     difficulty5: Color(0xFFF87171),
     inTune: Color(0xFF4ADE80),
+    nearTune: Color(0xFFFACC15),
     outOfTune: Color(0xFFF87171),
   );
 
@@ -76,6 +79,9 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
   /// Color de afinación correcta.
   final Color inTune;
 
+  /// Color de afinación casi correcta (ajuste fino pendiente).
+  final Color nearTune;
+
   /// Color de desafinación.
   final Color outOfTune;
 
@@ -100,6 +106,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     difficulty4: difficulty4.harmonizeWith(towards),
     difficulty5: difficulty5.harmonizeWith(towards),
     inTune: inTune.harmonizeWith(towards),
+    nearTune: nearTune.harmonizeWith(towards),
     outOfTune: outOfTune.harmonizeWith(towards),
   );
 
@@ -114,6 +121,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     Color? difficulty4,
     Color? difficulty5,
     Color? inTune,
+    Color? nearTune,
     Color? outOfTune,
   }) => AppChordColors(
     openString: openString ?? this.openString,
@@ -125,6 +133,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
     difficulty4: difficulty4 ?? this.difficulty4,
     difficulty5: difficulty5 ?? this.difficulty5,
     inTune: inTune ?? this.inTune,
+    nearTune: nearTune ?? this.nearTune,
     outOfTune: outOfTune ?? this.outOfTune,
   );
 
@@ -143,6 +152,7 @@ class AppChordColors extends ThemeExtension<AppChordColors> {
       difficulty4: Color.lerp(difficulty4, other.difficulty4, t)!,
       difficulty5: Color.lerp(difficulty5, other.difficulty5, t)!,
       inTune: Color.lerp(inTune, other.inTune, t)!,
+      nearTune: Color.lerp(nearTune, other.nearTune, t)!,
       outOfTune: Color.lerp(outOfTune, other.outOfTune, t)!,
     );
   }

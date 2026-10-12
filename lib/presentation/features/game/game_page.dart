@@ -1,19 +1,31 @@
+import 'dart:async' show unawaited;
+
+import 'package:chords/config/route_paths.dart';
+import 'package:chords/domain/audio/entities/guitar_string.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
 import 'package:chords/domain/chords/entities/game_round.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
+import 'package:chords/presentation/features/game/game_feedback_cards.dart';
 import 'package:chords/presentation/features/game/game_score_controller.dart';
+import 'package:chords/presentation/l10n/tuner_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/chord_play_button.dart';
+import 'package:chords/presentation/widgets/molecules/mic_problem_card.dart';
 import 'package:chords/presentation/widgets/organisms/chord_diagram.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 /// Modo juego: toca el acorde y encadena una serie.
+///
+/// Durante la escucha muestra feedback en vivo —notas acertadas, cuerdas que
+/// faltan y notas que suenan de más— para que el jugador se acomode sin
+/// esperar al resultado. Si falla, solo puede reintentar la misma ronda.
 class GamePage extends StatelessWidget {
   /// Crea la pantalla del juego.
   const GamePage({super.key});
@@ -49,12 +61,27 @@ class GamePage extends StatelessWidget {
                 children: <Widget>[
                   _RoundHeader(round: round),
                   const SizedBox(height: 12),
-                  _TargetCard(round: round, controller: controller),
+                  _TargetCard(
+                    round: round,
+                    controller: controller,
+                    tuner: tuner,
+                  ),
                   const SizedBox(height: 20),
                   if (controller.phase == GamePhase.listening)
-                    _ListeningCard(tuner: tuner)
-                  else
+                    GameListeningCard(tuner: tuner)
+                  else ...<Widget>[
+                    if (controller.phase == GamePhase.idle &&
+                        MicProblemCard.isProblem(tuner.micStatus)) ...<Widget>[
+                      MicProblemCard(
+                        status: tuner.micStatus,
+                        onRetry: controller.playRound,
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (controller.phase != GamePhase.idle)
+                      GameResultCard(controller: controller, tuner: tuner),
                     _ActionButton(controller: controller),
+                  ],
                   const SizedBox(height: 16),
                   _SeriesRow(controller: controller),
                 ],
@@ -109,10 +136,15 @@ class _RoundHeader extends StatelessWidget {
 
 /// Acorde objetivo con su diagrama.
 class _TargetCard extends StatelessWidget {
-  const _TargetCard({required this.round, required this.controller});
+  const _TargetCard({
+    required this.round,
+    required this.controller,
+    required this.tuner,
+  });
 
   final GameRound round;
   final GameController controller;
+  final GameAudioController tuner;
 
   @override
   Widget build(BuildContext context) {
@@ -139,41 +171,15 @@ class _TargetCard extends StatelessWidget {
             ChordDiagram(
               variant: chord.easiestVariant,
               width: 150,
-              height: 190,
+              height: 208,
+              stringStates: controller.phase == GamePhase.idle
+                  ? null
+                  : tuner.stringStatuses,
+              stringNames: <String>[
+                for (final GuitarString string in kStandardTuning)
+                  openNoteName(t, string),
+              ],
             ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Indicador de escucha activa.
-class _ListeningCard extends StatelessWidget {
-  const _ListeningCard({required this.tuner});
-
-  final GameAudioController tuner;
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    return AppCard(
-      child: Column(
-        children: <Widget>[
-          const SizedBox(
-            width: 28,
-            height: 28,
-            child: CircularProgressIndicator(strokeWidth: 3),
-          ),
-          const SizedBox(height: 12),
-          AppText(t.game.listening, variant: AppTextVariant.titleMedium),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: tuner.matchRatio.clamp(0.0, 1.0),
-              minHeight: 12,
-            ),
-          ),
         ],
       ),
     );
@@ -186,25 +192,58 @@ class _ActionButton extends StatelessWidget {
 
   final GameController controller;
 
+  /// Abre la práctica cuerda a cuerda del acorde de la ronda.
+  void _practice(BuildContext context) {
+    final GameRound? round = controller.currentRound;
+    final Chord? chord = round == null
+        ? null
+        : controller.chordOf(round.chordId);
+    if (round == null || chord == null) {
+      return;
+    }
+    final int variant = chord.variants.indexOf(chord.easiestVariant);
+    unawaited(
+      context.push(
+        '$kChordPracticePath?id=${Uri.encodeComponent(round.chordId)}'
+        '&v=${variant < 0 ? 0 : variant}',
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
     if (controller.phase == GamePhase.won) {
+      final bool complete =
+          controller.currentRound?.result?.outcome == GameOutcome.success;
       return FilledButton.icon(
         onPressed: controller.next,
         icon: const Icon(Icons.check_rounded),
-        label: Text(t.game.correctNext),
+        label: Text(complete ? t.game.correctNext : t.game.almostNext),
       );
     }
     if (controller.phase == GamePhase.lost) {
-      return FilledButton.icon(
-        style: FilledButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-          foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
-        ),
-        onPressed: controller.next,
-        icon: const Icon(Icons.refresh_rounded),
-        label: Text(t.game.retry),
+      return Column(
+        children: <Widget>[
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+              ),
+              onPressed: controller.retry,
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text(t.game.retry),
+            ),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: () => _practice(context),
+            icon: const Icon(Icons.mic_rounded),
+            label: Text(t.game.practiceChord),
+          ),
+        ],
       );
     }
     return FilledButton.icon(

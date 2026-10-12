@@ -9,6 +9,7 @@ import 'package:chords/presentation/features/home/home_page.dart';
 import 'package:chords/presentation/features/learn/learn_page.dart';
 import 'package:chords/presentation/features/live/live_page.dart';
 import 'package:chords/presentation/features/logs/logs_page.dart';
+import 'package:chords/presentation/features/practice/chord_practice_page.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/router/logging_navigator_observer.dart';
 import 'package:chords/presentation/router/router_error_screen.dart';
@@ -56,6 +57,7 @@ class AppRouter {
         ],
       ),
       _chordDetailRoute(),
+      _chordPracticeRoute(),
     ],
   );
 
@@ -94,6 +96,14 @@ class AppRouter {
     parentNavigatorKey: _rootKey,
     builder: (BuildContext context, GoRouterState state) =>
         const ChordDetailPage(),
+  );
+
+  GoRoute _chordPracticeRoute() => GoRoute(
+    path: kChordPracticePath,
+    name: kChordPracticeRouteName,
+    parentNavigatorKey: _rootKey,
+    builder: (BuildContext context, GoRouterState state) =>
+        const ChordPracticePage(),
   );
 
   GoRoute _route(String path, String name, Widget page) => GoRoute(

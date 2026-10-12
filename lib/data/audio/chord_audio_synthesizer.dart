@@ -52,6 +52,14 @@ class ChordAudioSynthesizer {
     return mix;
   }
 
+  /// Sintetiza una sola cuerda a [frequency] (nota de referencia).
+  Float64List synthesizeNote(double frequency, {double duration = 2.2}) {
+    final int total = (sampleRate * duration).round();
+    final Float64List mix = _pluck(frequency, total, math.Random(7));
+    _normalize(mix);
+    return mix;
+  }
+
   /// Sintetiza un arpegio: cada cuerda suena según el orden del patrón.
   Float64List synthesizeArpeggio(
     ChordVariant variant,

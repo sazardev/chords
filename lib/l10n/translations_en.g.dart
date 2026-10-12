@@ -89,6 +89,14 @@ class TranslationsEn extends Translations
   late final Translations$logs$en logs = Translations$logs$en._(_root);
   @override
   late final Translations$router$en router = Translations$router$en._(_root);
+  @override
+  late final Translations$mic$en mic = Translations$mic$en._(_root);
+  @override
+  late final Translations$tuner$en tuner = Translations$tuner$en._(_root);
+  @override
+  late final Translations$practice$en practice = Translations$practice$en._(
+    _root,
+  );
 }
 
 // Path: app
@@ -130,7 +138,7 @@ class Translations$nav$en extends Translations$nav$es {
   @override
   String get game => 'Play';
   @override
-  String get live => 'Live';
+  String get live => 'Tune';
   @override
   String get settings => 'Settings';
 }
@@ -173,9 +181,9 @@ class Translations$home$en extends Translations$home$es {
   @override
   String get gameSubtitle => 'Play the chord and build a streak';
   @override
-  String get liveTitle => 'Live tuning';
+  String get liveTitle => 'Tuner and listening';
   @override
-  String get liveSubtitle => 'Detect the note with your microphone';
+  String get liveSubtitle => 'Tune string by string with your microphone';
 }
 
 // Path: chords
@@ -267,6 +275,8 @@ class Translations$chordDetail$en extends Translations$chordDetail$es {
   @override
   String arpeggioChip({required Object label, required Object level}) =>
       '${label} · Lv ${level}';
+  @override
+  String get practice => 'Practice';
 }
 
 // Path: game
@@ -305,6 +315,31 @@ class Translations$game$en extends Translations$game$es {
   String get streak => 'Streak';
   @override
   String get score => 'Score';
+  @override
+  String feedbackProgress({required Object hit, required Object total}) =>
+      'Going well! ${hit} of ${total} notes';
+  @override
+  String feedbackMissing({required Object notes}) => 'Missing: ${notes}';
+  @override
+  String feedbackExtra({required Object notes}) => 'Extra notes: ${notes}';
+  @override
+  String get feedbackComplete => 'Chord complete!';
+  @override
+  String get almostNext => 'Almost! Next';
+  @override
+  String get stringFirst => '1st';
+  @override
+  String get stringSecond => '2nd';
+  @override
+  String get stringThird => '3rd';
+  @override
+  String get stringFourth => '4th';
+  @override
+  String get stringFifth => '5th';
+  @override
+  String get stringSixth => '6th';
+  @override
+  String get practiceChord => 'Practice string by string';
 }
 
 // Path: chordDiagram
@@ -340,7 +375,7 @@ class Translations$live$en extends Translations$live$es {
 
   // Translations
   @override
-  String get title => 'Live';
+  String get title => 'Tuner';
   @override
   String get listen => 'Listen to guitar';
   @override
@@ -573,6 +608,226 @@ class Translations$router$en extends Translations$router$es {
   String get notFound => 'Route not found';
   @override
   String get goHome => 'Go to home';
+}
+
+// Path: mic
+class Translations$mic$en extends Translations$mic$es {
+  Translations$mic$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get deniedTitle => 'I need your microphone';
+  @override
+  String get deniedMessage =>
+      'Allow microphone access in your phone settings and try again.';
+  @override
+  String get errorTitle => 'I couldn\'t listen';
+  @override
+  String get errorMessage =>
+      'Something went wrong opening the microphone. Check that no other app is using it.';
+  @override
+  String get retry => 'Try again';
+  @override
+  String get levelLabel => 'Microphone level';
+  @override
+  String get levelWaiting => 'Waiting for sound…';
+  @override
+  String get levelQuiet =>
+      'I can barely hear you: bring the guitar closer to the microphone';
+  @override
+  String get levelGood => 'I can hear you well';
+  @override
+  String get levelLoud => 'Too loud: move the guitar a little farther away';
+}
+
+// Path: tuner
+class Translations$tuner$en extends Translations$tuner$es {
+  Translations$tuner$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get tabTune => 'Tune';
+  @override
+  String get tabListen => 'Chords';
+  @override
+  String get start => 'Start tuning';
+  @override
+  String get stop => 'Stop';
+  @override
+  String get auto => 'Automatic';
+  @override
+  String get autoHint => 'Play any string: I recognize it on my own';
+  @override
+  String get pluckPrompt => 'Play an open string';
+  @override
+  String pluckString({required Object string}) => 'Play the ${string}';
+  @override
+  String stringTitle({required Object ordinal, required Object note}) =>
+      '${ordinal} string · ${note}';
+  @override
+  String get noteE => 'E';
+  @override
+  String get noteA => 'A';
+  @override
+  String get noteD => 'D';
+  @override
+  String get noteG => 'G';
+  @override
+  String get noteB => 'B';
+  @override
+  String get tuned => 'In tune!';
+  @override
+  String get upLittle => 'Tune up a little';
+  @override
+  String get up => 'Tune up';
+  @override
+  String get upALot => 'Tune up a lot';
+  @override
+  String get downLittle => 'Tune down a little';
+  @override
+  String get down => 'Tune down';
+  @override
+  String get downALot => 'Tune down a lot';
+  @override
+  String get tightenPeg => 'Tighten the peg';
+  @override
+  String get loosenPeg => 'Loosen the peg';
+  @override
+  String get holdSteady => 'Let the note ring';
+  @override
+  String heardOther({required Object heard, required Object target}) =>
+      'That sounds like the ${heard}. Play the ${target}.';
+  @override
+  String get flat => 'Flat';
+  @override
+  String get sharp => 'Sharp';
+  @override
+  String cents({required Object cents}) => '${cents} cents';
+  @override
+  String progress({required Object count}) => '${count} of 6 in tune';
+  @override
+  String get allTunedTitle => 'Guitar in tune!';
+  @override
+  String get allTunedMessage => 'All six strings are in place. Time to play!';
+  @override
+  String get playReference => 'Hear note';
+  @override
+  String get startOver => 'Start over';
+  @override
+  String get selectHint => 'Tap a peg to tune just that string';
+  @override
+  String peg({required Object string}) => 'Tuning peg of the ${string}';
+  @override
+  String meterLabel({required Object cents}) => 'Tuning: ${cents} cents';
+}
+
+// Path: practice
+class Translations$practice$en extends Translations$practice$es {
+  Translations$practice$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get title => 'Practice chord';
+  @override
+  String get intro =>
+      'Play the strings one by one. I recognize them in any order.';
+  @override
+  String get start => 'Start practicing';
+  @override
+  String get stop => 'Stop';
+  @override
+  String get restart => 'Again';
+  @override
+  String get listenChord => 'Hear chord';
+  @override
+  String get listenString => 'Hear string';
+  @override
+  String progress({required Object count, required Object total}) =>
+      '${count} of ${total} strings';
+  @override
+  String nextOpen({required Object string}) => 'Now play the ${string} open';
+  @override
+  String nextFretted({
+    required Object string,
+    required Object fret,
+    required Object finger,
+  }) => 'Now play the ${string}: fret ${fret} with ${finger}';
+  @override
+  String nextFrettedAny({required Object string, required Object fret}) =>
+      'Now play the ${string}: fret ${fret}';
+  @override
+  String get muted => 'Muted';
+  @override
+  String get open => 'Open';
+  @override
+  String fret({required Object fret}) => 'Fret ${fret}';
+  @override
+  String get mutedHint => 'Don\'t play this string';
+  @override
+  String get matched => 'Good';
+  @override
+  String get doneTitle => 'Clean chord!';
+  @override
+  String get doneMessage =>
+      'Every string sounds as it should. Repeat it slowly until it comes naturally.';
+  @override
+  String get retune => 'Retune string';
+  @override
+  String get tipsTitle => 'How to fix it';
+  @override
+  String fingerThe({required Object n}) => 'finger ${n}';
+  @override
+  String get fingerAny => 'your finger';
+  @override
+  String tipSoundsOpen({
+    required Object string,
+    required Object fret,
+    required Object finger,
+  }) => 'The ${string} rings open: press fret ${fret} with ${finger}.';
+  @override
+  String tipMoveUp({required num n, required Object finger}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+        n,
+        one: 'It sounds lower. Move ${finger} up one fret toward the body.',
+        other: 'It sounds lower. Move ${finger} up ${n} frets toward the body.',
+      );
+  @override
+  String tipMoveDown({
+    required num n,
+    required Object finger,
+  }) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+    n,
+    one: 'It sounds higher. Move ${finger} down one fret toward the headstock.',
+    other:
+        'It sounds higher. Move ${finger} down ${n} frets toward the headstock.',
+  );
+  @override
+  String tipTooFlat({required Object finger}) =>
+      'It sounds a bit flat. Bring ${finger} closer to the fret (without touching it) or retune the string.';
+  @override
+  String get tipTooSharp =>
+      'It sounds a bit sharp. Press more lightly, without bending the string, or retune it.';
+  @override
+  String tipRetuneUp({required Object string}) =>
+      'The open ${string} sounds flat: tighten the peg a little.';
+  @override
+  String tipRetuneDown({required Object string}) =>
+      'The open ${string} sounds sharp: loosen the peg a little.';
+  @override
+  String tipUnknown({required Object string}) =>
+      'I don\'t recognize that note. Play only the ${string}, calmly.';
 }
 
 // Path: settings.theme
@@ -972,7 +1227,7 @@ extension on TranslationsEn {
       'nav.learn' => 'Learn',
       'nav.chords' => 'Chords',
       'nav.game' => 'Play',
-      'nav.live' => 'Live',
+      'nav.live' => 'Tune',
       'nav.settings' => 'Settings',
       'home.greeting' => 'Hello, guitarist',
       'home.question' => 'What are you playing today?',
@@ -993,8 +1248,8 @@ extension on TranslationsEn {
       }) => '${count} chords by genre and level',
       'home.gameMode' => 'Game mode',
       'home.gameSubtitle' => 'Play the chord and build a streak',
-      'home.liveTitle' => 'Live tuning',
-      'home.liveSubtitle' => 'Detect the note with your microphone',
+      'home.liveTitle' => 'Tuner and listening',
+      'home.liveSubtitle' => 'Tune string by string with your microphone',
       'chords.title' => 'Chords',
       'chords.clearFilters' => 'Clear filters',
       'chords.searchHint' => 'Search chords',
@@ -1042,6 +1297,7 @@ extension on TranslationsEn {
         required Object label,
         required Object level,
       }) => '${label} · Lv ${level}',
+      'chordDetail.practice' => 'Practice',
       'game.title' => 'Play',
       'game.start' => 'Start streak',
       'game.emptyTitle' => 'Play the chord',
@@ -1057,6 +1313,25 @@ extension on TranslationsEn {
       'game.ready' => 'I\'m ready',
       'game.streak' => 'Streak',
       'game.score' => 'Score',
+      'game.feedbackProgress' => ({
+        required Object hit,
+        required Object total,
+      }) => 'Going well! ${hit} of ${total} notes',
+      'game.feedbackMissing' => ({
+        required Object notes,
+      }) => 'Missing: ${notes}',
+      'game.feedbackExtra' => ({
+        required Object notes,
+      }) => 'Extra notes: ${notes}',
+      'game.feedbackComplete' => 'Chord complete!',
+      'game.almostNext' => 'Almost! Next',
+      'game.stringFirst' => '1st',
+      'game.stringSecond' => '2nd',
+      'game.stringThird' => '3rd',
+      'game.stringFourth' => '4th',
+      'game.stringFifth' => '5th',
+      'game.stringSixth' => '6th',
+      'game.practiceChord' => 'Practice string by string',
       'chordDiagram.stringLabel' => ({
         required Object number,
         required Object fret,
@@ -1068,7 +1343,7 @@ extension on TranslationsEn {
         required Object position,
         required Object details,
       }) => 'Diagram of ${position}, ${details}',
-      'live.title' => 'Live',
+      'live.title' => 'Tuner',
       'live.listen' => 'Listen to guitar',
       'live.stop' => 'Stop',
       'live.emptyTitle' => 'No suggestions yet',
@@ -1251,6 +1526,138 @@ extension on TranslationsEn {
       'logs.empty' => 'No events recorded',
       'router.notFound' => 'Route not found',
       'router.goHome' => 'Go to home',
+      'mic.deniedTitle' => 'I need your microphone',
+      'mic.deniedMessage' =>
+        'Allow microphone access in your phone settings and try again.',
+      'mic.errorTitle' => 'I couldn\'t listen',
+      'mic.errorMessage' => 'Something went wrong opening the microphone. Check that no other app is using it.',
+      'mic.retry' => 'Try again',
+      'mic.levelLabel' => 'Microphone level',
+      'mic.levelWaiting' => 'Waiting for sound…',
+      'mic.levelQuiet' =>
+        'I can barely hear you: bring the guitar closer to the microphone',
+      'mic.levelGood' => 'I can hear you well',
+      'mic.levelLoud' => 'Too loud: move the guitar a little farther away',
+      'tuner.tabTune' => 'Tune',
+      'tuner.tabListen' => 'Chords',
+      'tuner.start' => 'Start tuning',
+      'tuner.stop' => 'Stop',
+      'tuner.auto' => 'Automatic',
+      'tuner.autoHint' => 'Play any string: I recognize it on my own',
+      'tuner.pluckPrompt' => 'Play an open string',
+      'tuner.pluckString' => ({required Object string}) => 'Play the ${string}',
+      'tuner.stringTitle' => ({
+        required Object ordinal,
+        required Object note,
+      }) => '${ordinal} string · ${note}',
+      'tuner.noteE' => 'E',
+      'tuner.noteA' => 'A',
+      'tuner.noteD' => 'D',
+      'tuner.noteG' => 'G',
+      'tuner.noteB' => 'B',
+      'tuner.tuned' => 'In tune!',
+      'tuner.upLittle' => 'Tune up a little',
+      'tuner.up' => 'Tune up',
+      'tuner.upALot' => 'Tune up a lot',
+      'tuner.downLittle' => 'Tune down a little',
+      'tuner.down' => 'Tune down',
+      'tuner.downALot' => 'Tune down a lot',
+      'tuner.tightenPeg' => 'Tighten the peg',
+      'tuner.loosenPeg' => 'Loosen the peg',
+      'tuner.holdSteady' => 'Let the note ring',
+      'tuner.heardOther' => ({
+        required Object heard,
+        required Object target,
+      }) => 'That sounds like the ${heard}. Play the ${target}.',
+      'tuner.flat' => 'Flat',
+      'tuner.sharp' => 'Sharp',
+      'tuner.cents' => ({required Object cents}) => '${cents} cents',
+      'tuner.progress' => ({required Object count}) => '${count} of 6 in tune',
+      'tuner.allTunedTitle' => 'Guitar in tune!',
+      'tuner.allTunedMessage' => 'All six strings are in place. Time to play!',
+      'tuner.playReference' => 'Hear note',
+      'tuner.startOver' => 'Start over',
+      'tuner.selectHint' => 'Tap a peg to tune just that string',
+      'tuner.peg' => ({
+        required Object string,
+      }) => 'Tuning peg of the ${string}',
+      'tuner.meterLabel' => ({
+        required Object cents,
+      }) => 'Tuning: ${cents} cents',
+      'practice.title' => 'Practice chord',
+      'practice.intro' =>
+        'Play the strings one by one. I recognize them in any order.',
+      'practice.start' => 'Start practicing',
+      'practice.stop' => 'Stop',
+      'practice.restart' => 'Again',
+      'practice.listenChord' => 'Hear chord',
+      'practice.listenString' => 'Hear string',
+      'practice.progress' => ({
+        required Object count,
+        required Object total,
+      }) => '${count} of ${total} strings',
+      'practice.nextOpen' => ({
+        required Object string,
+      }) => 'Now play the ${string} open',
+      'practice.nextFretted' => ({
+        required Object string,
+        required Object fret,
+        required Object finger,
+      }) => 'Now play the ${string}: fret ${fret} with ${finger}',
+      'practice.nextFrettedAny' => ({
+        required Object string,
+        required Object fret,
+      }) => 'Now play the ${string}: fret ${fret}',
+      'practice.muted' => 'Muted',
+      'practice.open' => 'Open',
+      'practice.fret' => ({required Object fret}) => 'Fret ${fret}',
+      'practice.mutedHint' => 'Don\'t play this string',
+      'practice.matched' => 'Good',
+      'practice.doneTitle' => 'Clean chord!',
+      'practice.doneMessage' => 'Every string sounds as it should. Repeat it slowly until it comes naturally.',
+      'practice.retune' => 'Retune string',
+      'practice.tipsTitle' => 'How to fix it',
+      'practice.fingerThe' => ({required Object n}) => 'finger ${n}',
+      'practice.fingerAny' => 'your finger',
+      'practice.tipSoundsOpen' => ({
+        required Object string,
+        required Object fret,
+        required Object finger,
+      }) => 'The ${string} rings open: press fret ${fret} with ${finger}.',
+      'practice.tipMoveUp' =>
+        ({
+          required num n,
+          required Object finger,
+        }) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+          n,
+          one: 'It sounds lower. Move ${finger} up one fret toward the body.',
+          other:
+              'It sounds lower. Move ${finger} up ${n} frets toward the body.',
+        ),
+      'practice.tipMoveDown' =>
+        ({
+          required num n,
+          required Object finger,
+        }) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+          n,
+          one:
+              'It sounds higher. Move ${finger} down one fret toward the headstock.',
+          other:
+              'It sounds higher. Move ${finger} down ${n} frets toward the headstock.',
+        ),
+      'practice.tipTooFlat' => ({
+        required Object finger,
+      }) => 'It sounds a bit flat. Bring ${finger} closer to the fret (without touching it) or retune the string.',
+      'practice.tipTooSharp' => 'It sounds a bit sharp. Press more lightly, without bending the string, or retune it.',
+      'practice.tipRetuneUp' => ({
+        required Object string,
+      }) => 'The open ${string} sounds flat: tighten the peg a little.',
+      'practice.tipRetuneDown' => ({
+        required Object string,
+      }) => 'The open ${string} sounds sharp: loosen the peg a little.',
+      'practice.tipUnknown' => ({
+        required Object string,
+      }) => 'I don\'t recognize that note. Play only the ${string}, calmly.',
       _ => null,
     };
   }

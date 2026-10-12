@@ -12,6 +12,9 @@ abstract interface class AudioRepository {
   /// Lecturas de tono detectadas.
   Stream<PitchReading> get readings;
 
+  /// Nivel de entrada del micrófono (0-1), también cuando no hay tono.
+  Stream<double> get levels;
+
   /// Solicita permiso de micrófono.
   Future<MicStatus> requestAccess();
 
@@ -30,6 +33,9 @@ abstract interface class AudioRepository {
     ChordVariant variant,
     ArpeggioPattern pattern,
   );
+
+  /// Reproduce una cuerda pulsada a [frequency] (nota de referencia).
+  Future<void> playReferenceTone(double frequency);
 
   /// Libera los recursos de audio.
   Future<void> dispose();

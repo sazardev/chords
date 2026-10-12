@@ -4,6 +4,7 @@ import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
 import 'package:chords/domain/chords/entities/game_round.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
@@ -84,23 +85,71 @@ class GameController extends ChangeNotifier {
     notifyListeners();
 
     final Chord? chord = _chords.chordById(round.chordId);
-    final List<String> targetNotes =
-        chord?.easiestVariant.notes ?? const <String>[];
-    await _tuner.playRound(
+    final ChordVariant? variant = chord?.easiestVariant;
+    final List<String> targetNotes = variant?.notes ?? const <String>[];
+    final bool listened = await _tuner.playRound(
       targetNotes: targetNotes,
+      frets: variant?.frets ?? const <int>[],
       timeLimitMs: round.timeLimitMs,
     );
+    if (!listened) {
+      _phase = GamePhase.idle;
+      appLogger.warning(
+        'juego: ronda ${round.index + 1} sin micrófono',
+        channel: LogChannel.game,
+      );
+      notifyListeners();
+      return;
+    }
     _resolveRound(round, targetNotes);
   }
 
-  /// Avanza a la ronda siguiente o termina la partida.
+  /// Avanza a la ronda siguiente solo si la actual se superó.
+  ///
+  /// Tras un fallo o un tiempo agotado no deja avanzar: reintenta la misma
+  /// ronda para que el jugador corrija lo que faltaba.
   void next() {
+    final GameRound? round = currentRound;
+    if (round != null && !_advances(round.result)) {
+      retry();
+      return;
+    }
     if (_current < _rounds.length - 1) {
       _current++;
     }
     _phase = GamePhase.idle;
     notifyListeners();
   }
+
+  /// Repite la ronda actual sin avanzar de acorde.
+  void retry() {
+    final GameRound? round = currentRound;
+    if (round == null) {
+      return;
+    }
+    _rounds = <GameRound>[
+      for (final GameRound item in _rounds)
+        if (item.index == round.index)
+          GameRound(
+            index: item.index,
+            chordId: item.chordId,
+            timeLimitMs: item.timeLimitMs,
+          )
+        else
+          item,
+    ];
+    _phase = GamePhase.idle;
+    appLogger.info(
+      'juego: reintento de la ronda ${round.index + 1}',
+      channel: LogChannel.game,
+    );
+    notifyListeners();
+  }
+
+  bool _advances(GameResult? result) =>
+      result != null &&
+      (result.outcome == GameOutcome.success ||
+          result.outcome == GameOutcome.partial);
 
   /// Acorde del objetivo (para mostrar su diagrama).
   Chord? chordOf(String chordId) => _chords.chordById(chordId);

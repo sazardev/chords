@@ -11,7 +11,7 @@
     "learn": "Learn",
     "chords": "Chords",
     "game": "Play",
-    "live": "Live",
+    "live": "Tune",
     "settings": "Settings"
   },
   "home": {
@@ -29,8 +29,8 @@
     "librarySubtitle": "$count chords by genre and level",
     "gameMode": "Game mode",
     "gameSubtitle": "Play the chord and build a streak",
-    "liveTitle": "Live tuning",
-    "liveSubtitle": "Detect the note with your microphone"
+    "liveTitle": "Tuner and listening",
+    "liveSubtitle": "Tune string by string with your microphone"
   },
   "chords": {
     "title": "Chords",
@@ -67,7 +67,8 @@
     "arpeggios": "Arpeggios",
     "positions": "Positions",
     "notes": "Notes: $notes",
-    "arpeggioChip": "$label · Lv $level"
+    "arpeggioChip": "$label · Lv $level",
+    "practice": "Practice"
   },
   "game": {
     "title": "Play",
@@ -82,7 +83,19 @@
     "retry": "Try again",
     "ready": "I'm ready",
     "streak": "Streak",
-    "score": "Score"
+    "score": "Score",
+    "feedbackProgress": "Going well! $hit of $total notes",
+    "feedbackMissing": "Missing: $notes",
+    "feedbackExtra": "Extra notes: $notes",
+    "feedbackComplete": "Chord complete!",
+    "almostNext": "Almost! Next",
+    "stringFirst": "1st",
+    "stringSecond": "2nd",
+    "stringThird": "3rd",
+    "stringFourth": "4th",
+    "stringFifth": "5th",
+    "stringSixth": "6th",
+    "practiceChord": "Practice string by string"
   },
   "chordDiagram": {
     "stringLabel": "string $number: $fret",
@@ -92,7 +105,7 @@
     "description": "Diagram of $position, $details"
   },
   "live": {
-    "title": "Live",
+    "title": "Tuner",
     "listen": "Listen to guitar",
     "stop": "Stop",
     "emptyTitle": "No suggestions yet",
@@ -296,5 +309,93 @@
   "router": {
     "notFound": "Route not found",
     "goHome": "Go to home"
+  },
+  "mic": {
+    "deniedTitle": "I need your microphone",
+    "deniedMessage": "Allow microphone access in your phone settings and try again.",
+    "errorTitle": "I couldn't listen",
+    "errorMessage": "Something went wrong opening the microphone. Check that no other app is using it.",
+    "retry": "Try again",
+    "levelLabel": "Microphone level",
+    "levelWaiting": "Waiting for sound…",
+    "levelQuiet": "I can barely hear you: bring the guitar closer to the microphone",
+    "levelGood": "I can hear you well",
+    "levelLoud": "Too loud: move the guitar a little farther away"
+  },
+  "tuner": {
+    "tabTune": "Tune",
+    "tabListen": "Chords",
+    "start": "Start tuning",
+    "stop": "Stop",
+    "auto": "Automatic",
+    "autoHint": "Play any string: I recognize it on my own",
+    "pluckPrompt": "Play an open string",
+    "pluckString": "Play the $string",
+    "stringTitle": "$ordinal string · $note",
+    "noteE": "E",
+    "noteA": "A",
+    "noteD": "D",
+    "noteG": "G",
+    "noteB": "B",
+    "tuned": "In tune!",
+    "upLittle": "Tune up a little",
+    "up": "Tune up",
+    "upALot": "Tune up a lot",
+    "downLittle": "Tune down a little",
+    "down": "Tune down",
+    "downALot": "Tune down a lot",
+    "tightenPeg": "Tighten the peg",
+    "loosenPeg": "Loosen the peg",
+    "holdSteady": "Let the note ring",
+    "heardOther": "That sounds like the $heard. Play the $target.",
+    "flat": "Flat",
+    "sharp": "Sharp",
+    "cents": "$cents cents",
+    "progress": "$count of 6 in tune",
+    "allTunedTitle": "Guitar in tune!",
+    "allTunedMessage": "All six strings are in place. Time to play!",
+    "playReference": "Hear note",
+    "startOver": "Start over",
+    "selectHint": "Tap a peg to tune just that string",
+    "peg": "Tuning peg of the $string",
+    "meterLabel": "Tuning: $cents cents"
+  },
+  "practice": {
+    "title": "Practice chord",
+    "intro": "Play the strings one by one. I recognize them in any order.",
+    "start": "Start practicing",
+    "stop": "Stop",
+    "restart": "Again",
+    "listenChord": "Hear chord",
+    "listenString": "Hear string",
+    "progress": "$count of $total strings",
+    "nextOpen": "Now play the $string open",
+    "nextFretted": "Now play the $string: fret $fret with $finger",
+    "nextFrettedAny": "Now play the $string: fret $fret",
+    "muted": "Muted",
+    "open": "Open",
+    "fret": "Fret $fret",
+    "mutedHint": "Don't play this string",
+    "matched": "Good",
+    "doneTitle": "Clean chord!",
+    "doneMessage": "Every string sounds as it should. Repeat it slowly until it comes naturally.",
+    "retune": "Retune string",
+    "tipsTitle": "How to fix it",
+    "fingerThe": "finger $n",
+    "fingerAny": "your finger",
+    "tipSoundsOpen": "The $string rings open: press fret $fret with $finger.",
+    "tipMoveUp": {
+      "one": "It sounds lower. Move $finger up one fret toward the body.",
+      "other": "It sounds lower. Move $finger up $n frets toward the body."
+    },
+    "tipMoveDown": {
+      "one": "It sounds higher. Move $finger down one fret toward the headstock.",
+      "other": "It sounds higher. Move $finger down $n frets toward the headstock."
+    },
+    "tipTooFlat": "It sounds a bit flat. Bring $finger closer to the fret (without touching it) or retune the string.",
+    "tipTooSharp": "It sounds a bit sharp. Press more lightly, without bending the string, or retune it.",
+    "tipRetuneUp": "The open $string sounds flat: tighten the peg a little.",
+    "tipRetuneDown": "The open $string sounds sharp: loosen the peg a little.",
+    "tipUnknown": "I don't recognize that note. Play only the $string, calmly."
   }
 }

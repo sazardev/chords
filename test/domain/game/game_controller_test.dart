@@ -1,6 +1,7 @@
 import 'dart:async' show unawaited;
 
 import 'package:chords/data/local/preferences_service.dart';
+import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
@@ -104,5 +105,62 @@ void main() {
     expect(score.score, greaterThan(0));
     expect(score.streak, 1);
     expect(controller.phase, GamePhase.won);
+    expect(tuner.feedback.isComplete, isTrue);
+
+    controller.next();
+    expect(controller.currentRound!.index, 1);
+  });
+
+  test('al fallar no avanza: reintenta la misma ronda', () async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final PreferencesService preferences = await PreferencesService.create();
+    final FakeAudioRepository audio = FakeAudioRepository();
+    final GameScoreController score = GameScoreController(preferences)
+      ..loadBestScore();
+    final GameAudioController tuner = GameAudioController(audio);
+    final GameController controller = GameController(
+      audio,
+      repository,
+      score,
+      tuner,
+    )..start(level: 1);
+    final int firstRound = controller.currentRound!.index;
+
+    unawaited(controller.playRound());
+    await Future<void>.delayed(const Duration(seconds: 6));
+    expect(controller.phase, GamePhase.lost);
+    expect(score.score, 0);
+
+    controller.next();
+    expect(controller.currentRound!.index, firstRound);
+    expect(controller.currentRound!.isResolved, isFalse);
+    expect(controller.phase, GamePhase.idle);
+
+    controller.retry();
+    expect(controller.currentRound!.index, firstRound);
+    expect(controller.phase, GamePhase.idle);
+  });
+
+  test('sin permiso de micrófono la ronda no se da por fallada', () async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final PreferencesService preferences = await PreferencesService.create();
+    final FakeAudioRepository audio = FakeAudioRepository()
+      ..accessResult = MicStatus.permissionDenied;
+    final GameScoreController score = GameScoreController(preferences)
+      ..loadBestScore();
+    final GameAudioController tuner = GameAudioController(audio);
+    final GameController controller = GameController(
+      audio,
+      repository,
+      score,
+      tuner,
+    )..start(level: 1);
+
+    await controller.playRound();
+
+    expect(tuner.micStatus, MicStatus.permissionDenied);
+    expect(controller.phase, GamePhase.idle);
+    expect(controller.currentRound!.isResolved, isFalse);
+    expect(score.score, 0);
   });
 }

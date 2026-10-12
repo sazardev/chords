@@ -47,6 +47,12 @@ abstract final class AnalyticsEventName {
   /// Ha terminado una sesión de afinación en vivo.
   static const String liveSessionEnded = 'live_session_ended';
 
+  /// Ha terminado una sesión del afinador por cuerdas.
+  static const String tunerSessionEnded = 'tuner_session_ended';
+
+  /// Ha terminado una sesión de práctica de un acorde cuerda a cuerda.
+  static const String practiceSessionEnded = 'practice_session_ended';
+
   /// Resultado de la solicitud de permiso de micrófono.
   static const String micPermission = 'mic_permission';
 
@@ -81,6 +87,8 @@ const List<String> kAllAnalyticsEventNames = <String>[
   AnalyticsEventName.gameFinished,
   AnalyticsEventName.liveSessionStarted,
   AnalyticsEventName.liveSessionEnded,
+  AnalyticsEventName.tunerSessionEnded,
+  AnalyticsEventName.practiceSessionEnded,
   AnalyticsEventName.micPermission,
   AnalyticsEventName.settingChanged,
   AnalyticsEventName.onboardingStep,
@@ -204,6 +212,18 @@ abstract final class AnalyticsParam {
 
   /// Número de acordes sugeridos al terminar.
   static const String suggestions = 'suggestions';
+
+  /// Cuerdas que quedaron afinadas en la sesión del afinador.
+  static const String tunedStrings = 'tuned_strings';
+
+  /// Cuerdas del acorde reconocidas en la práctica.
+  static const String matchedStrings = 'matched_strings';
+
+  /// Cuerdas que usa el acorde practicado.
+  static const String totalStrings = 'total_strings';
+
+  /// Si la práctica llegó a completar el acorde.
+  static const String completed = 'completed';
 
   /// Si el permiso se concedió.
   static const String granted = 'granted';

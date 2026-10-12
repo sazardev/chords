@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:chords/core/analytics/analytics.dart' show analytics;
@@ -7,10 +6,9 @@ import 'package:chords/core/analytics/live_analytics_events.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/audio/chord_audio_synthesizer.dart';
+import 'package:chords/data/audio/mic_pitch_analyzer.dart';
 import 'package:chords/data/audio/microphone_stream_service.dart';
-import 'package:chords/data/audio/pcm_decoder.dart';
 import 'package:chords/data/audio/wav_encoder.dart';
-import 'package:chords/data/audio/yin_pitch_detector.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
@@ -25,16 +23,11 @@ import 'package:flutter_soloud/flutter_soloud.dart';
 /// detector YIN sobre flujos PCM16.
 class AudioRepositoryImpl implements AudioRepository {
   /// Crea el repositorio con los colaboradores indicados.
-  AudioRepositoryImpl({
-    PitchDetector? detector,
-    ChordAudioSynthesizer? synthesizer,
-    WavEncoder? encoder,
-    PcmDecoder? decoder,
-  }) : _detector = detector ?? const PitchDetector(),
-       _synthesizer = synthesizer ?? const ChordAudioSynthesizer(),
-       _encoder = encoder ?? const WavEncoder(),
-       _decoder = decoder ?? const PcmDecoder() {
+  AudioRepositoryImpl({ChordAudioSynthesizer? synthesizer, WavEncoder? encoder})
+    : _synthesizer = synthesizer ?? const ChordAudioSynthesizer(),
+      _encoder = encoder ?? const WavEncoder() {
     _sampleRate = encoder?.sampleRate ?? 44100;
+    _analyzer = MicPitchAnalyzer(sampleRate: _sampleRate);
   }
 
   MicrophoneStreamService? _microphone;
@@ -43,29 +36,26 @@ class AudioRepositoryImpl implements AudioRepository {
   /// hasta que realmente se necesita escuchar).
   MicrophoneStreamService get _mic => _microphone ??= MicrophoneStreamService();
 
-  final PitchDetector _detector;
   final ChordAudioSynthesizer _synthesizer;
   final WavEncoder _encoder;
-  final PcmDecoder _decoder;
   late final int _sampleRate;
+  late final MicPitchAnalyzer _analyzer;
 
   final StreamController<MicStatus> _statusController =
       StreamController<MicStatus>.broadcast();
-  final StreamController<PitchReading> _readingsController =
-      StreamController<PitchReading>.broadcast();
   final Map<String, AudioSource> _sources = <String, AudioSource>{};
 
   StreamSubscription<Uint8List>? _micSubscription;
-  final List<double> _window = <double>[];
-  int _lastEmit = 0;
-  int _lastReadingLog = 0;
   bool _engineReady = false;
 
   @override
   Stream<MicStatus> get statusStream => _statusController.stream;
 
   @override
-  Stream<PitchReading> get readings => _readingsController.stream;
+  Stream<PitchReading> get readings => _analyzer.readings;
+
+  @override
+  Stream<double> get levels => _analyzer.levels;
 
   @override
   Future<MicStatus> requestAccess() async {
@@ -77,7 +67,9 @@ class AudioRepositoryImpl implements AudioRepository {
         sampleRate: _sampleRate,
       );
       await _micSubscription?.cancel();
-      _micSubscription = stream.listen(_onMicData);
+      _micSubscription = stream.listen(
+        (Uint8List bytes) => _analyzer.addBytes(bytes),
+      );
       _statusController.add(MicStatus.listening);
       appLogger.info(
         'micrófono: escucha iniciada',
@@ -117,7 +109,7 @@ class AudioRepositoryImpl implements AudioRepository {
         stackTrace: stackTrace,
       );
     }
-    _window.clear();
+    _analyzer.reset();
     _statusController.add(MicStatus.idle);
     appLogger.info(
       'micrófono: escucha detenida',
@@ -159,11 +151,25 @@ class AudioRepositoryImpl implements AudioRepository {
   }
 
   @override
+  Future<void> playReferenceTone(double frequency) async {
+    appLogger.debug(
+      'reproducir nota de referencia ${frequency.toStringAsFixed(1)} Hz',
+      channel: LogChannel.audio,
+    );
+    await _ensureEngine();
+    final AudioSource source = await _loadCached(
+      key: 'tone:${frequency.toStringAsFixed(1)}',
+      samples: _synthesizer.synthesizeNote(frequency),
+    );
+    _play(source);
+  }
+
+  @override
   Future<void> dispose() async {
     await _micSubscription?.cancel();
     await _microphone?.dispose();
     await _statusController.close();
-    await _readingsController.close();
+    await _analyzer.dispose();
     if (_engineReady) {
       await SoLoud.instance.deinitAsync();
     }
@@ -199,62 +205,5 @@ class AudioRepositoryImpl implements AudioRepository {
     if (_engineReady) {
       SoLoud.instance.play(source, volume: 0.9);
     }
-  }
-
-  void _onMicData(Uint8List bytes) {
-    final Float64List samples = _decoder.decode(bytes);
-    _window.addAll(samples);
-    final int windowSize = (_sampleRate / 4).round();
-    if (_window.length > windowSize * 2) {
-      _window.removeRange(0, _window.length - windowSize);
-    }
-    final int now = DateTime.now().millisecondsSinceEpoch;
-    if (now - _lastEmit < 60) {
-      return;
-    }
-    _lastEmit = now;
-    final int size = math.min(windowSize, _window.length);
-    final Float64List buffer = Float64List.fromList(
-      _window.sublist(_window.length - size),
-    );
-    _emitReading(buffer);
-  }
-
-  void _emitReading(Float64List buffer) {
-    final double? frequency = _detector.detectPitch(buffer, _sampleRate);
-    if (frequency == null || frequency <= 0) {
-      return;
-    }
-    final ({String note, double cents}) nearest = PitchDetector.nearestNote(
-      frequency,
-    );
-    final double clarity = PitchDetector.clarityOf(buffer);
-    _logReading(nearest, clarity);
-    _readingsController.add(
-      PitchReading(
-        frequency: frequency,
-        note: nearest.note,
-        cents: nearest.cents,
-        clarity: clarity,
-      ),
-    );
-  }
-
-  void _logReading(({String note, double cents}) nearest, double clarity) {
-    final int now = DateTime.now().millisecondsSinceEpoch;
-    if (now - _lastReadingLog < 500) {
-      return;
-    }
-    _lastReadingLog = now;
-    appLogger.debug(
-      'micrófono: ${nearest.note} ${nearest.cents.round()}¢ '
-      'claridad ${clarity.toStringAsFixed(2)}',
-      channel: LogChannel.microphone,
-      context: <String, Object?>{
-        'note': nearest.note,
-        'cents': nearest.cents.round(),
-        'clarity': clarity,
-      },
-    );
   }
 }

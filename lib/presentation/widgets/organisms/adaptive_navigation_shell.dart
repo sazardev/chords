@@ -4,6 +4,7 @@ import 'package:chords/config/route_paths.dart';
 import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
+import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -40,6 +41,7 @@ class _AdaptiveNavigationShellState extends State<AdaptiveNavigationShell> {
       return;
     }
     unawaited(context.read<LiveController>().stopIfListening());
+    unawaited(context.read<TunerController>().stopIfListening());
   }
 
   void _onDestinationSelected(int index) {

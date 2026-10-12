@@ -10,5 +10,8 @@ enum MicStatus {
   permissionDenied,
 
   /// Error de captura o dispositivo.
-  error,
+  error;
+
+  /// `true` si el micrófono está escuchando.
+  bool get isListening => this == MicStatus.listening;
 }

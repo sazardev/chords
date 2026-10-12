@@ -6,6 +6,7 @@ class PitchReading {
     required this.note,
     required this.cents,
     required this.clarity,
+    this.level = 0,
   });
 
   /// Frecuencia detectada en Hz.
@@ -17,8 +18,11 @@ class PitchReading {
   /// Desviación en cents respecto a la nota (-50..50).
   final double cents;
 
-  /// Claridad de la detección (0-1).
+  /// Claridad de la detección (0-1): cuán periódica y limpia es la señal.
   final double clarity;
+
+  /// Nivel de la señal de entrada (0-1).
+  final double level;
 
   /// `true` si la lectura es suficientemente fiable.
   bool get isReliable => clarity >= 0.7;

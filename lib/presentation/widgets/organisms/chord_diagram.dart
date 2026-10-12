@@ -1,7 +1,9 @@
 import 'package:chords/domain/chords/entities/barre_info.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
+import 'package:chords/domain/chords/entities/practice_string.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 
 /// Diagrama de diapasón (posición) de un acorde.
@@ -14,6 +16,9 @@ class ChordDiagram extends StatelessWidget {
     this.showFingers = true,
     this.width = 132,
     this.height = 168,
+    this.stringStates,
+    this.focusString,
+    this.stringNames,
   });
 
   /// Posición a dibujar.
@@ -31,6 +36,16 @@ class ChordDiagram extends StatelessWidget {
   /// Alto del diagrama.
   final double height;
 
+  /// Estado de cada cuerda en la práctica (índice 0 = sexta); `null` si el
+  /// diagrama es solo informativo.
+  final List<PracticeStringStatus>? stringStates;
+
+  /// Número de la cuerda (1-6) que toca ahora; se resalta su columna.
+  final int? focusString;
+
+  /// Nombres bajo cada cuerda (índice 0 = sexta); `null` para no mostrarlos.
+  final List<String>? stringNames;
+
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
@@ -43,6 +58,11 @@ class ChordDiagram extends StatelessWidget {
           mirror: mirror,
           showFingers: showFingers,
           colors: chordColorsOf(context),
+          states: stringStates,
+          focusString: focusString,
+          focusColor: Theme.of(context).colorScheme.primary,
+          names: stringNames,
+          nameColor: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );
@@ -76,12 +96,22 @@ class _ChordDiagramPainter extends CustomPainter {
     required this.mirror,
     required this.showFingers,
     required this.colors,
+    required this.focusColor,
+    required this.nameColor,
+    this.states,
+    this.focusString,
+    this.names,
   });
 
   final ChordVariant variant;
   final bool mirror;
   final bool showFingers;
   final AppChordColors colors;
+  final List<PracticeStringStatus>? states;
+  final int? focusString;
+  final Color focusColor;
+  final List<String>? names;
+  final Color nameColor;
 
   static const int _stringCount = 6;
   static const int _visibleFrets = 5;
@@ -90,7 +120,7 @@ class _ChordDiagramPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     const double horizontal = 18;
     const double topPad = 26;
-    const double bottomPad = 10;
+    final double bottomPad = names == null ? 10 : 26;
     final double spacing = (size.width - horizontal * 2) / (_stringCount - 1);
     final double rowHeight = (size.height - topPad - bottomPad) / _visibleFrets;
     final int startFret = variant.baseFret == 0 ? 1 : variant.baseFret;
@@ -105,6 +135,7 @@ class _ChordDiagramPainter extends CustomPainter {
       ..color = colors.fretPressed
       ..strokeWidth = 3.2;
 
+    _drawFocusColumn(canvas, horizontal, spacing, topPad, rowHeight);
     for (int i = 0; i <= _visibleFrets; i++) {
       final double y = topPad + i * rowHeight;
       canvas.drawLine(
@@ -115,12 +146,18 @@ class _ChordDiagramPainter extends CustomPainter {
     }
     for (int s = 0; s < _stringCount; s++) {
       final double x = _stringX(s, horizontal, spacing);
+      final bool matched = _statusOf(s) == PracticeStringStatus.matched;
       canvas.drawLine(
         Offset(x, topPad),
         Offset(x, topPad + _visibleFrets * rowHeight),
-        stringPaint,
+        matched
+            ? (Paint()
+                ..color = colors.inTune
+                ..strokeWidth = 3)
+            : stringPaint,
       );
     }
+    _drawNames(canvas, horizontal, spacing, topPad + _visibleFrets * rowHeight);
 
     if (startFret > 1) {
       _text(
@@ -149,13 +186,14 @@ class _ChordDiagramPainter extends CustomPainter {
       if (fret == -1) {
         _text(canvas, '×', Offset(x, topPad - 14), colors.mutedString, 13);
       } else if (fret == 0) {
+        final bool matched = _statusOf(s) == PracticeStringStatus.matched;
         canvas.drawCircle(
           Offset(x, topPad - 14),
-          4,
+          matched ? 5.5 : 4,
           Paint()
-            ..style = PaintingStyle.stroke
+            ..style = matched ? PaintingStyle.fill : PaintingStyle.stroke
             ..strokeWidth = 1.6
-            ..color = colors.openString,
+            ..color = matched ? colors.inTune : colors.openString,
         );
       }
     }
@@ -208,7 +246,10 @@ class _ChordDiagramPainter extends CustomPainter {
       canvas.drawCircle(
         Offset(x, y),
         radius,
-        Paint()..color = colors.fretPressed,
+        Paint()
+          ..color = _statusOf(s) == PracticeStringStatus.matched
+              ? colors.inTune
+              : colors.fretPressed,
       );
       if (showFingers) {
         final int finger = variant.fingers[s];
@@ -223,6 +264,57 @@ class _ChordDiagramPainter extends CustomPainter {
           );
         }
       }
+    }
+  }
+
+  PracticeStringStatus? _statusOf(int stringIndex) {
+    final List<PracticeStringStatus>? list = states;
+    return list == null || stringIndex >= list.length
+        ? null
+        : list[stringIndex];
+  }
+
+  void _drawFocusColumn(
+    Canvas canvas,
+    double horizontal,
+    double spacing,
+    double topPad,
+    double rowHeight,
+  ) {
+    final int? number = focusString;
+    if (number == null) {
+      return;
+    }
+    final double x = _stringX(_stringCount - number, horizontal, spacing);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTRB(
+          x - spacing * 0.45,
+          topPad - 26,
+          x + spacing * 0.45,
+          topPad + _visibleFrets * rowHeight + 4,
+        ),
+        const Radius.circular(10),
+      ),
+      Paint()..color = focusColor.withValues(alpha: 0.16),
+    );
+  }
+
+  void _drawNames(Canvas canvas, double horizontal, double spacing, double y) {
+    final List<String>? labels = names;
+    if (labels == null) {
+      return;
+    }
+    for (int s = 0; s < _stringCount && s < labels.length; s++) {
+      final bool focus = focusString == _stringCount - s;
+      _text(
+        canvas,
+        labels[s],
+        Offset(_stringX(s, horizontal, spacing), y + 14),
+        focus ? focusColor : nameColor,
+        12,
+        bold: focus,
+      );
     }
   }
 
@@ -263,5 +355,9 @@ class _ChordDiagramPainter extends CustomPainter {
   bool shouldRepaint(_ChordDiagramPainter oldDelegate) =>
       oldDelegate.variant != variant ||
       oldDelegate.mirror != mirror ||
-      oldDelegate.showFingers != showFingers;
+      oldDelegate.showFingers != showFingers ||
+      oldDelegate.focusString != focusString ||
+      oldDelegate.focusColor != focusColor ||
+      !listEquals(oldDelegate.states, states) ||
+      !listEquals(oldDelegate.names, names);
 }

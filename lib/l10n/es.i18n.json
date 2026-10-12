@@ -11,7 +11,7 @@
     "learn": "Aprender",
     "chords": "Acordes",
     "game": "Jugar",
-    "live": "En vivo",
+    "live": "Afinar",
     "settings": "Ajustes"
   },
   "home": {
@@ -29,8 +29,8 @@
     "librarySubtitle": "$count acordes por género y nivel",
     "gameMode": "Modo juego",
     "gameSubtitle": "Toca el acorde y encadena la serie",
-    "liveTitle": "Afinación en vivo",
-    "liveSubtitle": "Detecta la nota con tu micrófono"
+    "liveTitle": "Afinador y escucha",
+    "liveSubtitle": "Afina cuerda a cuerda con tu micrófono"
   },
   "chords": {
     "title": "Acordes",
@@ -67,7 +67,8 @@
     "arpeggios": "Arpegios",
     "positions": "Posiciones",
     "notes": "Notas: $notes",
-    "arpeggioChip": "$label · Nv $level"
+    "arpeggioChip": "$label · Nv $level",
+    "practice": "Practicar"
   },
   "game": {
     "title": "Jugar",
@@ -82,7 +83,19 @@
     "retry": "Inténtalo otra vez",
     "ready": "Estoy listo",
     "streak": "Racha",
-    "score": "Puntos"
+    "score": "Puntos",
+    "feedbackProgress": "¡Vas bien! $hit de $total notas",
+    "feedbackMissing": "Te falta: $notes",
+    "feedbackExtra": "Suena de más: $notes",
+    "feedbackComplete": "¡Acorde completo!",
+    "almostNext": "¡Casi! Siguiente",
+    "stringFirst": "1ª",
+    "stringSecond": "2ª",
+    "stringThird": "3ª",
+    "stringFourth": "4ª",
+    "stringFifth": "5ª",
+    "stringSixth": "6ª",
+    "practiceChord": "Practicar cuerda a cuerda"
   },
   "chordDiagram": {
     "stringLabel": "cuerda $number: $fret",
@@ -92,7 +105,7 @@
     "description": "Diagrama de $position, $details"
   },
   "live": {
-    "title": "En vivo",
+    "title": "Afinador",
     "listen": "Escuchar guitarra",
     "stop": "Detener",
     "emptyTitle": "Sin sugerencias aún",
@@ -296,5 +309,93 @@
   "router": {
     "notFound": "Ruta no encontrada",
     "goHome": "Ir al inicio"
+  },
+  "mic": {
+    "deniedTitle": "Necesito tu micrófono",
+    "deniedMessage": "Activa el permiso de micrófono en los ajustes del teléfono y vuelve a intentarlo.",
+    "errorTitle": "No pude escuchar",
+    "errorMessage": "Algo falló al abrir el micrófono. Comprueba que otra app no lo esté usando.",
+    "retry": "Reintentar",
+    "levelLabel": "Nivel del micrófono",
+    "levelWaiting": "Esperando sonido…",
+    "levelQuiet": "Apenas te oigo: acerca la guitarra al micrófono",
+    "levelGood": "Te escucho bien",
+    "levelLoud": "Suena muy fuerte: aleja un poco la guitarra"
+  },
+  "tuner": {
+    "tabTune": "Afinar",
+    "tabListen": "Acordes",
+    "start": "Empezar a afinar",
+    "stop": "Detener",
+    "auto": "Automático",
+    "autoHint": "Toca cualquier cuerda: la reconozco sola",
+    "pluckPrompt": "Toca una cuerda al aire",
+    "pluckString": "Toca la $string",
+    "stringTitle": "$ordinal cuerda · $note",
+    "noteE": "Mi",
+    "noteA": "La",
+    "noteD": "Re",
+    "noteG": "Sol",
+    "noteB": "Si",
+    "tuned": "¡Afinada!",
+    "upLittle": "Sube un poco",
+    "up": "Sube",
+    "upALot": "Sube mucho",
+    "downLittle": "Baja un poco",
+    "down": "Baja",
+    "downALot": "Baja mucho",
+    "tightenPeg": "Aprieta la clavija",
+    "loosenPeg": "Afloja la clavija",
+    "holdSteady": "Mantén la nota sonando",
+    "heardOther": "Esa suena como la $heard. Toca la $target.",
+    "flat": "Floja",
+    "sharp": "Alta",
+    "cents": "$cents cents",
+    "progress": "$count de 6 afinadas",
+    "allTunedTitle": "¡Guitarra afinada!",
+    "allTunedMessage": "Las seis cuerdas están en su sitio. ¡A tocar!",
+    "playReference": "Escuchar nota",
+    "startOver": "Empezar de nuevo",
+    "selectHint": "Toca una clavija para afinar solo esa cuerda",
+    "peg": "Clavija de la $string",
+    "meterLabel": "Afinación: $cents cents"
+  },
+  "practice": {
+    "title": "Practicar acorde",
+    "intro": "Toca las cuerdas una a una. Las reconozco en el orden que quieras.",
+    "start": "Empezar a practicar",
+    "stop": "Detener",
+    "restart": "Otra vez",
+    "listenChord": "Escuchar acorde",
+    "listenString": "Escuchar cuerda",
+    "progress": "$count de $total cuerdas",
+    "nextOpen": "Ahora toca la $string al aire",
+    "nextFretted": "Ahora toca la $string: traste $fret con $finger",
+    "nextFrettedAny": "Ahora toca la $string: traste $fret",
+    "muted": "Muda",
+    "open": "Al aire",
+    "fret": "Traste $fret",
+    "mutedHint": "No toques esta cuerda",
+    "matched": "Bien",
+    "doneTitle": "¡Acorde limpio!",
+    "doneMessage": "Todas las cuerdas suenan como deben. Repítelo despacio hasta que salga solo.",
+    "retune": "Reafinar cuerda",
+    "tipsTitle": "Cómo corregirla",
+    "fingerThe": "el dedo $n",
+    "fingerAny": "el dedo",
+    "tipSoundsOpen": "La $string suena al aire: pisa el traste $fret con $finger.",
+    "tipMoveUp": {
+      "one": "Suena más grave. Sube $finger un traste hacia la caja.",
+      "other": "Suena más grave. Sube $finger $n trastes hacia la caja."
+    },
+    "tipMoveDown": {
+      "one": "Suena más aguda. Baja $finger un traste hacia el clavijero.",
+      "other": "Suena más aguda. Baja $finger $n trastes hacia el clavijero."
+    },
+    "tipTooFlat": "Suena algo baja. Acerca $finger al traste (sin pisarlo) o reafina la cuerda.",
+    "tipTooSharp": "Suena algo alta. Presiona con menos fuerza, sin estirar la cuerda, o reafínala.",
+    "tipRetuneUp": "La $string al aire suena baja: sube un poco la clavija.",
+    "tipRetuneDown": "La $string al aire suena alta: baja un poco la clavija.",
+    "tipUnknown": "No reconozco esa nota. Toca solo la $string, con calma."
   }
 }

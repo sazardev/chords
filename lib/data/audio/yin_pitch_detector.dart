@@ -1,6 +1,18 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+/// Estimación de tono: frecuencia y seguridad de la detección.
+class PitchEstimate {
+  /// Crea la estimación.
+  const PitchEstimate({required this.frequency, required this.confidence});
+
+  /// Frecuencia fundamental en Hz.
+  final double frequency;
+
+  /// Seguridad (0-1) de que la señal es periódica: 1 = tono limpio.
+  final double confidence;
+}
+
 /// Detector de tono basado en el algoritmo YIN.
 ///
 /// Devuelve la frecuencia fundamental estimada o `null` si la señal no
@@ -23,7 +35,11 @@ class PitchDetector {
   final double maxFrequency;
 
   /// Estima la frecuencia fundamental de la ventana [buffer].
-  double? detectPitch(Float64List buffer, int sampleRate) {
+  double? detectPitch(Float64List buffer, int sampleRate) =>
+      estimate(buffer, sampleRate)?.frequency;
+
+  /// Estima frecuencia y confianza de la ventana [buffer].
+  PitchEstimate? estimate(Float64List buffer, int sampleRate) {
     final int tauMin = math.max(2, (sampleRate / maxFrequency).floor());
     final int tauMax = math.min(
       buffer.length ~/ 2,
@@ -79,7 +95,10 @@ class PitchDetector {
         betterTau += (s2 - s0) / denom;
       }
     }
-    return sampleRate / betterTau;
+    return PitchEstimate(
+      frequency: sampleRate / betterTau,
+      confidence: (1 - difference[tau]).clamp(0.0, 1.0),
+    );
   }
 
   /// Nota más cercana y desviación en cents para una frecuencia.
@@ -107,8 +126,8 @@ class PitchDetector {
     return (note: '$note$octave', cents: (midiContinuous - midiRounded) * 100);
   }
 
-  /// Claridad estimada (0-1) a partir de la energía de la ventana.
-  static double clarityOf(Float64List buffer) {
+  /// Valor eficaz (RMS) de la ventana, entre 0 y 1.
+  static double rmsOf(Float64List buffer) {
     if (buffer.isEmpty) {
       return 0;
     }
@@ -116,7 +135,18 @@ class PitchDetector {
     for (final double value in buffer) {
       energy += value * value;
     }
-    final double rms = math.sqrt(energy / buffer.length);
-    return (rms * 8).clamp(0.0, 1.0);
+    return math.sqrt(energy / buffer.length);
+  }
+
+  /// Nivel de entrada normalizado (0-1) a partir del RMS.
+  ///
+  /// Escala logarítmica: -55 dBFS es 0 y -10 dBFS es 1, un rango que refleja
+  /// bien una guitarra acústica frente a un micrófono de móvil.
+  static double levelOf(double rms) {
+    if (rms <= 0) {
+      return 0;
+    }
+    final double decibels = 20 * math.log(rms) / math.ln10;
+    return ((decibels + 55) / 45).clamp(0.0, 1.0);
   }
 }

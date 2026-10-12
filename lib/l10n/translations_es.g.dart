@@ -78,6 +78,12 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   late final Translations$router$es router = Translations$router$es.internal(
     _root,
   );
+  late final Translations$mic$es mic = Translations$mic$es.internal(_root);
+  late final Translations$tuner$es tuner = Translations$tuner$es.internal(
+    _root,
+  );
+  late final Translations$practice$es practice =
+      Translations$practice$es.internal(_root);
 }
 
 // Path: app
@@ -124,8 +130,8 @@ class Translations$nav$es {
   /// es: 'Jugar'
   String get game => 'Jugar';
 
-  /// es: 'En vivo'
-  String get live => 'En vivo';
+  /// es: 'Afinar'
+  String get live => 'Afinar';
 
   /// es: 'Ajustes'
   String get settings => 'Ajustes';
@@ -178,11 +184,11 @@ class Translations$home$es {
   /// es: 'Toca el acorde y encadena la serie'
   String get gameSubtitle => 'Toca el acorde y encadena la serie';
 
-  /// es: 'Afinación en vivo'
-  String get liveTitle => 'Afinación en vivo';
+  /// es: 'Afinador y escucha'
+  String get liveTitle => 'Afinador y escucha';
 
-  /// es: 'Detecta la nota con tu micrófono'
-  String get liveSubtitle => 'Detecta la nota con tu micrófono';
+  /// es: 'Afina cuerda a cuerda con tu micrófono'
+  String get liveSubtitle => 'Afina cuerda a cuerda con tu micrófono';
 }
 
 // Path: chords
@@ -300,6 +306,9 @@ class Translations$chordDetail$es {
   /// es: '$label · Nv $level'
   String arpeggioChip({required Object label, required Object level}) =>
       '${label} · Nv ${level}';
+
+  /// es: 'Practicar'
+  String get practice => 'Practicar';
 }
 
 // Path: game
@@ -349,6 +358,43 @@ class Translations$game$es {
 
   /// es: 'Puntos'
   String get score => 'Puntos';
+
+  /// es: '¡Vas bien! $hit de $total notas'
+  String feedbackProgress({required Object hit, required Object total}) =>
+      '¡Vas bien! ${hit} de ${total} notas';
+
+  /// es: 'Te falta: $notes'
+  String feedbackMissing({required Object notes}) => 'Te falta: ${notes}';
+
+  /// es: 'Suena de más: $notes'
+  String feedbackExtra({required Object notes}) => 'Suena de más: ${notes}';
+
+  /// es: '¡Acorde completo!'
+  String get feedbackComplete => '¡Acorde completo!';
+
+  /// es: '¡Casi! Siguiente'
+  String get almostNext => '¡Casi! Siguiente';
+
+  /// es: '1ª'
+  String get stringFirst => '1ª';
+
+  /// es: '2ª'
+  String get stringSecond => '2ª';
+
+  /// es: '3ª'
+  String get stringThird => '3ª';
+
+  /// es: '4ª'
+  String get stringFourth => '4ª';
+
+  /// es: '5ª'
+  String get stringFifth => '5ª';
+
+  /// es: '6ª'
+  String get stringSixth => '6ª';
+
+  /// es: 'Practicar cuerda a cuerda'
+  String get practiceChord => 'Practicar cuerda a cuerda';
 }
 
 // Path: chordDiagram
@@ -385,8 +431,8 @@ class Translations$live$es {
 
   // Translations
 
-  /// es: 'En vivo'
-  String get title => 'En vivo';
+  /// es: 'Afinador'
+  String get title => 'Afinador';
 
   /// es: 'Escuchar guitarra'
   String get listen => 'Escuchar guitarra';
@@ -645,6 +691,294 @@ class Translations$router$es {
 
   /// es: 'Ir al inicio'
   String get goHome => 'Ir al inicio';
+}
+
+// Path: mic
+class Translations$mic$es {
+  Translations$mic$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Necesito tu micrófono'
+  String get deniedTitle => 'Necesito tu micrófono';
+
+  /// es: 'Activa el permiso de micrófono en los ajustes del teléfono y vuelve a intentarlo.'
+  String get deniedMessage =>
+      'Activa el permiso de micrófono en los ajustes del teléfono y vuelve a intentarlo.';
+
+  /// es: 'No pude escuchar'
+  String get errorTitle => 'No pude escuchar';
+
+  /// es: 'Algo falló al abrir el micrófono. Comprueba que otra app no lo esté usando.'
+  String get errorMessage =>
+      'Algo falló al abrir el micrófono. Comprueba que otra app no lo esté usando.';
+
+  /// es: 'Reintentar'
+  String get retry => 'Reintentar';
+
+  /// es: 'Nivel del micrófono'
+  String get levelLabel => 'Nivel del micrófono';
+
+  /// es: 'Esperando sonido…'
+  String get levelWaiting => 'Esperando sonido…';
+
+  /// es: 'Apenas te oigo: acerca la guitarra al micrófono'
+  String get levelQuiet => 'Apenas te oigo: acerca la guitarra al micrófono';
+
+  /// es: 'Te escucho bien'
+  String get levelGood => 'Te escucho bien';
+
+  /// es: 'Suena muy fuerte: aleja un poco la guitarra'
+  String get levelLoud => 'Suena muy fuerte: aleja un poco la guitarra';
+}
+
+// Path: tuner
+class Translations$tuner$es {
+  Translations$tuner$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Afinar'
+  String get tabTune => 'Afinar';
+
+  /// es: 'Acordes'
+  String get tabListen => 'Acordes';
+
+  /// es: 'Empezar a afinar'
+  String get start => 'Empezar a afinar';
+
+  /// es: 'Detener'
+  String get stop => 'Detener';
+
+  /// es: 'Automático'
+  String get auto => 'Automático';
+
+  /// es: 'Toca cualquier cuerda: la reconozco sola'
+  String get autoHint => 'Toca cualquier cuerda: la reconozco sola';
+
+  /// es: 'Toca una cuerda al aire'
+  String get pluckPrompt => 'Toca una cuerda al aire';
+
+  /// es: 'Toca la $string'
+  String pluckString({required Object string}) => 'Toca la ${string}';
+
+  /// es: '$ordinal cuerda · $note'
+  String stringTitle({required Object ordinal, required Object note}) =>
+      '${ordinal} cuerda · ${note}';
+
+  /// es: 'Mi'
+  String get noteE => 'Mi';
+
+  /// es: 'La'
+  String get noteA => 'La';
+
+  /// es: 'Re'
+  String get noteD => 'Re';
+
+  /// es: 'Sol'
+  String get noteG => 'Sol';
+
+  /// es: 'Si'
+  String get noteB => 'Si';
+
+  /// es: '¡Afinada!'
+  String get tuned => '¡Afinada!';
+
+  /// es: 'Sube un poco'
+  String get upLittle => 'Sube un poco';
+
+  /// es: 'Sube'
+  String get up => 'Sube';
+
+  /// es: 'Sube mucho'
+  String get upALot => 'Sube mucho';
+
+  /// es: 'Baja un poco'
+  String get downLittle => 'Baja un poco';
+
+  /// es: 'Baja'
+  String get down => 'Baja';
+
+  /// es: 'Baja mucho'
+  String get downALot => 'Baja mucho';
+
+  /// es: 'Aprieta la clavija'
+  String get tightenPeg => 'Aprieta la clavija';
+
+  /// es: 'Afloja la clavija'
+  String get loosenPeg => 'Afloja la clavija';
+
+  /// es: 'Mantén la nota sonando'
+  String get holdSteady => 'Mantén la nota sonando';
+
+  /// es: 'Esa suena como la $heard. Toca la $target.'
+  String heardOther({required Object heard, required Object target}) =>
+      'Esa suena como la ${heard}. Toca la ${target}.';
+
+  /// es: 'Floja'
+  String get flat => 'Floja';
+
+  /// es: 'Alta'
+  String get sharp => 'Alta';
+
+  /// es: '$cents cents'
+  String cents({required Object cents}) => '${cents} cents';
+
+  /// es: '$count de 6 afinadas'
+  String progress({required Object count}) => '${count} de 6 afinadas';
+
+  /// es: '¡Guitarra afinada!'
+  String get allTunedTitle => '¡Guitarra afinada!';
+
+  /// es: 'Las seis cuerdas están en su sitio. ¡A tocar!'
+  String get allTunedMessage => 'Las seis cuerdas están en su sitio. ¡A tocar!';
+
+  /// es: 'Escuchar nota'
+  String get playReference => 'Escuchar nota';
+
+  /// es: 'Empezar de nuevo'
+  String get startOver => 'Empezar de nuevo';
+
+  /// es: 'Toca una clavija para afinar solo esa cuerda'
+  String get selectHint => 'Toca una clavija para afinar solo esa cuerda';
+
+  /// es: 'Clavija de la $string'
+  String peg({required Object string}) => 'Clavija de la ${string}';
+
+  /// es: 'Afinación: $cents cents'
+  String meterLabel({required Object cents}) => 'Afinación: ${cents} cents';
+}
+
+// Path: practice
+class Translations$practice$es {
+  Translations$practice$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Practicar acorde'
+  String get title => 'Practicar acorde';
+
+  /// es: 'Toca las cuerdas una a una. Las reconozco en el orden que quieras.'
+  String get intro =>
+      'Toca las cuerdas una a una. Las reconozco en el orden que quieras.';
+
+  /// es: 'Empezar a practicar'
+  String get start => 'Empezar a practicar';
+
+  /// es: 'Detener'
+  String get stop => 'Detener';
+
+  /// es: 'Otra vez'
+  String get restart => 'Otra vez';
+
+  /// es: 'Escuchar acorde'
+  String get listenChord => 'Escuchar acorde';
+
+  /// es: 'Escuchar cuerda'
+  String get listenString => 'Escuchar cuerda';
+
+  /// es: '$count de $total cuerdas'
+  String progress({required Object count, required Object total}) =>
+      '${count} de ${total} cuerdas';
+
+  /// es: 'Ahora toca la $string al aire'
+  String nextOpen({required Object string}) =>
+      'Ahora toca la ${string} al aire';
+
+  /// es: 'Ahora toca la $string: traste $fret con $finger'
+  String nextFretted({
+    required Object string,
+    required Object fret,
+    required Object finger,
+  }) => 'Ahora toca la ${string}: traste ${fret} con ${finger}';
+
+  /// es: 'Ahora toca la $string: traste $fret'
+  String nextFrettedAny({required Object string, required Object fret}) =>
+      'Ahora toca la ${string}: traste ${fret}';
+
+  /// es: 'Muda'
+  String get muted => 'Muda';
+
+  /// es: 'Al aire'
+  String get open => 'Al aire';
+
+  /// es: 'Traste $fret'
+  String fret({required Object fret}) => 'Traste ${fret}';
+
+  /// es: 'No toques esta cuerda'
+  String get mutedHint => 'No toques esta cuerda';
+
+  /// es: 'Bien'
+  String get matched => 'Bien';
+
+  /// es: '¡Acorde limpio!'
+  String get doneTitle => '¡Acorde limpio!';
+
+  /// es: 'Todas las cuerdas suenan como deben. Repítelo despacio hasta que salga solo.'
+  String get doneMessage =>
+      'Todas las cuerdas suenan como deben. Repítelo despacio hasta que salga solo.';
+
+  /// es: 'Reafinar cuerda'
+  String get retune => 'Reafinar cuerda';
+
+  /// es: 'Cómo corregirla'
+  String get tipsTitle => 'Cómo corregirla';
+
+  /// es: 'el dedo $n'
+  String fingerThe({required Object n}) => 'el dedo ${n}';
+
+  /// es: 'el dedo'
+  String get fingerAny => 'el dedo';
+
+  /// es: 'La $string suena al aire: pisa el traste $fret con $finger.'
+  String tipSoundsOpen({
+    required Object string,
+    required Object fret,
+    required Object finger,
+  }) => 'La ${string} suena al aire: pisa el traste ${fret} con ${finger}.';
+
+  /// es: '(one) {Suena más grave. Sube $finger un traste hacia la caja.} (other) {Suena más grave. Sube $finger $n trastes hacia la caja.}'
+  String tipMoveUp({required num n, required Object finger}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: 'Suena más grave. Sube ${finger} un traste hacia la caja.',
+        other: 'Suena más grave. Sube ${finger} ${n} trastes hacia la caja.',
+      );
+
+  /// es: '(one) {Suena más aguda. Baja $finger un traste hacia el clavijero.} (other) {Suena más aguda. Baja $finger $n trastes hacia el clavijero.}'
+  String tipMoveDown({required num n, required Object finger}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: 'Suena más aguda. Baja ${finger} un traste hacia el clavijero.',
+        other:
+            'Suena más aguda. Baja ${finger} ${n} trastes hacia el clavijero.',
+      );
+
+  /// es: 'Suena algo baja. Acerca $finger al traste (sin pisarlo) o reafina la cuerda.'
+  String tipTooFlat({required Object finger}) =>
+      'Suena algo baja. Acerca ${finger} al traste (sin pisarlo) o reafina la cuerda.';
+
+  /// es: 'Suena algo alta. Presiona con menos fuerza, sin estirar la cuerda, o reafínala.'
+  String get tipTooSharp =>
+      'Suena algo alta. Presiona con menos fuerza, sin estirar la cuerda, o reafínala.';
+
+  /// es: 'La $string al aire suena baja: sube un poco la clavija.'
+  String tipRetuneUp({required Object string}) =>
+      'La ${string} al aire suena baja: sube un poco la clavija.';
+
+  /// es: 'La $string al aire suena alta: baja un poco la clavija.'
+  String tipRetuneDown({required Object string}) =>
+      'La ${string} al aire suena alta: baja un poco la clavija.';
+
+  /// es: 'No reconozco esa nota. Toca solo la $string, con calma.'
+  String tipUnknown({required Object string}) =>
+      'No reconozco esa nota. Toca solo la ${string}, con calma.';
 }
 
 // Path: settings.theme
@@ -1115,7 +1449,7 @@ extension on Translations {
       'nav.learn' => 'Aprender',
       'nav.chords' => 'Acordes',
       'nav.game' => 'Jugar',
-      'nav.live' => 'En vivo',
+      'nav.live' => 'Afinar',
       'nav.settings' => 'Ajustes',
       'home.greeting' => 'Hola, guitararrista',
       'home.question' => '¿Qué tocas hoy?',
@@ -1136,8 +1470,8 @@ extension on Translations {
       }) => '${count} acordes por género y nivel',
       'home.gameMode' => 'Modo juego',
       'home.gameSubtitle' => 'Toca el acorde y encadena la serie',
-      'home.liveTitle' => 'Afinación en vivo',
-      'home.liveSubtitle' => 'Detecta la nota con tu micrófono',
+      'home.liveTitle' => 'Afinador y escucha',
+      'home.liveSubtitle' => 'Afina cuerda a cuerda con tu micrófono',
       'chords.title' => 'Acordes',
       'chords.clearFilters' => 'Limpiar filtros',
       'chords.searchHint' => 'Buscar acordes',
@@ -1185,6 +1519,7 @@ extension on Translations {
         required Object label,
         required Object level,
       }) => '${label} · Nv ${level}',
+      'chordDetail.practice' => 'Practicar',
       'game.title' => 'Jugar',
       'game.start' => 'Empezar serie',
       'game.emptyTitle' => 'Toca el acorde',
@@ -1200,6 +1535,25 @@ extension on Translations {
       'game.ready' => 'Estoy listo',
       'game.streak' => 'Racha',
       'game.score' => 'Puntos',
+      'game.feedbackProgress' => ({
+        required Object hit,
+        required Object total,
+      }) => '¡Vas bien! ${hit} de ${total} notas',
+      'game.feedbackMissing' => ({
+        required Object notes,
+      }) => 'Te falta: ${notes}',
+      'game.feedbackExtra' => ({
+        required Object notes,
+      }) => 'Suena de más: ${notes}',
+      'game.feedbackComplete' => '¡Acorde completo!',
+      'game.almostNext' => '¡Casi! Siguiente',
+      'game.stringFirst' => '1ª',
+      'game.stringSecond' => '2ª',
+      'game.stringThird' => '3ª',
+      'game.stringFourth' => '4ª',
+      'game.stringFifth' => '5ª',
+      'game.stringSixth' => '6ª',
+      'game.practiceChord' => 'Practicar cuerda a cuerda',
       'chordDiagram.stringLabel' => ({
         required Object number,
         required Object fret,
@@ -1211,7 +1565,7 @@ extension on Translations {
         required Object position,
         required Object details,
       }) => 'Diagrama de ${position}, ${details}',
-      'live.title' => 'En vivo',
+      'live.title' => 'Afinador',
       'live.listen' => 'Escuchar guitarra',
       'live.stop' => 'Detener',
       'live.emptyTitle' => 'Sin sugerencias aún',
@@ -1392,6 +1746,132 @@ extension on Translations {
       'logs.empty' => 'Sin eventos registrados',
       'router.notFound' => 'Ruta no encontrada',
       'router.goHome' => 'Ir al inicio',
+      'mic.deniedTitle' => 'Necesito tu micrófono',
+      'mic.deniedMessage' => 'Activa el permiso de micrófono en los ajustes del teléfono y vuelve a intentarlo.',
+      'mic.errorTitle' => 'No pude escuchar',
+      'mic.errorMessage' => 'Algo falló al abrir el micrófono. Comprueba que otra app no lo esté usando.',
+      'mic.retry' => 'Reintentar',
+      'mic.levelLabel' => 'Nivel del micrófono',
+      'mic.levelWaiting' => 'Esperando sonido…',
+      'mic.levelQuiet' => 'Apenas te oigo: acerca la guitarra al micrófono',
+      'mic.levelGood' => 'Te escucho bien',
+      'mic.levelLoud' => 'Suena muy fuerte: aleja un poco la guitarra',
+      'tuner.tabTune' => 'Afinar',
+      'tuner.tabListen' => 'Acordes',
+      'tuner.start' => 'Empezar a afinar',
+      'tuner.stop' => 'Detener',
+      'tuner.auto' => 'Automático',
+      'tuner.autoHint' => 'Toca cualquier cuerda: la reconozco sola',
+      'tuner.pluckPrompt' => 'Toca una cuerda al aire',
+      'tuner.pluckString' => ({required Object string}) => 'Toca la ${string}',
+      'tuner.stringTitle' => ({
+        required Object ordinal,
+        required Object note,
+      }) => '${ordinal} cuerda · ${note}',
+      'tuner.noteE' => 'Mi',
+      'tuner.noteA' => 'La',
+      'tuner.noteD' => 'Re',
+      'tuner.noteG' => 'Sol',
+      'tuner.noteB' => 'Si',
+      'tuner.tuned' => '¡Afinada!',
+      'tuner.upLittle' => 'Sube un poco',
+      'tuner.up' => 'Sube',
+      'tuner.upALot' => 'Sube mucho',
+      'tuner.downLittle' => 'Baja un poco',
+      'tuner.down' => 'Baja',
+      'tuner.downALot' => 'Baja mucho',
+      'tuner.tightenPeg' => 'Aprieta la clavija',
+      'tuner.loosenPeg' => 'Afloja la clavija',
+      'tuner.holdSteady' => 'Mantén la nota sonando',
+      'tuner.heardOther' => ({
+        required Object heard,
+        required Object target,
+      }) => 'Esa suena como la ${heard}. Toca la ${target}.',
+      'tuner.flat' => 'Floja',
+      'tuner.sharp' => 'Alta',
+      'tuner.cents' => ({required Object cents}) => '${cents} cents',
+      'tuner.progress' => ({required Object count}) => '${count} de 6 afinadas',
+      'tuner.allTunedTitle' => '¡Guitarra afinada!',
+      'tuner.allTunedMessage' =>
+        'Las seis cuerdas están en su sitio. ¡A tocar!',
+      'tuner.playReference' => 'Escuchar nota',
+      'tuner.startOver' => 'Empezar de nuevo',
+      'tuner.selectHint' => 'Toca una clavija para afinar solo esa cuerda',
+      'tuner.peg' => ({required Object string}) => 'Clavija de la ${string}',
+      'tuner.meterLabel' => ({
+        required Object cents,
+      }) => 'Afinación: ${cents} cents',
+      'practice.title' => 'Practicar acorde',
+      'practice.intro' =>
+        'Toca las cuerdas una a una. Las reconozco en el orden que quieras.',
+      'practice.start' => 'Empezar a practicar',
+      'practice.stop' => 'Detener',
+      'practice.restart' => 'Otra vez',
+      'practice.listenChord' => 'Escuchar acorde',
+      'practice.listenString' => 'Escuchar cuerda',
+      'practice.progress' => ({
+        required Object count,
+        required Object total,
+      }) => '${count} de ${total} cuerdas',
+      'practice.nextOpen' => ({
+        required Object string,
+      }) => 'Ahora toca la ${string} al aire',
+      'practice.nextFretted' => ({
+        required Object string,
+        required Object fret,
+        required Object finger,
+      }) => 'Ahora toca la ${string}: traste ${fret} con ${finger}',
+      'practice.nextFrettedAny' => ({
+        required Object string,
+        required Object fret,
+      }) => 'Ahora toca la ${string}: traste ${fret}',
+      'practice.muted' => 'Muda',
+      'practice.open' => 'Al aire',
+      'practice.fret' => ({required Object fret}) => 'Traste ${fret}',
+      'practice.mutedHint' => 'No toques esta cuerda',
+      'practice.matched' => 'Bien',
+      'practice.doneTitle' => '¡Acorde limpio!',
+      'practice.doneMessage' => 'Todas las cuerdas suenan como deben. Repítelo despacio hasta que salga solo.',
+      'practice.retune' => 'Reafinar cuerda',
+      'practice.tipsTitle' => 'Cómo corregirla',
+      'practice.fingerThe' => ({required Object n}) => 'el dedo ${n}',
+      'practice.fingerAny' => 'el dedo',
+      'practice.tipSoundsOpen' => ({
+        required Object string,
+        required Object fret,
+        required Object finger,
+      }) => 'La ${string} suena al aire: pisa el traste ${fret} con ${finger}.',
+      'practice.tipMoveUp' =>
+        ({required num n, required Object finger}) =>
+            (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+              n,
+              one: 'Suena más grave. Sube ${finger} un traste hacia la caja.',
+              other:
+                  'Suena más grave. Sube ${finger} ${n} trastes hacia la caja.',
+            ),
+      'practice.tipMoveDown' =>
+        ({
+          required num n,
+          required Object finger,
+        }) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+          n,
+          one: 'Suena más aguda. Baja ${finger} un traste hacia el clavijero.',
+          other:
+              'Suena más aguda. Baja ${finger} ${n} trastes hacia el clavijero.',
+        ),
+      'practice.tipTooFlat' => ({
+        required Object finger,
+      }) => 'Suena algo baja. Acerca ${finger} al traste (sin pisarlo) o reafina la cuerda.',
+      'practice.tipTooSharp' => 'Suena algo alta. Presiona con menos fuerza, sin estirar la cuerda, o reafínala.',
+      'practice.tipRetuneUp' => ({
+        required Object string,
+      }) => 'La ${string} al aire suena baja: sube un poco la clavija.',
+      'practice.tipRetuneDown' => ({
+        required Object string,
+      }) => 'La ${string} al aire suena alta: baja un poco la clavija.',
+      'practice.tipUnknown' => ({
+        required Object string,
+      }) => 'No reconozco esa nota. Toca solo la ${string}, con calma.',
       _ => null,
     };
   }

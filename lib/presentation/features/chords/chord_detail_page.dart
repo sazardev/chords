@@ -1,5 +1,6 @@
 import 'dart:async' show unawaited;
 
+import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
@@ -172,10 +173,22 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
               const SizedBox(height: 8),
               DifficultyBadge(difficulty: controller.chord!.difficulty),
               const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: controller.playSelected,
-                icon: const Icon(Icons.play_arrow_rounded),
-                label: Text(t.chordDetail.listen),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: <Widget>[
+                  FilledButton.icon(
+                    onPressed: controller.playSelected,
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: Text(t.chordDetail.listen),
+                  ),
+                  FilledButton.tonalIcon(
+                    onPressed: () => unawaited(_practice(controller)),
+                    icon: const Icon(Icons.mic_rounded),
+                    label: Text(t.chordDetail.practice),
+                  ),
+                ],
               ),
             ],
           ),
@@ -186,6 +199,14 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
         for (int i = 0; i < controller.chord!.variants.length; i++)
           _variantTile(controller, i, theme),
       ],
+    );
+  }
+
+  /// Abre la práctica cuerda a cuerda de la posición seleccionada.
+  Future<void> _practice(ChordDetailController controller) async {
+    final String id = Uri.encodeComponent(controller.chord!.id);
+    await context.push(
+      '$kChordPracticePath?id=$id&v=${controller.selectedIndex}',
     );
   }
 

@@ -17,7 +17,9 @@ import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/game/game_score_controller.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
+import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
@@ -91,6 +93,12 @@ void main() {
       ChangeNotifierProvider<LiveController>.value(
         value: LiveController(audio, chords),
       ),
+      ChangeNotifierProvider<TunerController>.value(
+        value: TunerController(audio),
+      ),
+      ChangeNotifierProvider<ChordPracticeController>.value(
+        value: ChordPracticeController(audio, chords),
+      ),
     ];
 
     // Tamaños representativos de móvil (del más pequeño al grande).
@@ -128,7 +136,13 @@ void main() {
       await _visit(tester, kLearnPath, expectText: 'Aprender', size: size);
       await _visit(tester, kChordsPath, expectText: 'Acordes', size: size);
       await _visit(tester, kGamePath, expectText: 'Jugar', size: size);
-      await _visit(tester, kLivePath, expectText: 'En vivo', size: size);
+      await _visit(tester, kLivePath, expectText: 'Afinador', size: size);
+      await _visit(
+        tester,
+        '$kChordPracticePath?id=C-maj&v=0',
+        expectText: 'Empezar a practicar',
+        size: size,
+      );
       await _visit(tester, kSettingsPath, expectText: 'Ajustes', size: size);
     }
   });

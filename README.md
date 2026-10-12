@@ -26,6 +26,21 @@ diseño atómico y Material 3 Expressive.
 - **Sonido de cada acorde**: síntesis por cuerda tipo Karplus-Strong con
   envolvente realista, codificada a WAV (SoLoud). Funciona en Android, Linux
   y Web (WASM).
+- **Afinador por cuerdas**: cabezal de guitarra con las 6 clavijas (nota y
+  número de cuerda); reconoce solo qué cuerda suena, mide los cents contra su
+  nota real (aguanta cuerdas a más de medio tono y errores de octava), dice
+  "sube/baja" y qué hacer con la clavija, con margen tolerante (±7¢), marca
+  cada cuerda afinada y permite fijar una cuerda o escuchar su nota de
+  referencia.
+- **Modo práctica de acorde**: desde la ficha (y desde el juego al fallar),
+  el diagrama ilumina cada cuerda según la tocas —en cualquier orden—, dice
+  qué cuerda toca ahora (traste y dedo) y da tips concretos: "suena al aire",
+  "sube/baja N trastes", "acerca el dedo al traste", "presiona más suave" o
+  "reafina" (abre el afinador en una hoja sin perder el progreso).
+- **Micrófono guiado**: medidor de nivel con pistas ("acerca la guitarra",
+  "suena muy fuerte"), aviso claro si falta el permiso o falla la captura con
+  reintento, y detección sensible a notas suaves (puerta de ruido + confianza
+  YIN en lugar de exigir volumen alto).
 - **Micrófono en vivo**: captura PCM16 + detector de tono YIN: nota, cents y
   acordes sugeridos en tiempo real.
 - **Biblioteca con filtros**: búsqueda libre, chips por género, por nivel y

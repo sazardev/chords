@@ -32,6 +32,8 @@ class LiveController extends ChangeNotifier {
   final Set<int> _detected = <int>{};
   StreamSubscription<PitchReading>? _readingsSubscription;
   StreamSubscription<MicStatus>? _statusSubscription;
+  StreamSubscription<double>? _levelSubscription;
+  double _level = 0;
   DateTime? _startedAt;
   int _readingCount = 0;
   int _reliableCount = 0;
@@ -43,11 +45,11 @@ class LiveController extends ChangeNotifier {
   /// Última lectura de tono.
   PitchReading? get reading => _reading;
 
+  /// Nivel de entrada del micrófono (0-1).
+  double get level => _level;
+
   /// Acordes sugeridos a partir de lo detectado.
   List<Chord> get suggestions => _suggestions;
-
-  /// Clases de tono acumuladas.
-  Set<int> get detected => _detected;
 
   /// Notas fiables escuchadas durante la sesión, en orden de detección.
   List<String> get heardNotes => List<String>.unmodifiable(_heardNotes);
@@ -81,11 +83,14 @@ class LiveController extends ChangeNotifier {
     _reliableCount = 0;
     _heardNotes.clear();
     notifyListeners();
-    await _audio.requestAccess();
     await _readingsSubscription?.cancel();
     _readingsSubscription = _audio.readings.listen(_onReading);
     await _statusSubscription?.cancel();
     _statusSubscription = _audio.statusStream.listen(_onStatus);
+    await _levelSubscription?.cancel();
+    _levelSubscription = _audio.levels.listen(_onLevel);
+    _status = await _audio.requestAccess();
+    notifyListeners();
     appLogger.info(
       'live: sesión de escucha iniciada',
       channel: LogChannel.microphone,
@@ -100,8 +105,16 @@ class LiveController extends ChangeNotifier {
     _readingsSubscription = null;
     await _statusSubscription?.cancel();
     _statusSubscription = null;
+    await _levelSubscription?.cancel();
+    _levelSubscription = null;
+    _level = 0;
     _status = MicStatus.idle;
     _trackSessionEnd();
+    notifyListeners();
+  }
+
+  void _onLevel(double level) {
+    _level = level;
     notifyListeners();
   }
 
@@ -181,6 +194,7 @@ class LiveController extends ChangeNotifier {
   void dispose() {
     unawaited(_readingsSubscription?.cancel());
     unawaited(_statusSubscription?.cancel());
+    unawaited(_levelSubscription?.cancel());
     super.dispose();
   }
 }
