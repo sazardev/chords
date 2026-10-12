@@ -1,3 +1,9 @@
+import 'dart:async' show StreamSubscription, unawaited;
+
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/live_analytics_events.dart';
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
@@ -7,6 +13,10 @@ import 'package:chords/domain/chords/usecases/match_chords_by_pitch_classes_use_
 import 'package:flutter/foundation.dart';
 
 /// Controlador de la afinación en vivo con micrófono.
+///
+/// Además del estado visible (estado del micrófono, última lectura y
+/// sugerencias), acumula las estadísticas de la sesión —lecturas, fiables y
+/// notas escuchadas— para dejar traza de lo que sonó al terminar.
 class LiveController extends ChangeNotifier {
   /// Crea el controlador.
   LiveController(this._audio, this._chords);
@@ -20,6 +30,12 @@ class LiveController extends ChangeNotifier {
   PitchReading? _reading;
   List<Chord> _suggestions = const <Chord>[];
   final Set<int> _detected = <int>{};
+  StreamSubscription<PitchReading>? _readingsSubscription;
+  StreamSubscription<MicStatus>? _statusSubscription;
+  DateTime? _startedAt;
+  int _readingCount = 0;
+  int _reliableCount = 0;
+  final List<String> _heardNotes = <String>[];
 
   /// Estado del micrófono.
   MicStatus get status => _status;
@@ -32,6 +48,9 @@ class LiveController extends ChangeNotifier {
 
   /// Clases de tono acumuladas.
   Set<int> get detected => _detected;
+
+  /// Notas fiables escuchadas durante la sesión, en orden de detección.
+  List<String> get heardNotes => List<String>.unmodifiable(_heardNotes);
 
   /// Alterna entre escuchar y detener.
   Future<void> toggleListening() async {
@@ -47,16 +66,32 @@ class LiveController extends ChangeNotifier {
     _detected.clear();
     _suggestions = const <Chord>[];
     _reading = null;
+    _startedAt = DateTime.now();
+    _readingCount = 0;
+    _reliableCount = 0;
+    _heardNotes.clear();
     notifyListeners();
     await _audio.requestAccess();
-    _audio.readings.listen(_onReading);
-    _audio.statusStream.listen(_onStatus);
+    await _readingsSubscription?.cancel();
+    _readingsSubscription = _audio.readings.listen(_onReading);
+    await _statusSubscription?.cancel();
+    _statusSubscription = _audio.statusStream.listen(_onStatus);
+    appLogger.info(
+      'live: sesión de escucha iniciada',
+      channel: LogChannel.microphone,
+    );
+    analytics.liveSessionStarted();
   }
 
   /// Detiene la escucha del micrófono.
   Future<void> stop() async {
     await _audio.stopListening();
+    await _readingsSubscription?.cancel();
+    _readingsSubscription = null;
+    await _statusSubscription?.cancel();
+    _statusSubscription = null;
     _status = MicStatus.idle;
+    _trackSessionEnd();
     notifyListeners();
   }
 
@@ -66,9 +101,15 @@ class LiveController extends ChangeNotifier {
   }
 
   void _onReading(PitchReading reading) {
+    _readingCount++;
     _reading = reading;
     final int pitchClass = _pitchClassOf(reading.note);
     if (reading.isReliable) {
+      _reliableCount++;
+      final String note = _noteOf(reading.note);
+      if (!_heardNotes.contains(note)) {
+        _heardNotes.add(note);
+      }
       _detected
         ..clear()
         ..add(pitchClass);
@@ -76,6 +117,37 @@ class LiveController extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void _trackSessionEnd() {
+    final DateTime? startedAt = _startedAt;
+    if (startedAt == null) {
+      return;
+    }
+    _startedAt = null;
+    final Duration duration = DateTime.now().difference(startedAt);
+    appLogger.info(
+      'live: sesión terminada — $_readingCount lecturas '
+      '($_reliableCount fiables), notas [${_heardNotes.join(', ')}], '
+      '${_suggestions.length} sugerencias',
+      channel: LogChannel.microphone,
+      context: <String, Object?>{
+        'durationMs': duration.inMilliseconds,
+        'readings': _readingCount,
+        'reliable': _reliableCount,
+        'notes': _heardNotes.join(','),
+        'suggestions': _suggestions.length,
+      },
+    );
+    analytics.liveSessionEnded(
+      duration: duration,
+      readings: _readingCount,
+      reliableReadings: _reliableCount,
+      notesHeard: _heardNotes,
+      suggestions: _suggestions.length,
+    );
+  }
+
+  String _noteOf(String label) => label.replaceAll(RegExp('[0-9-]'), '');
 
   int _pitchClassOf(String label) {
     const List<String> names = <String>[
@@ -92,7 +164,13 @@ class LiveController extends ChangeNotifier {
       'A#',
       'B',
     ];
-    final String note = label.replaceAll(RegExp('[0-9-]'), '');
-    return names.indexOf(note);
+    return names.indexOf(_noteOf(label));
+  }
+
+  @override
+  void dispose() {
+    unawaited(_readingsSubscription?.cancel());
+    unawaited(_statusSubscription?.cancel());
+    super.dispose();
   }
 }

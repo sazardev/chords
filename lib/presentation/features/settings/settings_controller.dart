@@ -1,3 +1,6 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/settings_analytics_events.dart';
+import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -27,6 +30,8 @@ class SettingsController extends ChangeNotifier {
     }
     _mirrorChords = value;
     await _preferences.setMirrorChords(value: value);
+    appLogger.debug('ajuste mirror_chords=$value');
+    analytics.settingChanged(setting: 'mirror_chords', value: value);
     notifyListeners();
   }
 
@@ -37,6 +42,8 @@ class SettingsController extends ChangeNotifier {
     }
     _soundEnabled = value;
     await _preferences.setSoundEnabled(value: value);
+    appLogger.debug('ajuste sound_enabled=$value');
+    analytics.settingChanged(setting: 'sound_enabled', value: value);
     notifyListeners();
   }
 

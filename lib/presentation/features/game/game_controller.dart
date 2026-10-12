@@ -1,3 +1,7 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/game_analytics_events.dart';
+import 'package:chords/core/logging/app_log.dart';
+import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
@@ -62,6 +66,11 @@ class GameController extends ChangeNotifier {
     _current = 0;
     _phase = GamePhase.idle;
     _score.reset();
+    appLogger.info(
+      'juego: partida iniciada en nivel $level (${_rounds.length} rondas)',
+      channel: LogChannel.game,
+    );
+    analytics.gameStarted(level: level, rounds: _rounds.length);
     notifyListeners();
   }
 
@@ -81,7 +90,7 @@ class GameController extends ChangeNotifier {
       targetNotes: targetNotes,
       timeLimitMs: round.timeLimitMs,
     );
-    _resolveRound(round);
+    _resolveRound(round, targetNotes);
   }
 
   /// Avanza a la ronda siguiente o termina la partida.
@@ -108,7 +117,7 @@ class GameController extends ChangeNotifier {
     await _audio.playChord(chord, chord.easiestVariant);
   }
 
-  void _resolveRound(GameRound round) {
+  void _resolveRound(GameRound round, List<String> targetNotes) {
     final GameResult result = _evaluate.resultFor(_tuner.matchRatio);
     _rounds = <GameRound>[
       for (final GameRound item in _rounds)
@@ -128,6 +137,78 @@ class GameController extends ChangeNotifier {
         ? GamePhase.lost
         : GamePhase.won;
     _score.recognize(result);
+    _trackRound(round, targetNotes, result);
+    if (round.index == _rounds.length - 1) {
+      _trackFinished();
+    }
     notifyListeners();
+  }
+
+  void _trackRound(
+    GameRound round,
+    List<String> targetNotes,
+    GameResult result,
+  ) {
+    final List<String> heard = _tuner.heardNotes;
+    appLogger.info(
+      'juego: ronda ${round.index + 1} ${result.outcome.name} — '
+      'esperado [${targetNotes.join(', ')}] escuchado [${heard.join(', ')}] '
+      'acierto ${(result.matchedRatio * 100).round()}%',
+      channel: LogChannel.game,
+      context: <String, Object?>{
+        'expected': targetNotes.join(','),
+        'heard': heard.join(','),
+        'matchRatio': result.matchedRatio,
+        'outcome': result.outcome.name,
+      },
+    );
+    analytics.gameRoundPlayed(
+      index: round.index,
+      chordId: round.chordId,
+      expectedNotes: targetNotes,
+      heardNotes: heard,
+      matchRatio: result.matchedRatio,
+      outcome: result.outcome.name,
+      timeLimitMs: round.timeLimitMs,
+    );
+  }
+
+  void _trackFinished() {
+    final List<GameRound> resolved = _rounds
+        .where((GameRound round) => round.isResolved)
+        .toList();
+    int won = 0;
+    int partial = 0;
+    int failed = 0;
+    for (final GameRound round in resolved) {
+      switch (round.result!.outcome) {
+        case GameOutcome.success:
+          won++;
+        case GameOutcome.partial:
+          partial++;
+        case GameOutcome.fail:
+        case GameOutcome.timeout:
+          failed++;
+      }
+    }
+    appLogger.info(
+      'juego: serie terminada — $won/${resolved.length} aciertos, '
+      'puntuación ${_score.score} (récord ${_score.bestScore})',
+      channel: LogChannel.game,
+      context: <String, Object?>{
+        'won': won,
+        'partial': partial,
+        'failed': failed,
+        'score': _score.score,
+      },
+    );
+    analytics.gameFinished(
+      score: _score.score,
+      best: _score.bestScore,
+      rounds: resolved.length,
+      won: won,
+      partial: partial,
+      failed: failed,
+    );
   }
 }

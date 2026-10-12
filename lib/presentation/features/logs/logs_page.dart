@@ -1,3 +1,5 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/settings_analytics_events.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/app_log_level.dart';
 import 'package:chords/core/logging/formatters/console_log_formatter.dart';
@@ -21,6 +23,12 @@ class LogsPage extends StatefulWidget {
 }
 
 class _LogsPageState extends State<LogsPage> {
+  @override
+  void initState() {
+    super.initState();
+    analytics.diagnosticsOpened();
+  }
+
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<LogsViewModel>(
     create: (_) => LogsViewModel(appMemoryLogSink ?? MemoryLogSink()),

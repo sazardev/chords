@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/live_analytics_events.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/audio/chord_audio_synthesizer.dart';
@@ -56,6 +58,7 @@ class AudioRepositoryImpl implements AudioRepository {
   StreamSubscription<Uint8List>? _micSubscription;
   final List<double> _window = <double>[];
   int _lastEmit = 0;
+  int _lastReadingLog = 0;
   bool _engineReady = false;
 
   @override
@@ -77,6 +80,7 @@ class AudioRepositoryImpl implements AudioRepository {
         'micrófono: escucha iniciada',
         channel: LogChannel.microphone,
       );
+      analytics.micPermission(granted: true);
       return MicStatus.listening;
     } on Exception catch (error, stackTrace) {
       appLogger.warning(
@@ -85,6 +89,7 @@ class AudioRepositoryImpl implements AudioRepository {
         error: error,
         stackTrace: stackTrace,
       );
+      analytics.micPermission(granted: false);
       _statusController.add(MicStatus.permissionDenied);
       return MicStatus.permissionDenied;
     }
@@ -212,6 +217,7 @@ class AudioRepositoryImpl implements AudioRepository {
       frequency,
     );
     final double clarity = PitchDetector.clarityOf(buffer);
+    _logReading(nearest, clarity);
     _readingsController.add(
       PitchReading(
         frequency: frequency,
@@ -219,6 +225,24 @@ class AudioRepositoryImpl implements AudioRepository {
         cents: nearest.cents,
         clarity: clarity,
       ),
+    );
+  }
+
+  void _logReading(({String note, double cents}) nearest, double clarity) {
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    if (now - _lastReadingLog < 500) {
+      return;
+    }
+    _lastReadingLog = now;
+    appLogger.debug(
+      'micrófono: ${nearest.note} ${nearest.cents.round()}¢ '
+      'claridad ${clarity.toStringAsFixed(2)}',
+      channel: LogChannel.microphone,
+      context: <String, Object?>{
+        'note': nearest.note,
+        'cents': nearest.cents.round(),
+        'clarity': clarity,
+      },
     );
   }
 }

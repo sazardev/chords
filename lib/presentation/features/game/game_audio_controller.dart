@@ -20,9 +20,17 @@ class GameAudioController extends ChangeNotifier {
 
   double _match = 0;
   StreamSubscription<PitchReading>? _subscription;
+  final List<String> _heard = <String>[];
+  int _reliableReadings = 0;
 
   /// Proporción de notas detectadas (0-1).
   double get matchRatio => _match;
+
+  /// Notas escuchadas en la ronda, en orden de detección.
+  List<String> get heardNotes => List<String>.unmodifiable(_heard);
+
+  /// Número de lecturas fiables recibidas en la ronda.
+  int get reliableReadings => _reliableReadings;
 
   /// Escucha la ronda y expone el resultado en [matchRatio].
   Future<void> playRound({
@@ -30,6 +38,8 @@ class GameAudioController extends ChangeNotifier {
     required int timeLimitMs,
   }) async {
     _match = 0;
+    _heard.clear();
+    _reliableReadings = 0;
     notifyListeners();
 
     final Set<int> detected = <int>{};
@@ -37,6 +47,11 @@ class GameAudioController extends ChangeNotifier {
     _subscription = _audio.readings.listen((PitchReading reading) {
       if (!reading.isReliable) {
         return;
+      }
+      _reliableReadings++;
+      final String note = _noteOf(reading.note);
+      if (!_heard.contains(note)) {
+        _heard.add(note);
       }
       detected.add(_pitchClassOf(reading.note));
       _match = _evaluate.call(targetNotes, detected);
@@ -49,6 +64,8 @@ class GameAudioController extends ChangeNotifier {
     await _subscription?.cancel();
     _subscription = null;
   }
+
+  String _noteOf(String label) => label.replaceAll(RegExp('[0-9-]'), '');
 
   int _pitchClassOf(String label) {
     const List<String> names = <String>[
@@ -65,8 +82,7 @@ class GameAudioController extends ChangeNotifier {
       'A#',
       'B',
     ];
-    final String note = label.replaceAll(RegExp('[0-9-]'), '');
-    return names.indexOf(note);
+    return names.indexOf(_noteOf(label));
   }
 
   @override

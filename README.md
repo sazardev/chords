@@ -60,7 +60,9 @@ lib/
 ├── domain/            Entidades, repositorios (abstractos) y casos de uso
 │   └── l10n/          Idioma soportado (AppLanguage) y su repositorio
 ├── data/              Datasource de assets, modelos, síntesis de audio, YIN
+│   ├── analytics/     Backend Firebase de analíticas (Analytics + Crashlytics)
 │   └── l10n/          Persistencia del idioma elegido
+├── core/              Núcleo puro sin Flutter: logging y analíticas
 ├── l10n/              Catálogos JSON (es.i18n.json, en.i18n.json)
 │                      + translations*.g.dart generado por slang
 ├── presentation/
@@ -135,6 +137,38 @@ slang) y en `app.dart` (`locale`, `supportedLocales` y las delegadas de
 **Pendiente de traducción:** las etiquetas de posición del banco
 (`Forma de Mi`, `Triada {…}`, `… · traste 8`) son datos generados; migrarlas a
 identificadores estables permitiría traducirlas sin cambiar el banco.
+
+## Registro y analíticas
+
+Dos capas complementarias cuentan lo que pasa en la app:
+
+- **Registro local** (`lib/core/logging/`): cada acción deja un `LogEntry` con
+  canal (`router`, `chords`, `audio`, `microphone`, `game`, `learn`…), nivel,
+  contexto y duración. Los sinks son enchufables (consola, memoria, y el puente
+  a analíticas); el visor de diagnóstico integrado (Ajustes → Diagnóstico, solo
+  en dev/staging) muestra el buffer en caliente. Los errores del framework, la
+  plataforma y la zona asíncrona se capturan en `runAppGuarded`.
+- **Analíticas remotas** (`lib/core/analytics/` + `lib/data/analytics/`): una
+  fachada pura (`AnalyticsService`) emite eventos semánticos del catálogo
+  central —rutas, acordes vistos/reproducidos, búsquedas, filtros, dominio de
+  acordes, partidas y rondas del juego (con lo que el micrófono escuchó frente
+  a lo esperado), sesiones de afinación, ajustes y onboarding— y el backend de
+  Firebase los envía a **Analytics** y **Crashlytics** (errores con contexto).
+
+```bash
+make run-android FLAVOR=prod   # envía analíticas a chords-qa
+make run-linux                 # backend silencioso (sin soporte Firebase)
+```
+
+Las analíticas están activas en **staging y prod** (`AppConfig.enableAnalytics`)
+y desactivadas en dev; en Linux/Windows el backend es silencioso. El micrófono
+solo aporta la nota detectada y su desviación: el audio nunca sale del
+dispositivo (ver `docs/privacy.html`). El catálogo de eventos está en
+`lib/core/analytics/analytics_events.dart` y se valida en los tests.
+
+> Nota: al habilitar Analytics en un proyecto con una app web ya registrada,
+> el SDK web obtiene el `measurementId` del servidor con retraso (caché de
+> propagación de Firebase); los datos de Android no se ven afectados.
 
 ## CLI propia
 

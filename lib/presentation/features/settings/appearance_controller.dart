@@ -1,3 +1,6 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/settings_analytics_events.dart';
+import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/domain/preferences/entities/app_accent_color.dart';
 import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/domain/preferences/repositories/appearance_preferences.dart';
@@ -46,6 +49,7 @@ class AppearanceController extends ChangeNotifier {
     }
     _themeMode = value;
     await _preferences.setThemeMode(value);
+    _track('theme_mode', value.name);
     notifyListeners();
   }
 
@@ -56,6 +60,7 @@ class AppearanceController extends ChangeNotifier {
     }
     _accentColor = value;
     await _preferences.setAccentColor(value);
+    _track('accent_color', value.name);
     notifyListeners();
   }
 
@@ -66,6 +71,7 @@ class AppearanceController extends ChangeNotifier {
     }
     _dynamicColor = value;
     await _preferences.setDynamicColor(value: value);
+    _track('dynamic_color', value);
     notifyListeners();
   }
 
@@ -76,7 +82,13 @@ class AppearanceController extends ChangeNotifier {
     }
     _fontScale = value;
     await _preferences.setFontScale(value);
+    _track('font_scale', value.name);
     notifyListeners();
+  }
+
+  void _track(String setting, Object? value) {
+    appLogger.debug('ajuste $setting=${value ?? '—'}');
+    analytics.settingChanged(setting: setting, value: value);
   }
 
   /// Carga los valores persistidos.

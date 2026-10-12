@@ -22,16 +22,17 @@ AppLogger bootstrapLogging({
   bool memory = true,
   bool frameMonitor = true,
   bool inAppDiagnostics = false,
+  List<LogSink> extraSinks = const <LogSink>[],
 }) {
-  final List<LogSink> sinks = <LogSink>[];
+  final List<LogSink> sinks = <LogSink>[
+    if (console) ConsoleLogSink(consoleLogFormatter, debugPrint),
+  ];
   MemoryLogSink? memorySink;
-  if (console) {
-    sinks.add(ConsoleLogSink(consoleLogFormatter, debugPrint));
-  }
   if (memory) {
     memorySink = MemoryLogSink();
     sinks.add(memorySink);
   }
+  sinks.addAll(extraSinks);
   final AppLogger logger = AppLogger(
     sinks: sinks,
     filter: LogFilter.minimum(minLevel),

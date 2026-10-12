@@ -56,6 +56,7 @@ class DefaultFirebaseOptions {
     projectId: 'chords-qa',
     authDomain: 'chords-qa.firebaseapp.com',
     storageBucket: 'chords-qa.firebasestorage.app',
+    measurementId: 'G-LXG1T3GTLM',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

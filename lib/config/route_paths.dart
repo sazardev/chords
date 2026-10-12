@@ -61,3 +61,13 @@ const List<String> kNavigationDestinations = <String>[
   kLivePath,
   kSettingsPath,
 ];
+
+/// Nombres internos de las rutas de cada pestaña, en el mismo orden.
+const List<String> kNavigationRouteNames = <String>[
+  kHomeRouteName,
+  kLearnRouteName,
+  kChordsRouteName,
+  kGameRouteName,
+  kLiveRouteName,
+  kSettingsRouteName,
+];

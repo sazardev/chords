@@ -1,3 +1,5 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/chord_analytics_events.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
@@ -80,6 +82,16 @@ class ChordDetailController extends ChangeNotifier {
       } else {
         _chord = chord;
         _selectedIndex = 0;
+        appLogger.debug(
+          'detalle abierto: ${chord.id} (${chord.variantCount} posiciones)',
+          channel: LogChannel.chords,
+        );
+        analytics.chordViewed(
+          chordId: chord.id,
+          chordName: chord.name,
+          quality: chord.quality.id,
+          difficulty: chord.difficulty.level,
+        );
       }
     } on Object catch (error, stackTrace) {
       appLogger.error(
@@ -112,6 +124,7 @@ class ChordDetailController extends ChangeNotifier {
       return;
     }
     await _audioRepository.playChord(chord, variant);
+    analytics.chordPlayed(chordId: chord.id, variantId: variant.id);
   }
 
   /// Reproduce la posición seleccionada como arpegio.
@@ -122,6 +135,12 @@ class ChordDetailController extends ChangeNotifier {
       return;
     }
     await _audioRepository.playArpeggio(chord, variant, pattern);
+    analytics.chordPlayed(
+      chordId: chord.id,
+      variantId: variant.id,
+      arpeggio: true,
+      patternId: pattern.id,
+    );
   }
 
   /// Marca o desmarca el acorde como dominado.
@@ -135,6 +154,19 @@ class ChordDetailController extends ChangeNotifier {
       updated.remove(chord.id);
     }
     await _preferences.setMasteredChordIds(updated);
+    final bool mastered = updated.contains(chord.id);
+    appLogger.info(
+      mastered
+          ? 'acorde dominado: ${chord.id}'
+          : 'acorde desmarcado: ${chord.id}',
+      channel: LogChannel.learn,
+      context: <String, Object?>{'total': updated.length},
+    );
+    analytics.chordMasteryChanged(
+      chordId: chord.id,
+      mastered: mastered,
+      totalMastered: updated.length,
+    );
     notifyListeners();
   }
 }

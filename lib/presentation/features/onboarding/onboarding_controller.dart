@@ -1,3 +1,6 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/settings_analytics_events.dart';
+import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -41,6 +44,8 @@ class OnboardingController extends ChangeNotifier {
   Future<void> complete() async {
     await _preferences.setOnboardingCompleted();
     _status = OnboardingStatus.done;
+    appLogger.info('onboarding completado');
+    analytics.onboardingCompleted();
     notifyListeners();
   }
 
@@ -54,6 +59,8 @@ class OnboardingController extends ChangeNotifier {
   Future<void> reset() async {
     await _preferences.resetOnboarding();
     _status = OnboardingStatus.pending;
+    appLogger.info('onboarding reiniciado');
+    analytics.onboardingReset();
     notifyListeners();
   }
 }

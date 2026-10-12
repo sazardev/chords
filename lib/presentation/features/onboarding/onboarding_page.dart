@@ -1,5 +1,7 @@
 import 'dart:async' show unawaited;
 
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/settings_analytics_events.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +81,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 itemCount: slides.length,
                 onPageChanged: (int value) {
                   setState(() => _index = value);
+                  analytics.onboardingStep(step: value + 1);
                 },
                 itemBuilder: (BuildContext context, int index) =>
                     _SlideView(slide: slides[index], theme: theme),

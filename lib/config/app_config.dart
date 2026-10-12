@@ -9,6 +9,7 @@ class AppConfig {
     required this.showFlavorBanner,
     required this.enableLiveMicrophone,
     required this.enableRouteLogs,
+    required this.enableAnalytics,
   });
 
   /// Configuración del flavor de desarrollo.
@@ -20,6 +21,7 @@ class AppConfig {
         showFlavorBanner: true,
         enableLiveMicrophone: true,
         enableRouteLogs: true,
+        enableAnalytics: false,
       );
 
   /// Configuración del flavor de staging.
@@ -31,6 +33,7 @@ class AppConfig {
         showFlavorBanner: true,
         enableLiveMicrophone: true,
         enableRouteLogs: true,
+        enableAnalytics: true,
       );
 
   /// Configuración del flavor de producción.
@@ -42,6 +45,7 @@ class AppConfig {
         showFlavorBanner: false,
         enableLiveMicrophone: true,
         enableRouteLogs: false,
+        enableAnalytics: true,
       );
 
   /// Resuelve la configuración desde la variable de entorno `FLAVOR`.
@@ -72,6 +76,9 @@ class AppConfig {
 
   /// Si se registran diagnósticos de navegación.
   final bool enableRouteLogs;
+
+  /// Si se envían analíticas y errores al proveedor remoto (Firebase).
+  final bool enableAnalytics;
 
   /// Si el favor es de producción.
   bool get isProduction => flavor == Flavor.prod;

@@ -1,3 +1,5 @@
+import 'package:chords/config/route_paths.dart';
+import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +51,7 @@ class AdaptiveNavigationShell extends StatelessWidget {
 
   void _onDestinationSelected(int index) {
     shell.goBranch(index, initialLocation: index == shell.currentIndex);
+    analytics.screen(kNavigationRouteNames[index]);
   }
 
   @override

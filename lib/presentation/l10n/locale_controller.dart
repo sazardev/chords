@@ -1,3 +1,6 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/settings_analytics_events.dart';
+import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/domain/l10n/entities/app_language.dart';
 import 'package:chords/domain/l10n/repositories/locale_repository.dart';
 import 'package:chords/presentation/l10n/language_applier.dart';
@@ -39,6 +42,8 @@ class LocaleController extends ChangeNotifier {
     _language = language;
     await _repository.saveLanguage(language);
     _applier.apply(language);
+    appLogger.debug('idioma: ${language.name}');
+    analytics.settingChanged(setting: 'language', value: language.name);
     notifyListeners();
   }
 

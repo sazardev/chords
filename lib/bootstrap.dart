@@ -3,11 +3,15 @@ import 'dart:async' show unawaited;
 import 'package:chords/app/app.dart';
 import 'package:chords/config/app_config.dart';
 import 'package:chords/config/flavor.dart';
+import 'package:chords/core/analytics/analytics.dart';
+import 'package:chords/core/analytics/analytics_log_sink.dart';
 import 'package:chords/core/logging/app_log_level.dart';
 import 'package:chords/core/logging/app_logger.dart';
 import 'package:chords/core/logging/log_channel.dart';
+import 'package:chords/core/logging/log_sink.dart';
 import 'package:chords/core/logging/runtime/app_error_zone.dart';
 import 'package:chords/core/logging/runtime/logging_bootstrap.dart';
+import 'package:chords/data/analytics/analytics_bootstrap.dart';
 import 'package:chords/data/audio/audio_repository_impl.dart';
 import 'package:chords/data/chords/repositories/chord_repository_impl.dart';
 import 'package:chords/data/l10n/locale_repository_impl.dart';
@@ -40,11 +44,17 @@ import 'package:provider/single_child_widget.dart';
 /// la app bajo una zona protegida de errores y deja rastro de todo el proceso.
 Future<void> bootstrap(AppConfig config) async {
   WidgetsFlutterBinding.ensureInitialized();
+  final AnalyticsBootstrapResult analyticsResult = await bootstrapAnalytics(
+    config: config,
+  );
+  configureAnalytics(analyticsResult.service);
   final AppLogger logger = bootstrapLogging(
     minLevel: _minLevelFor(config.flavor),
     appName: config.appName,
     inAppDiagnostics: config.enableRouteLogs,
+    extraSinks: <LogSink>[AnalyticsLogSink(analyticsResult.service)],
   );
+  _reportAnalytics(logger, config, analyticsResult);
   final AppDependencies dependencies = await logger.track(
     AppDependencies.create,
     name: 'composición de dependencias',
@@ -111,6 +121,32 @@ AppLogLevel _minLevelFor(Flavor flavor) => switch (flavor) {
   Flavor.staging => AppLogLevel.info,
   Flavor.prod => AppLogLevel.warning,
 };
+
+/// Deja rastro del arranque de analíticas y avisa si no están disponibles.
+void _reportAnalytics(
+  AppLogger logger,
+  AppConfig config,
+  AnalyticsBootstrapResult result,
+) {
+  result.service.appOpened(flavor: config.flavor.name);
+  if (result.problem != null) {
+    logger.warning(
+      'analíticas no disponibles: se usa backend silencioso',
+      channel: LogChannel.boot,
+      error: result.problem,
+      stackTrace: result.stackTrace,
+      context: <String, Object?>{'flavor': config.flavor.name},
+    );
+    return;
+  }
+  logger.info(
+    result.active
+        ? 'analíticas Firebase activas'
+        : 'analíticas desactivadas en este flavor',
+    channel: LogChannel.boot,
+    context: <String, Object?>{'flavor': config.flavor.name},
+  );
+}
 
 /// Composición de dependencias de la aplicación.
 ///

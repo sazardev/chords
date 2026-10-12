@@ -1,3 +1,5 @@
+import 'package:chords/core/analytics/analytics.dart' show analytics;
+import 'package:chords/core/analytics/chord_analytics_events.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
@@ -95,6 +97,10 @@ class LearnController extends ChangeNotifier {
       }
       _mastered = _preferences.masteredChordIds;
       _status = LearnStatus.ready;
+      appLogger.debug(
+        'itinerario listo: ${_mastered.length} acordes dominados',
+        channel: LogChannel.learn,
+      );
     } on Object catch (error, stackTrace) {
       appLogger.error(
         'no se pudo cargar el itinerario de aprendizaje',
@@ -110,11 +116,22 @@ class LearnController extends ChangeNotifier {
   /// Marca un acorde como dominado (o lo desmarca).
   Future<void> toggleMastered(String chordId) async {
     final Set<String> updated = <String>{..._mastered};
-    if (!updated.add(chordId)) {
+    final bool mastered = updated.add(chordId);
+    if (!mastered) {
       updated.remove(chordId);
     }
     _mastered = updated;
     await _preferences.setMasteredChordIds(updated);
+    appLogger.info(
+      mastered ? 'acorde dominado: $chordId' : 'acorde desmarcado: $chordId',
+      channel: LogChannel.learn,
+      context: <String, Object?>{'total': updated.length},
+    );
+    analytics.chordMasteryChanged(
+      chordId: chordId,
+      mastered: mastered,
+      totalMastered: updated.length,
+    );
     notifyListeners();
   }
 }
