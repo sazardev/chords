@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
@@ -61,6 +63,14 @@ class _Suggestions extends StatelessWidget {
 
   final List<Chord> chords;
 
+  /// Detiene la escucha y abre la ficha del acorde sugerido.
+  void _openChord(BuildContext context, Chord chord) {
+    unawaited(context.read<LiveController>().stopIfListening());
+    unawaited(
+      context.push('$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
@@ -74,12 +84,8 @@ class _Suggestions extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: ChordCard(
               chord: chord,
-              onTap: () => context.go(
-                '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
-              ),
-              onPlay: () => context.go(
-                '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
-              ),
+              onTap: () => _openChord(context, chord),
+              onPlay: () => _openChord(context, chord),
             ),
           ),
       ],

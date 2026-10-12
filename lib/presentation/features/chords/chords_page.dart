@@ -29,15 +29,16 @@ class ChordsPage extends StatefulWidget {
 }
 
 class _ChordsPageState extends State<ChordsPage> {
-  bool _paramsApplied = false;
+  String? _appliedQuery;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_paramsApplied) {
+    final String query = GoRouterState.of(context).uri.query;
+    if (query == _appliedQuery) {
       return;
     }
-    _paramsApplied = true;
+    _appliedQuery = query;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _applyQueryParams();
@@ -142,9 +143,9 @@ class _ChordsPageState extends State<ChordsPage> {
         chords: controller.visibleChords,
         mirror: mirror,
         onSelect: (String id) =>
-            context.go('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
+            context.push('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
         onPlay: (String id) =>
-            context.go('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
+            context.push('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
       ),
     };
   }

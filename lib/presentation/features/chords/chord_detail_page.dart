@@ -1,6 +1,7 @@
 import 'dart:async' show unawaited;
 
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
+import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
@@ -28,24 +29,32 @@ class ChordDetailPage extends StatefulWidget {
 }
 
 class _ChordDetailPageState extends State<ChordDetailPage> {
-  bool _loadRequested = false;
+  String? _loadedId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_loadRequested) {
-      return;
-    }
-    _loadRequested = true;
     final String? id = GoRouterState.of(context).uri.queryParameters['id'];
-    if (id == null || id.isEmpty) {
+    if (id == null || id.isEmpty || id == _loadedId) {
       return;
     }
+    _loadedId = id;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        unawaited(context.read<ChordDetailController>().load(id));
+        unawaited(_load(id));
       }
     });
+  }
+
+  /// Carga el acorde y lo reproduce automáticamente al entrar en la ficha.
+  Future<void> _load(String id) async {
+    final ChordDetailController controller = context
+        .read<ChordDetailController>();
+    await controller.load(id);
+    if (!mounted || controller.chord?.id != id) {
+      return;
+    }
+    await controller.playSelected();
   }
 
   @override
@@ -99,33 +108,35 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
   }
 
   /// Selecciona el contenido según el estado del controlador.
+  ///
+  /// Mientras el acorde cargado no coincida con el de la ruta, se muestra la
+  /// carga: evita ver la ficha del acorde anterior al navegar entre fichas.
   Widget _resolveBody(ChordDetailController controller, bool mirror) {
     final Translations t = context.t;
-    if (controller.loading) {
-      return AppLoading(message: t.chordDetail.loading);
-    }
-    final ChordDetailProblem? problem = controller.problem;
-    if (problem != null) {
-      final String? chordId = GoRouterState.of(context)
-          .uri
-          .queryParameters['id'];
-      return AppEmptyState(
-        icon: Icons.music_off_rounded,
-        title: t.chordDetail.errorTitle,
-        message: switch (problem) {
-          ChordDetailProblem.notFound => t.chordDetail.notFoundMessage(
-            chordId: chordId ?? '',
-          ),
-          ChordDetailProblem.failed => t.chordDetail.loadFailed,
-        },
-      );
-    }
-    if (controller.chord == null) {
+    final String? chordId = GoRouterState.of(context).uri.queryParameters['id'];
+    if (chordId == null || chordId.isEmpty) {
       return AppEmptyState(
         icon: Icons.music_off_rounded,
         title: t.chordDetail.noChordTitle,
         message: t.chordDetail.noChordMessage,
       );
+    }
+    final ChordDetailProblem? problem = controller.problem;
+    if (problem != null) {
+      return AppEmptyState(
+        icon: Icons.music_off_rounded,
+        title: t.chordDetail.errorTitle,
+        message: switch (problem) {
+          ChordDetailProblem.notFound => t.chordDetail.notFoundMessage(
+            chordId: chordId,
+          ),
+          ChordDetailProblem.failed => t.chordDetail.loadFailed,
+        },
+      );
+    }
+    final Chord? chord = controller.chord;
+    if (controller.loading || chord == null || chord.id != chordId) {
+      return AppLoading(message: t.chordDetail.loading);
     }
     return _chordBody(controller, mirror);
   }

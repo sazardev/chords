@@ -69,6 +69,9 @@ class AudioRepositoryImpl implements AudioRepository {
 
   @override
   Future<MicStatus> requestAccess() async {
+    if (_micSubscription != null) {
+      return MicStatus.listening;
+    }
     try {
       final Stream<Uint8List> stream = await _mic.start(
         sampleRate: _sampleRate,
@@ -82,7 +85,7 @@ class AudioRepositoryImpl implements AudioRepository {
       );
       analytics.micPermission(granted: true);
       return MicStatus.listening;
-    } on Exception catch (error, stackTrace) {
+    } on Object catch (error, stackTrace) {
       appLogger.warning(
         'micrófono: acceso denegado o fallo al iniciar',
         channel: LogChannel.microphone,
@@ -104,7 +107,16 @@ class AudioRepositoryImpl implements AudioRepository {
   Future<void> stopListening() async {
     await _micSubscription?.cancel();
     _micSubscription = null;
-    await _mic.stop();
+    try {
+      await _mic.stop();
+    } on Object catch (error, stackTrace) {
+      appLogger.warning(
+        'micrófono: fallo al detener la captura',
+        channel: LogChannel.microphone,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
     _window.clear();
     _statusController.add(MicStatus.idle);
     appLogger.info(
@@ -149,7 +161,7 @@ class AudioRepositoryImpl implements AudioRepository {
   @override
   Future<void> dispose() async {
     await _micSubscription?.cancel();
-    await _microphone?.stop();
+    await _microphone?.dispose();
     await _statusController.close();
     await _readingsController.close();
     if (_engineReady) {

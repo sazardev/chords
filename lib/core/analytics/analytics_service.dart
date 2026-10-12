@@ -13,6 +13,7 @@ class AnalyticsService {
 
   final AnalyticsBackend _backend;
   String? _screen;
+  String? _returnScreen;
 
   /// Última pantalla registrada, si la hay.
   String? get currentScreen => _screen;
@@ -37,8 +38,23 @@ class AnalyticsService {
     if (name == _screen) {
       return;
     }
+    _returnScreen = _screen;
     _backend.logScreen(name, previous: from ?? _screen);
     _screen = name;
+  }
+
+  /// Restaura la pantalla anterior tras cerrar una ruta superpuesta.
+  ///
+  /// La usan los pops cuyo destino no tiene nombre propio (rutas raíz sobre
+  /// las pestañas): vuelve a la pantalla desde la que se abrió la ruta.
+  void screenPopped() {
+    final String? target = _returnScreen;
+    _returnScreen = null;
+    if (target == null || target == _screen) {
+      return;
+    }
+    _backend.logScreen(target, previous: _screen);
+    _screen = target;
   }
 
   /// Fija una propiedad de usuario; `null` la elimina.

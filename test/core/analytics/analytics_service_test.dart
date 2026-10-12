@@ -38,6 +38,17 @@ void main() {
       expect(service.currentScreen, 'chord-detail');
     });
 
+    test('screenPopped restaura la pantalla anterior', () {
+      service
+        ..screen('learn')
+        ..screen('chord-detail')
+        ..screenPopped();
+
+      expect(service.currentScreen, 'learn');
+      expect(backend.screens, <String>['learn', 'chord-detail', 'learn']);
+      expect(backend.previousScreens.last, 'chord-detail');
+    });
+
     test('recordError deriva al backend, marca fatal y cuenta el evento', () {
       service.recordError(
         StateError('fallo'),

@@ -39,7 +39,12 @@ class LoggingNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     _log('pop', route, previousRoute);
-    _screen(previousRoute?.settings.name);
+    final String? name = previousRoute?.settings.name;
+    if (name != null) {
+      analytics.screen(name);
+    } else {
+      analytics.screenPopped();
+    }
   }
 
   @override

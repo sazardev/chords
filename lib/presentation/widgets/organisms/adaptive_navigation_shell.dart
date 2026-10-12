@@ -1,20 +1,54 @@
+import 'dart:async' show unawaited;
+
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 /// Organismo de navegación adaptable: barra inferior o riel lateral.
 ///
 /// En anchos compactos usa `NavigationBar` (móvil/Android) y a partir de
-/// ancho medio un `NavigationRail` (tablets/Linux/escritorio).
-class AdaptiveNavigationShell extends StatelessWidget {
+/// ancho medio un `NavigationRail` (tablets/Linux/escritorio). Al cambiar de
+/// pestaña detiene la escucha en vivo si quedaba activa.
+class AdaptiveNavigationShell extends StatefulWidget {
   /// Crea el armazón de navegación.
   const AdaptiveNavigationShell({required this.shell, super.key});
 
   /// Shell de rutas con estado.
   final StatefulNavigationShell shell;
+
+  @override
+  State<AdaptiveNavigationShell> createState() =>
+      _AdaptiveNavigationShellState();
+}
+
+class _AdaptiveNavigationShellState extends State<AdaptiveNavigationShell> {
+  @override
+  void didUpdateWidget(covariant AdaptiveNavigationShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.shell.currentIndex != widget.shell.currentIndex) {
+      _stopLiveIfLeaving(widget.shell.currentIndex);
+    }
+  }
+
+  void _stopLiveIfLeaving(int index) {
+    if (kNavigationDestinations[index] == kLivePath) {
+      return;
+    }
+    unawaited(context.read<LiveController>().stopIfListening());
+  }
+
+  void _onDestinationSelected(int index) {
+    widget.shell.goBranch(
+      index,
+      initialLocation: index == widget.shell.currentIndex,
+    );
+    analytics.screen(kNavigationRouteNames[index]);
+  }
 
   List<_Destination> _destinations(Translations t) => <_Destination>[
     _Destination(
@@ -49,11 +83,6 @@ class AdaptiveNavigationShell extends StatelessWidget {
     ),
   ];
 
-  void _onDestinationSelected(int index) {
-    shell.goBranch(index, initialLocation: index == shell.currentIndex);
-    analytics.screen(kNavigationRouteNames[index]);
-  }
-
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
@@ -64,7 +93,7 @@ class AdaptiveNavigationShell extends StatelessWidget {
         body: Row(
           children: <Widget>[
             NavigationRail(
-              selectedIndex: shell.currentIndex,
+              selectedIndex: widget.shell.currentIndex,
               onDestinationSelected: _onDestinationSelected,
               labelType: width >= 840
                   ? NavigationRailLabelType.none
@@ -80,15 +109,15 @@ class AdaptiveNavigationShell extends StatelessWidget {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: shell),
+            Expanded(child: widget.shell),
           ],
         ),
       );
     }
     return Scaffold(
-      body: shell,
+      body: widget.shell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: shell.currentIndex,
+        selectedIndex: widget.shell.currentIndex,
         onDestinationSelected: _onDestinationSelected,
         animationDuration: kMotionMedium,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,

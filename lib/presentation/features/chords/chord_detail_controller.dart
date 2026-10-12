@@ -123,7 +123,17 @@ class ChordDetailController extends ChangeNotifier {
     if (chord == null || variant == null || !_preferences.soundEnabled) {
       return;
     }
-    await _audioRepository.playChord(chord, variant);
+    try {
+      await _audioRepository.playChord(chord, variant);
+    } on Object catch (error, stackTrace) {
+      appLogger.warning(
+        'no se pudo reproducir ${chord.id}',
+        channel: LogChannel.audio,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return;
+    }
     analytics.chordPlayed(chordId: chord.id, variantId: variant.id);
   }
 
@@ -134,7 +144,17 @@ class ChordDetailController extends ChangeNotifier {
     if (chord == null || variant == null || !_preferences.soundEnabled) {
       return;
     }
-    await _audioRepository.playArpeggio(chord, variant, pattern);
+    try {
+      await _audioRepository.playArpeggio(chord, variant, pattern);
+    } on Object catch (error, stackTrace) {
+      appLogger.warning(
+        'no se pudo reproducir el arpegio de ${chord.id}',
+        channel: LogChannel.audio,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return;
+    }
     analytics.chordPlayed(
       chordId: chord.id,
       variantId: variant.id,

@@ -27,6 +27,7 @@ import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
 import 'package:chords/presentation/widgets/molecules/chord_card.dart';
+import 'package:chords/presentation/widgets/molecules/chord_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -43,6 +44,7 @@ void main() {
     // idioma base de la app, para que los textos sean deterministas.
     SharedPreferences.setMockInitialValues(<String, Object>{
       PreferencesService.kLanguageKey: 'spanish',
+      PreferencesService.kSoundKey: false,
     });
     final PreferencesService preferences = await PreferencesService.create();
     final LocaleController localeController = LocaleController(
@@ -138,6 +140,34 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Posiciones'), findsOneWidget);
     expect(find.text(chord.name), findsWidgets);
+
+    // Volver del detalle regresa al listado (ruta raíz, no pestaña).
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(GridView), findsOneWidget);
+
+    // Abrir otro acorde muestra el nuevo, no el anterior.
+    final Chord second = tester
+        .widget<ChordCard>(find.byType(ChordCard).at(1))
+        .chord;
+    await tester.tap(find.byType(ChordCard).at(1));
+    await tester.pumpAndSettle();
+    expect(find.text(second.name), findsWidgets);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
+    // Desde Aprender, la ficha se abre encima y volver regresa a Aprender.
+    routerOf(tester).go(kLearnPath);
+    await tester.pumpAndSettle();
+    final Chord learnChord = tester
+        .widget<ChordTile>(find.byType(ChordTile).first)
+        .chord;
+    await tester.tap(find.byType(ChordTile).first);
+    await tester.pumpAndSettle();
+    expect(find.text(learnChord.name), findsWidgets);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.text('Aprender'), findsWidgets);
 
     // Página en vivo sin micrófono activo.
     routerOf(tester).go(kLivePath);

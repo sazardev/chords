@@ -61,6 +61,16 @@ class LiveController extends ChangeNotifier {
     }
   }
 
+  /// Detiene la escucha solo si está activa.
+  ///
+  /// La usa la navegación al abandonar la pantalla en vivo para no dejar el
+  /// micrófono abierto.
+  Future<void> stopIfListening() async {
+    if (_status == MicStatus.listening) {
+      await stop();
+    }
+  }
+
   /// Inicia la escucha del micrófono.
   Future<void> start() async {
     _detected.clear();

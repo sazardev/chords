@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
@@ -185,10 +187,10 @@ class _LevelSection extends StatelessWidget {
           ChordTile(
             chord: chord,
             mastered: controller.mastered.contains(chord.id),
-            onTap: () => context.go(
+            onTap: () => context.push(
               '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
             ),
-            onPlay: () => context.go(
+            onPlay: () => context.push(
               '$kChordDetailPath?id=${Uri.encodeComponent(chord.id)}',
             ),
             onToggleMastered: () => controller.toggleMastered(chord.id),
@@ -232,6 +234,8 @@ class _ArpeggioRow extends StatelessWidget {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(t.learn.arpeggioHint(label: label))));
-    context.go('$kChordDetailPath?id=${Uri.encodeComponent(target)}');
+    unawaited(
+      context.push('$kChordDetailPath?id=${Uri.encodeComponent(target)}'),
+    );
   }
 }

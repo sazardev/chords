@@ -19,18 +19,23 @@ import 'package:go_router/go_router.dart';
 /// Construye el enrutador de la aplicación.
 ///
 /// Incluye deep links (`chords://` y `https://chords.app/`), rutas
-/// jerárquicas y parámetros de consulta en `/chords` y `/chords/detail`.
+/// jerárquicas y parámetros de consulta en `/chords` y `/chords/detail`. El
+/// detalle de acorde vive en la raíz (fuera de las pestañas) para que se abra
+/// sobre cualquier pantalla y volver atrás regrese exactamente de donde se
+/// vino.
 class AppRouter {
   /// Crea el enrutador para la configuración indicada.
   AppRouter({required this._config});
 
   final AppConfig _config;
+  final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
 
   /// Enrutador listo para `MaterialApp.router`.
   late final GoRouter router = _build();
 
   GoRouter _build() => GoRouter(
     initialLocation: kHomePath,
+    navigatorKey: _rootKey,
     debugLogDiagnostics: _config.enableRouteLogs,
     observers: <NavigatorObserver>[LoggingNavigatorObserver()],
     errorBuilder: _errorBuilder,
@@ -50,6 +55,7 @@ class AppRouter {
           _settingsBranch(),
         ],
       ),
+      _chordDetailRoute(),
     ],
   );
 
@@ -64,7 +70,6 @@ class AppRouter {
   StatefulShellBranch _chordsBranch() => StatefulShellBranch(
     routes: <RouteBase>[
       _route(kChordsPath, kChordsRouteName, const ChordsPage()),
-      _route(kChordDetailPath, kChordDetailRouteName, const ChordDetailPage()),
     ],
   );
 
@@ -81,6 +86,14 @@ class AppRouter {
       _route(kSettingsPath, kSettingsRouteName, const SettingsPage()),
       _route(kLogsPath, kLogsRouteName, const LogsPage()),
     ],
+  );
+
+  GoRoute _chordDetailRoute() => GoRoute(
+    path: kChordDetailPath,
+    name: kChordDetailRouteName,
+    parentNavigatorKey: _rootKey,
+    builder: (BuildContext context, GoRouterState state) =>
+        const ChordDetailPage(),
   );
 
   GoRoute _route(String path, String name, Widget page) => GoRoute(
