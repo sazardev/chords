@@ -45,8 +45,10 @@ diseño atómico y Material 3 Expressive.
   cada ronda tras una cuenta atrás; no hay botones de "estoy listo". La app
   espera a que la nota anterior se apague antes de aceptar una orden y se
   silencia mientras suena su propia referencia. En *Jugar* se puede recorrer el
-  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir) activando
-  el interruptor, y todo se puede desactivar en Ajustes (los botones siguen).
+  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir · Si salir)
+  activando el interruptor: un panel compacto dice qué juego está elegido
+  (centrado en la lista), se cierra con la cuerda Si o con su botón, y todo se
+  puede desactivar en Ajustes (los botones siguen).
 - **El móvil no se oye a sí mismo**: todo lo que la app reproduce (acordes,
   arpegios, notas de referencia y melodías de los retos) pasa por una puerta
   de eco que descarta el audio del micrófono mientras suena el altavoz. Tras

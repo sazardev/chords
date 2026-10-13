@@ -1646,8 +1646,19 @@ class Translations$guitar$es {
   /// es: 'Navegar con la guitarra'
   String get hubTitle => 'Navegar con la guitarra';
 
-  /// es: 'Re: siguiente · La: anterior · Mi: abrir'
-  String get hubSubtitle => 'Re: siguiente · La: anterior · Mi: abrir';
+  /// es: 'Re: siguiente · La: anterior · Mi: abrir · Si: salir'
+  String get hubSubtitle =>
+      'Re: siguiente · La: anterior · Mi: abrir · Si: salir';
+
+  /// es: '$name · $n de $total'
+  String hubSelected({
+    required Object name,
+    required Object n,
+    required Object total,
+  }) => '${name} · ${n} de ${total}';
+
+  /// es: 'Salir del modo guitarra'
+  String get exitMode => 'Salir del modo guitarra';
 }
 
 // Path: settings.theme
@@ -3066,7 +3077,14 @@ extension on Translations {
           'guitar.setting' => 'Controlar con la guitarra',
           'guitar.settingSubtitle' => 'Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil',
           'guitar.hubTitle' => 'Navegar con la guitarra',
-          'guitar.hubSubtitle' => 'Re: siguiente · La: anterior · Mi: abrir',
+          'guitar.hubSubtitle' =>
+            'Re: siguiente · La: anterior · Mi: abrir · Si: salir',
+          'guitar.hubSelected' => ({
+            required Object name,
+            required Object n,
+            required Object total,
+          }) => '${name} · ${n} de ${total}',
+          'guitar.exitMode' => 'Salir del modo guitarra',
           _ => null,
         };
   }

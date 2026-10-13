@@ -22,8 +22,10 @@ import 'package:provider/provider.dart';
 /// Catálogo de juegos: oído, mástil y dedos, y tocar con el micrófono.
 ///
 /// Si la persona lo activa, se recorre tocando cuerdas al aire: Re pasa al
-/// juego siguiente, La al anterior y Mi abre el seleccionado, de modo que
-/// puede elegir qué practicar sin soltar la guitarra.
+/// juego siguiente, La al anterior, Mi abre el seleccionado y Si sale del
+/// modo, de modo que puede elegir qué practicar sin soltar la guitarra. El
+/// panel de abajo dice qué juego está elegido y también se puede cerrar con
+/// el botón de la esquina.
 class MiniGamesHubPage extends StatefulWidget {
   /// Crea el catálogo.
   const MiniGamesHubPage({super.key});
@@ -42,6 +44,7 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
   );
   late final GuitarMicKeeper _mic;
   int _focus = 0;
+  bool _wasOn = false;
 
   @override
   void initState() {
@@ -61,6 +64,10 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
     } else if (visible) {
       unawaited(_mic.open());
     }
+    if (on && !_wasOn) {
+      _reveal();
+    }
+    _wasOn = on;
   }
 
   @override
@@ -77,6 +84,16 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
 
   void _move(int step) {
     setState(() => _focus = (_focus + step + _count) % _count);
+    _reveal();
+  }
+
+  /// Sale del modo guitarra: la lista vuelve a usarse solo con el dedo.
+  void _close() => unawaited(
+    context.read<SettingsController>().setGuitarBrowse(value: false),
+  );
+
+  /// Lleva el elemento elegido al centro de la lista.
+  void _reveal() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final BuildContext? target = _keys[_focus].currentContext;
       if (target != null && target.mounted) {
@@ -84,7 +101,7 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
           Scrollable.ensureVisible(
             target,
             duration: const Duration(milliseconds: 300),
-            alignment: 0.3,
+            alignment: 0.5,
           ),
         );
       }
@@ -111,7 +128,22 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
       icon: Icons.arrow_downward_rounded,
       onTrigger: () => _move(1),
     ),
+    GuitarAction(
+      command: GuitarCommand.exit,
+      label: t.guitar.leave,
+      icon: Icons.close_rounded,
+      onTrigger: _close,
+    ),
   ];
+
+  /// Nombre del elemento elegido con su posición en el catálogo.
+  String _selected(Translations t) => t.guitar.hubSelected(
+    name: _focus == 0
+        ? t.minigames.chordGameTitle
+        : gameTitle(t, MiniGameKind.values[_focus - 1]),
+    n: _focus + 1,
+    total: _count,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -124,9 +156,15 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
       appBar: AppBar(title: Text(t.minigames.hubTitle)),
       bottomNavigationBar: on
           ? SafeArea(
+              top: false,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                child: GuitarCommandBar(actions: _actions(t)),
+                child: GuitarCommandBar(
+                  actions: _actions(t),
+                  headline: _selected(t),
+                  onClose: _close,
+                  compact: true,
+                ),
               ),
             )
           : null,

@@ -696,6 +696,8 @@
     "setting": "Controlar con la guitarra",
     "settingSubtitle": "Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil",
     "hubTitle": "Navegar con la guitarra",
-    "hubSubtitle": "Re: siguiente · La: anterior · Mi: abrir"
+    "hubSubtitle": "Re: siguiente · La: anterior · Mi: abrir · Si: salir",
+    "hubSelected": "$name · $n de $total",
+    "exitMode": "Salir del modo guitarra"
   }
 }

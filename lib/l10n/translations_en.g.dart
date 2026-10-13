@@ -1344,7 +1344,15 @@ class Translations$guitar$en extends Translations$guitar$es {
   @override
   String get hubTitle => 'Browse with your guitar';
   @override
-  String get hubSubtitle => 'D: next · A: previous · E: open';
+  String get hubSubtitle => 'D: next · A: previous · E: open · B: exit';
+  @override
+  String hubSelected({
+    required Object name,
+    required Object n,
+    required Object total,
+  }) => '${name} · ${n} of ${total}';
+  @override
+  String get exitMode => 'Exit guitar mode';
 }
 
 // Path: settings.theme
@@ -2680,7 +2688,13 @@ extension on TranslationsEn {
           'guitar.setting' => 'Control with your guitar',
           'guitar.settingSubtitle' => 'Play an open string to continue, retry or leave without touching your phone',
           'guitar.hubTitle' => 'Browse with your guitar',
-          'guitar.hubSubtitle' => 'D: next · A: previous · E: open',
+          'guitar.hubSubtitle' => 'D: next · A: previous · E: open · B: exit',
+          'guitar.hubSelected' => ({
+            required Object name,
+            required Object n,
+            required Object total,
+          }) => '${name} · ${n} of ${total}',
+          'guitar.exitMode' => 'Exit guitar mode',
           _ => null,
         };
   }

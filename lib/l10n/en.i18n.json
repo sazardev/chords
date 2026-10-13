@@ -696,6 +696,8 @@
     "setting": "Control with your guitar",
     "settingSubtitle": "Play an open string to continue, retry or leave without touching your phone",
     "hubTitle": "Browse with your guitar",
-    "hubSubtitle": "D: next · A: previous · E: open"
+    "hubSubtitle": "D: next · A: previous · E: open · B: exit",
+    "hubSelected": "$name · $n of $total",
+    "exitMode": "Exit guitar mode"
   }
 }
