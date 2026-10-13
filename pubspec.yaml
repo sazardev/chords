@@ -2,7 +2,7 @@ name: chords
 description: "Chords - Banco de acordes de guitarra con afinación en vivo"
 publish_to: 'none'
 
-version: 1.5.0+8
+version: 1.5.1+9
 
 environment:
   sdk: ^3.13.4
