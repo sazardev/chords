@@ -1,3 +1,4 @@
+import 'package:chords/data/local/guitar_preferences_store.dart';
 import 'package:chords/domain/preferences/entities/app_accent_color.dart';
 import 'package:chords/domain/preferences/entities/app_font_scale.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
@@ -12,7 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Servicio de preferencias locales de la app.
 ///
 /// Centraliza todas las claves para evitar duplicados.
-class PreferencesService implements PreferencesRepository {
+class PreferencesService
+    with GuitarPreferencesStore
+    implements PreferencesRepository {
   /// Crea el servicio.
   const PreferencesService(this._prefs);
 
@@ -23,6 +26,9 @@ class PreferencesService implements PreferencesRepository {
   }
 
   final SharedPreferences _prefs;
+
+  @override
+  SharedPreferences get store => _prefs;
 
   /// Clave del onboarding.
   static const String kOnboardingKey = 'onboarding_completed_v1';

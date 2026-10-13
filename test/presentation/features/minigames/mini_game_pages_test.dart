@@ -1,10 +1,7 @@
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/data/local/preferences_service.dart';
-import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
-import 'package:chords/domain/chords/entities/pitch_classes.dart';
 import 'package:chords/domain/minigames/entities/chord_round.dart';
-import 'package:chords/domain/minigames/entities/mic_challenge.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/usecases/build_minigame_use_cases.dart';
@@ -16,15 +13,13 @@ import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/widgets/organisms/fretboard_pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../fakes/chord_bank.dart';
 import '../../../fakes/fake_audio_repository.dart';
 import '../../../fakes/fake_chord_repository.dart';
 import '../../../fakes/mini_game_kit.dart';
+import '../../../fakes/mini_game_pump.dart';
 
 /// Tests de las pantallas de los minijuegos con controladores reales.
 void main() {
@@ -32,10 +27,12 @@ void main() {
   late FakeChordRepository bank;
   late PreferencesService preferences;
   late MiniGameKit kit;
+  late SettingsController settings;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     preferences = await PreferencesService.create();
+    settings = SettingsController(preferences);
     audio = FakeAudioRepository();
     bank = loadChordBank();
     kit = MiniGameKit(chords: bank, audio: audio, preferences: preferences);
@@ -45,53 +42,13 @@ void main() {
     WidgetTester tester, {
     String location = kGamePath,
     Size size = const Size(360, 640),
-  }) async {
-    tester.view.physicalSize = size;
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-    final GoRouter router = GoRouter(
-      initialLocation: location,
-      routes: <RouteBase>[
-        GoRoute(
-          path: kGamePath,
-          builder: (BuildContext context, GoRouterState state) =>
-              const MiniGamesHubPage(),
-        ),
-        GoRoute(
-          path: kMiniGamePath,
-          builder: (BuildContext context, GoRouterState state) =>
-              MiniGamePage(gameId: state.uri.queryParameters['kind']),
-        ),
-        GoRoute(
-          path: kChordPracticePath,
-          builder: (BuildContext context, GoRouterState state) =>
-              Text('práctica ${state.uri.queryParameters['id']}'),
-        ),
-      ],
-    );
-    await tester.pumpWidget(
-      TranslationProvider(
-        child: MultiProvider(
-          providers: <SingleChildWidget>[
-            ChangeNotifierProvider<SettingsController>.value(
-              value: SettingsController(preferences),
-            ),
-            ...kit.providers,
-          ],
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-  }
-
-  Future<void> tapText(WidgetTester tester, String text) async {
-    final Finder finder = find.text(text);
-    await tester.scrollUntilVisible(finder, 200);
-    await tester.pumpAndSettle();
-    await tester.tap(finder);
-    await tester.pumpAndSettle();
-  }
+  }) => pumpMiniGameApp(
+    tester,
+    kit: kit,
+    settings: settings,
+    location: location,
+    size: size,
+  );
 
   group('catálogo', () {
     testWidgets('muestra los 17 juegos y el progreso en estrellas', (
@@ -119,6 +76,69 @@ void main() {
       await tapText(tester, 'Intervalos');
       expect(find.text('Cómo se juega'), findsOne);
       expect(find.text('Empezar'), findsOne);
+    });
+
+    testWidgets('con la guitarra se recorre el catálogo y se abre un juego', (
+      WidgetTester tester,
+    ) async {
+      DateTime now = DateTime(2026);
+      kit = MiniGameKit(
+        chords: bank,
+        audio: audio,
+        preferences: preferences,
+        clock: () => now,
+      );
+      await settings.setGuitarBrowse(value: true);
+      await pumpApp(tester);
+      expect(find.text('Abrir'), findsOne);
+      expect(find.text('Anterior'), findsOne);
+      expect(audio.requests, greaterThan(0));
+
+      Future<void> pluck(String note) async {
+        now = now.add(const Duration(seconds: 2));
+        await tester.pump(const Duration(milliseconds: 200));
+        for (int i = 0; i < 3; i++) {
+          audio.emitReading(note);
+          await tester.pump(const Duration(milliseconds: 20));
+        }
+        await tester.pumpAndSettle();
+      }
+
+      // Re pasa al juego siguiente (el primero de los minijuegos) y Mi lo abre.
+      await pluck('D3');
+      await pluck('E2');
+      expect(find.text('Adivina la nota'), findsWidgets);
+      expect(find.text('Cómo se juega'), findsOne);
+    });
+
+    testWidgets('con la guitarra, Mi abre primero la serie de acordes', (
+      WidgetTester tester,
+    ) async {
+      DateTime now = DateTime(2026);
+      kit = MiniGameKit(
+        chords: bank,
+        audio: audio,
+        preferences: preferences,
+        clock: () => now,
+      );
+      await settings.setGuitarBrowse(value: true);
+      await pumpApp(tester);
+      now = now.add(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 200));
+      for (int i = 0; i < 3; i++) {
+        audio.emitReading('E2');
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+      await tester.pumpAndSettle();
+      expect(find.text('serie de acordes'), findsOne);
+    });
+
+    testWidgets('sin activar la guitarra el catálogo no usa el micrófono', (
+      WidgetTester tester,
+    ) async {
+      await pumpApp(tester);
+      expect(find.text('Abrir'), findsNothing);
+      expect(audio.requests, 0);
     });
 
     testWidgets('un juego desconocido muestra la pantalla de error', (
@@ -320,76 +340,6 @@ void main() {
       expect(find.text('Comprobar'), findsOne);
       expect(find.text('Saltar'), findsOne);
       expect(find.text('Ver pista'), findsNothing);
-    });
-  });
-
-  group('juegos con micrófono', () {
-    Future<void> emit(WidgetTester tester, int pitchClass, int times) async {
-      for (int i = 0; i < times; i++) {
-        audio.emitReading(noteNameOfPitchClass(pitchClass));
-        await tester.pump(const Duration(milliseconds: 20));
-      }
-    }
-
-    MicChallenge challenge() => kit.mic.state.challenge!;
-
-    testWidgets('tocar la nota pedida supera el reto', (
-      WidgetTester tester,
-    ) async {
-      await pumpApp(
-        tester,
-        location: '$kMiniGamePath?kind=playNote',
-        size: const Size(320, 480),
-      );
-      await tapText(tester, 'Empezar');
-      expect(find.text('Ronda 1 de 6'), findsOne);
-      expect(find.text('Estoy listo'), findsOne);
-      expect(find.textContaining('Pista:'), findsOne);
-      await tapText(tester, 'Estoy listo');
-      expect(find.text('Toca ahora…'), findsOne);
-      await emit(tester, challenge().pitchClasses.single, 2);
-      await tester.pumpAndSettle();
-      expect(find.text('¡Bien tocado!'), findsOne);
-      expect(tester.takeException(), isNull);
-      await tester.pumpAndSettle();
-    });
-
-    testWidgets('si pasa el tiempo sin acertar se acaba el reto', (
-      WidgetTester tester,
-    ) async {
-      await pumpApp(tester, location: '$kMiniGamePath?kind=playStringFret');
-      await tapText(tester, 'Empezar');
-      await tapText(tester, 'Estoy listo');
-      await tester.pump(const Duration(seconds: 30));
-      await tester.pumpAndSettle();
-      expect(find.text('Se acabó el tiempo'), findsOne);
-      expect(kit.mic.state.score.correct, 0);
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('sin permiso se avisa y se puede reintentar', (
-      WidgetTester tester,
-    ) async {
-      audio.accessResult = MicStatus.permissionDenied;
-      await pumpApp(tester, location: '$kMiniGamePath?kind=echo');
-      await tapText(tester, 'Empezar');
-      await tapText(tester, 'Estoy listo');
-      expect(find.text('Toca ahora…'), findsNothing);
-      expect(find.byIcon(Icons.mic_off_rounded), findsOne);
-      await tester.scrollUntilVisible(find.text('Escuchar la melodía'), 200);
-      expect(find.text('Escuchar la melodía'), findsOne);
-    });
-
-    testWidgets('el eco muestra el avance nota a nota', (
-      WidgetTester tester,
-    ) async {
-      await pumpApp(tester, location: '$kMiniGamePath?kind=echo');
-      await tapText(tester, 'Empezar');
-      await tapText(tester, 'Estoy listo');
-      final List<int> notes = challenge().pitchClasses;
-      await emit(tester, notes.first, 2);
-      expect(find.text('1 de ${notes.length} notas'), findsOne);
-      expect(find.textContaining('Oigo:'), findsOne);
     });
   });
 }

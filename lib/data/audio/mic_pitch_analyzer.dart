@@ -7,6 +7,7 @@ import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/audio/pcm_decoder.dart';
 import 'package:chords/data/audio/yin_pitch_detector.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
+import 'package:chords/domain/audio/services/playback_echo_gate.dart';
 
 /// Convierte el flujo PCM del micrófono en lecturas de tono y nivel.
 ///
@@ -14,6 +15,10 @@ import 'package:chords/domain/audio/entities/pitch_reading.dart';
 /// publica el nivel de entrada aunque no haya tono, para que la interfaz
 /// pueda decir "no te oigo" o "toca más fuerte". Por debajo del umbral de
 /// ruido no intenta detectar nada.
+///
+/// Si recibe una [PlaybackEchoGate], descarta el audio que el propio teléfono
+/// emite por el altavoz (publica nivel 0 en su lugar) y empieza de cero al
+/// reabrirse la puerta, para que ese sonido no se tome por la guitarra.
 class MicPitchAnalyzer {
   /// Crea el analizador para la frecuencia de muestreo indicada.
   MicPitchAnalyzer({
@@ -21,6 +26,7 @@ class MicPitchAnalyzer {
     this._detector = const PitchDetector(),
     this._decoder = const PcmDecoder(),
     this._clock = _systemClock,
+    this._echoGate,
   });
 
   /// Frecuencia de muestreo del audio entrante.
@@ -35,6 +41,7 @@ class MicPitchAnalyzer {
   final PitchDetector _detector;
   final PcmDecoder _decoder;
   final int Function() _clock;
+  final PlaybackEchoGate? _echoGate;
   final StreamController<PitchReading> _readings =
       StreamController<PitchReading>.broadcast();
   final StreamController<double> _levels = StreamController<double>.broadcast();
@@ -52,7 +59,12 @@ class MicPitchAnalyzer {
 
   /// Procesa un bloque de bytes PCM16 del micrófono.
   void addBytes(Uint8List bytes) {
-    _window.addAll(_decoder.decode(bytes));
+    final Float64List samples = _decoder.decode(bytes);
+    if (!(_echoGate?.admits(PitchDetector.rmsOf(samples)) ?? true)) {
+      _hold();
+      return;
+    }
+    _window.addAll(samples);
     final int windowSize = (sampleRate / 4).round();
     if (_window.length > windowSize * 2) {
       _window.removeRange(0, _window.length - windowSize);
@@ -64,6 +76,17 @@ class MicPitchAnalyzer {
     _lastAnalysis = now;
     final int size = math.min(windowSize, _window.length);
     _analyze(Float64List.fromList(_window.sublist(_window.length - size)));
+  }
+
+  /// Descarta el audio del altavoz: vacía la ventana y publica nivel 0.
+  void _hold() {
+    _window.clear();
+    final int now = _clock();
+    if (now - _lastAnalysis < _hopMs) {
+      return;
+    }
+    _lastAnalysis = now;
+    _levels.add(0);
   }
 
   /// Descarta el audio acumulado (al detener la captura).

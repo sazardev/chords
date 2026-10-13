@@ -13,6 +13,7 @@ import 'package:chords/data/audio/wav_encoder.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
+import 'package:chords/domain/audio/services/playback_echo_gate.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
@@ -21,14 +22,15 @@ import 'package:flutter_soloud/flutter_soloud.dart';
 /// Implementación del repositorio de audio.
 ///
 /// Reproduce acordes sintetizados con SoLoud y analiza el micrófono con el
-/// detector YIN sobre flujos PCM16.
+/// detector YIN sobre flujos PCM16. Todo lo que suena por el altavoz pasa por
+/// una [PlaybackEchoGate], de modo que el micrófono del teléfono no lo oiga.
 class AudioRepositoryImpl implements AudioRepository {
   /// Crea el repositorio con los colaboradores indicados.
   AudioRepositoryImpl({ChordAudioSynthesizer? synthesizer, WavEncoder? encoder})
     : _synthesizer = synthesizer ?? const ChordAudioSynthesizer(),
       _encoder = encoder ?? const WavEncoder() {
     _sampleRate = encoder?.sampleRate ?? 44100;
-    _analyzer = MicPitchAnalyzer(sampleRate: _sampleRate);
+    _analyzer = MicPitchAnalyzer(sampleRate: _sampleRate, echoGate: _echoGate);
   }
 
   MicrophoneStreamService? _microphone;
@@ -41,10 +43,11 @@ class AudioRepositoryImpl implements AudioRepository {
   final WavEncoder _encoder;
   late final int _sampleRate;
   late final MicPitchAnalyzer _analyzer;
+  final PlaybackEchoGate _echoGate = PlaybackEchoGate();
 
   final StreamController<MicStatus> _statusController =
       StreamController<MicStatus>.broadcast();
-  final Map<String, AudioSource> _sources = <String, AudioSource>{};
+  final Map<String, _Loaded> _sources = <String, _Loaded>{};
 
   /// Notas sueltas en caché, de la más antigua a la más reciente.
   final Queue<String> _toneKeys = Queue<String>();
@@ -128,7 +131,7 @@ class AudioRepositoryImpl implements AudioRepository {
   Future<void> playChord(Chord chord, ChordVariant variant) async {
     appLogger.debug('reproducir acorde ${chord.id}', channel: LogChannel.audio);
     await _ensureEngine();
-    final AudioSource source = await _loadCached(
+    final _Loaded source = await _loadCached(
       key: '${chord.id}:${variant.id}',
       samples: () => _synthesizer.synthesize(variant),
     );
@@ -146,7 +149,7 @@ class AudioRepositoryImpl implements AudioRepository {
       channel: LogChannel.audio,
     );
     await _ensureEngine();
-    final AudioSource source = await _loadCached(
+    final _Loaded source = await _loadCached(
       key: '${chord.id}:${variant.id}:arp-${pattern.id}',
       samples: () => _synthesizer.synthesizeArpeggio(
         variant,
@@ -165,7 +168,7 @@ class AudioRepositoryImpl implements AudioRepository {
     );
     await _ensureEngine();
     final String key = 'tone:${frequency.toStringAsFixed(1)}';
-    final AudioSource source = await _loadCached(
+    final _Loaded source = await _loadCached(
       key: key,
       samples: () => _synthesizer.synthesizeNote(frequency),
     );
@@ -205,30 +208,45 @@ class AudioRepositoryImpl implements AudioRepository {
       ..remove(key)
       ..addLast(key);
     while (_toneKeys.length > _maxToneSources) {
-      final AudioSource? stale = _sources.remove(_toneKeys.removeFirst());
+      final _Loaded? stale = _sources.remove(_toneKeys.removeFirst());
       if (stale != null) {
-        unawaited(SoLoud.instance.disposeSource(stale));
+        unawaited(SoLoud.instance.disposeSource(stale.source));
       }
     }
   }
 
-  Future<AudioSource> _loadCached({
+  Future<_Loaded> _loadCached({
     required String key,
     required Float64List Function() samples,
   }) async {
-    final AudioSource? cached = _sources[key];
+    final _Loaded? cached = _sources[key];
     if (cached != null) {
       return cached;
     }
-    final Uint8List wav = _encoder.encode(samples());
+    final Float64List data = samples();
+    final Uint8List wav = _encoder.encode(data);
     final AudioSource source = await SoLoud.instance.loadMem('$key.wav', wav);
-    _sources[key] = source;
-    return source;
+    final _Loaded loaded = _Loaded(
+      source,
+      PlaybackEchoGate.audibleLength(data, _sampleRate),
+    );
+    _sources[key] = loaded;
+    return loaded;
   }
 
-  void _play(AudioSource source) {
+  /// Reproduce [loaded] y avisa a la puerta de eco justo antes de que suene.
+  void _play(_Loaded loaded) {
     if (_engineReady) {
-      SoLoud.instance.play(source, volume: 0.9);
+      _echoGate.playbackStarted(loaded.audible);
+      SoLoud.instance.play(loaded.source, volume: 0.9);
     }
   }
+}
+
+/// Sonido cargado en memoria y lo que dura de forma audible.
+class _Loaded {
+  const _Loaded(this.source, this.audible);
+
+  final AudioSource source;
+  final Duration audible;
 }

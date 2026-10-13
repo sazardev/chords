@@ -92,7 +92,24 @@
     "positions": "Positions",
     "notes": "Notes: $notes",
     "arpeggioChip": "$label · Lv $level",
-    "practice": "Practice"
+    "practice": "Practice",
+    "guideTitle": "How to place it",
+    "guideLegend": "1 index · 2 middle · 3 ring · 4 pinky",
+    "guideFinger": "Fret $fret · string $string",
+    "guideBarre": "Barre at fret $fret · string $from to $to",
+    "guidePlay": "Play: $strings",
+    "guideOpen": "Open: $strings",
+    "guideMuted": "Don't play: $strings",
+    "guideOpenPosition": "Open position, next to the nut",
+    "guideRange": "Around frets $from to $to",
+    "guideSingleFret": "Around fret $fret",
+    "recommended": "Start here",
+    "fingerNames(map)": {
+      "f1": "Index",
+      "f2": "Middle",
+      "f3": "Ring",
+      "f4": "Pinky"
+    }
   },
   "game": {
     "title": "Play",
@@ -119,7 +136,10 @@
     "stringFourth": "4th",
     "stringFifth": "5th",
     "stringSixth": "6th",
-    "practiceChord": "Practice string by string"
+    "practiceChord": "Practice string by string",
+    "finishedTitle": "Series complete!",
+    "finishedMessage": "$won of $total chords · $score points",
+    "finishedBest": "Your best: $best points"
   },
   "chordDiagram": {
     "stringLabel": "string $number: $fret",
@@ -223,7 +243,7 @@
   },
   "onboarding": {
     "slideOneTitle": "Every chord, every position",
-    "slideOneBody": "156 chords and 581 verified positions, from the essential open shapes to jazz voicings.",
+    "slideOneBody": "156 chords and 561 verified positions, from the essential open shapes to jazz voicings.",
     "slideTwoTitle": "Listen to every chord and its arpeggio",
     "slideTwoBody": "We synthesize each string so you can recognise the sound before playing.",
     "slideThreeTitle": "Learn by levels and practise",
@@ -525,7 +545,6 @@
     "buildOpen": "Open",
     "buildCell": "String $string, fret $fret",
     "buildMark": "String $string: $state",
-    "micReady": "I'm ready",
     "micListening": "Play now…",
     "micHeard": "I hear: $note",
     "micProgress": "$done of $total notes",
@@ -656,6 +675,27 @@
       "inTune": "In tune",
       "sharp": "Sharp (higher)"
     },
-    "buildMissed": "That is how it is formed. Memorise it and keep going!"
+    "buildMissed": "That is how it is formed. Memorise it and keep going!",
+    "micPracticeNote": "This one doesn't score",
+    "micPlayingMelody": "Listen to the melody…"
+  },
+  "guitar": {
+    "ready": "Play an open string",
+    "waiting": "Let the last note fade…",
+    "noMic": "I can't hear you: check the microphone or use the buttons",
+    "openString": "$string, open",
+    "continueLabel": "Continue",
+    "retry": "Retry",
+    "leave": "Leave",
+    "open": "Open",
+    "previousGame": "Previous",
+    "nextGame": "Next",
+    "getReady": "Get the chord ready",
+    "startsIn": "Starting in $n",
+    "imReady": "Go!",
+    "setting": "Control with your guitar",
+    "settingSubtitle": "Play an open string to continue, retry or leave without touching your phone",
+    "hubTitle": "Browse with your guitar",
+    "hubSubtitle": "D: next · A: previous · E: open"
   }
 }

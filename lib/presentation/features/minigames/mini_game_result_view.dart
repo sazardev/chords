@@ -1,6 +1,9 @@
+import 'package:chords/domain/audio/entities/guitar_command.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/mini_game_score.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_bar.dart';
 import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/entrance.dart';
@@ -16,6 +19,7 @@ class MiniGameResultView extends StatelessWidget {
     required this.onPlayAgain,
     required this.onMoreGames,
     super.key,
+    this.guitar = false,
   });
 
   /// Marcador final.
@@ -32,6 +36,9 @@ class MiniGameResultView extends StatelessWidget {
 
   /// Vuelve al catálogo.
   final VoidCallback onMoreGames;
+
+  /// Si la partida se maneja tocando cuerdas al aire con la guitarra.
+  final bool guitar;
 
   @override
   Widget build(BuildContext context) {
@@ -89,18 +96,39 @@ class MiniGameResultView extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 28),
-        FilledButton.icon(
-          onPressed: () => onPlayAgain(level),
-          icon: const Icon(Icons.replay_rounded),
-          label: Text(t.minigames.playAgain),
-        ),
-        const SizedBox(height: 8),
-        OutlinedButton.icon(
-          onPressed: onMoreGames,
-          icon: const Icon(Icons.apps_rounded),
-          label: Text(t.minigames.moreGames),
-        ),
+        if (guitar)
+          GuitarCommandBar(actions: _guitarActions(t))
+        else ...<Widget>[
+          FilledButton.icon(
+            onPressed: () => onPlayAgain(level),
+            icon: const Icon(Icons.replay_rounded),
+            label: Text(t.minigames.playAgain),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: onMoreGames,
+            icon: const Icon(Icons.apps_rounded),
+            label: Text(t.minigames.moreGames),
+          ),
+        ],
       ],
     );
   }
+
+  /// Jugar otra vez o volver al catálogo sin soltar la guitarra.
+  List<GuitarAction> _guitarActions(Translations t) => <GuitarAction>[
+    GuitarAction(
+      command: GuitarCommand.next,
+      label: t.minigames.playAgain,
+      icon: Icons.replay_rounded,
+      emphasized: true,
+      onTrigger: () => onPlayAgain(level),
+    ),
+    GuitarAction(
+      command: GuitarCommand.exit,
+      label: t.minigames.moreGames,
+      icon: Icons.apps_rounded,
+      onTrigger: onMoreGames,
+    ),
+  ];
 }

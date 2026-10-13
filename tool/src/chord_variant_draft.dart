@@ -7,6 +7,8 @@ library;
 
 import 'package:chords/domain/chords/entities/difficulty.dart';
 
+import 'fingering/fingering_rules.dart';
+
 /// Posición candidata todavía sin enlazar a un acorde.
 class VariantDraft {
   /// Crea la candidata.
@@ -48,4 +50,20 @@ class VariantDraft {
 
   /// Última cuerda cejillada.
   final int? barreToString;
+
+  /// La misma posición con otra digitación; el cejillo se deduce de ella.
+  VariantDraft withFingers(List<int> newFingers) {
+    final ({int fret, int from, int to})? barre = barreOf(frets, newFingers);
+    return VariantDraft(
+      id: id,
+      positionLabel: positionLabel,
+      frets: frets,
+      fingers: newFingers,
+      difficulty: difficulty,
+      tags: tags,
+      barreFret: barre?.fret,
+      barreFrom: barre?.from,
+      barreToString: barre?.to,
+    );
+  }
 }

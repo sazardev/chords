@@ -5,8 +5,12 @@
 /// precisos y el archivo siga siendo pequeño.
 library;
 
+import 'package:chords/domain/chords/entities/chord_quality.dart';
+import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
 
+import 'chord_variant_theory.dart';
+import 'fingering/fingering_rules.dart';
 import 'validation_report.dart';
 
 /// Valida una posición individual.
@@ -97,4 +101,68 @@ List<ValidationIssue> _validateNotes(Object? notes, String path) {
     return <ValidationIssue>[ValidationIssue(path, 'Debe contener notas')];
   }
   return const <ValidationIssue>[];
+}
+
+/// Comprobaciones de fondo de una posición ya válida en estructura.
+///
+/// Que las notas sean las del acorde y que la digitación se pueda tocar con
+/// una mano: dedos, cejillo y estiramiento.
+List<ValidationIssue> validateChordVariantSemantics(
+  Object? variant,
+  ChordRoot root,
+  ChordQuality quality,
+  String path,
+) {
+  if (variant is! Map<String, Object?>) {
+    return const <ValidationIssue>[];
+  }
+  final Object? frets = variant['frets'];
+  final Object? fingers = variant['fingers'];
+  final Object? notes = variant['notes'];
+  final Object? tags = variant['tags'];
+  if (frets is! List<Object?> ||
+      fingers is! List<Object?> ||
+      notes is! List<Object?> ||
+      frets.length != 6 ||
+      fingers.length != 6) {
+    return const <ValidationIssue>[];
+  }
+  final List<int> fretList = frets.cast<int>();
+  final List<int> fingerList = fingers.cast<int>();
+  return <ValidationIssue>[
+    for (final String problem in theoryIssues(
+      root,
+      quality,
+      fretList,
+      declaredNotes: notes.cast<String>(),
+      isInversion: tags is List<Object?> && tags.contains('inversion'),
+    ))
+      ValidationIssue(path, problem),
+    for (final String problem in fingeringIssues(fretList, fingerList))
+      ValidationIssue('$path.fingers', problem),
+    ..._barreMatchesFingers(variant['barre'], fretList, fingerList, path),
+  ];
+}
+
+/// El cejillo declarado debe ser el que implican los dedos.
+List<ValidationIssue> _barreMatchesFingers(
+  Object? barre,
+  List<int> frets,
+  List<int> fingers,
+  String path,
+) {
+  final ({int fret, int from, int to})? expected = barreOf(frets, fingers);
+  final Map<String, Object?> declared = barre is Map<String, Object?>
+      ? barre
+      : const <String, Object?>{};
+  final bool matches = expected == null
+      ? declared.isEmpty
+      : declared['fret'] == expected.fret &&
+            declared['from'] == expected.from &&
+            declared['to'] == expected.to;
+  return matches
+      ? const <ValidationIssue>[]
+      : <ValidationIssue>[
+          ValidationIssue('$path.barre', 'No coincide con los dedos'),
+        ];
 }

@@ -8,11 +8,11 @@ diseño atómico y Material 3 Expressive.
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
 ![tests](https://img.shields.io/badge/tests-381-1DB954)
 ![acordes](https://img.shields.io/badge/acordes-156-8B5CF6)
-![posiciones](https://img.shields.io/badge/posiciones-581-8B5CF6)
+![posiciones](https://img.shields.io/badge/posiciones-561-8B5CF6)
 
 ## Funciones
 
-- **Banco extenso**: 156 acordes (12 raíces × 13 cualidades) y 581 posiciones
+- **Banco extenso**: 156 acordes (12 raíces × 13 cualidades) y 561 posiciones
   verificadas (cejillas, formas movibles, power chords, triadas e inversiones),
   cada una con su nivel de dificultad (1-5) y géneros asociados
   (Pop, Rock, Blues, Funk, Jazz, Balada, Latino, Metal…).
@@ -36,9 +36,40 @@ diseño atómico y Material 3 Expressive.
   - Además, el modo **"toca el acorde"**: elige el acorde, escucha 5 s por el
     micrófono, puntúa por notas reconocidas y encadena series con racha y
     récord.
-- **Sonido de cada acorde**: síntesis por cuerda tipo Karplus-Strong con
-  envolvente realista, codificada a WAV (SoLoud). Funciona en Android, Linux
+- **Control con la guitarra (manos libres)**: las cuerdas al aire son las
+  teclas de la app. En los juegos con micrófono, en "toca el acorde" y en la
+  práctica de acordes, al terminar cada reto aparece una barra con la nota y
+  la cuerda de cada acción: **Mi (6ª) continuar · La (5ª) reintentar · Re (4ª)
+  escuchar · Sol (3ª) saltar o practicar · Si (2ª) salir**. Los retos empiezan
+  a escuchar solos (el eco suena su melodía antes) y "toca el acorde" arranca
+  cada ronda tras una cuenta atrás; no hay botones de "estoy listo". La app
+  espera a que la nota anterior se apague antes de aceptar una orden y se
+  silencia mientras suena su propia referencia. En *Jugar* se puede recorrer el
+  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir) activando
+  el interruptor, y todo se puede desactivar en Ajustes (los botones siguen).
+- **El móvil no se oye a sí mismo**: todo lo que la app reproduce (acordes,
+  arpegios, notas de referencia y melodías de los retos) pasa por una puerta
+  de eco que descarta el audio del micrófono mientras suena el altavoz. Tras
+  el sonido espera una cola mínima y se reabre cuando el nivel cae por debajo
+  del 30 % del máximo con el que el altavoz llegó al micrófono (tope 1 s), así
+  que se adapta al volumen y a la sala; el recorte usa la duración audible de
+  cada sonido, no la del archivo.
+- **Sonido de cada acorde**: síntesis por cuerda tipo Karplus-Strong afinada
+  al cent en todo el mástil (retardo fraccionario con pasa-todo; antes las
+  notas agudas llegaban a desafinar medio semitono), púa con espectro
+  realista, rasgueo escalonado, caja de resonancia de acústica y una sala
+  corta. Nota, acorde y arpegio se igualan en volumen con un limitador suave
+  y fundidos sin clics; se codifica a WAV (SoLoud). Funciona en Android, Linux
   y Web (WASM).
+- **Posiciones revisadas y guiadas**: `db validate` comprueba cada posición
+  con reglas musicales (solo notas del acorde, todas las que lo definen, raíz
+  en el bajo salvo inversiones) y físicas (un dedo = un traste, dedos en
+  orden, el cejillo no tapa cuerdas al aire, máximo 4 trastes de apertura).
+  El generador busca una digitación tocable cuando la del catálogo no lo es
+  y descarta lo imposible. Las posiciones de cada acorde van de la más sencilla
+  a la más difícil y la ficha abre con la recomendada. La ficha explica
+  "Cómo colocarlo": qué dedo en qué traste y cuerda, cejillo, cuerdas al aire
+  y cuerdas que no se tocan, con la nota de cada cuerda bajo el diagrama.
 - **Afinador por cuerdas**: cabezal de guitarra con las 6 clavijas (nota y
   número de cuerda); reconoce solo qué cuerda suena, mide los cents contra su
   nota real (aguanta cuerdas a más de medio tono y errores de octava), dice
@@ -106,7 +137,7 @@ lib/
 tool/                   Generador del banco, validador, auditoría y hooks
 bin/chords_cli.dart     CLI de desarrollo
 docs/                   Web de presentación (GitHub Pages)
-assets/chords/          Banco de acordes generado (156/581)
+assets/chords/          Banco de acordes generado (156/561)
 ```
 
 Regla del proyecto: **1 archivo = 1 responsabilidad** (una clase o una

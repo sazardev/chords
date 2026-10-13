@@ -97,7 +97,7 @@ void _validateChordEntry(Object? entry, int index, _BankIssues issues) {
   }
   _validateRoot(entry['root'], id, issues);
   _validateQuality(entry['quality'], id, issues);
-  _validateChordVariants(entry['variants'], id, issues);
+  _validateChordVariants(entry, id, issues);
 }
 
 /// Comprueba que el identificador exista y no esté repetido.
@@ -145,7 +145,20 @@ void _validateQuality(Object? quality, String id, _BankIssues issues) {
 }
 
 /// Comprueba la lista de posiciones del acorde.
-void _validateChordVariants(Object? variants, String id, _BankIssues issues) {
+void _validateChordVariants(
+  Map<String, Object?> chord,
+  String id,
+  _BankIssues issues,
+) {
+  final Object? variants = chord['variants'];
+  final Object? root = chord['root'];
+  final Object? quality = chord['quality'];
+  final ChordRoot? chordRoot = root is String
+      ? ChordRoot.values.where((ChordRoot r) => r.name == root).firstOrNull
+      : null;
+  final ChordQuality? chordQuality = quality is String
+      ? ChordQuality.fromId(quality)
+      : null;
   if (variants is! List<Object?> || variants.isEmpty) {
     issues.add(
       ValidationIssue('$id.variants', 'Debe tener al menos una posición'),
@@ -154,9 +167,22 @@ void _validateChordVariants(Object? variants, String id, _BankIssues issues) {
   }
   for (int position = 0; position < variants.length; position++) {
     issues.variantCount++;
-    issues.addAll(
-      validateChordVariant(variants[position], '$id.variants[$position]'),
+    final String path = '$id.variants[$position]';
+    final List<ValidationIssue> structural = validateChordVariant(
+      variants[position],
+      path,
     );
+    issues.addAll(structural);
+    if (structural.isEmpty && chordRoot != null && chordQuality != null) {
+      issues.addAll(
+        validateChordVariantSemantics(
+          variants[position],
+          chordRoot,
+          chordQuality,
+          path,
+        ),
+      );
+    }
   }
 }
 

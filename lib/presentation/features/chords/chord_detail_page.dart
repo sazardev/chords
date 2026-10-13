@@ -7,6 +7,7 @@ import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/profile/entities/playing_style.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/chords/chord_position_guide.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
@@ -151,49 +152,18 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
       padding: const EdgeInsets.only(bottom: 24),
       children: <Widget>[
         const SizedBox(height: 12),
-        Center(
-          child: ChordDiagram(
-            variant: controller.selectedVariant!,
-            mirror: mirror,
-            width: 200,
-            height: 260,
-          ),
+        ChordPositionDiagram(
+          variant: controller.selectedVariant!,
+          mirror: mirror,
         ),
         const SizedBox(height: 12),
-        Center(
-          child: Column(
-            children: <Widget>[
-              AppText(
-                controller.chord!.name,
-                variant: AppTextVariant.displayLarge,
-              ),
-              AppText(
-                controller.chord!.displayName,
-                variant: AppTextVariant.bodyLarge,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(height: 8),
-              DifficultyBadge(difficulty: controller.chord!.difficulty),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
-                children: <Widget>[
-                  FilledButton.icon(
-                    onPressed: controller.playSelected,
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: Text(t.chordDetail.listen),
-                  ),
-                  FilledButton.tonalIcon(
-                    onPressed: () => unawaited(_practice(controller)),
-                    icon: const Icon(Icons.mic_rounded),
-                    label: Text(t.chordDetail.practice),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        _ChordSummary(
+          controller: controller,
+          onPractice: () => unawaited(_practice(controller)),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: ChordPositionGuide(variant: controller.selectedVariant!),
         ),
         SectionHeader(title: t.chordDetail.arpeggios),
         _ArpeggioRow(controller: controller),
@@ -229,7 +199,12 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
         height: 56,
       ),
       title: Text(variant.positionLabel),
-      subtitle: Text(t.chordDetail.notes(notes: variant.notes.join(' · '))),
+      subtitle: Text(
+        index == 0
+            ? '${t.chordDetail.recommended} · '
+                  '${t.chordDetail.notes(notes: variant.notes.join(' · '))}'
+            : t.chordDetail.notes(notes: variant.notes.join(' · ')),
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -250,6 +225,52 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
       onTap: () => controller.selectVariant(index),
       tileColor: selected ? theme.colorScheme.surfaceContainerHigh : null,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    );
+  }
+}
+
+/// Nombre, dificultad y botones de escuchar y practicar.
+class _ChordSummary extends StatelessWidget {
+  const _ChordSummary({required this.controller, required this.onPractice});
+
+  final ChordDetailController controller;
+  final VoidCallback onPractice;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final Chord chord = controller.chord!;
+    return Center(
+      child: Column(
+        children: <Widget>[
+          AppText(chord.name, variant: AppTextVariant.displayLarge),
+          AppText(
+            chord.displayName,
+            variant: AppTextVariant.bodyLarge,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 8),
+          DifficultyBadge(difficulty: chord.difficulty),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: <Widget>[
+              FilledButton.icon(
+                onPressed: controller.playSelected,
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: Text(t.chordDetail.listen),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: onPractice,
+                icon: const Icon(Icons.mic_rounded),
+                label: Text(t.chordDetail.practice),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -133,7 +133,10 @@ Map<String, int> _countByQuality(List<Chord> chords) {
 /// Construye todas las posiciones de un acorde (raíz + calidad).
 ///
 /// Combina las formas transportadas y las tríadas, descartando digitaciones
-/// duplicadas y enlazando cada candidata con su acorde.
+/// duplicadas y enlazando cada candidata con su acorde. Quedan ordenadas de la
+/// más sencilla a la más difícil (a igual dificultad, las formas clásicas antes
+/// que las tríadas y las más cercanas a la cejuela primero), de modo que la
+/// primera es siempre la que conviene aprender antes.
 List<ChordVariant> buildChordVariants(ChordRoot root, ChordQuality quality) {
   final List<VariantDraft> drafts = <VariantDraft>[
     ...buildShapeVariants(root, quality),
@@ -147,7 +150,23 @@ List<ChordVariant> buildChordVariants(ChordRoot root, ChordQuality quality) {
     }
     variants.add(_toVariant(root, quality, draft));
   }
-  return variants;
+  return variants..sort(_byLearningOrder);
+}
+
+/// Orden de aprendizaje: dificultad, forma clásica antes que tríada, traste.
+int _byLearningOrder(ChordVariant a, ChordVariant b) {
+  final int byDifficulty = a.difficulty.level.compareTo(b.difficulty.level);
+  if (byDifficulty != 0) {
+    return byDifficulty;
+  }
+  final int byKind = (a.tags.contains('triad') ? 1 : 0).compareTo(
+    b.tags.contains('triad') ? 1 : 0,
+  );
+  if (byKind != 0) {
+    return byKind;
+  }
+  final int byFret = a.baseFret.compareTo(b.baseFret);
+  return byFret != 0 ? byFret : a.id.compareTo(b.id);
 }
 
 /// Convierte una candidata en posición del acorde.

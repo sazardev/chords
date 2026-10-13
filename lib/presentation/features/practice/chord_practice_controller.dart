@@ -13,6 +13,7 @@ import 'package:chords/domain/chords/entities/chord_practice_session.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/practice_string.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
 import 'package:flutter/foundation.dart';
 
 /// Controlador del modo práctica: un acorde, cuerda a cuerda.
@@ -20,6 +21,10 @@ import 'package:flutter/foundation.dart';
 /// Escucha el micrófono, convierte las lecturas en notas pulsadas y las pasa
 /// a la [ChordPracticeSession], que decide si la cuerda es correcta o qué
 /// consejo dar. Ignora el micrófono mientras suena una referencia.
+///
+/// Al completar el acorde, si se maneja la app con la guitarra, el micrófono
+/// sigue abierto para oír la orden siguiente (repetir, escuchar o volver);
+/// [stop] lo cierra al salir.
 class ChordPracticeController extends ChangeNotifier {
   /// Crea el controlador.
   ChordPracticeController(
@@ -27,10 +32,14 @@ class ChordPracticeController extends ChangeNotifier {
     this._chords, {
     this.silenceGap = const Duration(milliseconds: 450),
     this.referenceMute = const Duration(milliseconds: 2400),
+    this._guitar,
   });
 
   final AudioRepository _audio;
   final ChordRepository _chords;
+  final GuitarCommandListener? _guitar;
+
+  static const Duration _settleMute = Duration(milliseconds: 900);
 
   /// Silencio que rearma la detección para poder repetir la misma cuerda.
   final Duration silenceGap;
@@ -93,8 +102,14 @@ class ChordPracticeController extends ChangeNotifier {
   /// Empieza a escuchar; con [keepProgress] conserva las cuerdas ya
   /// reconocidas (p. ej. al volver de afinar).
   ///
+  /// Con [settle] ignora un instante el micrófono: la nota con la que se
+  /// ordenó repetir puede seguir sonando y no debe contar como cuerda tocada.
+  ///
   /// Si ya estaba escuchando, reinicia la práctica.
-  Future<void> start({bool keepProgress = false}) async {
+  Future<void> start({bool keepProgress = false, bool settle = false}) async {
+    if (settle) {
+      _mutedUntil = DateTime.now().add(_settleMute);
+    }
     if (!keepProgress) {
       _session?.reset();
       _startedAt = DateTime.now();
@@ -144,6 +159,7 @@ class ChordPracticeController extends ChangeNotifier {
   void _mute() {
     _mutedUntil = DateTime.now().add(referenceMute);
     _gate.reset();
+    _guitar?.muteFor(referenceMute);
   }
 
   void _onStatus(MicStatus status) {
@@ -162,6 +178,7 @@ class ChordPracticeController extends ChangeNotifier {
     final DateTime? muted = _mutedUntil;
     final ChordPracticeSession? session = _session;
     if (session == null ||
+        session.isComplete ||
         !reading.isReliable ||
         (muted != null && DateTime.now().isBefore(muted))) {
       return;
@@ -175,8 +192,19 @@ class ChordPracticeController extends ChangeNotifier {
     session.feed(note);
     notifyListeners();
     if (session.isComplete) {
-      unawaited(stop());
+      unawaited(_complete());
     }
+  }
+
+  /// El acorde salió completo: se deja constancia y, si se manejan las
+  /// órdenes con la guitarra, el micrófono queda abierto para oírlas.
+  Future<void> _complete() async {
+    if (!(_guitar?.enabled ?? false)) {
+      await stop();
+      return;
+    }
+    _silenceTimer?.cancel();
+    _track();
   }
 
   void _track() {

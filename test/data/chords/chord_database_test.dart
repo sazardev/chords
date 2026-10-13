@@ -12,7 +12,7 @@ import '../../../tool/src/chord_db_validator.dart';
 /// Tests de integración del banco de acordes (asset + parser + validador).
 void main() {
   group('banco de acordes', () {
-    test('el asset contiene 156 acordes y 581 posiciones válidas', () {
+    test('el asset contiene 156 acordes y 561 posiciones válidas', () {
       final File file = File('assets/chords/chords_db.json');
       expect(file.existsSync(), isTrue);
       final Map<String, Object?> json =
@@ -29,7 +29,7 @@ void main() {
         chords.add(chord!);
         variants += chord.variantCount;
       }
-      expect(variants, 581);
+      expect(variants, 561);
       expect(chords.every((Chord c) => c.variants.isNotEmpty), isTrue);
     });
 
@@ -60,7 +60,7 @@ void main() {
       expect(report.issues, isEmpty);
       expect(report.isValid, isTrue);
       expect(report.chordCount, 156);
-      expect(report.variantCount, 581);
+      expect(report.variantCount, 561);
     });
   });
 }

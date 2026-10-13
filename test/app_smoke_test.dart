@@ -154,10 +154,14 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pump(const Duration(milliseconds: 50));
     await tester.pumpAndSettle();
-    expect(find.text('Arpegios'), findsOneWidget);
-    // El listado de posiciones está más abajo: hay que desplazarse.
-    await tester.drag(find.byType(ListView).last, const Offset(0, -600));
+    // El diagrama y los botones ocupan la pantalla: la guía, los arpegios y
+    // las posiciones están más abajo y hay que desplazarse.
+    await tester.drag(find.byType(ListView).last, const Offset(0, -450));
     await tester.pumpAndSettle();
+    expect(find.text('Cómo colocarlo'), findsOneWidget);
+    await tester.drag(find.byType(ListView).last, const Offset(0, -450));
+    await tester.pumpAndSettle();
+    expect(find.text('Arpegios'), findsOneWidget);
     expect(find.text('Posiciones'), findsOneWidget);
     expect(find.text(chord.name), findsWidgets);
 

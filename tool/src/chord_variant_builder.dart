@@ -14,6 +14,8 @@ import 'chord_shape_catalog.dart';
 import 'chord_shape_spec.dart';
 import 'chord_theory.dart';
 import 'chord_variant_draft.dart';
+import 'fingering/fingering_rules.dart';
+import 'fingering/fingering_solver.dart';
 
 /// Forma movible ya transportada a una raíz concreta.
 class TransposedShape {
@@ -41,9 +43,26 @@ List<VariantDraft> buildShapeVariants(ChordRoot root, ChordQuality quality) {
     if (shape == null) {
       continue;
     }
-    result.add(draftFromShape(spec, shape));
+    final VariantDraft? playable = withPlayableFingering(
+      draftFromShape(spec, shape),
+    );
+    if (playable != null) {
+      result.add(playable);
+    }
   }
   return result;
+}
+
+/// Deja a la posición una digitación que la mano pueda hacer.
+///
+/// Conserva la del catálogo si es válida; si no, busca otra. Devuelve `null`
+/// si ninguna digitación es posible (p. ej. una apertura de más de cuatro
+/// trastes). El cejillo se deduce siempre de los dedos finales.
+VariantDraft? withPlayableFingering(VariantDraft draft) {
+  final List<int>? fingers = fingeringIssues(draft.frets, draft.fingers).isEmpty
+      ? draft.fingers
+      : solveFingering(draft.frets);
+  return fingers == null ? null : draft.withFingers(fingers);
 }
 
 /// Transporta una forma a la raíz indicada.
@@ -136,7 +155,7 @@ VariantDraft? bestTriadAssignment(
       continue;
     }
     final int cost = assignmentCost(stringSet, frets);
-    if (cost >= bestCost) {
+    if (cost >= bestCost || solveFingering(frets) == null) {
       continue;
     }
     bestCost = cost;
@@ -192,26 +211,11 @@ VariantDraft draftFromTriad(
   return VariantDraft(
     id: 'triad-${_setId(stringSet)}-$lowestNote',
     frets: frets,
-    fingers: triadFingers(stringSet, frets),
+    fingers: List<int>.filled(kStringCount, 0),
     difficulty: difficultyForLevel(span <= 2 && maxFret <= 5 ? 2 : 3),
     tags: const <String>['triad', 'inversion'],
     positionLabel: 'Triada ${_setLabel(stringSet)} · bajo en $lowestNote',
-  );
-}
-
-/// Dedos para una tríada: por orden de traste dentro del grupo de cuerdas.
-List<int> triadFingers(List<int> stringSet, List<int> frets) {
-  final List<int> fingers = List<int>.filled(kStringCount, 0);
-  final Map<int, int> byFret = <int, int>{};
-  int next = 1;
-  for (final int string in stringSet) {
-    final int fret = frets[string];
-    if (fret == 0) {
-      continue;
-    }
-    fingers[string] = byFret.putIfAbsent(fret, () => next++);
-  }
-  return fingers;
+  ).withFingers(solveFingering(frets)!);
 }
 
 /// Permutaciones de los intervalos de la calidad sobre 3 cuerdas.

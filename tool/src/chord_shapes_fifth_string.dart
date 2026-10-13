@@ -98,7 +98,7 @@ const List<MovableShapeSpec> kFifthStringShapes = <MovableShapeSpec>[
     positionLabel: 'Power cuerda 5',
     fretOffsets: <int?>[null, 0, 2, 2, null, null],
     fingersOpen: <int>[0, 0, 1, 1, 0, 0],
-    fingersBarre: <int>[0, 1, 1, 1, 0, 0],
+    fingersBarre: <int>[0, 1, 3, 4, 0, 0],
     difficultyOpen: 1,
     difficultyBarre: 2,
     tags: <String>['movable', 'power'],

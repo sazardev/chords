@@ -1,6 +1,9 @@
+import 'package:chords/domain/audio/entities/guitar_command.dart';
 import 'package:chords/domain/minigames/entities/mic_challenge.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_bar.dart';
 import 'package:chords/presentation/features/minigames/mic_game_controller.dart';
 import 'package:chords/presentation/features/minigames/mic_game_state.dart';
 import 'package:chords/presentation/features/minigames/mini_game_frame.dart';
@@ -72,43 +75,63 @@ class _MicBody extends StatelessWidget {
     if (challenge == null) {
       return const SizedBox.shrink();
     }
-    final Translations t = context.t;
-    final bool asking = state.phase == MiniGamePhase.asking;
     return ListView(
       padding: const EdgeInsets.all(20),
       children: <Widget>[
         _ChallengeCard(state: state, challenge: challenge),
         const SizedBox(height: 16),
-        if (state.phase == MiniGamePhase.listening)
-          _ListeningCard(
+        switch (state.phase) {
+          MiniGamePhase.listening => _ListeningCard(
             state: state,
             challenge: challenge,
             controller: controller,
-          )
-        else if (state.phase == MiniGamePhase.feedback)
-          _ResultCard(state: state, onNext: controller.next)
-        else ...<Widget>[
-          if (asking && MicProblemCard.isProblem(state.micStatus)) ...<Widget>[
-            MicProblemCard(status: state.micStatus, onRetry: controller.listen),
-            const SizedBox(height: 12),
-          ],
-          OutlinedButton.icon(
-            onPressed: controller.hear,
-            icon: const Icon(Icons.volume_up_rounded),
-            label: Text(
-              challenge.isSequence
-                  ? t.minigames.micHearMelody
-                  : t.minigames.micHearIt,
-            ),
           ),
-          const SizedBox(height: 8),
-          FilledButton.icon(
-            onPressed: controller.listen,
-            icon: const Icon(Icons.mic_rounded),
-            label: Text(t.minigames.micReady),
+          MiniGamePhase.feedback => _ResultSection(
+            state: state,
+            challenge: challenge,
+            controller: controller,
+          ),
+          _ => _AskingSection(state: state, controller: controller),
+        },
+      ],
+    );
+  }
+}
+
+/// Entre retos: avisa si el micrófono falla o si suena la melodía del eco.
+///
+/// Es un paso breve: en cuanto el micrófono está listo empieza a escuchar sin
+/// que la persona tenga que pulsar nada.
+class _AskingSection extends StatelessWidget {
+  const _AskingSection({required this.state, required this.controller});
+
+  final MicGameState state;
+  final MicGameController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    if (MicProblemCard.isProblem(state.micStatus)) {
+      return MicProblemCard(
+        status: state.micStatus,
+        onRetry: controller.listen,
+      );
+    }
+    if (!state.playingCue) {
+      return const SizedBox.shrink();
+    }
+    return AppCard(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Icon(Icons.volume_up_rounded),
+          const SizedBox(width: 10),
+          AppText(
+            t.minigames.micPlayingMelody,
+            variant: AppTextVariant.titleMedium,
           ),
         ],
-      ],
+      ),
     );
   }
 }
@@ -240,10 +263,25 @@ class _ListeningCard extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: controller.skip,
-            icon: const Icon(Icons.skip_next_rounded),
-            label: Text(t.minigames.micSkip),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            children: <Widget>[
+              TextButton.icon(
+                onPressed: controller.hear,
+                icon: const Icon(Icons.volume_up_rounded),
+                label: Text(
+                  challenge.isSequence
+                      ? t.minigames.micHearMelody
+                      : t.minigames.micHearIt,
+                ),
+              ),
+              TextButton.icon(
+                onPressed: controller.skip,
+                icon: const Icon(Icons.skip_next_rounded),
+                label: Text(t.minigames.micSkip),
+              ),
+            ],
           ),
         ],
       ),
@@ -251,11 +289,19 @@ class _ListeningCard extends StatelessWidget {
   }
 }
 
-class _ResultCard extends StatelessWidget {
-  const _ResultCard({required this.state, required this.onNext});
+/// Resultado del reto y las órdenes para seguir, repetir o escuchar.
+///
+/// Se maneja tocando cuerdas al aire: la persona no suelta la guitarra.
+class _ResultSection extends StatelessWidget {
+  const _ResultSection({
+    required this.state,
+    required this.challenge,
+    required this.controller,
+  });
 
   final MicGameState state;
-  final VoidCallback onNext;
+  final MicChallenge challenge;
+  final MicGameController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -263,32 +309,70 @@ class _ResultCard extends StatelessWidget {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     final bool ok = state.wasCorrect;
     final bool last = state.index + 1 >= state.total;
-    return AppCard(
-      color: ok
-          ? chordColorsOf(context).inTune.withValues(alpha: 0.22)
-          : scheme.errorContainer,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        AppCard(
+          color: ok
+              ? chordColorsOf(context).inTune.withValues(alpha: 0.22)
+              : scheme.errorContainer,
+          child: Column(
             children: <Widget>[
-              Icon(ok ? Icons.check_circle_rounded : Icons.cancel_rounded),
-              const SizedBox(width: 10),
-              Expanded(
-                child: AppText(
-                  ok ? t.minigames.micSuccess : t.minigames.micTimeUp,
-                  variant: AppTextVariant.titleMedium,
-                ),
+              Row(
+                children: <Widget>[
+                  Icon(ok ? Icons.check_circle_rounded : Icons.cancel_rounded),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppText(
+                      ok ? t.minigames.micSuccess : t.minigames.micTimeUp,
+                      variant: AppTextVariant.titleMedium,
+                    ),
+                  ),
+                ],
               ),
+              if (state.retried)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: AppText(
+                    t.minigames.micPracticeNote,
+                    variant: AppTextVariant.labelMedium,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
             ],
           ),
-          const SizedBox(height: 12),
-          FilledButton(
-            onPressed: onNext,
-            child: Text(last ? t.minigames.seeResult : t.minigames.next),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 12),
+        GuitarCommandBar(
+          actions: <GuitarAction>[
+            GuitarAction(
+              command: GuitarCommand.next,
+              label: last ? t.minigames.seeResult : t.guitar.continueLabel,
+              icon: last
+                  ? Icons.emoji_events_rounded
+                  : Icons.arrow_forward_rounded,
+              emphasized: ok,
+              onTrigger: controller.next,
+            ),
+            if (!ok)
+              GuitarAction(
+                command: GuitarCommand.retry,
+                label: t.guitar.retry,
+                icon: Icons.replay_rounded,
+                emphasized: true,
+                onTrigger: controller.retry,
+              ),
+            GuitarAction(
+              command: GuitarCommand.listen,
+              label: challenge.isSequence
+                  ? t.minigames.micHearMelody
+                  : t.minigames.micHearIt,
+              icon: Icons.volume_up_rounded,
+              onTrigger: controller.hear,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

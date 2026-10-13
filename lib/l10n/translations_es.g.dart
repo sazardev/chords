@@ -89,6 +89,9 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   );
   late final Translations$minigames$es minigames =
       Translations$minigames$es.internal(_root);
+  late final Translations$guitar$es guitar = Translations$guitar$es.internal(
+    _root,
+  );
 }
 
 // Path: app
@@ -383,6 +386,52 @@ class Translations$chordDetail$es {
 
   /// es: 'Practicar'
   String get practice => 'Practicar';
+
+  /// es: 'Cómo colocarlo'
+  String get guideTitle => 'Cómo colocarlo';
+
+  /// es: '1 índice · 2 medio · 3 anular · 4 meñique'
+  String get guideLegend => '1 índice · 2 medio · 3 anular · 4 meñique';
+
+  /// es: 'Traste $fret · cuerda $string'
+  String guideFinger({required Object fret, required Object string}) =>
+      'Traste ${fret} · cuerda ${string}';
+
+  /// es: 'Cejillo en el traste $fret · de la $from a la $to'
+  String guideBarre({
+    required Object fret,
+    required Object from,
+    required Object to,
+  }) => 'Cejillo en el traste ${fret} · de la ${from} a la ${to}';
+
+  /// es: 'Toca: $strings'
+  String guidePlay({required Object strings}) => 'Toca: ${strings}';
+
+  /// es: 'Al aire: $strings'
+  String guideOpen({required Object strings}) => 'Al aire: ${strings}';
+
+  /// es: 'No toques: $strings'
+  String guideMuted({required Object strings}) => 'No toques: ${strings}';
+
+  /// es: 'Posición abierta, junto a la cejuela'
+  String get guideOpenPosition => 'Posición abierta, junto a la cejuela';
+
+  /// es: 'Zona de los trastes $from a $to'
+  String guideRange({required Object from, required Object to}) =>
+      'Zona de los trastes ${from} a ${to}';
+
+  /// es: 'Zona del traste $fret'
+  String guideSingleFret({required Object fret}) => 'Zona del traste ${fret}';
+
+  /// es: 'Para empezar'
+  String get recommended => 'Para empezar';
+
+  Map<String, String> get fingerNames => {
+    'f1': 'Índice',
+    'f2': 'Medio',
+    'f3': 'Anular',
+    'f4': 'Meñique',
+  };
 }
 
 // Path: game
@@ -469,6 +518,19 @@ class Translations$game$es {
 
   /// es: 'Practicar cuerda a cuerda'
   String get practiceChord => 'Practicar cuerda a cuerda';
+
+  /// es: '¡Serie completa!'
+  String get finishedTitle => '¡Serie completa!';
+
+  /// es: '$won de $total acordes · $score puntos'
+  String finishedMessage({
+    required Object won,
+    required Object total,
+    required Object score,
+  }) => '${won} de ${total} acordes · ${score} puntos';
+
+  /// es: 'Tu récord: $best puntos'
+  String finishedBest({required Object best}) => 'Tu récord: ${best} puntos';
 }
 
 // Path: chordDiagram
@@ -670,9 +732,9 @@ class Translations$onboarding$es {
   /// es: 'Todos los acordes, todas las posiciones'
   String get slideOneTitle => 'Todos los acordes, todas las posiciones';
 
-  /// es: '156 acordes y 581 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.'
+  /// es: '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.'
   String get slideOneBody =>
-      '156 acordes y 581 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.';
+      '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.';
 
   /// es: 'Escucha cada acorde y su arpegio'
   String get slideTwoTitle => 'Escucha cada acorde y su arpegio';
@@ -1390,9 +1452,6 @@ class Translations$minigames$es {
   String buildMark({required Object string, required Object state}) =>
       'Cuerda ${string}: ${state}';
 
-  /// es: 'Estoy listo'
-  String get micReady => 'Estoy listo';
-
   /// es: 'Toca ahora…'
   String get micListening => 'Toca ahora…';
 
@@ -1522,6 +1581,73 @@ class Translations$minigames$es {
 
   /// es: 'Así se forma. ¡Memorízalo y sigue!'
   String get buildMissed => 'Así se forma. ¡Memorízalo y sigue!';
+
+  /// es: 'Esta vez no suma puntos'
+  String get micPracticeNote => 'Esta vez no suma puntos';
+
+  /// es: 'Escucha la melodía…'
+  String get micPlayingMelody => 'Escucha la melodía…';
+}
+
+// Path: guitar
+class Translations$guitar$es {
+  Translations$guitar$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Toca una cuerda al aire'
+  String get ready => 'Toca una cuerda al aire';
+
+  /// es: 'Deja que se apague la nota…'
+  String get waiting => 'Deja que se apague la nota…';
+
+  /// es: 'No te oigo: revisa el micrófono o usa los botones'
+  String get noMic => 'No te oigo: revisa el micrófono o usa los botones';
+
+  /// es: '$string al aire'
+  String openString({required Object string}) => '${string} al aire';
+
+  /// es: 'Continuar'
+  String get continueLabel => 'Continuar';
+
+  /// es: 'Reintentar'
+  String get retry => 'Reintentar';
+
+  /// es: 'Salir'
+  String get leave => 'Salir';
+
+  /// es: 'Abrir'
+  String get open => 'Abrir';
+
+  /// es: 'Anterior'
+  String get previousGame => 'Anterior';
+
+  /// es: 'Siguiente'
+  String get nextGame => 'Siguiente';
+
+  /// es: 'Prepara el acorde'
+  String get getReady => 'Prepara el acorde';
+
+  /// es: 'Empiezo en $n'
+  String startsIn({required Object n}) => 'Empiezo en ${n}';
+
+  /// es: '¡Ya!'
+  String get imReady => '¡Ya!';
+
+  /// es: 'Controlar con la guitarra'
+  String get setting => 'Controlar con la guitarra';
+
+  /// es: 'Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil'
+  String get settingSubtitle =>
+      'Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil';
+
+  /// es: 'Navegar con la guitarra'
+  String get hubTitle => 'Navegar con la guitarra';
+
+  /// es: 'Re: siguiente · La: anterior · Mi: abrir'
+  String get hubSubtitle => 'Re: siguiente · La: anterior · Mi: abrir';
 }
 
 // Path: settings.theme
@@ -2211,6 +2337,41 @@ extension on Translations {
             required Object level,
           }) => '${label} · Nv ${level}',
           'chordDetail.practice' => 'Practicar',
+          'chordDetail.guideTitle' => 'Cómo colocarlo',
+          'chordDetail.guideLegend' =>
+            '1 índice · 2 medio · 3 anular · 4 meñique',
+          'chordDetail.guideFinger' => ({
+            required Object fret,
+            required Object string,
+          }) => 'Traste ${fret} · cuerda ${string}',
+          'chordDetail.guideBarre' => ({
+            required Object fret,
+            required Object from,
+            required Object to,
+          }) => 'Cejillo en el traste ${fret} · de la ${from} a la ${to}',
+          'chordDetail.guidePlay' => ({
+            required Object strings,
+          }) => 'Toca: ${strings}',
+          'chordDetail.guideOpen' => ({
+            required Object strings,
+          }) => 'Al aire: ${strings}',
+          'chordDetail.guideMuted' => ({
+            required Object strings,
+          }) => 'No toques: ${strings}',
+          'chordDetail.guideOpenPosition' =>
+            'Posición abierta, junto a la cejuela',
+          'chordDetail.guideRange' => ({
+            required Object from,
+            required Object to,
+          }) => 'Zona de los trastes ${from} a ${to}',
+          'chordDetail.guideSingleFret' => ({
+            required Object fret,
+          }) => 'Zona del traste ${fret}',
+          'chordDetail.recommended' => 'Para empezar',
+          'chordDetail.fingerNames.f1' => 'Índice',
+          'chordDetail.fingerNames.f2' => 'Medio',
+          'chordDetail.fingerNames.f3' => 'Anular',
+          'chordDetail.fingerNames.f4' => 'Meñique',
           'game.title' => 'Jugar',
           'game.start' => 'Empezar serie',
           'game.emptyTitle' => 'Toca el acorde',
@@ -2245,6 +2406,15 @@ extension on Translations {
           'game.stringFifth' => '5ª',
           'game.stringSixth' => '6ª',
           'game.practiceChord' => 'Practicar cuerda a cuerda',
+          'game.finishedTitle' => '¡Serie completa!',
+          'game.finishedMessage' => ({
+            required Object won,
+            required Object total,
+            required Object score,
+          }) => '${won} de ${total} acordes · ${score} puntos',
+          'game.finishedBest' => ({
+            required Object best,
+          }) => 'Tu récord: ${best} puntos',
           'chordDiagram.stringLabel' => ({
             required Object number,
             required Object fret,
@@ -2346,7 +2516,7 @@ extension on Translations {
           'settings.cliCommand' => 'dart run bin/chords_cli.dart db generate',
           'onboarding.slideOneTitle' =>
             'Todos los acordes, todas las posiciones',
-          'onboarding.slideOneBody' => '156 acordes y 581 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.',
+          'onboarding.slideOneBody' => '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.',
           'onboarding.slideTwoTitle' => 'Escucha cada acorde y su arpegio',
           'onboarding.slideTwoBody' => 'Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.',
           'onboarding.slideThreeTitle' => 'Aprende por niveles y practica',
@@ -2721,7 +2891,6 @@ extension on Translations {
             required Object string,
             required Object state,
           }) => 'Cuerda ${string}: ${state}',
-          'minigames.micReady' => 'Estoy listo',
           'minigames.micListening' => 'Toca ahora…',
           'minigames.micHeard' => ({required Object note}) => 'Oigo: ${note}',
           'minigames.micProgress' => ({
@@ -2807,6 +2976,9 @@ extension on Translations {
           'minigames.descriptions.higherLower' => 'Compara dos notas',
           'minigames.descriptions.chordQuality' =>
             'Distingue mayor, menor y séptima',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.descriptions.nameChord' => 'Escucha y nombra el acorde',
           'minigames.descriptions.tuneEar' => '¿Floja, afinada o alta?',
           'minigames.descriptions.memory' => 'Repite la secuencia que oyes',
@@ -2827,9 +2999,6 @@ extension on Translations {
           'minigames.howTo.interval' => 'Oirás dos notas seguidas, de grave a aguda. Reconoce la distancia entre ellas: tercera, quinta, octava…',
           'minigames.howTo.higherLower' => 'Oirás dos notas. Di si la primera o la segunda suena más aguda. En difícil casi no hay diferencia.',
           'minigames.howTo.chordQuality' => 'Oirás un acorde. Distingue si es mayor (brillante), menor (triste), séptima y más según subes de nivel.',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.howTo.nameChord' => 'Oirás un acorde del banco. Elige su nombre entre varias opciones parecidas.',
           'minigames.howTo.tuneEar' => 'Oirás una nota de referencia y otra que puede estar floja, afinada o alta. Entrena el oído del afinador.',
           'minigames.howTo.memory' => 'Oirás una secuencia de cuerdas al aire. Tócalas en el mismo orden. Cada pregunta añade más notas.',
@@ -2877,6 +3046,27 @@ extension on Translations {
           'minigames.choice.inTune' => 'Afinada',
           'minigames.choice.sharp' => 'Alta (más aguda)',
           'minigames.buildMissed' => 'Así se forma. ¡Memorízalo y sigue!',
+          'minigames.micPracticeNote' => 'Esta vez no suma puntos',
+          'minigames.micPlayingMelody' => 'Escucha la melodía…',
+          'guitar.ready' => 'Toca una cuerda al aire',
+          'guitar.waiting' => 'Deja que se apague la nota…',
+          'guitar.noMic' => 'No te oigo: revisa el micrófono o usa los botones',
+          'guitar.openString' => ({
+            required Object string,
+          }) => '${string} al aire',
+          'guitar.continueLabel' => 'Continuar',
+          'guitar.retry' => 'Reintentar',
+          'guitar.leave' => 'Salir',
+          'guitar.open' => 'Abrir',
+          'guitar.previousGame' => 'Anterior',
+          'guitar.nextGame' => 'Siguiente',
+          'guitar.getReady' => 'Prepara el acorde',
+          'guitar.startsIn' => ({required Object n}) => 'Empiezo en ${n}',
+          'guitar.imReady' => '¡Ya!',
+          'guitar.setting' => 'Controlar con la guitarra',
+          'guitar.settingSubtitle' => 'Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil',
+          'guitar.hubTitle' => 'Navegar con la guitarra',
+          'guitar.hubSubtitle' => 'Re: siguiente · La: anterior · Mi: abrir',
           _ => null,
         };
   }

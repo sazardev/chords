@@ -103,6 +103,8 @@ class TranslationsEn extends Translations
   late final Translations$minigames$en minigames = Translations$minigames$en._(
     _root,
   );
+  @override
+  late final Translations$guitar$en guitar = Translations$guitar$en._(_root);
 }
 
 // Path: app
@@ -332,6 +334,41 @@ class Translations$chordDetail$en extends Translations$chordDetail$es {
       '${label} · Lv ${level}';
   @override
   String get practice => 'Practice';
+  @override
+  String get guideTitle => 'How to place it';
+  @override
+  String get guideLegend => '1 index · 2 middle · 3 ring · 4 pinky';
+  @override
+  String guideFinger({required Object fret, required Object string}) =>
+      'Fret ${fret} · string ${string}';
+  @override
+  String guideBarre({
+    required Object fret,
+    required Object from,
+    required Object to,
+  }) => 'Barre at fret ${fret} · string ${from} to ${to}';
+  @override
+  String guidePlay({required Object strings}) => 'Play: ${strings}';
+  @override
+  String guideOpen({required Object strings}) => 'Open: ${strings}';
+  @override
+  String guideMuted({required Object strings}) => 'Don\'t play: ${strings}';
+  @override
+  String get guideOpenPosition => 'Open position, next to the nut';
+  @override
+  String guideRange({required Object from, required Object to}) =>
+      'Around frets ${from} to ${to}';
+  @override
+  String guideSingleFret({required Object fret}) => 'Around fret ${fret}';
+  @override
+  String get recommended => 'Start here';
+  @override
+  Map<String, String> get fingerNames => {
+    'f1': 'Index',
+    'f2': 'Middle',
+    'f3': 'Ring',
+    'f4': 'Pinky',
+  };
 }
 
 // Path: game
@@ -395,6 +432,16 @@ class Translations$game$en extends Translations$game$es {
   String get stringSixth => '6th';
   @override
   String get practiceChord => 'Practice string by string';
+  @override
+  String get finishedTitle => 'Series complete!';
+  @override
+  String finishedMessage({
+    required Object won,
+    required Object total,
+    required Object score,
+  }) => '${won} of ${total} chords · ${score} points';
+  @override
+  String finishedBest({required Object best}) => 'Your best: ${best} points';
 }
 
 // Path: chordDiagram
@@ -568,7 +615,7 @@ class Translations$onboarding$en extends Translations$onboarding$es {
   String get slideOneTitle => 'Every chord, every position';
   @override
   String get slideOneBody =>
-      '156 chords and 581 verified positions, from the essential open shapes to jazz voicings.';
+      '156 chords and 561 verified positions, from the essential open shapes to jazz voicings.';
   @override
   String get slideTwoTitle => 'Listen to every chord and its arpeggio';
   @override
@@ -1124,8 +1171,6 @@ class Translations$minigames$en extends Translations$minigames$es {
   String buildMark({required Object string, required Object state}) =>
       'String ${string}: ${state}';
   @override
-  String get micReady => 'I\'m ready';
-  @override
   String get micListening => 'Play now…';
   @override
   String micHeard({required Object note}) => 'I hear: ${note}';
@@ -1249,6 +1294,57 @@ class Translations$minigames$en extends Translations$minigames$es {
   @override
   String get buildMissed =>
       'That is how it is formed. Memorise it and keep going!';
+  @override
+  String get micPracticeNote => 'This one doesn\'t score';
+  @override
+  String get micPlayingMelody => 'Listen to the melody…';
+}
+
+// Path: guitar
+class Translations$guitar$en extends Translations$guitar$es {
+  Translations$guitar$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get ready => 'Play an open string';
+  @override
+  String get waiting => 'Let the last note fade…';
+  @override
+  String get noMic =>
+      'I can\'t hear you: check the microphone or use the buttons';
+  @override
+  String openString({required Object string}) => '${string}, open';
+  @override
+  String get continueLabel => 'Continue';
+  @override
+  String get retry => 'Retry';
+  @override
+  String get leave => 'Leave';
+  @override
+  String get open => 'Open';
+  @override
+  String get previousGame => 'Previous';
+  @override
+  String get nextGame => 'Next';
+  @override
+  String get getReady => 'Get the chord ready';
+  @override
+  String startsIn({required Object n}) => 'Starting in ${n}';
+  @override
+  String get imReady => 'Go!';
+  @override
+  String get setting => 'Control with your guitar';
+  @override
+  String get settingSubtitle =>
+      'Play an open string to continue, retry or leave without touching your phone';
+  @override
+  String get hubTitle => 'Browse with your guitar';
+  @override
+  String get hubSubtitle => 'D: next · A: previous · E: open';
 }
 
 // Path: settings.theme
@@ -1843,6 +1939,39 @@ extension on TranslationsEn {
             required Object level,
           }) => '${label} · Lv ${level}',
           'chordDetail.practice' => 'Practice',
+          'chordDetail.guideTitle' => 'How to place it',
+          'chordDetail.guideLegend' => '1 index · 2 middle · 3 ring · 4 pinky',
+          'chordDetail.guideFinger' => ({
+            required Object fret,
+            required Object string,
+          }) => 'Fret ${fret} · string ${string}',
+          'chordDetail.guideBarre' => ({
+            required Object fret,
+            required Object from,
+            required Object to,
+          }) => 'Barre at fret ${fret} · string ${from} to ${to}',
+          'chordDetail.guidePlay' => ({
+            required Object strings,
+          }) => 'Play: ${strings}',
+          'chordDetail.guideOpen' => ({
+            required Object strings,
+          }) => 'Open: ${strings}',
+          'chordDetail.guideMuted' => ({
+            required Object strings,
+          }) => 'Don\'t play: ${strings}',
+          'chordDetail.guideOpenPosition' => 'Open position, next to the nut',
+          'chordDetail.guideRange' => ({
+            required Object from,
+            required Object to,
+          }) => 'Around frets ${from} to ${to}',
+          'chordDetail.guideSingleFret' => ({
+            required Object fret,
+          }) => 'Around fret ${fret}',
+          'chordDetail.recommended' => 'Start here',
+          'chordDetail.fingerNames.f1' => 'Index',
+          'chordDetail.fingerNames.f2' => 'Middle',
+          'chordDetail.fingerNames.f3' => 'Ring',
+          'chordDetail.fingerNames.f4' => 'Pinky',
           'game.title' => 'Play',
           'game.start' => 'Start streak',
           'game.emptyTitle' => 'Play the chord',
@@ -1877,6 +2006,15 @@ extension on TranslationsEn {
           'game.stringFifth' => '5th',
           'game.stringSixth' => '6th',
           'game.practiceChord' => 'Practice string by string',
+          'game.finishedTitle' => 'Series complete!',
+          'game.finishedMessage' => ({
+            required Object won,
+            required Object total,
+            required Object score,
+          }) => '${won} of ${total} chords · ${score} points',
+          'game.finishedBest' => ({
+            required Object best,
+          }) => 'Your best: ${best} points',
           'chordDiagram.stringLabel' => ({
             required Object number,
             required Object fret,
@@ -1979,7 +2117,7 @@ extension on TranslationsEn {
           'settings.cli' => 'Development CLI',
           'settings.cliCommand' => 'dart run bin/chords_cli.dart db generate',
           'onboarding.slideOneTitle' => 'Every chord, every position',
-          'onboarding.slideOneBody' => '156 chords and 581 verified positions, from the essential open shapes to jazz voicings.',
+          'onboarding.slideOneBody' => '156 chords and 561 verified positions, from the essential open shapes to jazz voicings.',
           'onboarding.slideTwoTitle' =>
             'Listen to every chord and its arpeggio',
           'onboarding.slideTwoBody' => 'We synthesize each string so you can recognise the sound before playing.',
@@ -2363,7 +2501,6 @@ extension on TranslationsEn {
             required Object string,
             required Object state,
           }) => 'String ${string}: ${state}',
-          'minigames.micReady' => 'I\'m ready',
           'minigames.micListening' => 'Play now…',
           'minigames.micHeard' => ({required Object note}) => 'I hear: ${note}',
           'minigames.micProgress' => ({
@@ -2449,6 +2586,9 @@ extension on TranslationsEn {
           'minigames.descriptions.higherLower' => 'Compare two notes',
           'minigames.descriptions.chordQuality' =>
             'Tell major, minor and seventh apart',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.descriptions.nameChord' => 'Listen and name the chord',
           'minigames.descriptions.tuneEar' => 'Flat, in tune or sharp?',
           'minigames.descriptions.memory' => 'Repeat the sequence you hear',
@@ -2471,9 +2611,6 @@ extension on TranslationsEn {
           'minigames.howTo.interval' => 'You will hear two notes in a row, low to high. Recognise the distance between them: third, fifth, octave…',
           'minigames.howTo.higherLower' => 'You will hear two notes. Say whether the first or the second sounds higher. On hard they are almost the same.',
           'minigames.howTo.chordQuality' => 'You will hear a chord. Tell whether it is major (bright), minor (sad), seventh and more as you level up.',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.howTo.nameChord' => 'You will hear a chord from the bank. Pick its name among several similar options.',
           'minigames.howTo.tuneEar' => 'You will hear a reference note and another that may be flat, in tune or sharp. Train your tuner ear.',
           'minigames.howTo.memory' => 'You will hear a sequence of open strings. Tap them in the same order. Each question adds more notes.',
@@ -2522,6 +2659,28 @@ extension on TranslationsEn {
           'minigames.choice.sharp' => 'Sharp (higher)',
           'minigames.buildMissed' =>
             'That is how it is formed. Memorise it and keep going!',
+          'minigames.micPracticeNote' => 'This one doesn\'t score',
+          'minigames.micPlayingMelody' => 'Listen to the melody…',
+          'guitar.ready' => 'Play an open string',
+          'guitar.waiting' => 'Let the last note fade…',
+          'guitar.noMic' =>
+            'I can\'t hear you: check the microphone or use the buttons',
+          'guitar.openString' => ({
+            required Object string,
+          }) => '${string}, open',
+          'guitar.continueLabel' => 'Continue',
+          'guitar.retry' => 'Retry',
+          'guitar.leave' => 'Leave',
+          'guitar.open' => 'Open',
+          'guitar.previousGame' => 'Previous',
+          'guitar.nextGame' => 'Next',
+          'guitar.getReady' => 'Get the chord ready',
+          'guitar.startsIn' => ({required Object n}) => 'Starting in ${n}',
+          'guitar.imReady' => 'Go!',
+          'guitar.setting' => 'Control with your guitar',
+          'guitar.settingSubtitle' => 'Play an open string to continue, retry or leave without touching your phone',
+          'guitar.hubTitle' => 'Browse with your guitar',
+          'guitar.hubSubtitle' => 'D: next · A: previous · E: open',
           _ => null,
         };
   }

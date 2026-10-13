@@ -13,6 +13,8 @@ import 'package:chords/domain/chords/usecases/evaluate_chord_match_use_case.dart
 import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/game/game_score_controller.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -163,4 +165,107 @@ void main() {
     expect(controller.currentRound!.isResolved, isFalse);
     expect(score.score, 0);
   });
+
+  group('cuenta atrás', () {
+    late FakeAudioRepository audio;
+    late GameAudioController tuner;
+
+    GameController build({Duration? readyDelay}) {
+      audio = FakeAudioRepository();
+      tuner = GameAudioController(audio);
+      return GameController(
+        audio,
+        repository,
+        GameScoreController(PreferencesService(_prefs)),
+        tuner,
+        readyDelay: readyDelay,
+      );
+    }
+
+    setUp(() async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      _prefs = await SharedPreferences.getInstance();
+    });
+
+    test('sin retardo configurado no hay cuenta atrás', () {
+      final GameController controller = build()..start(level: 1);
+      expect(controller.readyIn, 0);
+      expect(controller.phase, GamePhase.idle);
+    });
+
+    test('la ronda empieza sola al acabar la cuenta atrás', () async {
+      final GameController controller = build(
+        readyDelay: const Duration(seconds: 1),
+      )..start(level: 1);
+      expect(controller.readyIn, 1);
+      expect(controller.phase, GamePhase.idle);
+
+      await Future<void>.delayed(const Duration(milliseconds: 1300));
+      expect(controller.phase, GamePhase.listening);
+      expect(controller.readyIn, 0);
+      controller.setActive(active: false);
+    });
+
+    test('playRound adelanta la escucha', () async {
+      final GameController controller = build(
+        readyDelay: const Duration(seconds: 3),
+      )..start(level: 1);
+      expect(controller.readyIn, 3);
+
+      unawaited(controller.playRound());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(controller.phase, GamePhase.listening);
+      expect(controller.readyIn, 0);
+      controller.setActive(active: false);
+    });
+
+    test('salir detiene la cuenta atrás y cierra el micrófono', () async {
+      final GameController controller =
+          build(readyDelay: const Duration(seconds: 1))
+            ..start(level: 1)
+            ..setActive(active: false);
+      expect(controller.readyIn, 0);
+      await Future<void>.delayed(const Duration(milliseconds: 1300));
+      expect(controller.phase, GamePhase.idle);
+      expect(audio.stops, greaterThan(0));
+    });
+
+    test(
+      'con la guitarra mantiene el micrófono y lo cierra al salir',
+      () async {
+        audio = FakeAudioRepository();
+        tuner = GameAudioController(audio);
+        final GuitarCommandListener guitar = GuitarCommandListener(audio);
+        final GameController controller = GameController(
+          audio,
+          repository,
+          GameScoreController(PreferencesService(_prefs)),
+          tuner,
+          readyDelay: const Duration(seconds: 3),
+          guitar: guitar,
+          keeper: GuitarMicKeeper(audio, guitar),
+        )..start(level: 1);
+        await pumpEventQueue();
+        expect(audio.requests, 1);
+
+        controller.setActive(active: false);
+        await pumpEventQueue();
+        expect(audio.stops, greaterThan(0));
+        guitar.dispose();
+      },
+    );
+
+    test('al volver a la pantalla se retoma la cuenta atrás', () async {
+      final GameController controller =
+          build(readyDelay: const Duration(seconds: 2))
+            ..start(level: 1)
+            ..setActive(active: false);
+      expect(controller.readyIn, 0);
+      controller.setActive(active: true);
+      expect(controller.readyIn, 2);
+      controller.setActive(active: false);
+    });
+  });
 }
+
+late SharedPreferences _prefs;

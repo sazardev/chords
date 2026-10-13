@@ -7,6 +7,7 @@ import 'package:chords/data/audio/mic_pitch_analyzer.dart';
 import 'package:chords/domain/audio/entities/guitar_string.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/entities/string_tuning.dart';
+import 'package:chords/domain/audio/services/playback_echo_gate.dart';
 import 'package:chords/domain/audio/usecases/analyze_tuning_use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -28,14 +29,25 @@ List<Uint8List> _toPcmChunks(Float64List samples, {double gain = 1}) {
 }
 
 /// Reproduce [samples] por el analizador y devuelve lo que publica.
+///
+/// Con [echoed] el teléfono "reproduce" esa duración al empezar, y la puerta
+/// de eco usa el mismo reloj simulado que el analizador.
 Future<({List<PitchReading> readings, List<double> levels})> _listen(
   Float64List samples, {
   double gain = 1,
+  Duration? echoed,
 }) async {
   int clock = 0;
+  final PlaybackEchoGate gate = PlaybackEchoGate(
+    clock: () => DateTime.fromMillisecondsSinceEpoch(clock),
+  );
+  if (echoed != null) {
+    gate.playbackStarted(echoed);
+  }
   final MicPitchAnalyzer analyzer = MicPitchAnalyzer(
     sampleRate: _sampleRate,
     clock: () => clock,
+    echoGate: gate,
   );
   final List<PitchReading> readings = <PitchReading>[];
   final List<double> levels = <double>[];
@@ -102,5 +114,27 @@ void main() {
     expect(result.readings, isEmpty);
     expect(result.levels, isNotEmpty);
     expect(result.levels.every((double l) => l < 0.05), isTrue);
+  });
+
+  test('no toma por guitarra el sonido que emite el propio móvil', () async {
+    final Float64List samples = synth.synthesizeNote(
+      kStandardTuning[1].frequency,
+      duration: 2,
+    );
+    final ({List<PitchReading> readings, List<double> levels}) result =
+        await _listen(samples, echoed: const Duration(seconds: 2));
+    expect(result.readings, isEmpty);
+    expect(result.levels.every((double l) => l == 0), isTrue);
+  });
+
+  test('tras la reproducción vuelve a oír la guitarra', () async {
+    final Float64List samples = synth.synthesizeNote(
+      kStandardTuning[1].frequency,
+      duration: 3,
+    );
+    final ({List<PitchReading> readings, List<double> levels}) result =
+        await _listen(samples, echoed: const Duration(seconds: 1));
+    expect(result.readings, isNotEmpty);
+    expect(result.readings.first.note, startsWith('A'));
   });
 }

@@ -9,6 +9,7 @@ import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_page.dart';
@@ -95,6 +96,9 @@ void main() {
               value: practice,
             ),
             ChangeNotifierProvider<TunerController>.value(value: tuner),
+            ChangeNotifierProvider<GuitarCommandListener>.value(
+              value: GuitarCommandListener(audio),
+            ),
           ],
           child: MaterialApp.router(routerConfig: router),
         ),

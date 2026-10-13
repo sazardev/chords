@@ -27,6 +27,8 @@ import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/game/game_audio_controller.dart';
 import 'package:chords/presentation/features/game/game_controller.dart';
 import 'package:chords/presentation/features/game/game_score_controller.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
@@ -110,6 +112,19 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
       ChangeNotifierProvider<LearnController>(
         create: (_) => dependencies.learnController,
       ),
+      ..._gameProviders(dependencies),
+      ChangeNotifierProvider<ProfileController>(
+        create: (_) => dependencies.profileController,
+      ),
+      ChangeNotifierProvider<GuitarCommandListener>(
+        create: (_) => dependencies.guitarCommandListener,
+      ),
+      Provider<GuitarMicKeeper>.value(value: dependencies.guitarMicKeeper),
+    ];
+
+/// Providers del juego, los minijuegos, la afinación y la práctica.
+List<SingleChildWidget> _gameProviders(AppDependencies dependencies) =>
+    <SingleChildWidget>[
       ChangeNotifierProvider<GameController>(
         create: (_) => dependencies.gameController,
       ),
@@ -139,9 +154,6 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
       ),
       ChangeNotifierProvider<ChordPracticeController>(
         create: (_) => dependencies.chordPracticeController,
-      ),
-      ChangeNotifierProvider<ProfileController>(
-        create: (_) => dependencies.profileController,
       ),
     ];
 
@@ -203,6 +215,8 @@ class AppDependencies {
     required this.tunerController,
     required this.chordPracticeController,
     required this.profileController,
+    required this.guitarCommandListener,
+    required this.guitarMicKeeper,
   });
 
   /// Crea el grafo de dependencias por defecto.
@@ -215,6 +229,15 @@ class AppDependencies {
     final AppearanceController appearance = AppearanceController(preferences);
     final SettingsController settings = SettingsController(preferences);
     final OnboardingController onboarding = OnboardingController(preferences);
+    final GuitarCommandListener guitarCommands = GuitarCommandListener(
+      audioRepository,
+      onFired: HapticFeedback.mediumImpact,
+    )..enabled = settings.guitarControl;
+    final GuitarMicKeeper guitarMic = GuitarMicKeeper(
+      audioRepository,
+      guitarCommands,
+    );
+    settings.addListener(() => guitarCommands.enabled = settings.guitarControl);
     final ChordFilterController chordFilters = ChordFilterController();
     final ChordsController chords = ChordsController(
       chordRepository,
@@ -228,12 +251,18 @@ class AppDependencies {
     );
     final LearnController learn = LearnController(chordRepository, preferences);
     final GameScoreController gameScore = GameScoreController(preferences);
-    final GameAudioController gameTuner = GameAudioController(audioRepository);
+    final GameAudioController gameTuner = GameAudioController(
+      audioRepository,
+      guitarCommands,
+    );
     final GameController game = GameController(
       audioRepository,
       chordRepository,
       gameScore,
       gameTuner,
+      readyDelay: const Duration(seconds: 4),
+      guitar: guitarCommands,
+      keeper: guitarMic,
     );
     final MiniGameProgressController miniGameProgress =
         MiniGameProgressController(preferences);
@@ -255,6 +284,7 @@ class AppDependencies {
       audioRepository,
       cuePlayer,
       miniGameProgress,
+      guitar: guitarCommands,
     );
     final LiveController live = LiveController(
       audioRepository,
@@ -267,6 +297,7 @@ class AppDependencies {
     final ChordPracticeController practice = ChordPracticeController(
       audioRepository,
       chordRepository,
+      guitar: guitarCommands,
     );
     final ProfileController profile = ProfileController(preferences, settings)
       ..load();
@@ -297,6 +328,8 @@ class AppDependencies {
       tunerController: tuner,
       chordPracticeController: practice,
       profileController: profile,
+      guitarCommandListener: guitarCommands,
+      guitarMicKeeper: guitarMic,
     );
   }
 
@@ -356,4 +389,10 @@ class AppDependencies {
 
   /// Controlador del perfil de la persona.
   final ProfileController profileController;
+
+  /// Oyente que maneja la app con las cuerdas al aire de la guitarra.
+  final GuitarCommandListener guitarCommandListener;
+
+  /// Guardián del micrófono abierto en el catálogo de juegos.
+  final GuitarMicKeeper guitarMicKeeper;
 }

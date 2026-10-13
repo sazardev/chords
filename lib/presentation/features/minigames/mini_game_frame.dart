@@ -89,13 +89,18 @@ class MiniGameFrame extends StatelessWidget {
   }
 
   Widget _content(BuildContext context) => switch (phase) {
-    MiniGamePhase.intro => MiniGameIntroView(kind: kind, onStart: onStart),
+    MiniGamePhase.intro => MiniGameIntroView(
+      kind: kind,
+      onStart: onStart,
+      guitar: kind.usesMic,
+    ),
     MiniGamePhase.finished => MiniGameResultView(
       score: score,
       level: level,
       isNewBest: isNewBest,
       onPlayAgain: onStart,
       onMoreGames: () => context.pop(),
+      guitar: kind.usesMic,
     ),
     _ => bodyBuilder(context),
   };

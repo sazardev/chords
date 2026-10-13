@@ -16,12 +16,20 @@ class SettingsController extends ChangeNotifier {
 
   bool _mirrorChords = false;
   bool _soundEnabled = true;
+  bool _guitarControl = true;
+  bool _guitarBrowse = false;
 
   /// Si los diagramas se muestran en espejo (zurdos).
   bool get mirrorChords => _mirrorChords;
 
   /// Si el sonido de los acordes está activado.
   bool get soundEnabled => _soundEnabled;
+
+  /// Si la app se puede manejar tocando cuerdas al aire con la guitarra.
+  bool get guitarControl => _guitarControl;
+
+  /// Si el catálogo de juegos se recorre tocando cuerdas al aire.
+  bool get guitarBrowse => _guitarBrowse;
 
   /// Cambia el modo espejo para zurdos.
   Future<void> setMirrorChords({required bool value}) async {
@@ -47,10 +55,36 @@ class SettingsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Activa o desactiva el control de la app con la guitarra.
+  Future<void> setGuitarControl({required bool value}) async {
+    if (value == _guitarControl) {
+      return;
+    }
+    _guitarControl = value;
+    await _preferences.setGuitarControlEnabled(value: value);
+    appLogger.debug('ajuste guitar_control=$value');
+    analytics.settingChanged(setting: 'guitar_control', value: value);
+    notifyListeners();
+  }
+
+  /// Activa o desactiva recorrer el catálogo de juegos con la guitarra.
+  Future<void> setGuitarBrowse({required bool value}) async {
+    if (value == _guitarBrowse) {
+      return;
+    }
+    _guitarBrowse = value;
+    await _preferences.setGuitarBrowseEnabled(value: value);
+    appLogger.debug('ajuste guitar_browse=$value');
+    analytics.settingChanged(setting: 'guitar_browse', value: value);
+    notifyListeners();
+  }
+
   /// Carga los valores persistidos.
   Future<void> load() async {
     _mirrorChords = _preferences.mirrorChords;
     _soundEnabled = _preferences.soundEnabled;
+    _guitarControl = _preferences.guitarControlEnabled;
+    _guitarBrowse = _preferences.guitarBrowseEnabled;
     notifyListeners();
   }
 }

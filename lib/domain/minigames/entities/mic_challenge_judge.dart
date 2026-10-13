@@ -32,6 +32,10 @@ class MicChallengeJudge {
   /// Nota que toca ahora; `null` si ya terminó.
   int? get next => isComplete ? null : expected[_progress];
 
+  /// Olvida la nota a medias: se llama tras un sonido que no es de la guitarra
+  /// (p. ej. la referencia que suena por el altavoz).
+  void settle() => _streak = 0;
+
   /// Procesa una lectura; devuelve `true` si acaba de acertar una nota.
   bool feed(PitchReading reading) {
     if (isComplete || !reading.isReliable) {

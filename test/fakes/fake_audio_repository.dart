@@ -34,6 +34,12 @@ class FakeAudioRepository implements AudioRepository {
   @override
   Stream<double> get levels => _levels.stream;
 
+  /// Veces que se pidió acceso al micrófono.
+  int requests = 0;
+
+  /// Veces que se detuvo la escucha.
+  int stops = 0;
+
   /// Estado con el que responde [requestAccess].
   MicStatus accessResult = MicStatus.listening;
 
@@ -62,6 +68,7 @@ class FakeAudioRepository implements AudioRepository {
 
   @override
   Future<MicStatus> requestAccess() async {
+    requests++;
     _status.add(accessResult);
     return accessResult;
   }
@@ -75,7 +82,10 @@ class FakeAudioRepository implements AudioRepository {
   Future<void> startListening() async => _status.add(MicStatus.listening);
 
   @override
-  Future<void> stopListening() async => _status.add(MicStatus.idle);
+  Future<void> stopListening() async {
+    stops++;
+    _status.add(MicStatus.idle);
+  }
 
   @override
   Future<void> playChord(Chord chord, ChordVariant variant) async {

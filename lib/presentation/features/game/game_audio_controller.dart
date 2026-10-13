@@ -7,6 +7,7 @@ import 'package:chords/domain/chords/entities/chord_match_feedback.dart';
 import 'package:chords/domain/chords/entities/practice_string.dart';
 import 'package:chords/domain/chords/usecases/build_chord_feedback_use_case.dart';
 import 'package:chords/domain/chords/usecases/evaluate_chord_match_use_case.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
 import 'package:flutter/foundation.dart';
 
 /// Captura de audio y afinación de una ronda del juego.
@@ -16,12 +17,16 @@ import 'package:flutter/foundation.dart';
 /// —notas acertadas, pendientes, cuerdas que las producen y notas sobrantes—
 /// para que el jugador sepa cómo acomodarse. Desconoce las rondas, la
 /// puntuación y la interfaz.
+///
+/// Si la persona maneja la app con la guitarra, el micrófono se deja abierto
+/// al terminar la ronda para oír su orden; quien cierra la partida lo cierra.
 class GameAudioController extends ChangeNotifier {
   /// Crea el controlador con el repositorio de audio.
-  GameAudioController(this._audio)
+  GameAudioController(this._audio, [this._guitar])
     : _evaluate = const EvaluateChordMatchUseCase();
 
   final AudioRepository _audio;
+  final GuitarCommandListener? _guitar;
   final EvaluateChordMatchUseCase _evaluate;
   final BuildChordFeedbackUseCase _buildFeedback =
       const BuildChordFeedbackUseCase();
@@ -111,10 +116,15 @@ class GameAudioController extends ChangeNotifier {
     notifyListeners();
 
     await Future<void>.delayed(Duration(milliseconds: timeLimitMs));
-    await _audio.stopListening();
     await _release();
+    if (!_keepsMic) {
+      await _audio.stopListening();
+    }
     return true;
   }
+
+  /// Si el micrófono se queda abierto entre rondas para oír órdenes.
+  bool get _keepsMic => _guitar?.enabled ?? false;
 
   Future<void> _release() async {
     await _subscription?.cancel();

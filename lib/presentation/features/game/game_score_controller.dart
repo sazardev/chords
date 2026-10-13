@@ -18,12 +18,16 @@ class GameScoreController extends ChangeNotifier {
   int _score = 0;
   int _streak = 0;
   int _best = 0;
+  int _won = 0;
 
   /// Puntuación de la partida.
   int get score => _score;
 
   /// Racha de aciertos.
   int get streak => _streak;
+
+  /// Rondas superadas (completas o casi) en la serie.
+  int get wonRounds => _won;
 
   /// Mejor puntuación histórica.
   int get bestScore => _best;
@@ -38,6 +42,7 @@ class GameScoreController extends ChangeNotifier {
   void reset() {
     _score = 0;
     _streak = 0;
+    _won = 0;
     notifyListeners();
   }
 
@@ -46,6 +51,7 @@ class GameScoreController extends ChangeNotifier {
     if (result.scored) {
       _score += result.outcome == GameOutcome.success ? 100 : 50;
       _streak++;
+      _won++;
     } else {
       _streak = 0;
     }

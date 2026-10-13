@@ -1,13 +1,18 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:chords/data/audio/guitar_body.dart';
+import 'package:chords/data/audio/guitar_string_voice.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 
-/// Sintetizador de audio de guitararra para posiciones de acorde.
+/// Sintetizador de guitarra para posiciones de acorde, notas y arpegios.
 ///
-/// Usa una cuerda tipo Karplus-Strong por cuerda pulsada: genera un
-/// "pluck" con parciales armónicos y envolvente decreciente, y suma todas las
-/// cuerdas con retardo configurable por cuerda.
+/// Cada cuerda es una voz Karplus-Strong afinada al cent ([GuitarStringVoice]);
+/// las cuerdas se suman con un rasgueo escalonado (de la grave a la aguda, con
+/// una pizca de irregularidad humana), pasan por la caja de resonancia
+/// ([GuitarBody]) y se igualan en volumen con un limitador suave, de modo que
+/// una nota suelta, un acorde y un arpegio suenan igual de fuertes y sin
+/// recortes.
 class ChordAudioSynthesizer {
   /// Crea el sintetizador.
   const ChordAudioSynthesizer({this.sampleRate = 44100});
@@ -18,10 +23,19 @@ class ChordAudioSynthesizer {
   /// Frecuencia de muestreo.
   final int sampleRate;
 
+  /// Nivel RMS al que se igualan todos los sonidos (≈ -16 dBFS).
+  static const double _targetRms = 0.16;
+
+  /// Tope del limitador suave.
+  static const double _ceiling = 0.92;
+
+  /// Milisegundos entre una cuerda y la siguiente en un rasgueo.
+  static const int _strumMs = 13;
+
   /// Sintetiza la posición indicada y devuelve muestras normalizadas.
   ///
   /// [duration] controla la duración total y [offsetsMs] el retardo de cada
-  /// cuerda (rasgueo o arpegio).
+  /// cuerda (rasgueo o arpegio); sin él, un rasgueo hacia abajo.
   Float64List synthesize(
     ChordVariant variant, {
     double duration = 2.5,
@@ -29,35 +43,43 @@ class ChordAudioSynthesizer {
   }) {
     final int total = (sampleRate * duration).round();
     final Float64List mix = Float64List(total);
-    final math.Random random = math.Random(7);
-    final List<int> frets = variant.frets;
-    for (int s = 0; s < frets.length && s < stringTuning.length; s++) {
-      final int fret = frets[s];
-      if (fret < 0) {
+    final List<int?> offsets = offsetsMs ?? _strumOffsets(variant.frets);
+    const GuitarStringVoice voice = GuitarStringVoice();
+    int order = 0;
+    for (int s = 0; s < variant.frets.length && s < stringTuning.length; s++) {
+      final int fret = variant.frets[s];
+      final int? offsetMs = offsets[s];
+      if (fret < 0 || offsetMs == null) {
         continue;
       }
-      final double frequency = midiToFrequency(stringTuning[s] + fret);
-      final double amplitude = s < 3 ? 0.5 : 0.36;
-      final int offset = ((offsetsMs?[s] ?? (s * 8)) * sampleRate / 1000)
-          .round();
+      final int offset = (offsetMs * sampleRate / 1000).round();
       if (offset >= total) {
         continue;
       }
-      final Float64List voice = _pluck(frequency, total - offset, random);
-      for (int i = 0; i < voice.length; i++) {
-        mix[i + offset] += voice[i] * amplitude;
-      }
+      final double frequency = midiToFrequency(stringTuning[s] + fret);
+      final Float64List string = voice.render(
+        frequency,
+        total - offset,
+        velocity: (0.92 - 0.04 * order).clamp(0.6, 1.0),
+        pickPosition: 0.12 + 0.02 * (s % 3),
+        seed: 7 + stringTuning[s] + fret * 31,
+      );
+      _mixIn(mix, string, offset, s < 3 ? 1.0 : 0.82);
+      order++;
     }
-    _normalize(mix);
-    return mix;
+    return _master(mix);
   }
 
   /// Sintetiza una sola cuerda a [frequency] (nota de referencia).
   Float64List synthesizeNote(double frequency, {double duration = 2.2}) {
     final int total = (sampleRate * duration).round();
-    final Float64List mix = _pluck(frequency, total, math.Random(7));
-    _normalize(mix);
-    return mix;
+    final Float64List note = const GuitarStringVoice().render(
+      frequency,
+      total,
+      pickPosition: 0.13,
+      seed: 7 + frequency.round(),
+    );
+    return _master(Float64List.fromList(note));
   }
 
   /// Sintetiza un arpegio: cada cuerda suena según el orden del patrón.
@@ -78,49 +100,70 @@ class ChordAudioSynthesizer {
     return synthesize(variant, duration: duration, offsetsMs: offsets);
   }
 
-  /// Genera una voz de cuerda pulsada con Karplus-Strong.
-  ///
-  /// El delay line se inicializa con parciales armónicos más un toque de
-  /// ruido, de modo que el tono es estable desde el primer ciclo.
-  Float64List _pluck(double frequency, int length, math.Random random) {
-    final int period = math.max(2, (sampleRate / frequency).round());
-    final Float64List buffer = Float64List(period);
-    for (int i = 0; i < period; i++) {
-      final double phase = 2 * math.pi * i / period;
-      buffer[i] =
-          0.62 * math.sin(phase) +
-          0.28 * math.sin(2 * phase) +
-          0.14 * math.sin(3 * phase) +
-          (random.nextDouble() * 2 - 1) * 0.08;
+  /// Retardos de un rasgueo hacia abajo: la primera cuerda que suena arranca
+  /// en 0 y cada una siguiente llega unos milisegundos después, con un ligero
+  /// desorden fijo para que no suene a máquina.
+  List<int?> _strumOffsets(List<int> frets) {
+    final List<int?> offsets = List<int?>.filled(frets.length, null);
+    int order = 0;
+    for (int s = 0; s < frets.length; s++) {
+      if (frets[s] < 0) {
+        continue;
+      }
+      final int jitter = order == 0 ? 0 : ((s * 7 + frets[s] * 3) % 5) - 2;
+      offsets[s] = math.max(0, order * _strumMs + jitter);
+      order++;
     }
-    final double gain = (400.0 / period).clamp(0.05, 0.6);
-    final Float64List out = Float64List(length);
-    int index = 0;
-    for (int i = 0; i < length; i++) {
-      final int nextIndex = (index + 1) % period;
-      final double current = buffer[index];
-      buffer[index] = 0.5 * (current + buffer[nextIndex]) * 0.996;
-      out[i] = current * gain * math.exp(-i / (sampleRate * 1.4));
-      index = nextIndex;
-    }
-    return out;
+    return offsets;
   }
 
-  void _normalize(Float64List samples) {
-    double peak = 0;
-    for (final double value in samples) {
-      final double abs = value.abs();
-      if (abs > peak) {
-        peak = abs;
+  /// Suma [voice] a [mix] desde [offset] con ganancia [weight].
+  ///
+  /// Cada voz se iguala antes a un mismo nivel, para que ninguna cuerda tape
+  /// a las demás solo por cómo se generó su ruido.
+  void _mixIn(Float64List mix, Float64List voice, int offset, double weight) {
+    final double scale = weight / math.max(1e-9, _rms(voice, 0.4));
+    for (int i = 0; i < voice.length && i + offset < mix.length; i++) {
+      mix[i + offset] += voice[i] * scale;
+    }
+  }
+
+  /// Caja, nivel, limitador y fundidos: lo que convierte la mezcla en sonido.
+  Float64List _master(Float64List mix) {
+    final Float64List body = GuitarBody(sampleRate: sampleRate).process(mix);
+    final double gain = _targetRms / math.max(1e-9, _rms(body, 1.2));
+    final int fadeIn = (sampleRate * 0.002).round();
+    final int fadeOut = (sampleRate * 0.12).round();
+    for (int i = 0; i < body.length; i++) {
+      double value = _ceiling * _tanh(body[i] * gain / _ceiling);
+      if (i < fadeIn) {
+        value *= i / fadeIn;
       }
+      final int fromEnd = body.length - 1 - i;
+      if (fromEnd < fadeOut) {
+        value *= fromEnd / fadeOut;
+      }
+      body[i] = value;
     }
-    if (peak <= 0) {
-      return;
+    return body;
+  }
+
+  /// Nivel RMS de los primeros [seconds] segundos de [samples].
+  double _rms(Float64List samples, double seconds) {
+    final int count = math.min(samples.length, (sampleRate * seconds).round());
+    if (count == 0) {
+      return 0;
     }
-    final double scale = 0.9 / peak;
-    for (int i = 0; i < samples.length; i++) {
-      samples[i] *= scale;
+    double energy = 0;
+    for (int i = 0; i < count; i++) {
+      energy += samples[i] * samples[i];
     }
+    return math.sqrt(energy / count);
+  }
+
+  double _tanh(double x) {
+    final double e = math.exp(2 * x.clamp(-20.0, 20.0));
+    return (e - 1) / (e + 1);
   }
 
   /// Convierte una nota MIDI a frecuencia en Hz.

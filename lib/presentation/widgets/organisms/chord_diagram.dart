@@ -123,7 +123,7 @@ class _ChordDiagramPainter extends CustomPainter {
     final double bottomPad = names == null ? 10 : 26;
     final double spacing = (size.width - horizontal * 2) / (_stringCount - 1);
     final double rowHeight = (size.height - topPad - bottomPad) / _visibleFrets;
-    final int startFret = variant.baseFret == 0 ? 1 : variant.baseFret;
+    final int startFret = _startFret();
 
     final Paint stringPaint = Paint()
       ..color = colors.mutedString.withValues(alpha: 0.6)
@@ -141,7 +141,7 @@ class _ChordDiagramPainter extends CustomPainter {
       canvas.drawLine(
         Offset(horizontal, y),
         Offset(size.width - horizontal, y),
-        i == 0 ? nutPaint : fretPaint,
+        i == 0 && startFret == 1 ? nutPaint : fretPaint,
       );
     }
     for (int s = 0; s < _stringCount; s++) {
@@ -172,6 +172,19 @@ class _ChordDiagramPainter extends CustomPainter {
     _drawMarkers(canvas, horizontal, spacing, topPad);
     _drawBarre(canvas, horizontal, spacing, topPad, rowHeight, startFret);
     _drawDots(canvas, horizontal, spacing, topPad, rowHeight, startFret);
+  }
+
+  /// Primer traste dibujado: la cejuela si todo cabe en los cinco primeros
+  /// trastes (así una posición abierta se ve junto a la cejuela) y, si no, el
+  /// traste más bajo que se pisa.
+  int _startFret() {
+    final int highest = variant.frets.fold<int>(
+      0,
+      (int top, int fret) => fret > top ? fret : top,
+    );
+    return highest <= _visibleFrets || variant.baseFret == 0
+        ? 1
+        : variant.baseFret;
   }
 
   void _drawMarkers(

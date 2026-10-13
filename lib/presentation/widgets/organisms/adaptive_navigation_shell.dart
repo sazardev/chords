@@ -3,6 +3,7 @@ import 'dart:async' show unawaited;
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
@@ -33,6 +34,9 @@ class _AdaptiveNavigationShellState extends State<AdaptiveNavigationShell> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.shell.currentIndex != widget.shell.currentIndex) {
       _stopLiveIfLeaving(widget.shell.currentIndex);
+      if (kNavigationDestinations[oldWidget.shell.currentIndex] == kGamePath) {
+        unawaited(context.read<GuitarMicKeeper>().close());
+      }
     }
   }
 

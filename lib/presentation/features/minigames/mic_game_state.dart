@@ -24,6 +24,8 @@ class MicGameState {
     this.score = const MiniGameScore(),
     this.wasCorrect = false,
     this.isNewBest = false,
+    this.playingCue = false,
+    this.retried = false,
   });
 
   /// Juego en curso.
@@ -65,6 +67,12 @@ class MicGameState {
   /// Si la partida terminada es un récord.
   final bool isNewBest;
 
+  /// Si suena la referencia (la melodía del eco) antes de escuchar.
+  final bool playingCue;
+
+  /// Si el reto actual se repite tras un fallo: no vuelve a puntuar.
+  final bool retried;
+
   /// Reto actual; `null` fuera de partida.
   MicChallenge? get challenge =>
       index < challenges.length ? challenges[index] : null;
@@ -84,6 +92,9 @@ class MicGameState {
     MiniGameScore? score,
     bool? wasCorrect,
     bool? isNewBest,
+    bool? playingCue,
+    bool? retried,
+    bool clearHeard = false,
   }) => MicGameState(
     kind: kind,
     level: level,
@@ -91,12 +102,14 @@ class MicGameState {
     challenges: challenges,
     index: index ?? this.index,
     progress: progress ?? this.progress,
-    heard: heard ?? this.heard,
+    heard: clearHeard ? null : (heard ?? this.heard),
     level01: level01 ?? this.level01,
     msLeft: msLeft ?? this.msLeft,
     micStatus: micStatus ?? this.micStatus,
     score: score ?? this.score,
     wasCorrect: wasCorrect ?? this.wasCorrect,
     isNewBest: isNewBest ?? this.isNewBest,
+    playingCue: playingCue ?? this.playingCue,
+    retried: retried ?? this.retried,
   );
 }

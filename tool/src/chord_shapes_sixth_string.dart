@@ -99,7 +99,7 @@ const List<MovableShapeSpec> kSixthStringShapes = <MovableShapeSpec>[
     positionLabel: 'Power cuerda 6',
     fretOffsets: <int?>[0, 2, 2, null, null, null],
     fingersOpen: <int>[0, 1, 1, 0, 0, 0],
-    fingersBarre: <int>[1, 1, 1, 0, 0, 0],
+    fingersBarre: <int>[1, 3, 4, 0, 0, 0],
     difficultyOpen: 1,
     difficultyBarre: 2,
     tags: <String>['movable', 'power'],

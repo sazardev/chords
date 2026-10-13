@@ -6,6 +6,7 @@ import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
 import 'package:chords/domain/chords/entities/practice_string.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -90,6 +91,54 @@ void main() {
     expect(controller.session?.isComplete, isTrue);
     await _settle();
     expect(controller.status, MicStatus.idle);
+  });
+
+  group('con órdenes de guitarra', () {
+    late ChordPracticeController guided;
+    late GuitarCommandListener guitar;
+
+    setUp(() {
+      guitar = GuitarCommandListener(audio);
+      guided = ChordPracticeController(
+        audio,
+        FakeChordRepository(<Chord>[cMajor]),
+        silenceGap: const Duration(milliseconds: 20),
+        guitar: guitar,
+      );
+    });
+
+    tearDown(() {
+      guided.dispose();
+      guitar.dispose();
+    });
+
+    Future<void> playAll() async {
+      await guided.open('C-maj', 0);
+      await guided.start();
+      await pluck(_note(5, 3));
+      await pluck(_note(4, 2));
+      await pluck(_note(3, 0));
+      await pluck(_note(2, 1));
+      await pluck(_note(1, 0));
+    }
+
+    test('al completar el acorde el micrófono sigue abierto', () async {
+      await playAll();
+      expect(guided.session?.isComplete, isTrue);
+      expect(guided.status, MicStatus.listening);
+      expect(audio.stops, 0);
+
+      await guided.stop();
+      expect(audio.stops, 1);
+    });
+
+    test('repetir ignora la nota con la que se dio la orden', () async {
+      await playAll();
+      await guided.start(settle: true);
+      expect(guided.session?.matchedCount, 0);
+      await pluck(_note(5, 3));
+      expect(guided.session?.matchedCount, 0);
+    });
   });
 
   test('una cuerda mal pulsada deja un consejo en la cuerda en foco', () async {

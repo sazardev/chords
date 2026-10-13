@@ -8,7 +8,9 @@ import 'package:chords/domain/minigames/entities/mic_challenge_judge.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/usecases/build_minigame_use_cases.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
 import 'package:chords/presentation/features/minigames/mic_game_state.dart';
+import 'package:chords/presentation/features/minigames/mic_listening.dart';
 import 'package:chords/presentation/features/minigames/mini_game_phase.dart';
 import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
 import 'package:chords/presentation/features/minigames/sound_cue_player.dart';
@@ -18,31 +20,38 @@ import 'package:flutter/foundation.dart';
 ///
 /// Responsabilidad única: pedir el reto, escuchar el micrófono mientras corre
 /// el tiempo y decidir si se superó, apoyándose en [MicChallengeJudge].
+///
+/// La partida fluye sola para que la persona no suelte la guitarra: cada reto
+/// empieza a escuchar en cuanto aparece (el eco antes reproduce su melodía) y
+/// el micrófono se queda abierto al resolverlo, de modo que el reto siguiente,
+/// repetir o salir se pueden ordenar tocando cuerdas al aire. El micrófono se
+/// cierra al salir de la partida.
 class MicGameController extends ChangeNotifier {
-  /// Crea el controlador con sus colaboradores.
+  /// Crea el controlador; [guitar] se silencia mientras suena la referencia.
   MicGameController(
     this._audio,
     this._player,
     this._progress, {
     BuildMicChallengesUseCase? buildChallenges,
     this.confirmations = 3,
-  }) : _build = buildChallenges ?? BuildMicChallengesUseCase();
+    this._guitar,
+  }) : _build = buildChallenges ?? BuildMicChallengesUseCase(),
+       _listening = MicListening(_audio, confirmations: confirmations);
 
   final AudioRepository _audio;
   final SoundCuePlayer _player;
   final MiniGameProgressController _progress;
   final BuildMicChallengesUseCase _build;
+  final GuitarCommandListener? _guitar;
+  final MicListening _listening;
 
   /// Lecturas seguidas que confirman una nota.
   final int confirmations;
 
-  static const Duration _tick = Duration(milliseconds: 250);
-
   MicGameState _state = const MicGameState(kind: MiniGameKind.playNote);
-  MicChallengeJudge? _judge;
-  StreamSubscription<PitchReading>? _readings;
-  StreamSubscription<double>? _levels;
-  Timer? _timer;
+  Future<void>? _starting;
+  int _run = 0;
+  int _cuesPlaying = 0;
 
   /// Estado actual de la partida.
   MicGameState get state => _state;
@@ -50,10 +59,16 @@ class MicGameController extends ChangeNotifier {
   /// Prepara la pantalla de bienvenida de un juego.
   ///
   /// No avisa a los oyentes: la pantalla que lo llama aún se está creando.
+  /// Si se maneja la app con la guitarra abre ya el micrófono, para que la
+  /// bienvenida también responda a las cuerdas.
   void open(MiniGameKind kind) {
-    unawaited(_stopListening());
+    _run++;
+    _listening.stop();
     _player.cancel();
     _state = MicGameState(kind: kind);
+    if (_guitar?.enabled ?? false) {
+      unawaited(_audio.requestAccess());
+    }
   }
 
   /// Empieza una partida en la dificultad indicada.
@@ -67,57 +82,56 @@ class MicGameController extends ChangeNotifier {
     );
     _progress.started(kind, level);
     notifyListeners();
+    unawaited(_begin());
   }
 
   /// Reproduce la nota o la melodía de referencia del reto.
+  ///
+  /// El micrófono sigue abierto pero no se juzga lo que suena por el altavoz.
   Future<void> hear() async {
     final MicChallenge? challenge = _state.challenge;
-    if (challenge != null) {
-      await _player.play(challenge.cues);
+    if (challenge == null) {
+      return;
+    }
+    _cuesPlaying++;
+    _guitar?.muteFor(_player.lengthOf(challenge.cues));
+    await _player.play(challenge.cues);
+    _cuesPlaying--;
+    if (_cuesPlaying == 0) {
+      _listening.judge?.settle();
     }
   }
 
-  /// Empieza a escuchar la guitarra; reintenta si el micrófono falló.
-  Future<void> listen() async {
-    final MicChallenge? challenge = _state.challenge;
-    if (challenge == null || _state.phase == MiniGamePhase.listening) {
-      return;
-    }
-    _player.cancel();
-    _judge = MicChallengeJudge(
-      challenge.pitchClasses,
-      confirmations: confirmations,
-    );
-    await _readings?.cancel();
-    _readings = _audio.readings.listen(_onReading);
-    await _levels?.cancel();
-    _levels = _audio.levels.listen(_onLevel);
-    final MicStatus status = await _audio.requestAccess();
-    if (status != MicStatus.listening) {
-      _state = _state.copyWith(micStatus: status, phase: MiniGamePhase.asking);
-      notifyListeners();
-      await _stopListening();
-      return;
-    }
-    _state = _state.copyWith(
-      phase: MiniGamePhase.listening,
-      micStatus: status,
-      progress: 0,
-      msLeft: challenge.timeLimitMs,
-    );
-    _timer?.cancel();
-    _timer = Timer.periodic(_tick, (_) => _onTick());
-    notifyListeners();
-  }
+  /// Empieza a escuchar la guitarra (llamadas seguidas comparten la espera).
+  Future<void> listen() => _starting ??= _listen().whenComplete(() {
+    _starting = null;
+  });
 
   /// Da el reto por fallado y pasa al resultado (la persona se rinde).
   Future<void> skip() => _resolve(isCorrect: false);
+
+  /// Repite el reto fallado: vuelve a escuchar sin volver a puntuar.
+  Future<void> retry() async {
+    if (_state.phase != MiniGamePhase.feedback || _state.wasCorrect) {
+      return;
+    }
+    _run++;
+    _state = _state.copyWith(
+      phase: MiniGamePhase.asking,
+      progress: 0,
+      retried: true,
+      clearHeard: true,
+    );
+    notifyListeners();
+    await _begin();
+  }
 
   /// Pasa al reto siguiente o termina la partida.
   Future<void> next() async {
     if (_state.phase != MiniGamePhase.feedback) {
       return;
     }
+    _run++;
     if (_state.index + 1 >= _state.total) {
       final bool record = await _progress.finished(
         _state.kind,
@@ -128,25 +142,78 @@ class MicGameController extends ChangeNotifier {
         phase: MiniGamePhase.finished,
         isNewBest: record,
       );
-    } else {
-      _state = _state.copyWith(
-        phase: MiniGamePhase.asking,
-        index: _state.index + 1,
-        progress: 0,
-      );
+      notifyListeners();
+      return;
     }
+    _state = _state.copyWith(
+      phase: MiniGamePhase.asking,
+      index: _state.index + 1,
+      progress: 0,
+      retried: false,
+      clearHeard: true,
+    );
     notifyListeners();
+    await _begin();
   }
 
   /// Sale de la partida: corta el sonido y el micrófono sin avisar.
   void leave() {
+    _run++;
     _player.cancel();
-    unawaited(_stopListening());
+    unawaited(_stopMic());
+  }
+
+  /// Arranca el reto actual: el eco suena primero y luego se escucha.
+  Future<void> _begin() async {
+    final MicChallenge? challenge = _state.challenge;
+    if (challenge == null) {
+      return;
+    }
+    final int run = _run;
+    if (challenge.isSequence) {
+      _state = _state.copyWith(playingCue: true);
+      notifyListeners();
+      await hear();
+      if (run != _run) {
+        return;
+      }
+      _state = _state.copyWith(playingCue: false);
+    }
+    await listen();
+  }
+
+  Future<void> _listen() async {
+    final MicChallenge? challenge = _state.challenge;
+    if (challenge == null || _state.phase != MiniGamePhase.asking) {
+      return;
+    }
+    _player.cancel();
+    final MicStatus status = await _listening.start(
+      challenge,
+      onReading: _onReading,
+      onLevel: _onLevel,
+      onTick: _onTick,
+    );
+    if (status != MicStatus.listening) {
+      _state = _state.copyWith(micStatus: status, phase: MiniGamePhase.asking);
+      notifyListeners();
+      await _audio.stopListening();
+      return;
+    }
+    _state = _state.copyWith(
+      phase: MiniGamePhase.listening,
+      micStatus: status,
+      progress: 0,
+      msLeft: challenge.timeLimitMs,
+    );
+    notifyListeners();
   }
 
   void _onReading(PitchReading reading) {
-    final MicChallengeJudge? judge = _judge;
-    if (judge == null || _state.phase != MiniGamePhase.listening) {
+    final MicChallengeJudge? judge = _listening.judge;
+    if (judge == null ||
+        _state.phase != MiniGamePhase.listening ||
+        _cuesPlaying > 0) {
       return;
     }
     judge.feed(reading);
@@ -169,7 +236,7 @@ class MicGameController extends ChangeNotifier {
     if (_state.phase != MiniGamePhase.listening) {
       return;
     }
-    final int left = _state.msLeft - _tick.inMilliseconds;
+    final int left = _state.msLeft - MicListening.tick.inMilliseconds;
     if (left <= 0) {
       unawaited(_resolve(isCorrect: false));
       return;
@@ -178,41 +245,31 @@ class MicGameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Cierra el reto. El micrófono sigue abierto para oír la orden siguiente.
   Future<void> _resolve({required bool isCorrect}) async {
     if (_state.phase == MiniGamePhase.feedback) {
       return;
     }
-    _timer?.cancel();
-    _timer = null;
+    _listening.stop();
     _state = _state.copyWith(
       phase: MiniGamePhase.feedback,
       wasCorrect: isCorrect,
-      score: _state.score.record(isCorrect: isCorrect),
+      score: _state.retried
+          ? _state.score
+          : _state.score.record(isCorrect: isCorrect),
       level01: 0,
     );
     notifyListeners();
-    await _stopListening();
   }
 
-  Future<void> _stopListening() async {
-    final bool wasListening = _judge != null;
-    _timer?.cancel();
-    _timer = null;
-    _judge = null;
-    await _readings?.cancel();
-    _readings = null;
-    await _levels?.cancel();
-    _levels = null;
-    if (wasListening) {
-      await _audio.stopListening();
-    }
+  Future<void> _stopMic() async {
+    _listening.stop();
+    await _audio.stopListening();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    unawaited(_readings?.cancel());
-    unawaited(_levels?.cancel());
+    _listening.stop();
     super.dispose();
   }
 }

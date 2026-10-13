@@ -1,14 +1,18 @@
 import 'dart:async' show unawaited;
 
+import 'package:chords/domain/audio/entities/guitar_command.dart';
 import 'package:chords/domain/chords/entities/chord_practice_session.dart';
 import 'package:chords/domain/chords/entities/practice_string.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_command_bar.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:chords/presentation/features/practice/practice_retune_sheet.dart';
 import 'package:chords/presentation/l10n/tuner_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// Guía de la práctica: qué tocar ahora, el consejo si falló y los botones.
 class PracticeGuide extends StatelessWidget {
@@ -191,20 +195,26 @@ class _DoneCard extends StatelessWidget {
             overflow: TextOverflow.visible,
           ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
-            children: <Widget>[
-              FilledButton.icon(
-                onPressed: controller.start,
-                icon: const Icon(Icons.replay_rounded),
-                label: Text(t.practice.restart),
+          GuitarCommandBar(
+            actions: <GuitarAction>[
+              GuitarAction(
+                command: GuitarCommand.retry,
+                label: t.practice.restart,
+                icon: Icons.replay_rounded,
+                emphasized: true,
+                onTrigger: () => unawaited(controller.start(settle: true)),
               ),
-              FilledButton.tonalIcon(
-                onPressed: controller.playChord,
-                icon: const Icon(Icons.play_arrow_rounded),
-                label: Text(t.practice.listenChord),
+              GuitarAction(
+                command: GuitarCommand.listen,
+                label: t.practice.listenChord,
+                icon: Icons.play_arrow_rounded,
+                onTrigger: () => unawaited(controller.playChord()),
+              ),
+              GuitarAction(
+                command: GuitarCommand.exit,
+                label: t.guitar.leave,
+                icon: Icons.logout_rounded,
+                onTrigger: () => context.pop(),
               ),
             ],
           ),

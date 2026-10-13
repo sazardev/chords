@@ -79,6 +79,77 @@ void main() {
       expect(audio.tones.length, challenge.cues.length);
     });
 
+    test('start escucha solo, sin pulsar nada', () async {
+      await begin(MiniGameKind.playNote);
+      await pumpEventQueue();
+      expect(mic.state.phase, MiniGamePhase.listening);
+      expect(audio.requests, 1);
+    });
+
+    test(
+      'el micrófono sigue abierto al resolver y se cierra al salir',
+      () async {
+        final MicChallenge challenge = await begin(MiniGameKind.playNote);
+        await pumpEventQueue();
+        await play(challenge.pitchClasses.single);
+        expect(mic.state.phase, MiniGamePhase.feedback);
+        expect(audio.stops, 0);
+
+        mic.leave();
+        await pumpEventQueue();
+        expect(audio.stops, 1);
+      },
+    );
+
+    test('al fallar se repite el reto sin volver a puntuar', () async {
+      final MicChallenge challenge = await begin(MiniGameKind.playNote);
+      await pumpEventQueue();
+      await mic.skip();
+      expect(mic.state.score.total, 1);
+
+      await mic.retry();
+      expect(mic.state.phase, MiniGamePhase.listening);
+      expect(mic.state.retried, isTrue);
+      expect(mic.state.index, 0);
+
+      await play(challenge.pitchClasses.single);
+      expect(mic.state.phase, MiniGamePhase.feedback);
+      expect(mic.state.wasCorrect, isTrue);
+      expect(mic.state.score.total, 1);
+      expect(mic.state.score.correct, 0);
+
+      await mic.next();
+      expect(mic.state.retried, isFalse);
+      expect(mic.state.index, 1);
+    });
+
+    test('un reto superado no se puede repetir', () async {
+      final MicChallenge challenge = await begin(MiniGameKind.playNote);
+      await pumpEventQueue();
+      await play(challenge.pitchClasses.single);
+      await mic.retry();
+      expect(mic.state.phase, MiniGamePhase.feedback);
+      expect(mic.state.retried, isFalse);
+    });
+
+    test('next pasa solo al reto siguiente y empieza a escuchar', () async {
+      final MicChallenge challenge = await begin(MiniGameKind.playNote);
+      await pumpEventQueue();
+      await play(challenge.pitchClasses.single);
+      await mic.next();
+      await pumpEventQueue();
+      expect(mic.state.index, 1);
+      expect(mic.state.phase, MiniGamePhase.listening);
+    });
+
+    test('el eco suena la melodía y luego escucha', () async {
+      final MicChallenge challenge = await begin(MiniGameKind.echo);
+      await pumpEventQueue();
+      expect(audio.tones.length, challenge.cues.length);
+      expect(mic.state.playingCue, isFalse);
+      expect(mic.state.phase, MiniGamePhase.listening);
+    });
+
     test('tocar la nota pedida supera el reto', () async {
       final MicChallenge challenge = await begin(MiniGameKind.playNote);
       await mic.listen();

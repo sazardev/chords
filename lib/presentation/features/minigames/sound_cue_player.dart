@@ -48,6 +48,14 @@ class SoundCuePlayer {
     }
   }
 
+  /// Lo que tarda en dejar de sonar [cues]: sus esperas más la cola de la
+  /// última nota (≈ 2,2 s al sonar).
+  Duration lengthOf(List<SoundCue> cues) => Duration(
+    milliseconds:
+        cues.fold<int>(0, (int total, SoundCue cue) => total + cue.delayMs) +
+        2400,
+  );
+
   /// Interrumpe la reproducción en curso.
   void cancel() => _run++;
 

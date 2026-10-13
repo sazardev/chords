@@ -165,6 +165,12 @@ class _SoundSection extends StatelessWidget {
           title: Text(t.settings.chordSound),
           subtitle: Text(t.settings.chordSoundSubtitle),
         ),
+        SwitchListTile(
+          value: settings.guitarControl,
+          onChanged: (bool value) => settings.setGuitarControl(value: value),
+          title: Text(t.guitar.setting),
+          subtitle: Text(t.guitar.settingSubtitle),
+        ),
       ],
     );
   }

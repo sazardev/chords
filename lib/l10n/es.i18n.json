@@ -92,7 +92,24 @@
     "positions": "Posiciones",
     "notes": "Notas: $notes",
     "arpeggioChip": "$label · Nv $level",
-    "practice": "Practicar"
+    "practice": "Practicar",
+    "guideTitle": "Cómo colocarlo",
+    "guideLegend": "1 índice · 2 medio · 3 anular · 4 meñique",
+    "guideFinger": "Traste $fret · cuerda $string",
+    "guideBarre": "Cejillo en el traste $fret · de la $from a la $to",
+    "guidePlay": "Toca: $strings",
+    "guideOpen": "Al aire: $strings",
+    "guideMuted": "No toques: $strings",
+    "guideOpenPosition": "Posición abierta, junto a la cejuela",
+    "guideRange": "Zona de los trastes $from a $to",
+    "guideSingleFret": "Zona del traste $fret",
+    "recommended": "Para empezar",
+    "fingerNames(map)": {
+      "f1": "Índice",
+      "f2": "Medio",
+      "f3": "Anular",
+      "f4": "Meñique"
+    }
   },
   "game": {
     "title": "Jugar",
@@ -119,7 +136,10 @@
     "stringFourth": "4ª",
     "stringFifth": "5ª",
     "stringSixth": "6ª",
-    "practiceChord": "Practicar cuerda a cuerda"
+    "practiceChord": "Practicar cuerda a cuerda",
+    "finishedTitle": "¡Serie completa!",
+    "finishedMessage": "$won de $total acordes · $score puntos",
+    "finishedBest": "Tu récord: $best puntos"
   },
   "chordDiagram": {
     "stringLabel": "cuerda $number: $fret",
@@ -223,7 +243,7 @@
   },
   "onboarding": {
     "slideOneTitle": "Todos los acordes, todas las posiciones",
-    "slideOneBody": "156 acordes y 581 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.",
+    "slideOneBody": "156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.",
     "slideTwoTitle": "Escucha cada acorde y su arpegio",
     "slideTwoBody": "Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.",
     "slideThreeTitle": "Aprende por niveles y practica",
@@ -525,7 +545,6 @@
     "buildOpen": "Al aire",
     "buildCell": "Cuerda $string, traste $fret",
     "buildMark": "Cuerda $string: $state",
-    "micReady": "Estoy listo",
     "micListening": "Toca ahora…",
     "micHeard": "Oigo: $note",
     "micProgress": "$done de $total notas",
@@ -656,6 +675,27 @@
       "inTune": "Afinada",
       "sharp": "Alta (más aguda)"
     },
-    "buildMissed": "Así se forma. ¡Memorízalo y sigue!"
+    "buildMissed": "Así se forma. ¡Memorízalo y sigue!",
+    "micPracticeNote": "Esta vez no suma puntos",
+    "micPlayingMelody": "Escucha la melodía…"
+  },
+  "guitar": {
+    "ready": "Toca una cuerda al aire",
+    "waiting": "Deja que se apague la nota…",
+    "noMic": "No te oigo: revisa el micrófono o usa los botones",
+    "openString": "$string al aire",
+    "continueLabel": "Continuar",
+    "retry": "Reintentar",
+    "leave": "Salir",
+    "open": "Abrir",
+    "previousGame": "Anterior",
+    "nextGame": "Siguiente",
+    "getReady": "Prepara el acorde",
+    "startsIn": "Empiezo en $n",
+    "imReady": "¡Ya!",
+    "setting": "Controlar con la guitarra",
+    "settingSubtitle": "Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil",
+    "hubTitle": "Navegar con la guitarra",
+    "hubSubtitle": "Re: siguiente · La: anterior · Mi: abrir"
   }
 }
