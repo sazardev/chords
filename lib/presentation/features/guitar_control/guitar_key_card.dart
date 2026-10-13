@@ -227,3 +227,64 @@ class _NoteBadge extends StatelessWidget {
     );
   }
 }
+
+/// Las tarjetas de acción: en una fila, en dos columnas o a todo el ancho.
+///
+/// Con [compact] van todas en una sola fila de tarjetas apiladas.
+class GuitarKeys extends StatelessWidget {
+  /// Crea la fila de tarjetas de [actions].
+  const GuitarKeys({
+    required this.actions,
+    required this.listener,
+    super.key,
+    this.compact = false,
+  });
+
+  /// Acciones que se dibujan.
+  final List<GuitarAction> actions;
+
+  /// Oyente que da el estado de cada tarjeta.
+  final GuitarCommandListener listener;
+
+  /// Si se apilan todas en una sola fila.
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    const double gap = 8;
+    if (compact) {
+      return Row(
+        children: <Widget>[
+          for (int i = 0; i < actions.length; i++) ...<Widget>[
+            if (i > 0) const SizedBox(width: gap),
+            Expanded(
+              child: GuitarKeyCard(
+                action: actions[i],
+                listener: listener,
+                compact: true,
+              ),
+            ),
+          ],
+        ],
+      );
+    }
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints box) {
+        final double width = actions.length == 1
+            ? box.maxWidth
+            : (box.maxWidth - gap) / 2;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: <Widget>[
+            for (final GuitarAction action in actions)
+              SizedBox(
+                width: width,
+                child: GuitarKeyCard(action: action, listener: listener),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}

@@ -78,36 +78,43 @@ class WelcomeStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final ThemeData theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Entrance(child: _FloatingGuitars()),
-          const SizedBox(height: 32),
-          Entrance(
-            index: 2,
-            child: Text(
-              t.onboarding.welcomeTitle,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w800,
+    // Centrada si cabe y desplazable si la pantalla es baja.
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints box) =>
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: box.maxHeight - 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Entrance(child: _FloatingGuitars()),
+                  const SizedBox(height: 32),
+                  Entrance(
+                    index: 2,
+                    child: Text(
+                      t.onboarding.welcomeTitle,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Entrance(
+                    index: 3,
+                    child: Text(
+                      t.onboarding.welcomeBody,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 12),
-          Entrance(
-            index: 3,
-            child: Text(
-              t.onboarding.welcomeBody,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

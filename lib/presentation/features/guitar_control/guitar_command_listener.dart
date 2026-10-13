@@ -6,6 +6,8 @@ import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/audio/services/guitar_command_detector.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_listen_state.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_mic_feed.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_nav_sink.dart';
 import 'package:flutter/foundation.dart';
 
 /// Escucha la guitarra para manejar la app sin tocar la pantalla.
@@ -16,45 +18,55 @@ import 'package:flutter/foundation.dart';
 /// sigue siendo su dueño. Mientras se oye la propia app (la referencia que
 /// suena por el altavoz) se silencia con [muteFor] para que no se tome por una
 /// orden.
+///
+/// Las notas que no son una orden de la pantalla pasan al menú global
+/// (`GuitarNavSink`): la nota aguda lo abre o lo cierra y, con el menú
+/// abierto, las órdenes de la pantalla se pausan y cada nota elige una opción.
+/// Con el modo global encendido escucha aunque la pantalla no tenga acciones.
 class GuitarCommandListener extends ChangeNotifier {
-  /// Crea el oyente sobre [_audio].
+  /// Crea el oyente sobre [audio].
   ///
-  /// [clock] y [detector] permiten controlar el tiempo en las pruebas;
-  /// [onFired] da un aviso táctil al reconocer una orden.
+  /// [clock] y [detector] permiten controlar el tiempo en las pruebas; [nav]
+  /// es el menú global que recibe las notas que no son órdenes y [onFired]
+  /// da un aviso táctil al reconocer una orden.
   GuitarCommandListener(
-    this._audio, {
+    AudioRepository audio, {
     DateTime Function()? clock,
     GuitarCommandDetector? detector,
+    GuitarNavSink? nav,
     this.onFired,
-  }) : _clock = clock ?? DateTime.now,
-       _detector = detector ?? GuitarCommandDetector();
+  }) : _nav = nav,
+       _clock = clock ?? DateTime.now,
+       _feed = GuitarMicFeed(audio, clock: clock),
+       _detector = detector ?? GuitarCommandDetector() {
+    nav?.addListener(_onNavChanged);
+  }
 
-  final AudioRepository _audio;
   final DateTime Function() _clock;
+  final GuitarMicFeed _feed;
   final GuitarCommandDetector _detector;
 
   /// Aviso (p. ej. vibración) al reconocer una orden tocada en la guitarra.
   final VoidCallback? onFired;
 
-  static const Duration _pollEvery = Duration(milliseconds: 120);
-  static const Duration _hearingWindow = Duration(milliseconds: 1500);
-
   Object? _owner;
   List<GuitarAction> _actions = const <GuitarAction>[];
+  String? _headline;
+  final GuitarNavSink? _nav;
   bool _enabled = true;
-  bool _hearing = false;
   bool _wasArmed = false;
-  double _level = 0;
   GuitarCommand? _lastFired;
-  DateTime? _lastLevelAt;
-  DateTime? _mutedUntil;
-  StreamSubscription<PitchReading>? _readings;
-  StreamSubscription<double>? _levels;
-  Timer? _timer;
   bool _disposed = false;
 
-  /// Acciones de la pantalla activa (vacío si no hay ninguna).
-  List<GuitarAction> get actions => _actions;
+  /// Si [reading] es del modo guitarra y la pantalla debe ignorarla: el menú
+  /// está abierto o es la nota aguda que lo abre.
+  bool claims(PitchReading reading) {
+    final GuitarNavSink? nav = _nav;
+    return nav != null &&
+        nav.active &&
+        (nav.menuOpen ||
+            reading.frequency >= GuitarCommandDetector.wakeFrequency);
+  }
 
   /// Si la persona permite manejar la app con la guitarra.
   bool get enabled => _enabled;
@@ -62,9 +74,12 @@ class GuitarCommandListener extends ChangeNotifier {
   /// Estado de la escucha para pintar la barra.
   GuitarListenState get state => GuitarListenState(
     armed: _enabled && _detector.isArmed,
-    hearing: _hearing,
-    level: _level,
+    hearing: _feed.hearing,
+    level: _feed.level,
     lastFired: _lastFired,
+    listening: _feed.listening,
+    headline: _headline,
+    actions: _actions,
   );
 
   /// Permite o impide manejar la app con la guitarra; los botones siguen.
@@ -80,9 +95,11 @@ class GuitarCommandListener extends ChangeNotifier {
   /// Registra las acciones de la pantalla [owner] (la más reciente manda).
   ///
   /// Si cambian las acciones visibles se vuelve a esperar el silencio previo.
-  void attach(Object owner, List<GuitarAction> actions) {
+  void attach(Object owner, List<GuitarAction> actions, {String? headline}) {
     final bool changed =
         _owner != owner || _signature(actions) != _signature(_actions);
+    final bool retitled = _headline != headline;
+    _headline = headline;
     _owner = owner;
     _actions = List<GuitarAction>.unmodifiable(actions);
     if (changed) {
@@ -90,7 +107,7 @@ class GuitarCommandListener extends ChangeNotifier {
       _detector.arm(_clock());
     }
     _sync();
-    if (changed) {
+    if (changed || retitled) {
       _notifyLater();
     }
   }
@@ -101,8 +118,13 @@ class GuitarCommandListener extends ChangeNotifier {
       return;
     }
     _owner = null;
+    _headline = null;
     _actions = const <GuitarAction>[];
-    _detector.disarm();
+    if (_nav?.active ?? false) {
+      _detector.arm(_clock());
+    } else {
+      _detector.disarm();
+    }
     _sync();
     _notifyLater();
   }
@@ -110,7 +132,7 @@ class GuitarCommandListener extends ChangeNotifier {
   /// Ignora el micrófono durante [duration] (suena la propia app).
   void muteFor(Duration duration) {
     final DateTime until = _clock().add(duration);
-    _mutedUntil = until;
+    _feed.mutedUntil = until;
     _detector.arm(until);
   }
 
@@ -140,45 +162,60 @@ class GuitarCommandListener extends ChangeNotifier {
   String _signature(List<GuitarAction> actions) =>
       actions.map((GuitarAction a) => a.signature).join('|');
 
-  bool get _shouldListen => _enabled && _actions.isNotEmpty;
+  bool get _shouldListen =>
+      _enabled && (_actions.isNotEmpty || (_nav?.active ?? false));
+
+  void _onNavChanged() {
+    _sync();
+    if (_nav?.active ?? false) {
+      _detector.arm(_clock());
+    }
+  }
 
   void _sync() {
     if (_shouldListen) {
-      _readings ??= _audio.readings.listen(_onReading);
-      _levels ??= _audio.levels.listen(_onLevel);
-      _timer ??= Timer.periodic(_pollEvery, (_) => _onTick());
-      return;
+      _feed.start(
+        onReading: _onReading,
+        onChange: notifyListeners,
+        onTick: _onTick,
+      );
+    } else {
+      _feed.stop();
+      _wasArmed = false;
     }
-    unawaited(_readings?.cancel());
-    unawaited(_levels?.cancel());
-    _timer?.cancel();
-    _readings = null;
-    _levels = null;
-    _timer = null;
-    _hearing = false;
-    _wasArmed = false;
-    _level = 0;
-  }
-
-  void _onLevel(double level) {
-    _level = level;
-    _lastLevelAt = _clock();
-    if (!_hearing) {
-      _hearing = true;
-    }
-    notifyListeners();
   }
 
   void _onReading(PitchReading reading) {
-    final DateTime now = _clock();
-    final DateTime? muted = _mutedUntil;
-    if (muted != null && now.isBefore(muted)) {
+    if (_feed.muted) {
       return;
     }
-    final GuitarCommand? command = _detector.feed(reading, now, <GuitarCommand>{
-      for (final GuitarAction a in _actions) a.command,
-    });
-    if (command != null) {
+    final GuitarNote? note = _detector.feedNote(reading, _clock());
+    if (note != null) {
+      _route(note);
+    }
+  }
+
+  /// Reparte una nota firme: la aguda abre o cierra el menú, con el menú
+  /// abierto elige una opción y, si no, es una orden de la pantalla.
+  void _route(GuitarNote note) {
+    final GuitarNavSink? nav = _nav;
+    if (nav != null && nav.active && note.high) {
+      onFired?.call();
+      _detector.arm(_clock());
+      nav.onWake();
+    } else if (nav != null && nav.menuOpen) {
+      onFired?.call();
+      nav.onMenuNote(note.pitchClass);
+      _detector.arm(_clock());
+    } else if (!note.high) {
+      _fireCommand(note.pitchClass);
+    }
+  }
+
+  void _fireCommand(int pitchClass) {
+    final GuitarCommand? command = GuitarCommand.ofPitchClass(pitchClass);
+    if (command != null &&
+        _actions.any((GuitarAction a) => a.command == command)) {
       onFired?.call();
       trigger(command);
     }
@@ -187,12 +224,9 @@ class GuitarCommandListener extends ChangeNotifier {
   void _onTick() {
     final DateTime now = _clock();
     _detector.poll(now);
-    final DateTime? lastLevel = _lastLevelAt;
-    final bool hearing =
-        lastLevel != null && now.difference(lastLevel) < _hearingWindow;
+    _nav?.tick(now);
     final bool armed = _detector.isArmed;
-    if (hearing != _hearing || armed != _wasArmed) {
-      _hearing = hearing;
+    if (_feed.refreshHearing() || armed != _wasArmed) {
       _wasArmed = armed;
       notifyListeners();
     }
@@ -201,9 +235,8 @@ class GuitarCommandListener extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
-    unawaited(_readings?.cancel());
-    unawaited(_levels?.cancel());
-    _timer?.cancel();
+    _nav?.removeListener(_onNavChanged);
+    _feed.stop();
     super.dispose();
   }
 }

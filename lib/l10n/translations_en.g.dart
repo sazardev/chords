@@ -709,6 +709,30 @@ class Translations$onboarding$en extends Translations$onboarding$es {
   @override
   String get planEmpty =>
       'Explore the library and start with the one you like most.';
+  @override
+  String get guitarModeTitle => 'Your guitar is also the remote';
+  @override
+  String get guitarModeBody =>
+      'Move around the whole app by playing notes, without putting the guitar down.';
+  @override
+  String get guitarModeSwitch => 'Turn on guitar mode';
+  @override
+  String get guitarModeSwitchHint =>
+      'It will ask for microphone permission. You can change it in Settings.';
+  @override
+  String get guitarModeStep1 =>
+      'Play a high note (fret 14 or more on the 1st string) and the menu opens.';
+  @override
+  String get guitarModeStep2 =>
+      'With the menu open, play the note of the option: on one string, open E and one more fret per destination.';
+  @override
+  String get guitarModeTry => 'Tap an option to see which note picks it';
+  @override
+  String guitarModePreview({
+    required Object note,
+    required Object fret,
+    required Object label,
+  }) => '${note} · ${fret} → ${label}';
 }
 
 // Path: data
@@ -1344,7 +1368,8 @@ class Translations$guitar$en extends Translations$guitar$es {
   @override
   String get hubTitle => 'Browse with your guitar';
   @override
-  String get hubSubtitle => 'D: next · A: previous · E: open · B: exit';
+  String get hubSubtitle =>
+      'The whole app with your guitar: a high note opens the menu';
   @override
   String hubSelected({
     required Object name,
@@ -1352,7 +1377,33 @@ class Translations$guitar$en extends Translations$guitar$es {
     required Object total,
   }) => '${name} · ${n} of ${total}';
   @override
-  String get exitMode => 'Exit guitar mode';
+  String get navMenu => 'Menu';
+  @override
+  String get navTitle => 'Guitar menu';
+  @override
+  String get navWake => 'High note (fret 14 or more on the 1st string): menu';
+  @override
+  String get navHint =>
+      'On any string: open E, then one fret more per destination';
+  @override
+  String get navBack => 'Back';
+  @override
+  String get navClose => 'Close';
+  @override
+  String get navOff => 'Turn off';
+  @override
+  String get navProfile => 'Profile';
+  @override
+  String get navWakeShort => 'High note';
+  @override
+  String get navFretOpen => 'open';
+  @override
+  String navFret({required Object n}) => 'fret ${n}';
+  @override
+  String get navSetting => 'Guitar mode across the app';
+  @override
+  String get navSettingSubtitle =>
+      'A fixed panel replaces the navigation bar: a high note opens the menu and each note takes you to a screen';
 }
 
 // Path: settings.theme
@@ -2178,6 +2229,19 @@ extension on TranslationsEn {
           'onboarding.planBody' => 'Start with these chords, picked for you.',
           'onboarding.planEmpty' =>
             'Explore the library and start with the one you like most.',
+          'onboarding.guitarModeTitle' => 'Your guitar is also the remote',
+          'onboarding.guitarModeBody' => 'Move around the whole app by playing notes, without putting the guitar down.',
+          'onboarding.guitarModeSwitch' => 'Turn on guitar mode',
+          'onboarding.guitarModeSwitchHint' => 'It will ask for microphone permission. You can change it in Settings.',
+          'onboarding.guitarModeStep1' => 'Play a high note (fret 14 or more on the 1st string) and the menu opens.',
+          'onboarding.guitarModeStep2' => 'With the menu open, play the note of the option: on one string, open E and one more fret per destination.',
+          'onboarding.guitarModeTry' =>
+            'Tap an option to see which note picks it',
+          'onboarding.guitarModePreview' => ({
+            required Object note,
+            required Object fret,
+            required Object label,
+          }) => '${note} · ${fret} → ${label}',
           'data.language.system' => 'System language',
           'data.language.es' => 'Spanish',
           'data.language.en' => 'English',
@@ -2584,6 +2648,9 @@ extension on TranslationsEn {
           'minigames.titles.readDiagram' => 'Read the diagram',
           'minigames.titles.buildChord' => 'Build the chord',
           'minigames.titles.playNote' => 'Play the note',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.titles.playStringFret' => 'String and fret',
           'minigames.titles.echo' => 'Guitar echo',
           'minigames.descriptions.guessNote' =>
@@ -2594,9 +2661,6 @@ extension on TranslationsEn {
           'minigames.descriptions.higherLower' => 'Compare two notes',
           'minigames.descriptions.chordQuality' =>
             'Tell major, minor and seventh apart',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.descriptions.nameChord' => 'Listen and name the chord',
           'minigames.descriptions.tuneEar' => 'Flat, in tune or sharp?',
           'minigames.descriptions.memory' => 'Repeat the sequence you hear',
@@ -2688,13 +2752,28 @@ extension on TranslationsEn {
           'guitar.setting' => 'Control with your guitar',
           'guitar.settingSubtitle' => 'Play an open string to continue, retry or leave without touching your phone',
           'guitar.hubTitle' => 'Browse with your guitar',
-          'guitar.hubSubtitle' => 'D: next · A: previous · E: open · B: exit',
+          'guitar.hubSubtitle' =>
+            'The whole app with your guitar: a high note opens the menu',
           'guitar.hubSelected' => ({
             required Object name,
             required Object n,
             required Object total,
           }) => '${name} · ${n} of ${total}',
-          'guitar.exitMode' => 'Exit guitar mode',
+          'guitar.navMenu' => 'Menu',
+          'guitar.navTitle' => 'Guitar menu',
+          'guitar.navWake' =>
+            'High note (fret 14 or more on the 1st string): menu',
+          'guitar.navHint' =>
+            'On any string: open E, then one fret more per destination',
+          'guitar.navBack' => 'Back',
+          'guitar.navClose' => 'Close',
+          'guitar.navOff' => 'Turn off',
+          'guitar.navProfile' => 'Profile',
+          'guitar.navWakeShort' => 'High note',
+          'guitar.navFretOpen' => 'open',
+          'guitar.navFret' => ({required Object n}) => 'fret ${n}',
+          'guitar.navSetting' => 'Guitar mode across the app',
+          'guitar.navSettingSubtitle' => 'A fixed panel replaces the navigation bar: a high note opens the menu and each note takes you to a screen',
           _ => null,
         };
   }

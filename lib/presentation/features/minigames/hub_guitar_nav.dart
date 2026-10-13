@@ -5,7 +5,7 @@ import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:flutter/material.dart';
 
-/// Interruptor para recorrer el catálogo de juegos con la guitarra.
+/// Interruptor del modo guitarra: maneja toda la app con las cuerdas.
 class HubGuitarSwitch extends StatelessWidget {
   /// Crea el interruptor sobre los [settings].
   const HubGuitarSwitch({required this.settings, super.key});

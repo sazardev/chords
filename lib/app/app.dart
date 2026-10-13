@@ -1,5 +1,6 @@
 import 'package:chords/config/app_config.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_nav_host.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_page.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
@@ -18,7 +19,9 @@ import 'package:provider/provider.dart';
 ///
 /// Monta `MaterialApp.router` con el tema claro/oscuro, el idioma elegido y el
 /// banner de flavor. Si el usuario no ha completado el onboarding, lo muestra
-/// a pantalla completa sobre el contenido.
+/// a pantalla completa sobre el contenido; si no, deja la app dentro del
+/// `GuitarNavHost`, que fija el panel del modo guitarra bajo todas las
+/// pantallas mientras esté activo.
 class ChordsApp extends StatelessWidget {
   /// Crea la aplicación.
   const ChordsApp({required this.config, required this.router, super.key});
@@ -61,7 +64,10 @@ class ChordsApp extends StatelessWidget {
             text: config.appName,
             child: onboarding.isPending
                 ? const OnboardingPage()
-                : child ?? const SizedBox.shrink(),
+                : GuitarNavHost(
+                    router: router,
+                    child: child ?? const SizedBox.shrink(),
+                  ),
           ),
         );
       },

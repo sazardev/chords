@@ -213,7 +213,8 @@ class MicGameController extends ChangeNotifier {
     final MicChallengeJudge? judge = _listening.judge;
     if (judge == null ||
         _state.phase != MiniGamePhase.listening ||
-        _cuesPlaying > 0) {
+        _cuesPlaying > 0 ||
+        (_guitar?.claims(reading) ?? false)) {
       return;
     }
     judge.feed(reading);

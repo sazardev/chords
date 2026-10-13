@@ -4,6 +4,7 @@ import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/core/analytics/settings_analytics_events.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
+import 'package:chords/presentation/features/onboarding/onboarding_guitar_step.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_steps.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/profile/profile_pickers.dart';
@@ -13,9 +14,9 @@ import 'package:provider/provider.dart';
 
 /// Onboarding de primer uso: conoce a la persona y prepara su plan.
 ///
-/// Seis pasos —bienvenida, guitarra, cómo toca, géneros, experiencia y plan—
-/// con transición animada entre ellos. Cada elección se guarda al momento y
-/// se puede omitir todo el recorrido.
+/// Siete pasos —bienvenida, guitarra, mano, géneros, nivel, modo guitarra
+/// y plan— con transición animada entre ellos. Cada elección se guarda al
+/// momento y se puede omitir todo el recorrido.
 class OnboardingPage extends StatefulWidget {
   /// Crea la página de onboarding.
   const OnboardingPage({super.key});
@@ -25,7 +26,7 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-  static const int _stepCount = 6;
+  static const int _stepCount = 7;
 
   final PageController _controller = PageController();
   int _index = 0;
@@ -127,6 +128,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: t.onboarding.levelBody,
       child: const ExperiencePicker(),
     ),
+    const GuitarModeStep(),
     const PlanStep(),
   ];
 

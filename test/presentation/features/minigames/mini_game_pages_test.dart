@@ -35,7 +35,14 @@ void main() {
     settings = SettingsController(preferences);
     audio = FakeAudioRepository();
     bank = loadChordBank();
-    kit = MiniGameKit(chords: bank, audio: audio, preferences: preferences);
+    final MiniGameKit initial = MiniGameKit(
+      chords: bank,
+      audio: audio,
+      preferences: preferences,
+      settings: settings,
+    );
+    kit = initial;
+    addTearDown(initial.close);
   });
 
   Future<void> pumpApp(
@@ -76,112 +83,6 @@ void main() {
       await tapText(tester, 'Intervalos');
       expect(find.text('Cómo se juega'), findsOne);
       expect(find.text('Empezar'), findsOne);
-    });
-
-    testWidgets('con la guitarra se recorre el catálogo y se abre un juego', (
-      WidgetTester tester,
-    ) async {
-      DateTime now = DateTime(2026);
-      kit = MiniGameKit(
-        chords: bank,
-        audio: audio,
-        preferences: preferences,
-        clock: () => now,
-      );
-      await settings.setGuitarBrowse(value: true);
-      await pumpApp(tester);
-      expect(find.text('Abrir'), findsOne);
-      expect(find.text('Anterior'), findsOne);
-      expect(audio.requests, greaterThan(0));
-
-      Future<void> pluck(String note) async {
-        now = now.add(const Duration(seconds: 2));
-        await tester.pump(const Duration(milliseconds: 200));
-        for (int i = 0; i < 3; i++) {
-          audio.emitReading(note);
-          await tester.pump(const Duration(milliseconds: 20));
-        }
-        await tester.pumpAndSettle();
-      }
-
-      // Re pasa al juego siguiente (el primero de los minijuegos) y Mi lo abre.
-      await pluck('D3');
-      await pluck('E2');
-      expect(find.text('Adivina la nota'), findsWidgets);
-      expect(find.text('Cómo se juega'), findsOne);
-    });
-
-    testWidgets('el panel dice qué juego está elegido y se puede cerrar', (
-      WidgetTester tester,
-    ) async {
-      await settings.setGuitarBrowse(value: true);
-      await pumpApp(tester);
-      expect(find.textContaining('1 de 18'), findsOne);
-      expect(find.text('Salir'), findsOne);
-      expect(find.text('Siguiente'), findsOne);
-
-      await tester.tap(find.text('Siguiente'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('2 de 18'), findsOne);
-
-      await tester.tap(find.byTooltip('Salir del modo guitarra'));
-      await tester.pumpAndSettle();
-      expect(settings.guitarBrowse, isFalse);
-      expect(find.text('Abrir'), findsNothing);
-      expect(find.byTooltip('Salir del modo guitarra'), findsNothing);
-    });
-
-    testWidgets('con la guitarra, Si sale del modo', (
-      WidgetTester tester,
-    ) async {
-      DateTime now = DateTime(2026);
-      kit = MiniGameKit(
-        chords: bank,
-        audio: audio,
-        preferences: preferences,
-        clock: () => now,
-      );
-      await settings.setGuitarBrowse(value: true);
-      await pumpApp(tester);
-      now = now.add(const Duration(seconds: 2));
-      await tester.pump(const Duration(milliseconds: 200));
-      for (int i = 0; i < 3; i++) {
-        audio.emitReading('B3');
-        await tester.pump(const Duration(milliseconds: 20));
-      }
-      await tester.pumpAndSettle();
-      expect(settings.guitarBrowse, isFalse);
-      expect(find.text('Abrir'), findsNothing);
-    });
-
-    testWidgets('con la guitarra, Mi abre primero la serie de acordes', (
-      WidgetTester tester,
-    ) async {
-      DateTime now = DateTime(2026);
-      kit = MiniGameKit(
-        chords: bank,
-        audio: audio,
-        preferences: preferences,
-        clock: () => now,
-      );
-      await settings.setGuitarBrowse(value: true);
-      await pumpApp(tester);
-      now = now.add(const Duration(seconds: 2));
-      await tester.pump(const Duration(milliseconds: 200));
-      for (int i = 0; i < 3; i++) {
-        audio.emitReading('E2');
-        await tester.pump(const Duration(milliseconds: 20));
-      }
-      await tester.pumpAndSettle();
-      expect(find.text('serie de acordes'), findsOne);
-    });
-
-    testWidgets('sin activar la guitarra el catálogo no usa el micrófono', (
-      WidgetTester tester,
-    ) async {
-      await pumpApp(tester);
-      expect(find.text('Abrir'), findsNothing);
-      expect(audio.requests, 0);
     });
 
     testWidgets('un juego desconocido muestra la pantalla de error', (

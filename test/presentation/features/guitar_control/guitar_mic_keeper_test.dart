@@ -1,4 +1,5 @@
 import 'package:chords/domain/audio/entities/guitar_command.dart';
+import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
@@ -64,5 +65,30 @@ void main() {
     await tester.pump(const Duration(seconds: 5));
     expect(audio.requests, 1);
     await keeper.close();
+  });
+
+  testWidgets('si se niega el permiso no vuelve a pedirlo solo', (
+    WidgetTester tester,
+  ) async {
+    audio.accessResult = MicStatus.permissionDenied;
+    final Object owner = Object();
+    listener.attach(owner, <GuitarAction>[
+      GuitarAction(
+        command: GuitarCommand.next,
+        label: 'Abrir',
+        icon: Icons.check,
+        onTrigger: () {},
+      ),
+    ]);
+    await keeper.open();
+    await tester.pump(const Duration(seconds: 6));
+    expect(audio.requests, 1);
+
+    audio.accessResult = MicStatus.listening;
+    await keeper.open();
+    expect(audio.requests, 2, reason: 'al volver a abrir se pide de nuevo');
+
+    await keeper.close();
+    listener.detach(owner);
   });
 }

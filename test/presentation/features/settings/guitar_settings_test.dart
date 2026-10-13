@@ -22,13 +22,25 @@ void main() {
 
   test('los dos ajustes se guardan y se recuperan', () async {
     final SettingsController settings = await build();
-    await settings.setGuitarControl(value: false);
     await settings.setGuitarBrowse(value: true);
-    expect(settings.guitarControl, isFalse);
+    expect(settings.guitarControl, isTrue);
     expect(settings.guitarBrowse, isTrue);
 
     final SettingsController reloaded = await build();
-    expect(reloaded.guitarControl, isFalse);
+    expect(reloaded.guitarControl, isTrue);
     expect(reloaded.guitarBrowse, isTrue);
+  });
+
+  test('el modo guitarra global necesita el control con la guitarra', () async {
+    final SettingsController settings = await build();
+    await settings.setGuitarControl(value: false);
+    await settings.setGuitarBrowse(value: true);
+    expect(settings.guitarControl, isTrue, reason: 'activar lo enciende');
+
+    await settings.setGuitarControl(value: false);
+    expect(settings.guitarBrowse, isFalse, reason: 'apagarlo apaga el modo');
+    final SettingsController reloaded = await build();
+    expect(reloaded.guitarControl, isFalse);
+    expect(reloaded.guitarBrowse, isFalse);
   });
 }

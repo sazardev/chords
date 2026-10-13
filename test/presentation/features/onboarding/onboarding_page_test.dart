@@ -94,6 +94,13 @@ void main() {
     await tester.pumpAndSettle();
     await next(tester, 'Continuar');
 
+    expect(find.text('Tu guitarra también es el mando'), findsOneWidget);
+    expect(settings.guitarBrowse, isFalse);
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    expect(settings.guitarBrowse, isTrue);
+    await next(tester, 'Continuar');
+
     expect(find.text('Tu plan está listo'), findsOneWidget);
     expect(find.text('Empezar a tocar'), findsOneWidget);
 
@@ -131,5 +138,44 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Tu guitarra, a tu medida'), findsOneWidget);
+  });
+
+  testWidgets('el paso de la guitarra enseña qué nota elige cada opción', (
+    WidgetTester tester,
+  ) async {
+    await pumpOnboarding(tester);
+    await next(tester, 'Empezar');
+    for (int i = 0; i < 4; i++) {
+      await next(tester, 'Continuar');
+    }
+    expect(find.text('Tu guitarra también es el mando'), findsOneWidget);
+    expect(find.textContaining('traste 14 o más'), findsOneWidget);
+    expect(find.textContaining('Mi · al aire → Inicio'), findsOneWidget);
+
+    await tester.tap(find.text('Acordes'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Fa♯ · traste 2 → Acordes'), findsOneWidget);
+    expect(settings.guitarBrowse, isFalse, reason: 'ver no enciende nada');
+  });
+
+  testWidgets('el paso de la guitarra cabe en un móvil pequeño', (
+    WidgetTester tester,
+  ) async {
+    await pumpOnboarding(tester);
+    tester.view.physicalSize = const Size(640, 1136);
+    await tester.pumpAndSettle();
+    await next(tester, 'Empezar');
+    for (int i = 0; i < 4; i++) {
+      expect(tester.takeException(), isNull, reason: 'paso $i');
+      await next(tester, 'Continuar');
+    }
+    expect(find.text('Tu guitarra también es el mando'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'paso de la guitarra');
+    await tester.drag(
+      find.byType(SingleChildScrollView),
+      const Offset(0, -600),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
 }

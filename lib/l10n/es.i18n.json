@@ -286,7 +286,15 @@
     "levelAdvancedHint": "Cejillas, séptimas y voicings",
     "planTitle": "Tu plan está listo",
     "planBody": "Empieza por estos acordes, elegidos para ti.",
-    "planEmpty": "Explora la biblioteca y empieza por el que más te guste."
+    "planEmpty": "Explora la biblioteca y empieza por el que más te guste.",
+    "guitarModeTitle": "Tu guitarra también es el mando",
+    "guitarModeBody": "Mueve toda la app tocando notas, sin soltar la guitarra.",
+    "guitarModeSwitch": "Activar el modo guitarra",
+    "guitarModeSwitchHint": "Pedirá permiso para el micrófono. Puedes cambiarlo en Ajustes.",
+    "guitarModeStep1": "Toca una nota aguda (traste 14 o más de la 1ª cuerda) y se abre el menú.",
+    "guitarModeStep2": "Con el menú abierto, toca la nota de la opción: en una cuerda, Mi al aire y un traste más por destino.",
+    "guitarModeTry": "Toca una opción para ver qué nota la elige",
+    "guitarModePreview": "$note · $fret → $label"
   },
   "data": {
     "language": {
@@ -696,8 +704,20 @@
     "setting": "Controlar con la guitarra",
     "settingSubtitle": "Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil",
     "hubTitle": "Navegar con la guitarra",
-    "hubSubtitle": "Re: siguiente · La: anterior · Mi: abrir · Si: salir",
+    "hubSubtitle": "Toda la app con la guitarra: una nota aguda abre el menú",
     "hubSelected": "$name · $n de $total",
-    "exitMode": "Salir del modo guitarra"
+    "navMenu": "Menú",
+    "navTitle": "Menú de la guitarra",
+    "navWake": "Nota aguda (traste 14 o más de la 1ª cuerda): menú",
+    "navHint": "En cualquier cuerda: Mi al aire y un traste más por destino",
+    "navBack": "Atrás",
+    "navClose": "Cerrar",
+    "navOff": "Apagar",
+    "navProfile": "Perfil",
+    "navWakeShort": "Nota aguda",
+    "navFretOpen": "al aire",
+    "navFret": "traste $n",
+    "navSetting": "Modo guitarra en toda la app",
+    "navSettingSubtitle": "Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla"
   }
 }

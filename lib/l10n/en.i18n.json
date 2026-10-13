@@ -286,7 +286,15 @@
     "levelAdvancedHint": "Barres, sevenths and voicings",
     "planTitle": "Your plan is ready",
     "planBody": "Start with these chords, picked for you.",
-    "planEmpty": "Explore the library and start with the one you like most."
+    "planEmpty": "Explore the library and start with the one you like most.",
+    "guitarModeTitle": "Your guitar is also the remote",
+    "guitarModeBody": "Move around the whole app by playing notes, without putting the guitar down.",
+    "guitarModeSwitch": "Turn on guitar mode",
+    "guitarModeSwitchHint": "It will ask for microphone permission. You can change it in Settings.",
+    "guitarModeStep1": "Play a high note (fret 14 or more on the 1st string) and the menu opens.",
+    "guitarModeStep2": "With the menu open, play the note of the option: on one string, open E and one more fret per destination.",
+    "guitarModeTry": "Tap an option to see which note picks it",
+    "guitarModePreview": "$note · $fret → $label"
   },
   "data": {
     "language": {
@@ -696,8 +704,20 @@
     "setting": "Control with your guitar",
     "settingSubtitle": "Play an open string to continue, retry or leave without touching your phone",
     "hubTitle": "Browse with your guitar",
-    "hubSubtitle": "D: next · A: previous · E: open · B: exit",
+    "hubSubtitle": "The whole app with your guitar: a high note opens the menu",
     "hubSelected": "$name · $n of $total",
-    "exitMode": "Exit guitar mode"
+    "navMenu": "Menu",
+    "navTitle": "Guitar menu",
+    "navWake": "High note (fret 14 or more on the 1st string): menu",
+    "navHint": "On any string: open E, then one fret more per destination",
+    "navBack": "Back",
+    "navClose": "Close",
+    "navOff": "Turn off",
+    "navProfile": "Profile",
+    "navWakeShort": "High note",
+    "navFretOpen": "open",
+    "navFret": "fret $n",
+    "navSetting": "Guitar mode across the app",
+    "navSettingSubtitle": "A fixed panel replaces the navigation bar: a high note opens the menu and each note takes you to a screen"
   }
 }

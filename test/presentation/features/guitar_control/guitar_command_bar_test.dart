@@ -141,7 +141,7 @@ void main() {
     WidgetTester tester,
   ) async {
     await pumpBar(tester, tickers: false);
-    expect(listener.actions, isEmpty);
+    expect(listener.state.actions, isEmpty);
     now = now.add(const Duration(seconds: 1));
     await tester.pump(const Duration(milliseconds: 200));
     for (int i = 0; i < 3; i++) {
@@ -155,10 +155,10 @@ void main() {
     WidgetTester tester,
   ) async {
     await pumpBar(tester);
-    expect(listener.actions, hasLength(4));
+    expect(listener.state.actions, hasLength(4));
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
-    expect(listener.actions, isEmpty);
+    expect(listener.state.actions, isEmpty);
   });
 
   testWidgets('con el control desactivado quedan solo los botones', (

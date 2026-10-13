@@ -6,7 +6,6 @@ import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_command_bar.dart';
-import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
 import 'package:chords/presentation/features/minigames/hub_guitar_nav.dart';
 import 'package:chords/presentation/features/minigames/mini_game_card.dart';
 import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
@@ -21,11 +20,11 @@ import 'package:provider/provider.dart';
 
 /// Catálogo de juegos: oído, mástil y dedos, y tocar con el micrófono.
 ///
-/// Si la persona lo activa, se recorre tocando cuerdas al aire: Re pasa al
-/// juego siguiente, La al anterior, Mi abre el seleccionado y Si sale del
-/// modo, de modo que puede elegir qué practicar sin soltar la guitarra. El
-/// panel de abajo dice qué juego está elegido y también se puede cerrar con
-/// el botón de la esquina.
+/// Con el modo guitarra encendido se recorre tocando cuerdas al aire: Re pasa
+/// al juego siguiente, La al anterior y Mi abre el seleccionado, de modo que
+/// puede elegir qué practicar sin soltar la guitarra. El panel fijo de la app
+/// (`GuitarDock`) dice qué juego está elegido; el micrófono y la salida del
+/// modo los lleva ese panel, no esta pantalla.
 class MiniGamesHubPage extends StatefulWidget {
   /// Crea el catálogo.
   const MiniGamesHubPage({super.key});
@@ -42,38 +41,17 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
     _count,
     (_) => GlobalKey(),
   );
-  late final GuitarMicKeeper _mic;
   int _focus = 0;
   bool _wasOn = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _mic = context.read<GuitarMicKeeper>();
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final bool on = Provider.of<SettingsController>(context).guitarBrowse;
-    final bool visible =
-        TickerMode.valuesOf(context).enabled &&
-        (ModalRoute.isCurrentOf(context) ?? true);
-    if (!on) {
-      unawaited(_mic.close());
-    } else if (visible) {
-      unawaited(_mic.open());
-    }
     if (on && !_wasOn) {
       _reveal();
     }
     _wasOn = on;
-  }
-
-  @override
-  void dispose() {
-    unawaited(_mic.close());
-    super.dispose();
   }
 
   String _pathOf(int index) => index == 0
@@ -86,11 +64,6 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
     setState(() => _focus = (_focus + step + _count) % _count);
     _reveal();
   }
-
-  /// Sale del modo guitarra: la lista vuelve a usarse solo con el dedo.
-  void _close() => unawaited(
-    context.read<SettingsController>().setGuitarBrowse(value: false),
-  );
 
   /// Lleva el elemento elegido al centro de la lista.
   void _reveal() {
@@ -128,12 +101,6 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
       icon: Icons.arrow_downward_rounded,
       onTrigger: () => _move(1),
     ),
-    GuitarAction(
-      command: GuitarCommand.exit,
-      label: t.guitar.leave,
-      icon: Icons.close_rounded,
-      onTrigger: _close,
-    ),
   ];
 
   /// Nombre del elemento elegido con su posición en el catálogo.
@@ -155,18 +122,7 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
     return Scaffold(
       appBar: AppBar(title: Text(t.minigames.hubTitle)),
       bottomNavigationBar: on
-          ? SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                child: GuitarCommandBar(
-                  actions: _actions(t),
-                  headline: _selected(t),
-                  onClose: _close,
-                  compact: true,
-                ),
-              ),
-            )
+          ? GuitarCommandBar(actions: _actions(t), headline: _selected(t))
           : null,
       body: SafeArea(
         child: Center(

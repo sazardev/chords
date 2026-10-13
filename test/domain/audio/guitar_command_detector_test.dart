@@ -1,4 +1,5 @@
 import 'package:chords/domain/audio/entities/guitar_command.dart';
+import 'package:chords/domain/audio/entities/guitar_nav_slot.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/services/guitar_command_detector.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -138,6 +139,71 @@ void main() {
       detector.poll(at);
       expect(detector.isArmed, isFalse);
       expect(play(detector, 'E2', at), isNull);
+    });
+  });
+
+  group('notas agudas y menú', () {
+    PitchReading at(String note, double hz) =>
+        PitchReading(frequency: hz, note: note, cents: 0, clarity: 0.9);
+
+    GuitarNote? feedThree(
+      GuitarCommandDetector detector,
+      PitchReading reading,
+      DateTime now,
+    ) {
+      GuitarNote? result;
+      for (int i = 0; i < 3; i++) {
+        result = detector.feedNote(reading, now) ?? result;
+      }
+      return result;
+    }
+
+    test('el traste 12 de la 1ª cuerda aún no es una nota aguda', () {
+      final GuitarCommandDetector detector = GuitarCommandDetector()..arm(t0);
+      final DateTime now = t0.add(const Duration(seconds: 1));
+      final GuitarNote? note = feedThree(detector, at('E', 659), now);
+      expect(note?.pitchClass, 4);
+      expect(note?.high, isFalse);
+    });
+
+    test('a partir del traste 14 la nota es aguda', () {
+      final GuitarCommandDetector detector = GuitarCommandDetector()..arm(t0);
+      final DateTime now = t0.add(const Duration(seconds: 1));
+      final GuitarNote? note = feedThree(detector, at('F#', 740), now);
+      expect(note?.pitchClass, 6);
+      expect(note?.high, isTrue);
+    });
+
+    test('una nota aguda nunca es una orden de la pantalla', () {
+      final GuitarCommandDetector detector = GuitarCommandDetector()..arm(t0);
+      final DateTime now = t0.add(const Duration(seconds: 1));
+      GuitarCommand? command;
+      for (int i = 0; i < 3; i++) {
+        command = detector.feed(at('A', 880), now, all) ?? command;
+      }
+      expect(command, isNull);
+    });
+
+    test('la misma clase en octava normal tras la aguda sí cuenta', () {
+      final GuitarCommandDetector detector = GuitarCommandDetector()..arm(t0);
+      final DateTime now = t0.add(const Duration(seconds: 1));
+      expect(feedThree(detector, at('G', 784), now)?.high, isTrue);
+      final GuitarNote? low = feedThree(detector, at('G', 196), now);
+      expect(low?.pitchClass, 7);
+      expect(low?.high, isFalse);
+    });
+
+    test('las opciones del menú siguen el mástil desde el Mi al aire', () {
+      expect(GuitarNavSlot.home.fretFromE, 0);
+      expect(GuitarNavSlot.learn.fretFromE, 1);
+      expect(GuitarNavSlot.back.fretFromE, 7);
+      expect(GuitarNavSlot.off.fretFromE, 9);
+      expect(GuitarNavSlot.ofPitchClass(7), GuitarNavSlot.game);
+      expect(GuitarNavSlot.ofPitchClass(2), isNull);
+      final Set<int> classes = <int>{
+        for (final GuitarNavSlot slot in GuitarNavSlot.values) slot.pitchClass,
+      };
+      expect(classes.length, GuitarNavSlot.values.length);
     });
   });
 }

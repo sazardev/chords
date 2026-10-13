@@ -30,7 +30,14 @@ void main() {
     settings = SettingsController(preferences);
     audio = FakeAudioRepository();
     bank = loadChordBank();
-    kit = MiniGameKit(chords: bank, audio: audio, preferences: preferences);
+    final MiniGameKit initial = MiniGameKit(
+      chords: bank,
+      audio: audio,
+      preferences: preferences,
+      settings: settings,
+    );
+    kit = initial;
+    addTearDown(initial.close);
   });
 
   Future<void> pumpApp(
@@ -148,6 +155,7 @@ void main() {
         audio: audio,
         preferences: preferences,
         clock: () => now,
+        settings: settings,
       );
       await pumpApp(tester, location: '$kMiniGamePath?kind=playNote');
       await tapText(tester, 'Empezar');

@@ -872,6 +872,38 @@ class Translations$onboarding$es {
   /// es: 'Explora la biblioteca y empieza por el que más te guste.'
   String get planEmpty =>
       'Explora la biblioteca y empieza por el que más te guste.';
+
+  /// es: 'Tu guitarra también es el mando'
+  String get guitarModeTitle => 'Tu guitarra también es el mando';
+
+  /// es: 'Mueve toda la app tocando notas, sin soltar la guitarra.'
+  String get guitarModeBody =>
+      'Mueve toda la app tocando notas, sin soltar la guitarra.';
+
+  /// es: 'Activar el modo guitarra'
+  String get guitarModeSwitch => 'Activar el modo guitarra';
+
+  /// es: 'Pedirá permiso para el micrófono. Puedes cambiarlo en Ajustes.'
+  String get guitarModeSwitchHint =>
+      'Pedirá permiso para el micrófono. Puedes cambiarlo en Ajustes.';
+
+  /// es: 'Toca una nota aguda (traste 14 o más de la 1ª cuerda) y se abre el menú.'
+  String get guitarModeStep1 =>
+      'Toca una nota aguda (traste 14 o más de la 1ª cuerda) y se abre el menú.';
+
+  /// es: 'Con el menú abierto, toca la nota de la opción: en una cuerda, Mi al aire y un traste más por destino.'
+  String get guitarModeStep2 =>
+      'Con el menú abierto, toca la nota de la opción: en una cuerda, Mi al aire y un traste más por destino.';
+
+  /// es: 'Toca una opción para ver qué nota la elige'
+  String get guitarModeTry => 'Toca una opción para ver qué nota la elige';
+
+  /// es: '$note · $fret → $label'
+  String guitarModePreview({
+    required Object note,
+    required Object fret,
+    required Object label,
+  }) => '${note} · ${fret} → ${label}';
 }
 
 // Path: data
@@ -1646,9 +1678,9 @@ class Translations$guitar$es {
   /// es: 'Navegar con la guitarra'
   String get hubTitle => 'Navegar con la guitarra';
 
-  /// es: 'Re: siguiente · La: anterior · Mi: abrir · Si: salir'
+  /// es: 'Toda la app con la guitarra: una nota aguda abre el menú'
   String get hubSubtitle =>
-      'Re: siguiente · La: anterior · Mi: abrir · Si: salir';
+      'Toda la app con la guitarra: una nota aguda abre el menú';
 
   /// es: '$name · $n de $total'
   String hubSelected({
@@ -1657,8 +1689,46 @@ class Translations$guitar$es {
     required Object total,
   }) => '${name} · ${n} de ${total}';
 
-  /// es: 'Salir del modo guitarra'
-  String get exitMode => 'Salir del modo guitarra';
+  /// es: 'Menú'
+  String get navMenu => 'Menú';
+
+  /// es: 'Menú de la guitarra'
+  String get navTitle => 'Menú de la guitarra';
+
+  /// es: 'Nota aguda (traste 14 o más de la 1ª cuerda): menú'
+  String get navWake => 'Nota aguda (traste 14 o más de la 1ª cuerda): menú';
+
+  /// es: 'En cualquier cuerda: Mi al aire y un traste más por destino'
+  String get navHint =>
+      'En cualquier cuerda: Mi al aire y un traste más por destino';
+
+  /// es: 'Atrás'
+  String get navBack => 'Atrás';
+
+  /// es: 'Cerrar'
+  String get navClose => 'Cerrar';
+
+  /// es: 'Apagar'
+  String get navOff => 'Apagar';
+
+  /// es: 'Perfil'
+  String get navProfile => 'Perfil';
+
+  /// es: 'Nota aguda'
+  String get navWakeShort => 'Nota aguda';
+
+  /// es: 'al aire'
+  String get navFretOpen => 'al aire';
+
+  /// es: 'traste $n'
+  String navFret({required Object n}) => 'traste ${n}';
+
+  /// es: 'Modo guitarra en toda la app'
+  String get navSetting => 'Modo guitarra en toda la app';
+
+  /// es: 'Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla'
+  String get navSettingSubtitle =>
+      'Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla';
 }
 
 // Path: settings.theme
@@ -2581,6 +2651,21 @@ extension on Translations {
             'Empieza por estos acordes, elegidos para ti.',
           'onboarding.planEmpty' =>
             'Explora la biblioteca y empieza por el que más te guste.',
+          'onboarding.guitarModeTitle' => 'Tu guitarra también es el mando',
+          'onboarding.guitarModeBody' =>
+            'Mueve toda la app tocando notas, sin soltar la guitarra.',
+          'onboarding.guitarModeSwitch' => 'Activar el modo guitarra',
+          'onboarding.guitarModeSwitchHint' =>
+            'Pedirá permiso para el micrófono. Puedes cambiarlo en Ajustes.',
+          'onboarding.guitarModeStep1' => 'Toca una nota aguda (traste 14 o más de la 1ª cuerda) y se abre el menú.',
+          'onboarding.guitarModeStep2' => 'Con el menú abierto, toca la nota de la opción: en una cuerda, Mi al aire y un traste más por destino.',
+          'onboarding.guitarModeTry' =>
+            'Toca una opción para ver qué nota la elige',
+          'onboarding.guitarModePreview' => ({
+            required Object note,
+            required Object fret,
+            required Object label,
+          }) => '${note} · ${fret} → ${label}',
           'data.language.system' => 'Idioma del sistema',
           'data.language.es' => 'Español',
           'data.language.en' => 'Inglés',
@@ -2978,6 +3063,9 @@ extension on Translations {
           'minigames.titles.readDiagram' => 'Lee el diagrama',
           'minigames.titles.buildChord' => 'Arma el acorde',
           'minigames.titles.playNote' => 'Toca la nota',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.titles.playStringFret' => 'Cuerda y traste',
           'minigames.titles.echo' => 'Eco de guitarra',
           'minigames.descriptions.guessNote' => 'Suena una nota: ¿cuál es?',
@@ -2987,9 +3075,6 @@ extension on Translations {
           'minigames.descriptions.higherLower' => 'Compara dos notas',
           'minigames.descriptions.chordQuality' =>
             'Distingue mayor, menor y séptima',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.descriptions.nameChord' => 'Escucha y nombra el acorde',
           'minigames.descriptions.tuneEar' => '¿Floja, afinada o alta?',
           'minigames.descriptions.memory' => 'Repite la secuencia que oyes',
@@ -3078,13 +3163,27 @@ extension on Translations {
           'guitar.settingSubtitle' => 'Toca una cuerda al aire para continuar, reintentar o salir sin tocar el móvil',
           'guitar.hubTitle' => 'Navegar con la guitarra',
           'guitar.hubSubtitle' =>
-            'Re: siguiente · La: anterior · Mi: abrir · Si: salir',
+            'Toda la app con la guitarra: una nota aguda abre el menú',
           'guitar.hubSelected' => ({
             required Object name,
             required Object n,
             required Object total,
           }) => '${name} · ${n} de ${total}',
-          'guitar.exitMode' => 'Salir del modo guitarra',
+          'guitar.navMenu' => 'Menú',
+          'guitar.navTitle' => 'Menú de la guitarra',
+          'guitar.navWake' =>
+            'Nota aguda (traste 14 o más de la 1ª cuerda): menú',
+          'guitar.navHint' =>
+            'En cualquier cuerda: Mi al aire y un traste más por destino',
+          'guitar.navBack' => 'Atrás',
+          'guitar.navClose' => 'Cerrar',
+          'guitar.navOff' => 'Apagar',
+          'guitar.navProfile' => 'Perfil',
+          'guitar.navWakeShort' => 'Nota aguda',
+          'guitar.navFretOpen' => 'al aire',
+          'guitar.navFret' => ({required Object n}) => 'traste ${n}',
+          'guitar.navSetting' => 'Modo guitarra en toda la app',
+          'guitar.navSettingSubtitle' => 'Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla',
           _ => null,
         };
   }

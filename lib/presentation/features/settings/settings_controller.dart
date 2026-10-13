@@ -28,7 +28,7 @@ class SettingsController extends ChangeNotifier {
   /// Si la app se puede manejar tocando cuerdas al aire con la guitarra.
   bool get guitarControl => _guitarControl;
 
-  /// Si el catálogo de juegos se recorre tocando cuerdas al aire.
+  /// Si toda la app se maneja con la guitarra (panel fijo y menú de notas).
   bool get guitarBrowse => _guitarBrowse;
 
   /// Cambia el modo espejo para zurdos.
@@ -56,7 +56,12 @@ class SettingsController extends ChangeNotifier {
   }
 
   /// Activa o desactiva el control de la app con la guitarra.
+  ///
+  /// Sin control no hay modo guitarra global, así que apagarlo lo apaga.
   Future<void> setGuitarControl({required bool value}) async {
+    if (!value && _guitarBrowse) {
+      await setGuitarBrowse(value: false);
+    }
     if (value == _guitarControl) {
       return;
     }
@@ -67,8 +72,12 @@ class SettingsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Activa o desactiva recorrer el catálogo de juegos con la guitarra.
+  /// Activa o desactiva el modo guitarra global; al activarlo se enciende
+  /// también el control con la guitarra.
   Future<void> setGuitarBrowse({required bool value}) async {
+    if (value && !_guitarControl) {
+      await setGuitarControl(value: true);
+    }
     if (value == _guitarBrowse) {
       return;
     }

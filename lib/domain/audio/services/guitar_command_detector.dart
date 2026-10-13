@@ -2,6 +2,19 @@ import 'package:chords/domain/audio/entities/guitar_command.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/services/fretboard.dart';
 
+/// Nota firme que se acaba de tocar: su clase de tono y si es muy aguda.
+class GuitarNote {
+  /// Crea la nota.
+  const GuitarNote({required this.pitchClass, required this.high});
+
+  /// Clase de tono (0 = Do … 11 = Si).
+  final int pitchClass;
+
+  /// Si suena por encima de [GuitarCommandDetector.wakeFrequency]: la nota
+  /// «lejana» que abre y cierra el menú global.
+  final bool high;
+}
+
 /// Convierte las lecturas del micrófono en órdenes de guitarra.
 ///
 /// Dos protecciones evitan disparos por error:
@@ -14,7 +27,9 @@ import 'package:chords/domain/audio/services/fretboard.dart';
 ///   nota siga sonando.
 ///
 /// Solo mira la clase de tono, porque el detector se equivoca de octava con
-/// frecuencia. No usa temporizadores: el tiempo llega por parámetro.
+/// frecuencia; la única excepción son las notas muy agudas ([GuitarNote.high]),
+/// que ningún juego pide y se reconocen por su frecuencia. No usa
+/// temporizadores: el tiempo llega por parámetro.
 class GuitarCommandDetector {
   /// Crea el detector.
   GuitarCommandDetector({
@@ -22,6 +37,10 @@ class GuitarCommandDetector {
     this.silenceToArm = const Duration(milliseconds: 500),
     this.noteGap = const Duration(milliseconds: 450),
   });
+
+  /// Frecuencia (Hz) desde la que una nota es «lejana»: el traste 14 de la 1ª
+  /// cuerda. Los juegos piden como mucho el traste 12 (659 Hz).
+  static const double wakeFrequency = 740;
 
   /// Lecturas fiables seguidas de una misma nota para darla por tocada.
   final int requiredReadings;
@@ -75,6 +94,19 @@ class GuitarCommandDetector {
     DateTime now,
     Set<GuitarCommand> enabled,
   ) {
+    final GuitarNote? note = feedNote(reading, now);
+    if (note == null || note.high) {
+      return null;
+    }
+    final GuitarCommand? command = GuitarCommand.ofPitchClass(note.pitchClass);
+    return command != null && enabled.contains(command) ? command : null;
+  }
+
+  /// Procesa una lectura; devuelve la nota cuando se confirma una nueva.
+  ///
+  /// Una nota aguda y la misma clase en octava normal cuentan como notas
+  /// distintas, así que tocar una justo tras la otra no queda bloqueado.
+  GuitarNote? feedNote(PitchReading reading, DateTime now) {
     if (_since == null || !reading.isReliable) {
       return null;
     }
@@ -91,14 +123,15 @@ class GuitarCommandDetector {
     if (pitchClass < 0) {
       return null;
     }
-    _count = pitchClass == _candidate ? _count + 1 : 1;
-    _candidate = pitchClass;
-    if (_count < requiredReadings || pitchClass == _fired) {
+    final bool high = reading.frequency >= wakeFrequency;
+    final int key = pitchClass + (high ? 12 : 0);
+    _count = key == _candidate ? _count + 1 : 1;
+    _candidate = key;
+    if (_count < requiredReadings || key == _fired) {
       return null;
     }
-    _fired = pitchClass;
-    final GuitarCommand? command = GuitarCommand.ofPitchClass(pitchClass);
-    return command != null && enabled.contains(command) ? command : null;
+    _fired = key;
+    return GuitarNote(pitchClass: pitchClass, high: high);
   }
 
   void _forgetNote() {

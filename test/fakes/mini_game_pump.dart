@@ -1,5 +1,6 @@
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_nav_host.dart';
 import 'package:chords/presentation/features/minigames/mini_game_page.dart';
 import 'package:chords/presentation/features/minigames/mini_games_hub_page.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
@@ -23,6 +24,7 @@ Future<void> pumpMiniGameApp(
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
+  addTearDown(kit.close);
   final GoRouter router = GoRouter(
     initialLocation: location,
     routes: <RouteBase>[
@@ -55,7 +57,11 @@ Future<void> pumpMiniGameApp(
           ChangeNotifierProvider<SettingsController>.value(value: settings),
           ...kit.providers,
         ],
-        child: MaterialApp.router(routerConfig: router),
+        child: MaterialApp.router(
+          routerConfig: router,
+          builder: (BuildContext context, Widget? child) =>
+              GuitarNavHost(router: router, child: child!),
+        ),
       ),
     ),
   );

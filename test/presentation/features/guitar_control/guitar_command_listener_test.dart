@@ -115,7 +115,7 @@ void main() {
   });
 
   test('sin acciones no escucha', () async {
-    expect(listener.actions, isEmpty);
+    expect(listener.state.actions, isEmpty);
     await pluck('E2');
     expect(fired, isEmpty);
     expect(listener.state.armed, isFalse);
@@ -128,9 +128,9 @@ void main() {
       ..attach(first, <GuitarAction>[action(GuitarCommand.next)])
       ..attach(second, <GuitarAction>[action(GuitarCommand.retry)])
       ..detach(first);
-    expect(listener.actions.single.command, GuitarCommand.retry);
+    expect(listener.state.actions.single.command, GuitarCommand.retry);
     listener.detach(second);
-    expect(listener.actions, isEmpty);
+    expect(listener.state.actions, isEmpty);
   });
 
   test('desactivado no escucha pero los botones siguen', () async {

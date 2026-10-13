@@ -2,12 +2,15 @@ import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_command_listener.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_kit.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_nav_controller.dart';
 import 'package:chords/presentation/features/minigames/build_chord_controller.dart';
 import 'package:chords/presentation/features/minigames/mic_game_controller.dart';
 import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
 import 'package:chords/presentation/features/minigames/quiz_controller.dart';
 import 'package:chords/presentation/features/minigames/sound_cue_player.dart';
+import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -15,7 +18,8 @@ import 'package:provider/single_child_widget.dart';
 ///
 /// El reproductor no espera entre notas para que las preguntas con
 /// secuencia de sonidos terminen al instante. [clock] gobierna el tiempo del
-/// oyente de órdenes de guitarra.
+/// oyente de órdenes de guitarra y [settings] los ajustes de guitarra (por
+/// defecto unos propios).
 class MiniGameKit {
   /// Construye los controladores sobre los repositorios indicados.
   factory MiniGameKit({
@@ -23,6 +27,7 @@ class MiniGameKit {
     required AudioRepository audio,
     required PreferencesRepository preferences,
     DateTime Function()? clock,
+    SettingsController? settings,
   }) {
     final MiniGameProgressController progress = MiniGameProgressController(
       preferences,
@@ -32,8 +37,9 @@ class MiniGameKit {
       chords,
       wait: (Duration duration) async {},
     );
-    final GuitarCommandListener guitar = GuitarCommandListener(
+    final GuitarKit guitarKit = GuitarKit(
       audio,
+      settings ?? SettingsController(preferences),
       clock: clock,
     );
     return MiniGameKit._(
@@ -45,10 +51,11 @@ class MiniGameKit {
         player,
         progress,
         confirmations: 1,
-        guitar: guitar,
+        guitar: guitarKit.listener,
       ),
-      guitar: guitar,
-      keeper: GuitarMicKeeper(audio, guitar),
+      guitar: guitarKit.listener,
+      keeper: guitarKit.keeper,
+      nav: guitarKit.nav,
     );
   }
 
@@ -59,6 +66,7 @@ class MiniGameKit {
     required this.mic,
     required this.guitar,
     required this.keeper,
+    required this.nav,
   });
 
   /// Progreso y estrellas.
@@ -79,6 +87,24 @@ class MiniGameKit {
   /// Guardián del micrófono del catálogo.
   final GuitarMicKeeper keeper;
 
+  /// Menú global del modo guitarra.
+  final GuitarNavController nav;
+
+  bool _closed = false;
+
+  /// Libera el micrófono y los temporizadores del control con la guitarra.
+  ///
+  /// Se puede llamar más de una vez.
+  Future<void> close() async {
+    if (_closed) {
+      return;
+    }
+    _closed = true;
+    await keeper.close();
+    nav.dispose();
+    guitar.dispose();
+  }
+
   /// Providers para montar las pantallas.
   List<SingleChildWidget> get providers => <SingleChildWidget>[
     ChangeNotifierProvider<MiniGameProgressController>.value(value: progress),
@@ -86,6 +112,7 @@ class MiniGameKit {
     ChangeNotifierProvider<BuildChordController>.value(value: build),
     ChangeNotifierProvider<MicGameController>.value(value: mic),
     ChangeNotifierProvider<GuitarCommandListener>.value(value: guitar),
+    ChangeNotifierProvider<GuitarNavController>.value(value: nav),
     Provider<GuitarMicKeeper>.value(value: keeper),
   ];
 }

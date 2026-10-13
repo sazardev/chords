@@ -45,10 +45,18 @@ diseño atómico y Material 3 Expressive.
   cada ronda tras una cuenta atrás; no hay botones de "estoy listo". La app
   espera a que la nota anterior se apague antes de aceptar una orden y se
   silencia mientras suena su propia referencia. En *Jugar* se puede recorrer el
-  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir · Si salir)
-  activando el interruptor: un panel compacto dice qué juego está elegido
-  (centrado en la lista), se cierra con la cuerda Si o con su botón, y todo se
+  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir) y todo se
   puede desactivar en Ajustes (los botones siguen).
+- **Modo guitarra en toda la app**: con el interruptor de *Jugar* o de Ajustes
+  un panel fijo sustituye a la barra de navegación en todas las pantallas
+  (también sobre juegos y práctica). Dice qué hace cada cuerda en la pantalla
+  y cómo abrir el menú: una **nota aguda** (traste 14 o más de la 1ª cuerda,
+  más allá de lo que piden los juegos) lo abre y la misma nota lo cierra. Con
+  el menú abierto, **en una cuerda: Mi al aire = Inicio y un traste más por
+  destino** (Fa Aprender · Fa♯ Acordes · Sol Jugar · Sol♯ Afinar · La Ajustes ·
+  La♯ Perfil · Si Atrás · Do cerrar menú · Do♯ apagar el modo). El menú se
+  cierra solo a los 20 s y las pantallas con micrófono ignoran lo que se toca
+  mientras está abierto. Todo también se puede pulsar.
 - **El móvil no se oye a sí mismo**: todo lo que la app reproduce (acordes,
   arpegios, notas de referencia y melodías de los retos) pasa por una puerta
   de eco que descarta el audio del micrófono mientras suena el altavoz. Tras

@@ -3,7 +3,7 @@ import 'dart:async' show unawaited;
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/core/analytics/analytics.dart' show analytics;
 import 'package:chords/l10n/translations.g.dart';
-import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
+import 'package:chords/presentation/features/guitar_control/guitar_nav_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
@@ -34,9 +34,6 @@ class _AdaptiveNavigationShellState extends State<AdaptiveNavigationShell> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.shell.currentIndex != widget.shell.currentIndex) {
       _stopLiveIfLeaving(widget.shell.currentIndex);
-      if (kNavigationDestinations[oldWidget.shell.currentIndex] == kGamePath) {
-        unawaited(context.read<GuitarMicKeeper>().close());
-      }
     }
   }
 
@@ -94,6 +91,12 @@ class _AdaptiveNavigationShellState extends State<AdaptiveNavigationShell> {
     final Translations t = context.t;
     final List<_Destination> destinations = _destinations(t);
     final double width = MediaQuery.sizeOf(context).width;
+    // Con el modo guitarra el panel fijo de toda la app sustituye a la barra.
+    final bool guitarDock =
+        context.watch<GuitarNavController?>()?.active ?? false;
+    if (guitarDock) {
+      return Scaffold(body: widget.shell);
+    }
     if (width >= 600) {
       return Scaffold(
         body: Row(

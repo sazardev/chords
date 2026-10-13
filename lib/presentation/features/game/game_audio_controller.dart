@@ -90,7 +90,7 @@ class GameAudioController extends ChangeNotifier {
     final Set<int> detected = <int>{};
     await _subscription?.cancel();
     _subscription = _audio.readings.listen((PitchReading reading) {
-      if (!reading.isReliable) {
+      if (!reading.isReliable || (_guitar?.claims(reading) ?? false)) {
         return;
       }
       _reliableReadings++;

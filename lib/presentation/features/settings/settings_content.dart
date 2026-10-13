@@ -171,6 +171,12 @@ class _SoundSection extends StatelessWidget {
           title: Text(t.guitar.setting),
           subtitle: Text(t.guitar.settingSubtitle),
         ),
+        SwitchListTile(
+          value: settings.guitarBrowse,
+          onChanged: (bool value) => settings.setGuitarBrowse(value: value),
+          title: Text(t.guitar.navSetting),
+          subtitle: Text(t.guitar.navSettingSubtitle),
+        ),
       ],
     );
   }

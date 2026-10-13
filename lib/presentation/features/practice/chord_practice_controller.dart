@@ -180,6 +180,7 @@ class ChordPracticeController extends ChangeNotifier {
     if (session == null ||
         session.isComplete ||
         !reading.isReliable ||
+        (_guitar?.claims(reading) ?? false) ||
         (muted != null && DateTime.now().isBefore(muted))) {
       return;
     }

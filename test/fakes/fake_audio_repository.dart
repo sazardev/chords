@@ -60,9 +60,19 @@ class FakeAudioRepository implements AudioRepository {
   }
 
   /// Emite una lectura de tono con nota y claridad.
-  void emitReading(String note, {double clarity = 0.9, double cents = 0}) {
+  void emitReading(
+    String note, {
+    double clarity = 0.9,
+    double cents = 0,
+    double frequency = 440,
+  }) {
     _readings.add(
-      PitchReading(frequency: 440, note: note, cents: cents, clarity: clarity),
+      PitchReading(
+        frequency: frequency,
+        note: note,
+        cents: cents,
+        clarity: clarity,
+      ),
     );
   }
 
