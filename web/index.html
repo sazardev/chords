@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,10 +18,38 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Banco de acordes de guitarra con sonido real, arpegios y afinación en vivo por micrófono.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Chords — Acordes de guitarra: banco, afinador y juegos</title>
+  <meta name="description" content="156 acordes y 561 posiciones de guitarra con sonido real, arpegios, afinación en vivo por micrófono, jam guiado, escalas, cancionero y 22 minijuegos. Gratis para Android y web.">
+  <meta name="keywords" content="acordes de guitarra, banco de acordes, afinador de guitarra, afinador online, escalas de guitarra, teoría musical, juegos de guitarra, aprender guitarra">
+  <meta name="author" content="Chords">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://chords-qa.web.app/">
+  <meta name="theme-color" content="#6750A4">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Chords">
+  <meta property="og:title" content="Chords — Acordes de guitarra: banco, afinador y juegos">
+  <meta property="og:description" content="156 acordes y 561 posiciones con sonido real, afinación por micrófono, jam guiado, escalas, cancionero y 22 minijuegos. Gratis.">
+  <meta property="og:url" content="https://chords-qa.web.app/">
+  <meta property="og:image" content="https://chords-qa.web.app/og_cover.png">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="500">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chords — Acordes de guitarra: banco, afinador y juegos">
+  <meta name="twitter:description" content="156 acordes y 561 posiciones con sonido real, afinación por micrófono, jam guiado, escalas, cancionero y 22 minijuegos. Gratis.">
+  <meta name="twitter:image" content="https://chords-qa.web.app/og_cover.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Chords">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
@@ -29,8 +57,28 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>Chords — acordes de guitarra</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Chords",
+    "alternateName": "Chords — banco de acordes de guitarra",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Android, Web",
+    "url": "https://chords-qa.web.app/",
+    "image": "https://chords-qa.web.app/og_cover.png",
+    "description": "Banco de acordes de guitarra con sonido real, arpegios, afinación en vivo por micrófono, jam guiado, explorador de escalas, cancionero y minijuegos.",
+    "inLanguage": ["es", "en"],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
 </head>
 <body>
   <!--
@@ -42,5 +90,13 @@
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
   <script src="flutter_bootstrap.js" async></script>
+  <noscript>
+    <h1>Chords — banco de acordes de guitarra</h1>
+    <p>
+      156 acordes y 561 posiciones de guitarra con sonido real, arpegios,
+      afinación en vivo por micrófono, jam guiado, explorador de escalas,
+      cancionero y 22 minijuegos. Activa JavaScript para usar la aplicación.
+    </p>
+  </noscript>
 </body>
 </html>

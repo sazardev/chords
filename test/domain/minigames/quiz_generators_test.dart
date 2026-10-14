@@ -32,11 +32,12 @@ void main() {
       if (quiz.supports(kind)) kind,
   ];
 
-  test('hay 17 minijuegos repartidos en tres familias', () {
-    expect(MiniGameKind.values.length, 17);
+  test('hay 22 minijuegos repartidos en cuatro familias', () {
+    expect(MiniGameKind.values.length, 22);
     expect(MiniGameKind.of(MiniGameCategory.ear).length, 9);
     expect(MiniGameKind.of(MiniGameCategory.fretboard).length, 5);
     expect(MiniGameKind.of(MiniGameCategory.play).length, 3);
+    expect(MiniGameKind.of(MiniGameCategory.theory).length, 5);
   });
 
   test('cada juego es de opciones, del tablero o de micrófono', () {

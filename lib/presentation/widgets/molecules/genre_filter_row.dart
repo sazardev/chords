@@ -40,6 +40,12 @@ class GenreFilterRow extends StatelessWidget {
     'Balada',
     'Latino',
     'Metal',
+    'Country',
+    'R&B',
+    'Soul',
+    'Bossa',
+    'Punk',
+    'Gospel',
   ];
 
   @override

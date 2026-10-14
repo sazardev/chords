@@ -52,3 +52,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Caché del CLI de Firebase (deploys)
+.firebase/

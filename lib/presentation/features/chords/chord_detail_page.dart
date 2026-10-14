@@ -10,6 +10,7 @@ import 'package:chords/presentation/features/chords/chord_detail_controller.dart
 import 'package:chords/presentation/features/chords/chord_position_guide.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/studio/studio_progress_controller.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
@@ -54,10 +55,13 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
   Future<void> _load(String id) async {
     final ChordDetailController controller = context
         .read<ChordDetailController>();
+    final StudioProgressController studio = context
+        .read<StudioProgressController>();
     await controller.load(id);
     if (!mounted || controller.chord?.id != id) {
       return;
     }
+    unawaited(studio.recordChord(id));
     await controller.playSelected();
   }
 

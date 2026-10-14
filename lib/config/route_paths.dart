@@ -40,6 +40,33 @@ const String kSettingsPath = '/settings';
 /// Visor de diagnóstico de logs dentro de ajustes.
 const String kLogsPath = '/settings/logs';
 
+/// Escuela de teoría: lecciones por bloques.
+const String kTheoryPath = '/learn/theory';
+
+/// Una lección de teoría (query `?id=pentatonic`).
+const String kLessonPath = '/learn/lesson';
+
+/// Explorador de escalas (query `?scale=blues&key=9&pos=1`).
+const String kScalesPath = '/learn/scales';
+
+/// Guía de géneros.
+const String kGenresPath = '/learn/genres';
+
+/// Un género de la guía (query `?id=country`).
+const String kGenrePath = '/learn/genre';
+
+/// Jam guiado (query `?prog=blues12&key=9` o `?song=bamba&transpose=2`).
+const String kJamPath = '/jam';
+
+/// Cancionero.
+const String kSongsPath = '/songs';
+
+/// Una canción (query `?id=bamba`).
+const String kSongPath = '/songs/detail';
+
+/// Historial de acordes.
+const String kHistoryPath = '/chords/history';
+
 /// Nombre interno de la ruta de inicio.
 const String kHomeRouteName = 'home';
 

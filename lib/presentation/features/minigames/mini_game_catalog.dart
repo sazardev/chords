@@ -20,6 +20,11 @@ const Map<MiniGameKind, IconData> kMiniGameIcons = <MiniGameKind, IconData>{
   MiniGameKind.playNote: Icons.mic_rounded,
   MiniGameKind.playStringFret: Icons.my_location_rounded,
   MiniGameKind.echo: Icons.graphic_eq_rounded,
+  MiniGameKind.scaleNote: Icons.stairs_rounded,
+  MiniGameKind.keyChord: Icons.key_rounded,
+  MiniGameKind.scaleDegree: Icons.format_list_numbered_rounded,
+  MiniGameKind.findTonic: Icons.home_rounded,
+  MiniGameKind.progressionEar: Icons.repeat_rounded,
 };
 
 /// Icono de un minijuego.

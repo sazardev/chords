@@ -183,6 +183,11 @@ void main() {
     // Desde Aprender, la ficha se abre encima y volver regresa a Aprender.
     routerOf(tester).go(kLearnPath);
     await tester.pumpAndSettle();
+    // Los accesos del estudio van primero: baja hasta los acordes.
+    for (int i = 0; i < 12 && find.byType(ChordTile).evaluate().isEmpty; i++) {
+      await tester.drag(find.byType(ListView).first, const Offset(0, -300));
+      await tester.pumpAndSettle();
+    }
     final Chord learnChord = tester
         .widget<ChordTile>(find.byType(ChordTile).first)
         .chord;

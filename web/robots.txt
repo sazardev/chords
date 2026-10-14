@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chords-qa.web.app/sitemap.xml

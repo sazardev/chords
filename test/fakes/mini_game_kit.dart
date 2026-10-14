@@ -11,6 +11,7 @@ import 'package:chords/presentation/features/minigames/mini_game_progress_contro
 import 'package:chords/presentation/features/minigames/quiz_controller.dart';
 import 'package:chords/presentation/features/minigames/sound_cue_player.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/studio/studio_kit.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -56,6 +57,7 @@ class MiniGameKit {
       guitar: guitarKit.listener,
       keeper: guitarKit.keeper,
       nav: guitarKit.nav,
+      studio: StudioKit(preferences, chords, audio),
     );
   }
 
@@ -67,6 +69,7 @@ class MiniGameKit {
     required this.guitar,
     required this.keeper,
     required this.nav,
+    required this.studio,
   });
 
   /// Progreso y estrellas.
@@ -89,6 +92,9 @@ class MiniGameKit {
 
   /// Menú global del modo guitarra.
   final GuitarNavController nav;
+
+  /// Estudio: historial, explorador de escalas y jam.
+  final StudioKit studio;
 
   bool _closed = false;
 
@@ -114,5 +120,6 @@ class MiniGameKit {
     ChangeNotifierProvider<GuitarCommandListener>.value(value: guitar),
     ChangeNotifierProvider<GuitarNavController>.value(value: nav),
     Provider<GuitarMicKeeper>.value(value: keeper),
+    ...studio.providers,
   ];
 }

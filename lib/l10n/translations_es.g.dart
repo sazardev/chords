@@ -92,6 +92,16 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   late final Translations$guitar$es guitar = Translations$guitar$es.internal(
     _root,
   );
+  late final Translations$theory$es theory = Translations$theory$es.internal(
+    _root,
+  );
+  late final Translations$studio$es studio = Translations$studio$es.internal(
+    _root,
+  );
+  late final Translations$jam$es jam = Translations$jam$es.internal(_root);
+  late final Translations$songs$es songs = Translations$songs$es.internal(
+    _root,
+  );
 }
 
 // Path: app
@@ -1540,6 +1550,11 @@ class Translations$minigames$es {
     'playNote': 'Toca la nota',
     'playStringFret': 'Cuerda y traste',
     'echo': 'Eco de guitarra',
+    'scaleNote': 'Notas de la escala',
+    'keyChord': 'Acordes del tono',
+    'scaleDegree': '¿Qué grado es?',
+    'findTonic': 'Encuentra la tónica',
+    'progressionEar': 'Progresión al oído',
   };
   Map<String, String> get descriptions => {
     'guessNote': 'Suena una nota: ¿cuál es?',
@@ -1559,6 +1574,11 @@ class Translations$minigames$es {
     'playNote': 'Toca la nota que se pide',
     'playStringFret': 'Toca una posición exacta',
     'echo': 'Escucha y toca la melodía',
+    'scaleNote': 'Reconoce qué nota pertenece a cada escala',
+    'keyChord': 'El IV de Sol, el V de La… al instante',
+    'scaleDegree': 'Pon número a cada nota de la tonalidad',
+    'findTonic': 'Escucha y descubre la nota «casa»',
+    'progressionEar': 'Distingue el I-IV-V del I-V-vi-IV',
   };
   Map<String, String> get howTo => {
     'guessNote': 'Oirás una nota suelta de la guitarra. Elige su nombre. En fácil solo hay notas naturales; en difícil, las doce.',
@@ -1579,6 +1599,11 @@ class Translations$minigames$es {
     'playNote': 'Se te pide una nota. Tócala en cualquier cuerda: el micrófono la reconoce. Puedes escuchar la nota antes.',
     'playStringFret': 'Se te pide una cuerda y un traste exactos. Pisa y toca: el micrófono comprueba que suena la nota correcta.',
     'echo': 'Oirás una melodía corta. Tócala en tu guitarra nota a nota, en el mismo orden.',
+    'scaleNote': 'Se indica una escala y su tónica. Elige la única nota de las opciones que pertenece a esa escala. Usa la fórmula o imagina la caja en el mástil.',
+    'keyChord': 'Se indica una tonalidad y un grado en números romanos. Elige el acorde que ocupa ese grado. Recuerda: en mayor, I IV V son mayores; ii iii vi, menores.',
+    'scaleDegree': 'Se indica una tonalidad y una nota. Di qué grado ocupa (I = tónica, IV = subdominante, V = dominante…).',
+    'findTonic': 'Suena una cadencia de cuatro acordes que termina en casa. Elige la nota que suena a reposo: la tónica.',
+    'progressionEar': 'Suenan cuatro acordes. Elige qué progresión es, escrita en grados. Fíjate en si empieza en mayor o en menor y en cómo vuelve a casa.',
   };
   Map<String, String> get noteNames => {
     'n0': 'Do',
@@ -1619,6 +1644,13 @@ class Translations$minigames$es {
 
   /// es: 'Escucha la melodía…'
   String get micPlayingMelody => 'Escucha la melodía…';
+
+  /// es: 'Teoría musical'
+  String get theoryTitle => 'Teoría musical';
+
+  /// es: 'Escalas, tonalidades, grados y progresiones: entiende lo que tocas.'
+  String get theorySubtitle =>
+      'Escalas, tonalidades, grados y progresiones: entiende lo que tocas.';
 }
 
 // Path: guitar
@@ -1729,6 +1761,685 @@ class Translations$guitar$es {
   /// es: 'Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla'
   String get navSettingSubtitle =>
       'Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla';
+}
+
+// Path: theory
+class Translations$theory$es {
+  Translations$theory$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Escuela de guitarra'
+  String get title => 'Escuela de guitarra';
+
+  /// es: 'Entiende lo que tocas: tónica, escalas, posiciones y armonía.'
+  String get subtitle =>
+      'Entiende lo que tocas: tónica, escalas, posiciones y armonía.';
+
+  /// es: 'Fundamentos'
+  String get unitBasics => 'Fundamentos';
+
+  /// es: 'Escalas y posiciones'
+  String get unitScales => 'Escalas y posiciones';
+
+  /// es: 'Armonía y progresiones'
+  String get unitHarmony => 'Armonía y progresiones';
+
+  /// es: 'Ideas clave'
+  String get keyPoints => 'Ideas clave';
+
+  /// es: 'Pruébalo en el mástil'
+  String get tryIt => 'Pruébalo en el mástil';
+
+  /// es: 'Abrir en el explorador'
+  String get openExplorer => 'Abrir en el explorador';
+
+  /// es: 'Practica: $game'
+  String practiceGame({required Object game}) => 'Practica: ${game}';
+
+  /// es: 'Tócalo en el jam: $name'
+  String practiceJam({required Object name}) => 'Tócalo en el jam: ${name}';
+
+  /// es: 'Marcar como aprendida'
+  String get markLearned => 'Marcar como aprendida';
+
+  /// es: 'Aprendida'
+  String get learned => 'Aprendida';
+
+  /// es: '$done de $total lecciones aprendidas'
+  String lessonsDone({required Object done, required Object total}) =>
+      '${done} de ${total} lecciones aprendidas';
+
+  /// es: 'Acordes de $key'
+  String harmonyTitle({required Object key}) => 'Acordes de ${key}';
+
+  /// es: '$note $scale'
+  String scaleIn({required Object note, required Object scale}) =>
+      '${note} ${scale}';
+
+  /// es: '$note $mode'
+  String keyName({required Object note, required Object mode}) =>
+      '${note} ${mode}';
+
+  /// es: 'mayor'
+  String get majorMode => 'mayor';
+
+  /// es: 'menor'
+  String get minorMode => 'menor';
+
+  /// es: 'Explorador de escalas'
+  String get explorerTitle => 'Explorador de escalas';
+
+  /// es: 'Tónica'
+  String get explorerTonic => 'Tónica';
+
+  /// es: 'Escala'
+  String get explorerScale => 'Escala';
+
+  /// es: 'Posición'
+  String get explorerPosition => 'Posición';
+
+  /// es: 'Todo el mástil'
+  String get allPositions => 'Todo el mástil';
+
+  /// es: 'Posición $n'
+  String positionN({required Object n}) => 'Posición ${n}';
+
+  /// es: 'Grados'
+  String get showDegrees => 'Grados';
+
+  /// es: 'Notas'
+  String get showNotes => 'Notas';
+
+  /// es: 'Escuchar'
+  String get playScale => 'Escuchar';
+
+  /// es: 'Parar'
+  String get stopScale => 'Parar';
+
+  /// es: 'Toca una nota del mástil para oírla. Las tónicas van en color principal y la nota característica, resaltada.'
+  String get explorerHint =>
+      'Toca una nota del mástil para oírla. Las tónicas van en color principal y la nota característica, resaltada.';
+
+  /// es: 'Fórmula: $formula'
+  String formula({required Object formula}) => 'Fórmula: ${formula}';
+
+  /// es: 'Notas: $notes'
+  String notesOf({required Object notes}) => 'Notas: ${notes}';
+
+  /// es: 'Mástil con $scale'
+  String fretboardLabel({required Object scale}) => 'Mástil con ${scale}';
+
+  /// es: 'Géneros'
+  String get genresTitle => 'Géneros';
+
+  /// es: 'Cómo suena cada estilo: tempo, rasgueo, escalas, acordes y progresiones.'
+  String get genresSubtitle =>
+      'Cómo suena cada estilo: tempo, rasgueo, escalas, acordes y progresiones.';
+
+  /// es: '$min–$max BPM'
+  String tempoRange({required Object min, required Object max}) =>
+      '${min}–${max} BPM';
+
+  /// es: 'Ritmo'
+  String get genreRhythmTitle => 'Ritmo';
+
+  /// es: 'Consejo'
+  String get genreTipTitle => 'Consejo';
+
+  /// es: 'Escalas para solear'
+  String get genreScales => 'Escalas para solear';
+
+  /// es: 'Acordes típicos'
+  String get genreChords => 'Acordes típicos';
+
+  /// es: 'Progresiones para jammear'
+  String get genreProgressions => 'Progresiones para jammear';
+
+  /// es: 'Canciones'
+  String get genreSongs => 'Canciones';
+
+  /// es: 'Ver acordes de $genre en la biblioteca'
+  String genreLibrary({required Object genre}) =>
+      'Ver acordes de ${genre} en la biblioteca';
+
+  /// es: 'Rasgueo: $name'
+  String strumLabel({required Object name}) => 'Rasgueo: ${name}';
+
+  Map<String, String> get scaleNames => {
+    'major': 'mayor',
+    'minor': 'menor natural',
+    'harmonicMinor': 'menor armónica',
+    'minorPentatonic': 'pentatónica menor',
+    'majorPentatonic': 'pentatónica mayor',
+    'blues': 'escala de blues',
+    'dorian': 'dórica',
+    'phrygian': 'frigia',
+    'lydian': 'lidia',
+    'mixolydian': 'mixolidia',
+  };
+  Map<String, String> get scaleAbout => {
+    'major': 'La base de la armonía: alegre y estable. Pop, folk y canciones infantiles.',
+    'minor':
+        'La relativa de la mayor: melancólica y épica. Baladas, rock y metal.',
+    'harmonicMinor':
+        'Menor con la séptima elevada: sabor clásico, flamenco y neoclásico.',
+    'minorPentatonic':
+        'Cinco notas que nunca fallan: el corazón del rock y el blues.',
+    'majorPentatonic': 'Dulce y abierta: country, pop, soul y solos melódicos.',
+    'blues': 'Pentatónica menor con la blue note (b5): pura actitud.',
+    'dorian': 'Menor con sexta mayor: funk, jazz, Santana y Pink Floyd.',
+    'phrygian': 'Menor con segunda menor: flamenco y metal oscuro.',
+    'lydian': 'Mayor con cuarta aumentada: soñadora, de banda sonora.',
+    'mixolydian': 'Mayor con séptima menor: rock clásico, blues y country.',
+  };
+  Map<String, String> get degreeNames => {
+    'd1': 'tónica',
+    'd2': 'supertónica',
+    'd3': 'mediante',
+    'd4': 'subdominante',
+    'd5': 'dominante',
+    'd6': 'superdominante',
+    'd7': 'sensible',
+  };
+  Map<String, String> get strumNames => {
+    'whole': 'Un golpe por compás',
+    'quarters': 'Negras',
+    'pop': 'Pop',
+    'eighths': 'Corcheas',
+    'boomChick': 'Bajo y rasgueo',
+    'skank': 'Contratiempo (reggae)',
+    'bossa': 'Bossa nova',
+    'shuffle': 'Shuffle',
+    'waltz': 'Vals 3/4',
+  };
+  Map<String, String> get genreNames => {
+    'pop': 'Pop',
+    'rock': 'Rock',
+    'blues': 'Blues',
+    'country': 'Country',
+    'jazz': 'Jazz',
+    'funk': 'Funk',
+    'ballad': 'Balada',
+    'latin': 'Latino',
+    'reggae': 'Reggae',
+    'bossa': 'Bossa nova',
+    'metal': 'Metal',
+    'punk': 'Punk',
+    'soul': 'Soul y R&B',
+    'gospel': 'Gospel',
+    'folk': 'Folk y tradicional',
+  };
+  Map<String, String> get genreAbout => {
+    'pop': 'Canciones pegadizas sobre pocas progresiones (I-V-vi-IV). La guitarra acompaña con acordes abiertos y un rasgueo constante.',
+    'rock': 'Power chords, corcheas con energía y riffs con la pentatónica menor. El I-IV-V y el bVII mandan.',
+    'blues': 'Doce compases, acordes de séptima y la escala de blues. El feeling importa más que la velocidad.',
+    'country': 'Acordes abiertos, bajo alternado y melodías con la pentatónica mayor. Historias sencillas y mucho swing en la mano derecha.',
+    'jazz': 'Cuatriadas (maj7, m7, 7), el ii-V-I y cambios constantes de tonalidad. Se toca ligero y con swing.',
+    'funk': 'Acordes de novena y m7 tocados cortos y percusivos. La guitarra es parte de la batería.',
+    'ballad': 'Tempos lentos y acordes que se dejan sonar. Arpegios o un golpe por pulso.',
+    'latin': 'Desde la ranchera en 3/4 hasta la cadencia andaluza y el bolero. Mucha menor armónica.',
+    'reggae': 'El acorde suena solo en los contratiempos, corto y seco. El bajo y la batería llevan el pulso.',
+    'bossa': 'Cuatriadas suaves, bajo con el pulgar y acordes sincopados con los dedos.',
+    'metal': 'Power chords con palm mute, tempos rápidos y escalas menores, frigias y armónicas.',
+    'punk': 'Tres o cuatro power chords, corcheas hacia abajo y mucha velocidad. Actitud ante todo.',
+    'soul': 'Acordes de color (maj7, m7, 9), groove relajado y adornos con la pentatónica mayor.',
+    'gospel': 'Armonía de iglesia: I-IV-V con séptimas, el iv menor y cadencias plagales («amén»).',
+    'folk': 'Canciones de siempre con tres o cuatro acordes abiertos. Ideal para cantar.',
+  };
+  Map<String, String> get genreRhythm => {
+    'pop': '↓ ↓↑ ↑↓↑ en 4/4. Acentúa el 2 y el 4.',
+    'rock': 'Corcheas abajo o abajo-arriba, con palm mute en las estrofas.',
+    'blues': 'Shuffle: cada pulso en largo-corto (ta-ka ta-ka).',
+    'country': 'Boom-chick: bajo en el 1 y el 3, rasgueo en el 2 y el 4, alternando la cuerda del bajo.',
+    'jazz':
+        'Cuatro golpes cortos por compás (estilo Freddie Green), con swing.',
+    'funk': 'Semicorcheas con la mano siempre en marcha; casi todo apagado y unos pocos golpes abiertos.',
+    'ballad': 'Un golpe por compás o arpegio lento de la 6ª a la 1ª cuerda.',
+    'latin': 'Ranchera: bajo-acorde-acorde (3/4). Rumba: rasgueo con acento en el contratiempo.',
+    'reggae': 'Silencio en el 1, golpe seco en el 2 y el 4 (skank).',
+    'bossa': 'Pulgar en el bajo en cada pulso y acorde sincopado entre medias.',
+    'metal':
+        'Corcheas o galope (una corchea y dos semicorcheas) con palm mute.',
+    'punk': 'Corcheas todo hacia abajo, rápido y constante.',
+    'soul': 'Golpes suaves en el 2 y el 4 y adornos entre acordes.',
+    'gospel': 'Negras firmes con acentos en el 2 y el 4; llamada y respuesta.',
+    'folk': 'Negras o el patrón pop; en 3/4, bajo y dos golpes.',
+  };
+  Map<String, String> get genreTip => {
+    'pop':
+        'Aprende el I-V-vi-IV en Sol, Do y Re: tocarás cientos de canciones.',
+    'rock': 'Apaga las cuerdas con la mano derecha (palm mute) en las estrofas y ábrelas en el estribillo.',
+    'blues': 'Haz un bend de la 4ª a la 5ª de la escala y termina las frases en la tónica.',
+    'country': 'Alterna el bajo entre la raíz y la quinta del acorde para el típico boom-chick.',
+    'jazz': 'Aprende las formas de m7, 7 y maj7 con raíz en la 6ª y la 5ª cuerda: cubren el 90 %.',
+    'funk': 'Rasguea muy cerca del puente y relaja la mano izquierda para apagar entre golpes.',
+    'ballad':
+        'Deja sonar los acordes y cambia justo antes del pulso 1, no tarde.',
+    'latin': 'En la cadencia andaluza, usa la menor armónica sobre el acorde V (Mi mayor en La menor).',
+    'reggae':
+        'Toca el skank en las tres cuerdas agudas y apágalo justo después.',
+    'bossa': 'Practica el bajo con el pulgar solo antes de añadir los acordes.',
+    'metal':
+        'Afina el palm mute: la mano en el puente, ni muy encima ni muy fuera.',
+    'punk': 'Mantén la muñeca suelta: la velocidad sale de la relajación.',
+    'soul': 'Toca el acorde solo en las tres o cuatro cuerdas agudas para un sonido limpio.',
+    'gospel':
+        'Prueba el IV → iv → I: el cambio de mayor a menor es pura emoción.',
+    'folk': 'Canta mientras tocas: la mano derecha debe ir en automático.',
+  };
+  Map<String, String> get progressionNames => {
+    'popAxis': 'El eje del pop',
+    'dooWop': 'Doo-wop de los 50',
+    'rockClassic': 'Rock clásico I-IV-V',
+    'rockMixo': 'Rock con bVII',
+    'blues12': 'Blues de 12 compases',
+    'bluesMinor': 'Blues menor',
+    'countryRoad': 'Camino country',
+    'countryTwoStep': 'Two-step',
+    'jazz251': 'ii-V-I de jazz',
+    'jazzTurnaround': 'Turnaround',
+    'funkDorian': 'Vamp dórico',
+    'balladSad': 'Balada sentimental',
+    'canon': 'Canon de Pachelbel',
+    'andalusian': 'Cadencia andaluza',
+    'ranchera': 'Ranchera tónica-dominante',
+    'reggaeSkank': 'Skank de reggae',
+    'bossaCycle': 'Ciclo de bossa',
+    'metalMinor': 'Metal en menor',
+    'metalPhrygian': 'Metal frigio',
+    'punkPower': 'Punk a toda velocidad',
+    'soulGroove': 'Groove soul',
+    'gospelPlagal': 'Gospel con iv menor',
+    'folkThree': 'Tres acordes folk',
+  };
+  Map<String, String> get lessonTitles => {
+    'notes': 'Las notas y el mástil',
+    'intervals': 'Intervalos: la distancia entre notas',
+    'tonic': 'La tónica y la tonalidad',
+    'rhythm': 'Ritmo, compás y rasgueo',
+    'majorScale': 'La escala mayor',
+    'minorScales': 'Escalas menores',
+    'pentatonic': 'Pentatónicas: la escala del solista',
+    'positions': 'Las posiciones (cajas) de la escala',
+    'blues': 'El blues y la blue note',
+    'modes': 'Los modos griegos',
+    'harmony': 'Armonía: los acordes de una tonalidad',
+    'degrees': 'Grados y funciones',
+    'progressions': 'Progresiones famosas',
+    'caged': 'Sistema CAGED',
+  };
+  Map<String, String> get lessonSummaries => {
+    'notes': 'Las 12 notas, sostenidos y bemoles, y cómo encontrarlas en la guitarra.',
+    'intervals':
+        'Semitonos, terceras, quintas y octavas: el ADN de escalas y acordes.',
+    'tonic': 'La nota «casa» de una canción y cómo descubrir en qué tono está.',
+    'rhythm': 'Pulso, 4/4 y 3/4, corcheas y los patrones de cada género.',
+    'majorScale': 'La fórmula T-T-S-T-T-T-S, la madre de la armonía.',
+    'minorScales': 'Menor natural, menor armónica y la relativa menor.',
+    'pentatonic': 'Cinco notas que nunca suenan mal: el atajo para improvisar.',
+    'positions':
+        'Teoría de posición: cómo dividir el mástil en cajas que encajan.',
+    'blues': 'La escala de blues, el shuffle y la forma de 12 compases.',
+    'modes':
+        'Siete colores de la misma escala: dórico, frigio, lidio, mixolidio…',
+    'harmony': 'Cada nota de la escala da un acorde: el campo armónico.',
+    'degrees':
+        'Tónica, subdominante y dominante: reposo, movimiento y tensión.',
+    'progressions':
+        'Las combinaciones de acordes que suenan en miles de canciones.',
+    'caged': 'Cinco formas de acorde abierto que recorren todo el mástil.',
+  };
+  Map<String, String> get lessonBodies => {
+    'notes': 'La música occidental usa solo 12 notas que se repiten en octavas: Do, Do♯, Re, Re♯, Mi, Fa, Fa♯, Sol, Sol♯, La, La♯ y Si. En inglés se escriben con letras: C D E F G A B.\n\nEntre dos notas seguidas hay un semitono, y en la guitarra un semitono es exactamente un traste; dos trastes son un tono. Entre Mi y Fa, y entre Si y Do, no hay sostenido: están a un semitono.\n\nUn sostenido (♯) sube un semitono y un bemol (♭) lo baja, así que Do♯ y Re♭ son la misma nota con dos nombres. En el traste 12 cada cuerda repite su nota al aire una octava más aguda: ahí el mástil vuelve a empezar.',
+    'intervals': 'Un intervalo es la distancia entre dos notas, medida en semitonos (trastes). Cada distancia tiene su color: la tercera mayor (4 semitonos) suena alegre, la tercera menor (3) triste y la quinta justa (7) sólida y abierta.\n\nLos acordes se construyen apilando intervalos sobre la raíz: un acorde mayor es raíz + tercera mayor + quinta; uno menor solo cambia la tercera. Por eso mover una sola nota un traste convierte Do en Do menor.\n\nEn la guitarra cada intervalo tiene una forma: la quinta está en la cuerda siguiente (más aguda), dos trastes más arriba, y la octava dos cuerdas más allá y dos trastes arriba. Al cruzar la 2ª cuerda (Si) la forma se desplaza un traste.',
+    'tonic': 'La tónica es la nota alrededor de la cual gira una canción: la casa a la que todo quiere volver. Cuando la melodía o el acorde llegan a la tónica sentimos reposo; al alejarse, tensión.\n\nLa tonalidad es la tónica más su escala. «Sol mayor» significa que Sol es la casa y que se usan las notas de la escala mayor de Sol. Casi todas las canciones terminan, y muchas empiezan, en el acorde de la tónica.\n\nPara descubrir el tono de una canción busca el acorde que suena a final, comprueba que el resto de acordes pertenecen a esa tonalidad y canta la nota que «cierra» la melodía. Con práctica lo oirás al instante: juega a «Encuentra la tónica».',
+    'rhythm': 'El pulso es el latido constante de la música. El compás agrupa pulsos: 4/4 (cuatro por compás) es el del pop, el rock y casi todo; 3/4 es el del vals, la ranchera y muchas canciones tradicionales.\n\nCada pulso se divide en dos corcheas: abajo en el pulso («1») y arriba en el contratiempo («y»). La mano derecha se mueve siempre abajo-arriba como un péndulo, aunque no toque las cuerdas en cada viaje: así el ritmo nunca se rompe.\n\nCada género tiene su patrón: pop (↓ ↓↑ ↑↓↑), rock (corcheas), country (bajo y rasgueo), reggae (solo contratiempos) o blues (shuffle). El modo jam te muestra el patrón golpe a golpe mientras tocas.',
+    'majorScale': 'La escala mayor tiene siete notas y sigue siempre la misma fórmula de tonos (T) y semitonos (S): T T S T T T S. Desde Do salen Do Re Mi Fa Sol La Si, todas naturales.\n\nCon la fórmula puedes construirla desde cualquier nota. Desde Sol: Sol La Si Do Re Mi Fa♯; el Fa♯ aparece para respetar el último tono antes del semitono final.\n\nEn una sola cuerda la escala mayor se toca contando trastes: 2, 2, 1, 2, 2, 2, 1. Pruébalo en la 5ª cuerda desde el traste 3 (Do) y escucha el famoso do-re-mi. En el explorador verás sus siete posiciones de tres notas por cuerda.',
+    'minorScales': 'La escala menor natural cambia la fórmula: T S T T S T T. La menor de La usa las mismas notas que Do mayor (La Si Do Re Mi Fa Sol), pero al empezar en La todo suena más oscuro: es la relativa menor de Do.\n\nToda tonalidad mayor tiene una relativa menor tres semitonos por debajo (Sol mayor ↔ Mi menor). Comparten notas y acordes; lo que cambia es la casa.\n\nLa menor armónica sube la séptima nota un semitono (Sol♯ en La menor). Esa nota convierte el acorde del quinto grado en mayor (Mi mayor en La menor), que empuja con fuerza hacia la tónica: es el sonido del flamenco, la música clásica y muchos boleros.',
+    'pentatonic': 'La pentatónica es una escala de cinco notas: quita a la escala mayor o menor las dos notas que crean más tensión. Por eso casi cualquier nota que toques sobre los acordes de la canción sonará bien.\n\nLa pentatónica menor (1 b3 4 5 b7) es la base del rock y del blues: La Do Re Mi Sol en La menor. La pentatónica mayor (1 2 3 5 6) suena dulce y abierta, típica del country y el pop: Do Re Mi Sol La en Do.\n\nTruco clave: la pentatónica menor de La y la mayor de Do tienen las mismas notas. La misma forma, con otra tónica, te da los dos sonidos. Para sonar mayor apóyate en la tónica mayor; para sonar a blues, en la menor.',
+    'positions': 'Una posición o caja es el grupo de notas de la escala que alcanzas sin mover la mano: cuatro o cinco trastes, un dedo por traste. La pentatónica tiene cinco cajas y las escalas de siete notas, siete posiciones de tres notas por cuerda.\n\nLas cajas encajan como piezas de un puzle: el borde derecho de una es el izquierdo de la siguiente, y tras la última vuelve la primera doce trastes más arriba. Conocerlas todas te permite tocar la escala en todo el mástil.\n\nLa posición 1 de la pentatónica menor empieza con la tónica en la 6ª cuerda bajo el índice. Apréndela primero, después la 2, y conéctalas deslizando un dedo. Para cambiar de tonalidad no hay que aprender nada nuevo: mueve la caja entera hasta la nueva tónica.',
+    'blues': 'La escala de blues es la pentatónica menor con una nota más: la quinta disminuida (b5), la famosa blue note. En La: La Do Re Re♯ Mi Sol. Úsala de paso, camino de la quinta; no te quedes en ella.\n\nEl blues clásico dura 12 compases con tres acordes de séptima: cuatro de I7, dos de IV7, dos de I7, luego V7, IV7, I7 y V7 para volver a empezar (el «turnaround»).\n\nEl ritmo es el shuffle: cada pulso se divide en un golpe largo y uno corto (ta-ka, ta-ka). Prueba el jam «Blues de 12 compases» y toca la escala de blues encima.',
+    'modes': 'Si tocas las notas de Do mayor empezando en otra nota obtienes un modo: desde Re el dórico, desde Mi el frigio, desde Fa el lidio, desde Sol el mixolidio, desde La el eólico (menor natural) y desde Si el locrio.\n\nCada modo tiene una nota característica. El dórico es menor con sexta mayor (funk, Santana). El frigio, menor con segunda menor (flamenco, metal). El lidio, mayor con cuarta aumentada (soñador, bandas sonoras). El mixolidio, mayor con séptima menor (rock, blues, country).\n\nPara oírlos, toca el modo sobre un acorde fijo de su tónica: así la nota característica destaca. El explorador la marca con otro color.',
+    'harmony': 'Si construyes un acorde sobre cada nota de la escala mayor usando solo notas de la escala obtienes siete acordes: I mayor, ii menor, iii menor, IV mayor, V mayor, vi menor y vii disminuido. En Do: C Dm Em F G Am B°.\n\nEsa lista es el campo armónico y explica por qué ciertos acordes suenan bien juntos: pertenecen a la misma tonalidad. Los números romanos permiten escribir progresiones sin depender del tono: «I-V-vi-IV» es igual en Do (C G Am F) que en Sol (G D Em C).\n\nCon cuatro notas aparecen los acordes de jazz: Imaj7, ii7, iii7, IVmaj7, V7, vi7 y viiø. El V7 es el único dominante: el que pide volver a la tónica.',
+    'degrees': 'Cada grado de la escala cumple una función. La tónica (I) es el reposo. La subdominante (IV) se aleja suavemente. La dominante (V) crea tensión y quiere resolver en la tónica.\n\nLos demás grados sustituyen a estos tres: el vi y el iii comparten notas con el I (función de tónica) y el ii se parece al IV (subdominante). Por eso «I-vi-IV-V» y «I-IV-V» cuentan la misma historia: casa, viaje, tensión y regreso.\n\nCuando entiendes las funciones puedes adivinar el siguiente acorde de una canción, sacar temas de oído y componer tus propias progresiones.',
+    'progressions': 'Una progresión es una secuencia de acordes que se repite. Unas pocas sostienen gran parte de la música popular: I-V-vi-IV (pop), I-IV-V (rock, country, folk, ranchera), ii-V-I (jazz), vi-IV-I-V (baladas) y la cadencia andaluza i-bVII-bVI-V (flamenco y rock latino).\n\nComo están escritas en grados puedes tocarlas en cualquier tono: elige uno cómodo para cantar. Aprende cada progresión en dos o tres tonos y empezarás a reconocerlas en todo lo que escuches.\n\nEn el jam guiado tienes todas estas progresiones con acompañamiento, metrónomo, el patrón de rasgueo y la escala recomendada para improvisar.',
+    'caged': 'Las cinco formas de acorde abierto mayor —Do, La, Sol, Mi y Re (C-A-G-E-D)— se pueden mover por el mástil con cejilla. Encadenadas en ese orden cubren los doce trastes con el mismo acorde.\n\nPor ejemplo, Do mayor se toca en forma de Do (abierto), de La (cejilla en el traste 3), de Sol (traste 5), de Mi (traste 8) y de Re (traste 10). Cada forma comparte notas con la siguiente.\n\nCada forma CAGED coincide con una caja de la pentatónica mayor. Así se unen acordes y escalas: siempre sabes qué notas de solo tienes alrededor del acorde que estás tocando.',
+  };
+  Map<String, String> get lessonPoints => {
+    'notes': '12 notas: 7 naturales y 5 alteradas\n1 traste = 1 semitono; 2 trastes = 1 tono\nMi–Fa y Si–Do están a un semitono\nTraste 12 = la misma nota una octava arriba\nAprende primero las notas de la 6ª y la 5ª cuerda: son las raíces de las cejillas',
+    'intervals': 'Tercera menor = 3 semitonos (triste)\nTercera mayor = 4 semitonos (alegre)\nQuinta justa = 7 semitonos (power chord)\nOctava = 12 semitonos: la misma nota más aguda\nLa cuerda Si desplaza las formas un traste',
+    'tonic': 'Tónica = reposo; alejarse = tensión\nTonalidad = tónica + escala\nEl último acorde suele ser la tónica\nCada tonalidad mayor tiene una relativa menor con las mismas notas\nTransportar = mover todo el mismo número de trastes',
+    'rhythm': '4/4: cuenta 1 y 2 y 3 y 4 y\n3/4: cuenta 1 y 2 y 3 y\nLa mano nunca para: abajo en el pulso, arriba en el «y»\nEmpieza lento con metrónomo y sube el tempo poco a poco\nCambia de acorde en el último golpe del compás',
+    'majorScale': 'Fórmula: T T S T T T S (2-2-1-2-2-2-1 trastes)\nSiete notas, una de cada letra\nSus grados se numeran del 1 al 7\nDe ella salen los acordes de la tonalidad\nTiene 7 posiciones de 3 notas por cuerda',
+    'minorScales': 'Menor natural: T S T T S T T\nRelativa menor = 3 semitonos por debajo de la mayor\nComparten notas, cambia la tónica\nMenor armónica: séptima elevada\nEl V mayor en menor da la cadencia flamenca',
+    'pentatonic': 'Menor: 1 b3 4 5 b7\nMayor: 1 2 3 5 6\nDos notas por cuerda en cada caja\nPentatónica menor de La = mayor de Do (mismas notas)\nTermina tus frases en la tónica para sonar resuelto',
+    'positions': 'Una caja = 4-5 trastes, un dedo por traste\nPentatónica: 5 cajas; escalas de 7 notas: 7 posiciones\nLas cajas se solapan y se repiten cada 12 trastes\nLocaliza siempre las tónicas dentro de la caja\nMover la caja entera = cambiar de tonalidad',
+    'blues': 'Blues = pentatónica menor + b5\n12 compases: I7 – IV7 – I7 – V7 – IV7 – I7\nTodos los acordes son de séptima\nShuffle: largo-corto en cada pulso\nBends y vibrato dan el carácter',
+    'modes': 'Jónico = mayor · Eólico = menor natural\nDórico: menor con 6ª mayor\nFrigio: menor con b2\nLidio: mayor con #4\nMixolidio: mayor con b7',
+    'harmony': 'Mayúsculas = mayor · minúsculas = menor\nEn mayor: I ii iii IV V vi vii°\nEn menor: i ii° III iv v VI VII\nNúmeros romanos = progresiones en cualquier tono\nEl V7 empuja hacia el I',
+    'degrees': 'I tónica: reposo\nIV subdominante: movimiento\nV dominante: tensión que vuelve al I\nvi y iii hacen de tónica; ii, de subdominante\nV → I es la cadencia más fuerte',
+    'progressions': 'Pop: I – V – vi – IV\nRock y country: I – IV – V\nJazz: ii – V – I\nBalada: vi – IV – I – V\nAndaluza: i – bVII – bVI – V',
+    'caged': 'Orden: C → A → G → E → D → C…\nCada forma es un acorde abierto movible\nCubren todo el mástil sin huecos\nCada forma se apoya en una caja de pentatónica\nLa raíz siempre está dentro de la forma',
+  };
+}
+
+// Path: studio
+class Translations$studio$es {
+  Translations$studio$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Explora la guitarra'
+  String get sectionTitle => 'Explora la guitarra';
+
+  /// es: 'Teoría'
+  String get theoryCard => 'Teoría';
+
+  /// es: 'Tónica, escalas, pentatónicas y armonía'
+  String get theoryCardBody => 'Tónica, escalas, pentatónicas y armonía';
+
+  /// es: 'Escalas'
+  String get scalesCard => 'Escalas';
+
+  /// es: 'Mástil interactivo con posiciones'
+  String get scalesCardBody => 'Mástil interactivo con posiciones';
+
+  /// es: 'Géneros'
+  String get genresCard => 'Géneros';
+
+  /// es: 'Ritmos y acordes de cada estilo'
+  String get genresCardBody => 'Ritmos y acordes de cada estilo';
+
+  /// es: 'Jam guiado'
+  String get jamCard => 'Jam guiado';
+
+  /// es: 'Toca con acompañamiento y puntuación'
+  String get jamCardBody => 'Toca con acompañamiento y puntuación';
+
+  /// es: 'Canciones'
+  String get songsCard => 'Canciones';
+
+  /// es: 'Acordes y letra para tocar'
+  String get songsCardBody => 'Acordes y letra para tocar';
+
+  /// es: 'Historial'
+  String get historyCard => 'Historial';
+
+  /// es: 'Tus acordes recientes'
+  String get historyCardBody => 'Tus acordes recientes';
+
+  /// es: '(one) {$n día seguido tocando} (other) {$n días seguidos tocando}'
+  String streakDays({required num n}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: '${n} día seguido tocando',
+        other: '${n} días seguidos tocando',
+      );
+
+  /// es: 'Toca hoy para empezar tu racha'
+  String get streakZero => 'Toca hoy para empezar tu racha';
+
+  /// es: '¡Hoy ya practicaste!'
+  String get streakToday => '¡Hoy ya practicaste!';
+
+  /// es: 'Acordes recientes'
+  String get recentTitle => 'Acordes recientes';
+
+  /// es: 'Ver todo'
+  String get seeAll => 'Ver todo';
+
+  /// es: 'Borrar historial'
+  String get clearHistory => 'Borrar historial';
+
+  /// es: 'Historial de acordes'
+  String get historyTitle => 'Historial de acordes';
+
+  /// es: 'Aún no hay historial'
+  String get historyEmptyTitle => 'Aún no hay historial';
+
+  /// es: 'Los acordes que abras aparecerán aquí para repasarlos rápido.'
+  String get historyEmptyBody =>
+      'Los acordes que abras aparecerán aquí para repasarlos rápido.';
+
+  /// es: 'Del más reciente al más antiguo'
+  String get historyHint => 'Del más reciente al más antiguo';
+}
+
+// Path: jam
+class Translations$jam$es {
+  Translations$jam$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Jam guiado'
+  String get title => 'Jam guiado';
+
+  /// es: 'Elige qué tocar, ajusta el tono y el tempo y toca junto a la app.'
+  String get subtitle =>
+      'Elige qué tocar, ajusta el tono y el tempo y toca junto a la app.';
+
+  /// es: 'Progresiones'
+  String get progressionsTab => 'Progresiones';
+
+  /// es: 'Canciones'
+  String get songsTab => 'Canciones';
+
+  /// es: 'La tuya'
+  String get customTab => 'La tuya';
+
+  /// es: 'Tonalidad'
+  String get key => 'Tonalidad';
+
+  /// es: 'Tempo'
+  String get tempo => 'Tempo';
+
+  /// es: '$n BPM'
+  String bpm({required Object n}) => '${n} BPM';
+
+  /// es: 'Vueltas: $n'
+  String loops({required Object n}) => 'Vueltas: ${n}';
+
+  /// es: 'Acompañar'
+  String get modeBacking => 'Acompañar';
+
+  /// es: 'La app toca los acordes con el rasgueo del estilo.'
+  String get modeBackingBody =>
+      'La app toca los acordes con el rasgueo del estilo.';
+
+  /// es: 'Puntuar'
+  String get modeScore => 'Puntuar';
+
+  /// es: 'Tocas tú y el micrófono puntúa cada compás (la app no suena).'
+  String get modeScoreBody =>
+      'Tocas tú y el micrófono puntúa cada compás (la app no suena).';
+
+  /// es: 'Metrónomo'
+  String get metronome => 'Metrónomo';
+
+  /// es: '¡A tocar!'
+  String get start => '¡A tocar!';
+
+  /// es: 'Prepárate…'
+  String get countIn => 'Prepárate…';
+
+  /// es: 'Ahora'
+  String get now => 'Ahora';
+
+  /// es: 'Después'
+  String get next => 'Después';
+
+  /// es: 'Fin'
+  String get end => 'Fin';
+
+  /// es: 'Compás $n de $total'
+  String barOf({required Object n, required Object total}) =>
+      'Compás ${n} de ${total}';
+
+  /// es: 'Pausa'
+  String get pause => 'Pausa';
+
+  /// es: 'Seguir'
+  String get resume => 'Seguir';
+
+  /// es: 'Terminar'
+  String get stop => 'Terminar';
+
+  /// es: '$n pts'
+  String points({required Object n}) => '${n} pts';
+
+  /// es: 'Racha $n'
+  String streak({required Object n}) => 'Racha ${n}';
+
+  /// es: '¡Perfecto!'
+  String get gradePerfect => '¡Perfecto!';
+
+  /// es: '¡Bien!'
+  String get gradeGood => '¡Bien!';
+
+  /// es: 'Fallo'
+  String get gradeMiss => 'Fallo';
+
+  /// es: 'No te oigo'
+  String get gradeSilent => 'No te oigo';
+
+  /// es: 'Sesión terminada'
+  String get resultTitle => 'Sesión terminada';
+
+  /// es: 'Precisión: $n%'
+  String accuracy({required Object n}) => 'Precisión: ${n}%';
+
+  /// es: 'Mejor racha: $n'
+  String bestStreak({required Object n}) => 'Mejor racha: ${n}';
+
+  /// es: 'Compases perfectos: $n'
+  String perfectBars({required Object n}) => 'Compases perfectos: ${n}';
+
+  /// es: 'Otra vez'
+  String get playAgain => 'Otra vez';
+
+  /// es: 'Más lento'
+  String get slower => 'Más lento';
+
+  /// es: 'Más rápido'
+  String get faster => 'Más rápido';
+
+  /// es: 'Elegir otra'
+  String get back => 'Elegir otra';
+
+  /// es: '¡Nuevo récord!'
+  String get newBest => '¡Nuevo récord!';
+
+  /// es: 'Récord: $n'
+  String best({required Object n}) => 'Récord: ${n}';
+
+  /// es: 'Improvisa con: $scale'
+  String scaleHint({required Object scale}) => 'Improvisa con: ${scale}';
+
+  /// es: 'Toca acordes para añadirlos a tu progresión (hasta 8).'
+  String get customHint =>
+      'Toca acordes para añadirlos a tu progresión (hasta 8).';
+
+  /// es: 'Añade al menos un acorde'
+  String get customEmpty => 'Añade al menos un acorde';
+
+  /// es: 'Mi progresión'
+  String get customTitle => 'Mi progresión';
+
+  /// es: 'Borrar'
+  String get clear => 'Borrar';
+
+  /// es: 'Quitar el último'
+  String get removeLast => 'Quitar el último';
+
+  /// es: 'Sin acceso al micrófono: la sesión no puntuará.'
+  String get micProblem => 'Sin acceso al micrófono: la sesión no puntuará.';
+
+  /// es: 'Truco: en «Puntuar» la app calla para oírte bien; usa el metrónomo visual.'
+  String get headphonesTip =>
+      'Truco: en «Puntuar» la app calla para oírte bien; usa el metrónomo visual.';
+
+  /// es: 'Elige qué tocar'
+  String get chooseTrack => 'Elige qué tocar';
+
+  /// es: 'Rasgueo'
+  String get strum => 'Rasgueo';
+
+  /// es: 'Toca para elegir'
+  String get pickTrack => 'Toca para elegir';
+}
+
+// Path: songs
+class Translations$songs$es {
+  Translations$songs$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Cancionero'
+  String get title => 'Cancionero';
+
+  /// es: 'Canciones tradicionales y de dominio público con acordes y letra.'
+  String get subtitle =>
+      'Canciones tradicionales y de dominio público con acordes y letra.';
+
+  /// es: 'Busca una canción'
+  String get searchHint => 'Busca una canción';
+
+  /// es: 'Todas'
+  String get all => 'Todas';
+
+  /// es: 'Tradicional'
+  String get traditional => 'Tradicional';
+
+  /// es: 'Ejercicio de Chords'
+  String get exercise => 'Ejercicio de Chords';
+
+  /// es: 'Tono'
+  String get transpose => 'Tono';
+
+  /// es: 'Tono original'
+  String get transposeReset => 'Tono original';
+
+  /// es: 'Nivel $n'
+  String level({required Object n}) => 'Nivel ${n}';
+
+  /// es: 'Acordes de la canción'
+  String get chordsUsed => 'Acordes de la canción';
+
+  /// es: 'Tocar en el jam'
+  String get playJam => 'Tocar en el jam';
+
+  /// es: 'Ninguna canción coincide'
+  String get empty => 'Ninguna canción coincide';
+
+  /// es: 'Prueba con otro nombre o quita el filtro de género.'
+  String get emptyBody => 'Prueba con otro nombre o quita el filtro de género.';
+
+  /// es: 'No encontramos esa canción'
+  String get notFound => 'No encontramos esa canción';
+
+  Map<String, String> get exercises => {
+    'bluesInA': 'Blues en La · 12 compases',
+    'rockInE': 'Power chords en Mi',
+    'popFourChords': 'Los cuatro acordes del pop',
+    'metalGallop': 'Galope metalero en Mi menor',
+    'funkVamp': 'Vamp funky en Mi',
+  };
+  Map<String, String> get parts => {
+    'intro': 'Intro',
+    'verse': 'Estrofa',
+    'chorus': 'Estribillo',
+    'bridge': 'Puente',
+    'outro': 'Final',
+  };
 }
 
 // Path: settings.theme
@@ -2252,6 +2963,23 @@ class Translations$minigames$prompt$es {
   /// es: 'Toca la $string al aire'
   String playStringOpen({required Object string}) =>
       'Toca la ${string} al aire';
+
+  /// es: '¿Qué nota está en $scale?'
+  String scaleNote({required Object scale}) => '¿Qué nota está en ${scale}?';
+
+  /// es: 'En $key, ¿cuál es el acorde $degree?'
+  String keyChord({required Object key, required Object degree}) =>
+      'En ${key}, ¿cuál es el acorde ${degree}?';
+
+  /// es: 'En $key, ¿qué grado es $note?'
+  String scaleDegree({required Object key, required Object note}) =>
+      'En ${key}, ¿qué grado es ${note}?';
+
+  /// es: 'Escucha la cadencia. ¿Cuál es la tónica?'
+  String get findTonic => 'Escucha la cadencia. ¿Cuál es la tónica?';
+
+  /// es: '¿Qué progresión suena?'
+  String get progressionEar => '¿Qué progresión suena?';
 }
 
 // Path: minigames.choice
@@ -3048,6 +3776,20 @@ extension on Translations {
           'minigames.prompt.playStringOpen' => ({
             required Object string,
           }) => 'Toca la ${string} al aire',
+          'minigames.prompt.scaleNote' => ({
+            required Object scale,
+          }) => '¿Qué nota está en ${scale}?',
+          'minigames.prompt.keyChord' => ({
+            required Object key,
+            required Object degree,
+          }) => 'En ${key}, ¿cuál es el acorde ${degree}?',
+          'minigames.prompt.scaleDegree' => ({
+            required Object key,
+            required Object note,
+          }) => 'En ${key}, ¿qué grado es ${note}?',
+          'minigames.prompt.findTonic' =>
+            'Escucha la cadencia. ¿Cuál es la tónica?',
+          'minigames.prompt.progressionEar' => '¿Qué progresión suena?',
           'minigames.titles.guessNote' => 'Adivina la nota',
           'minigames.titles.whichString' => '¿Qué cuerda es?',
           'minigames.titles.whichFret' => '¿Qué traste es?',
@@ -3058,16 +3800,21 @@ extension on Translations {
           'minigames.titles.tuneEar' => 'Oído de afinador',
           'minigames.titles.memory' => 'Memoria de cuerdas',
           'minigames.titles.noteAtFret' => 'Notas del mástil',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.titles.fretOfNote' => 'Busca la nota',
           'minigames.titles.fingerQuiz' => '¿Qué dedo?',
           'minigames.titles.readDiagram' => 'Lee el diagrama',
           'minigames.titles.buildChord' => 'Arma el acorde',
           'minigames.titles.playNote' => 'Toca la nota',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.titles.playStringFret' => 'Cuerda y traste',
           'minigames.titles.echo' => 'Eco de guitarra',
+          'minigames.titles.scaleNote' => 'Notas de la escala',
+          'minigames.titles.keyChord' => 'Acordes del tono',
+          'minigames.titles.scaleDegree' => '¿Qué grado es?',
+          'minigames.titles.findTonic' => 'Encuentra la tónica',
+          'minigames.titles.progressionEar' => 'Progresión al oído',
           'minigames.descriptions.guessNote' => 'Suena una nota: ¿cuál es?',
           'minigames.descriptions.whichString' => 'Reconoce la cuerda al aire',
           'minigames.descriptions.whichFret' => 'Oye cuántos trastes sube',
@@ -3089,6 +3836,16 @@ extension on Translations {
           'minigames.descriptions.playNote' => 'Toca la nota que se pide',
           'minigames.descriptions.playStringFret' => 'Toca una posición exacta',
           'minigames.descriptions.echo' => 'Escucha y toca la melodía',
+          'minigames.descriptions.scaleNote' =>
+            'Reconoce qué nota pertenece a cada escala',
+          'minigames.descriptions.keyChord' =>
+            'El IV de Sol, el V de La… al instante',
+          'minigames.descriptions.scaleDegree' =>
+            'Pon número a cada nota de la tonalidad',
+          'minigames.descriptions.findTonic' =>
+            'Escucha y descubre la nota «casa»',
+          'minigames.descriptions.progressionEar' =>
+            'Distingue el I-IV-V del I-V-vi-IV',
           'minigames.howTo.guessNote' => 'Oirás una nota suelta de la guitarra. Elige su nombre. En fácil solo hay notas naturales; en difícil, las doce.',
           'minigames.howTo.whichString' => 'Oirás una cuerda al aire. Di cuál es, de la 6ª (la más grave) a la 1ª (la más aguda). En fácil hay solo tres.',
           'minigames.howTo.whichFret' => 'Oirás la cuerda al aire y después pulsada en un traste. Cada traste sube un semitono: cuenta cuántos suben.',
@@ -3106,6 +3863,11 @@ extension on Translations {
           'minigames.howTo.playNote' => 'Se te pide una nota. Tócala en cualquier cuerda: el micrófono la reconoce. Puedes escuchar la nota antes.',
           'minigames.howTo.playStringFret' => 'Se te pide una cuerda y un traste exactos. Pisa y toca: el micrófono comprueba que suena la nota correcta.',
           'minigames.howTo.echo' => 'Oirás una melodía corta. Tócala en tu guitarra nota a nota, en el mismo orden.',
+          'minigames.howTo.scaleNote' => 'Se indica una escala y su tónica. Elige la única nota de las opciones que pertenece a esa escala. Usa la fórmula o imagina la caja en el mástil.',
+          'minigames.howTo.keyChord' => 'Se indica una tonalidad y un grado en números romanos. Elige el acorde que ocupa ese grado. Recuerda: en mayor, I IV V son mayores; ii iii vi, menores.',
+          'minigames.howTo.scaleDegree' => 'Se indica una tonalidad y una nota. Di qué grado ocupa (I = tónica, IV = subdominante, V = dominante…).',
+          'minigames.howTo.findTonic' => 'Suena una cadencia de cuatro acordes que termina en casa. Elige la nota que suena a reposo: la tónica.',
+          'minigames.howTo.progressionEar' => 'Suenan cuatro acordes. Elige qué progresión es, escrita en grados. Fíjate en si empieza en mayor o en menor y en cómo vuelve a casa.',
           'minigames.noteNames.n0' => 'Do',
           'minigames.noteNames.n1' => 'Do♯',
           'minigames.noteNames.n2' => 'Re',
@@ -3144,6 +3906,8 @@ extension on Translations {
           'minigames.buildMissed' => 'Así se forma. ¡Memorízalo y sigue!',
           'minigames.micPracticeNote' => 'Esta vez no suma puntos',
           'minigames.micPlayingMelody' => 'Escucha la melodía…',
+          'minigames.theoryTitle' => 'Teoría musical',
+          'minigames.theorySubtitle' => 'Escalas, tonalidades, grados y progresiones: entiende lo que tocas.',
           'guitar.ready' => 'Toca una cuerda al aire',
           'guitar.waiting' => 'Deja que se apague la nota…',
           'guitar.noMic' => 'No te oigo: revisa el micrófono o usa los botones',
@@ -3184,6 +3948,403 @@ extension on Translations {
           'guitar.navFret' => ({required Object n}) => 'traste ${n}',
           'guitar.navSetting' => 'Modo guitarra en toda la app',
           'guitar.navSettingSubtitle' => 'Un panel fijo sustituye la barra de navegación: una nota aguda abre el menú y cada nota te lleva a una pantalla',
+          'theory.title' => 'Escuela de guitarra',
+          'theory.subtitle' =>
+            'Entiende lo que tocas: tónica, escalas, posiciones y armonía.',
+          'theory.unitBasics' => 'Fundamentos',
+          'theory.unitScales' => 'Escalas y posiciones',
+          'theory.unitHarmony' => 'Armonía y progresiones',
+          'theory.keyPoints' => 'Ideas clave',
+          'theory.tryIt' => 'Pruébalo en el mástil',
+          'theory.openExplorer' => 'Abrir en el explorador',
+          'theory.practiceGame' => ({
+            required Object game,
+          }) => 'Practica: ${game}',
+          'theory.practiceJam' => ({
+            required Object name,
+          }) => 'Tócalo en el jam: ${name}',
+          'theory.markLearned' => 'Marcar como aprendida',
+          'theory.learned' => 'Aprendida',
+          'theory.lessonsDone' => ({
+            required Object done,
+            required Object total,
+          }) => '${done} de ${total} lecciones aprendidas',
+          'theory.harmonyTitle' => ({
+            required Object key,
+          }) => 'Acordes de ${key}',
+          'theory.scaleIn' => ({
+            required Object note,
+            required Object scale,
+          }) => '${note} ${scale}',
+          'theory.keyName' => ({
+            required Object note,
+            required Object mode,
+          }) => '${note} ${mode}',
+          'theory.majorMode' => 'mayor',
+          'theory.minorMode' => 'menor',
+          'theory.explorerTitle' => 'Explorador de escalas',
+          'theory.explorerTonic' => 'Tónica',
+          'theory.explorerScale' => 'Escala',
+          'theory.explorerPosition' => 'Posición',
+          'theory.allPositions' => 'Todo el mástil',
+          'theory.positionN' => ({required Object n}) => 'Posición ${n}',
+          'theory.showDegrees' => 'Grados',
+          'theory.showNotes' => 'Notas',
+          'theory.playScale' => 'Escuchar',
+          'theory.stopScale' => 'Parar',
+          'theory.explorerHint' => 'Toca una nota del mástil para oírla. Las tónicas van en color principal y la nota característica, resaltada.',
+          'theory.formula' => ({
+            required Object formula,
+          }) => 'Fórmula: ${formula}',
+          'theory.notesOf' => ({required Object notes}) => 'Notas: ${notes}',
+          'theory.fretboardLabel' => ({
+            required Object scale,
+          }) => 'Mástil con ${scale}',
+          'theory.genresTitle' => 'Géneros',
+          'theory.genresSubtitle' => 'Cómo suena cada estilo: tempo, rasgueo, escalas, acordes y progresiones.',
+          'theory.tempoRange' => ({
+            required Object min,
+            required Object max,
+          }) => '${min}–${max} BPM',
+          'theory.genreRhythmTitle' => 'Ritmo',
+          'theory.genreTipTitle' => 'Consejo',
+          'theory.genreScales' => 'Escalas para solear',
+          'theory.genreChords' => 'Acordes típicos',
+          'theory.genreProgressions' => 'Progresiones para jammear',
+          'theory.genreSongs' => 'Canciones',
+          'theory.genreLibrary' => ({
+            required Object genre,
+          }) => 'Ver acordes de ${genre} en la biblioteca',
+          'theory.strumLabel' => ({required Object name}) => 'Rasgueo: ${name}',
+          'theory.scaleNames.major' => 'mayor',
+          'theory.scaleNames.minor' => 'menor natural',
+          'theory.scaleNames.harmonicMinor' => 'menor armónica',
+          'theory.scaleNames.minorPentatonic' => 'pentatónica menor',
+          'theory.scaleNames.majorPentatonic' => 'pentatónica mayor',
+          'theory.scaleNames.blues' => 'escala de blues',
+          'theory.scaleNames.dorian' => 'dórica',
+          'theory.scaleNames.phrygian' => 'frigia',
+          'theory.scaleNames.lydian' => 'lidia',
+          'theory.scaleNames.mixolydian' => 'mixolidia',
+          'theory.scaleAbout.major' => 'La base de la armonía: alegre y estable. Pop, folk y canciones infantiles.',
+          'theory.scaleAbout.minor' => 'La relativa de la mayor: melancólica y épica. Baladas, rock y metal.',
+          'theory.scaleAbout.harmonicMinor' => 'Menor con la séptima elevada: sabor clásico, flamenco y neoclásico.',
+          'theory.scaleAbout.minorPentatonic' =>
+            'Cinco notas que nunca fallan: el corazón del rock y el blues.',
+          'theory.scaleAbout.majorPentatonic' =>
+            'Dulce y abierta: country, pop, soul y solos melódicos.',
+          'theory.scaleAbout.blues' =>
+            'Pentatónica menor con la blue note (b5): pura actitud.',
+          'theory.scaleAbout.dorian' =>
+            'Menor con sexta mayor: funk, jazz, Santana y Pink Floyd.',
+          'theory.scaleAbout.phrygian' =>
+            'Menor con segunda menor: flamenco y metal oscuro.',
+          'theory.scaleAbout.lydian' =>
+            'Mayor con cuarta aumentada: soñadora, de banda sonora.',
+          'theory.scaleAbout.mixolydian' =>
+            'Mayor con séptima menor: rock clásico, blues y country.',
+          'theory.degreeNames.d1' => 'tónica',
+          'theory.degreeNames.d2' => 'supertónica',
+          'theory.degreeNames.d3' => 'mediante',
+          'theory.degreeNames.d4' => 'subdominante',
+          'theory.degreeNames.d5' => 'dominante',
+          'theory.degreeNames.d6' => 'superdominante',
+          'theory.degreeNames.d7' => 'sensible',
+          'theory.strumNames.whole' => 'Un golpe por compás',
+          'theory.strumNames.quarters' => 'Negras',
+          'theory.strumNames.pop' => 'Pop',
+          'theory.strumNames.eighths' => 'Corcheas',
+          'theory.strumNames.boomChick' => 'Bajo y rasgueo',
+          'theory.strumNames.skank' => 'Contratiempo (reggae)',
+          'theory.strumNames.bossa' => 'Bossa nova',
+          'theory.strumNames.shuffle' => 'Shuffle',
+          'theory.strumNames.waltz' => 'Vals 3/4',
+          'theory.genreNames.pop' => 'Pop',
+          'theory.genreNames.rock' => 'Rock',
+          'theory.genreNames.blues' => 'Blues',
+          'theory.genreNames.country' => 'Country',
+          'theory.genreNames.jazz' => 'Jazz',
+          'theory.genreNames.funk' => 'Funk',
+          'theory.genreNames.ballad' => 'Balada',
+          'theory.genreNames.latin' => 'Latino',
+          'theory.genreNames.reggae' => 'Reggae',
+          'theory.genreNames.bossa' => 'Bossa nova',
+          'theory.genreNames.metal' => 'Metal',
+          'theory.genreNames.punk' => 'Punk',
+          'theory.genreNames.soul' => 'Soul y R&B',
+          'theory.genreNames.gospel' => 'Gospel',
+          'theory.genreNames.folk' => 'Folk y tradicional',
+          'theory.genreAbout.pop' => 'Canciones pegadizas sobre pocas progresiones (I-V-vi-IV). La guitarra acompaña con acordes abiertos y un rasgueo constante.',
+          'theory.genreAbout.rock' => 'Power chords, corcheas con energía y riffs con la pentatónica menor. El I-IV-V y el bVII mandan.',
+          'theory.genreAbout.blues' => 'Doce compases, acordes de séptima y la escala de blues. El feeling importa más que la velocidad.',
+          'theory.genreAbout.country' => 'Acordes abiertos, bajo alternado y melodías con la pentatónica mayor. Historias sencillas y mucho swing en la mano derecha.',
+          'theory.genreAbout.jazz' => 'Cuatriadas (maj7, m7, 7), el ii-V-I y cambios constantes de tonalidad. Se toca ligero y con swing.',
+          'theory.genreAbout.funk' => 'Acordes de novena y m7 tocados cortos y percusivos. La guitarra es parte de la batería.',
+          'theory.genreAbout.ballad' => 'Tempos lentos y acordes que se dejan sonar. Arpegios o un golpe por pulso.',
+          'theory.genreAbout.latin' => 'Desde la ranchera en 3/4 hasta la cadencia andaluza y el bolero. Mucha menor armónica.',
+          'theory.genreAbout.reggae' => 'El acorde suena solo en los contratiempos, corto y seco. El bajo y la batería llevan el pulso.',
+          'theory.genreAbout.bossa' => 'Cuatriadas suaves, bajo con el pulgar y acordes sincopados con los dedos.',
+          'theory.genreAbout.metal' => 'Power chords con palm mute, tempos rápidos y escalas menores, frigias y armónicas.',
+          'theory.genreAbout.punk' => 'Tres o cuatro power chords, corcheas hacia abajo y mucha velocidad. Actitud ante todo.',
+          'theory.genreAbout.soul' => 'Acordes de color (maj7, m7, 9), groove relajado y adornos con la pentatónica mayor.',
+          'theory.genreAbout.gospel' => 'Armonía de iglesia: I-IV-V con séptimas, el iv menor y cadencias plagales («amén»).',
+          'theory.genreAbout.folk' => 'Canciones de siempre con tres o cuatro acordes abiertos. Ideal para cantar.',
+          'theory.genreRhythm.pop' => '↓ ↓↑ ↑↓↑ en 4/4. Acentúa el 2 y el 4.',
+          'theory.genreRhythm.rock' =>
+            'Corcheas abajo o abajo-arriba, con palm mute en las estrofas.',
+          'theory.genreRhythm.blues' =>
+            'Shuffle: cada pulso en largo-corto (ta-ka ta-ka).',
+          'theory.genreRhythm.country' => 'Boom-chick: bajo en el 1 y el 3, rasgueo en el 2 y el 4, alternando la cuerda del bajo.',
+          'theory.genreRhythm.jazz' => 'Cuatro golpes cortos por compás (estilo Freddie Green), con swing.',
+          'theory.genreRhythm.funk' => 'Semicorcheas con la mano siempre en marcha; casi todo apagado y unos pocos golpes abiertos.',
+          'theory.genreRhythm.ballad' =>
+            'Un golpe por compás o arpegio lento de la 6ª a la 1ª cuerda.',
+          'theory.genreRhythm.latin' => 'Ranchera: bajo-acorde-acorde (3/4). Rumba: rasgueo con acento en el contratiempo.',
+          'theory.genreRhythm.reggae' =>
+            'Silencio en el 1, golpe seco en el 2 y el 4 (skank).',
+          'theory.genreRhythm.bossa' =>
+            'Pulgar en el bajo en cada pulso y acorde sincopado entre medias.',
+          'theory.genreRhythm.metal' =>
+            'Corcheas o galope (una corchea y dos semicorcheas) con palm mute.',
+          'theory.genreRhythm.punk' =>
+            'Corcheas todo hacia abajo, rápido y constante.',
+          'theory.genreRhythm.soul' =>
+            'Golpes suaves en el 2 y el 4 y adornos entre acordes.',
+          'theory.genreRhythm.gospel' =>
+            'Negras firmes con acentos en el 2 y el 4; llamada y respuesta.',
+          'theory.genreRhythm.folk' =>
+            'Negras o el patrón pop; en 3/4, bajo y dos golpes.',
+          'theory.genreTip.pop' => 'Aprende el I-V-vi-IV en Sol, Do y Re: tocarás cientos de canciones.',
+          'theory.genreTip.rock' => 'Apaga las cuerdas con la mano derecha (palm mute) en las estrofas y ábrelas en el estribillo.',
+          'theory.genreTip.blues' => 'Haz un bend de la 4ª a la 5ª de la escala y termina las frases en la tónica.',
+          'theory.genreTip.country' => 'Alterna el bajo entre la raíz y la quinta del acorde para el típico boom-chick.',
+          'theory.genreTip.jazz' => 'Aprende las formas de m7, 7 y maj7 con raíz en la 6ª y la 5ª cuerda: cubren el 90 %.',
+          'theory.genreTip.funk' => 'Rasguea muy cerca del puente y relaja la mano izquierda para apagar entre golpes.',
+          'theory.genreTip.ballad' => 'Deja sonar los acordes y cambia justo antes del pulso 1, no tarde.',
+          'theory.genreTip.latin' => 'En la cadencia andaluza, usa la menor armónica sobre el acorde V (Mi mayor en La menor).',
+          'theory.genreTip.reggae' =>
+            'Toca el skank en las tres cuerdas agudas y apágalo justo después.',
+          'theory.genreTip.bossa' =>
+            'Practica el bajo con el pulgar solo antes de añadir los acordes.',
+          'theory.genreTip.metal' => 'Afina el palm mute: la mano en el puente, ni muy encima ni muy fuera.',
+          'theory.genreTip.punk' =>
+            'Mantén la muñeca suelta: la velocidad sale de la relajación.',
+          'theory.genreTip.soul' => 'Toca el acorde solo en las tres o cuatro cuerdas agudas para un sonido limpio.',
+          'theory.genreTip.gospel' => 'Prueba el IV → iv → I: el cambio de mayor a menor es pura emoción.',
+          'theory.genreTip.folk' =>
+            'Canta mientras tocas: la mano derecha debe ir en automático.',
+          'theory.progressionNames.popAxis' => 'El eje del pop',
+          'theory.progressionNames.dooWop' => 'Doo-wop de los 50',
+          'theory.progressionNames.rockClassic' => 'Rock clásico I-IV-V',
+          'theory.progressionNames.rockMixo' => 'Rock con bVII',
+          'theory.progressionNames.blues12' => 'Blues de 12 compases',
+          'theory.progressionNames.bluesMinor' => 'Blues menor',
+          'theory.progressionNames.countryRoad' => 'Camino country',
+          'theory.progressionNames.countryTwoStep' => 'Two-step',
+          'theory.progressionNames.jazz251' => 'ii-V-I de jazz',
+          'theory.progressionNames.jazzTurnaround' => 'Turnaround',
+          'theory.progressionNames.funkDorian' => 'Vamp dórico',
+          'theory.progressionNames.balladSad' => 'Balada sentimental',
+          'theory.progressionNames.canon' => 'Canon de Pachelbel',
+          'theory.progressionNames.andalusian' => 'Cadencia andaluza',
+          'theory.progressionNames.ranchera' => 'Ranchera tónica-dominante',
+          'theory.progressionNames.reggaeSkank' => 'Skank de reggae',
+          'theory.progressionNames.bossaCycle' => 'Ciclo de bossa',
+          'theory.progressionNames.metalMinor' => 'Metal en menor',
+          'theory.progressionNames.metalPhrygian' => 'Metal frigio',
+          'theory.progressionNames.punkPower' => 'Punk a toda velocidad',
+          'theory.progressionNames.soulGroove' => 'Groove soul',
+          'theory.progressionNames.gospelPlagal' => 'Gospel con iv menor',
+          'theory.progressionNames.folkThree' => 'Tres acordes folk',
+          'theory.lessonTitles.notes' => 'Las notas y el mástil',
+          'theory.lessonTitles.intervals' =>
+            'Intervalos: la distancia entre notas',
+          'theory.lessonTitles.tonic' => 'La tónica y la tonalidad',
+          'theory.lessonTitles.rhythm' => 'Ritmo, compás y rasgueo',
+          'theory.lessonTitles.majorScale' => 'La escala mayor',
+          'theory.lessonTitles.minorScales' => 'Escalas menores',
+          'theory.lessonTitles.pentatonic' =>
+            'Pentatónicas: la escala del solista',
+          'theory.lessonTitles.positions' =>
+            'Las posiciones (cajas) de la escala',
+          'theory.lessonTitles.blues' => 'El blues y la blue note',
+          'theory.lessonTitles.modes' => 'Los modos griegos',
+          'theory.lessonTitles.harmony' =>
+            'Armonía: los acordes de una tonalidad',
+          'theory.lessonTitles.degrees' => 'Grados y funciones',
+          'theory.lessonTitles.progressions' => 'Progresiones famosas',
+          'theory.lessonTitles.caged' => 'Sistema CAGED',
+          'theory.lessonSummaries.notes' => 'Las 12 notas, sostenidos y bemoles, y cómo encontrarlas en la guitarra.',
+          'theory.lessonSummaries.intervals' => 'Semitonos, terceras, quintas y octavas: el ADN de escalas y acordes.',
+          'theory.lessonSummaries.tonic' =>
+            'La nota «casa» de una canción y cómo descubrir en qué tono está.',
+          'theory.lessonSummaries.rhythm' =>
+            'Pulso, 4/4 y 3/4, corcheas y los patrones de cada género.',
+          'theory.lessonSummaries.majorScale' =>
+            'La fórmula T-T-S-T-T-T-S, la madre de la armonía.',
+          'theory.lessonSummaries.minorScales' =>
+            'Menor natural, menor armónica y la relativa menor.',
+          'theory.lessonSummaries.pentatonic' =>
+            'Cinco notas que nunca suenan mal: el atajo para improvisar.',
+          'theory.lessonSummaries.positions' =>
+            'Teoría de posición: cómo dividir el mástil en cajas que encajan.',
+          'theory.lessonSummaries.blues' =>
+            'La escala de blues, el shuffle y la forma de 12 compases.',
+          'theory.lessonSummaries.modes' => 'Siete colores de la misma escala: dórico, frigio, lidio, mixolidio…',
+          'theory.lessonSummaries.harmony' =>
+            'Cada nota de la escala da un acorde: el campo armónico.',
+          'theory.lessonSummaries.degrees' =>
+            'Tónica, subdominante y dominante: reposo, movimiento y tensión.',
+          'theory.lessonSummaries.progressions' =>
+            'Las combinaciones de acordes que suenan en miles de canciones.',
+          'theory.lessonSummaries.caged' =>
+            'Cinco formas de acorde abierto que recorren todo el mástil.',
+          'theory.lessonBodies.notes' => 'La música occidental usa solo 12 notas que se repiten en octavas: Do, Do♯, Re, Re♯, Mi, Fa, Fa♯, Sol, Sol♯, La, La♯ y Si. En inglés se escriben con letras: C D E F G A B.\n\nEntre dos notas seguidas hay un semitono, y en la guitarra un semitono es exactamente un traste; dos trastes son un tono. Entre Mi y Fa, y entre Si y Do, no hay sostenido: están a un semitono.\n\nUn sostenido (♯) sube un semitono y un bemol (♭) lo baja, así que Do♯ y Re♭ son la misma nota con dos nombres. En el traste 12 cada cuerda repite su nota al aire una octava más aguda: ahí el mástil vuelve a empezar.',
+          'theory.lessonBodies.intervals' => 'Un intervalo es la distancia entre dos notas, medida en semitonos (trastes). Cada distancia tiene su color: la tercera mayor (4 semitonos) suena alegre, la tercera menor (3) triste y la quinta justa (7) sólida y abierta.\n\nLos acordes se construyen apilando intervalos sobre la raíz: un acorde mayor es raíz + tercera mayor + quinta; uno menor solo cambia la tercera. Por eso mover una sola nota un traste convierte Do en Do menor.\n\nEn la guitarra cada intervalo tiene una forma: la quinta está en la cuerda siguiente (más aguda), dos trastes más arriba, y la octava dos cuerdas más allá y dos trastes arriba. Al cruzar la 2ª cuerda (Si) la forma se desplaza un traste.',
+          'theory.lessonBodies.tonic' => 'La tónica es la nota alrededor de la cual gira una canción: la casa a la que todo quiere volver. Cuando la melodía o el acorde llegan a la tónica sentimos reposo; al alejarse, tensión.\n\nLa tonalidad es la tónica más su escala. «Sol mayor» significa que Sol es la casa y que se usan las notas de la escala mayor de Sol. Casi todas las canciones terminan, y muchas empiezan, en el acorde de la tónica.\n\nPara descubrir el tono de una canción busca el acorde que suena a final, comprueba que el resto de acordes pertenecen a esa tonalidad y canta la nota que «cierra» la melodía. Con práctica lo oirás al instante: juega a «Encuentra la tónica».',
+          'theory.lessonBodies.rhythm' => 'El pulso es el latido constante de la música. El compás agrupa pulsos: 4/4 (cuatro por compás) es el del pop, el rock y casi todo; 3/4 es el del vals, la ranchera y muchas canciones tradicionales.\n\nCada pulso se divide en dos corcheas: abajo en el pulso («1») y arriba en el contratiempo («y»). La mano derecha se mueve siempre abajo-arriba como un péndulo, aunque no toque las cuerdas en cada viaje: así el ritmo nunca se rompe.\n\nCada género tiene su patrón: pop (↓ ↓↑ ↑↓↑), rock (corcheas), country (bajo y rasgueo), reggae (solo contratiempos) o blues (shuffle). El modo jam te muestra el patrón golpe a golpe mientras tocas.',
+          'theory.lessonBodies.majorScale' => 'La escala mayor tiene siete notas y sigue siempre la misma fórmula de tonos (T) y semitonos (S): T T S T T T S. Desde Do salen Do Re Mi Fa Sol La Si, todas naturales.\n\nCon la fórmula puedes construirla desde cualquier nota. Desde Sol: Sol La Si Do Re Mi Fa♯; el Fa♯ aparece para respetar el último tono antes del semitono final.\n\nEn una sola cuerda la escala mayor se toca contando trastes: 2, 2, 1, 2, 2, 2, 1. Pruébalo en la 5ª cuerda desde el traste 3 (Do) y escucha el famoso do-re-mi. En el explorador verás sus siete posiciones de tres notas por cuerda.',
+          'theory.lessonBodies.minorScales' => 'La escala menor natural cambia la fórmula: T S T T S T T. La menor de La usa las mismas notas que Do mayor (La Si Do Re Mi Fa Sol), pero al empezar en La todo suena más oscuro: es la relativa menor de Do.\n\nToda tonalidad mayor tiene una relativa menor tres semitonos por debajo (Sol mayor ↔ Mi menor). Comparten notas y acordes; lo que cambia es la casa.\n\nLa menor armónica sube la séptima nota un semitono (Sol♯ en La menor). Esa nota convierte el acorde del quinto grado en mayor (Mi mayor en La menor), que empuja con fuerza hacia la tónica: es el sonido del flamenco, la música clásica y muchos boleros.',
+          'theory.lessonBodies.pentatonic' => 'La pentatónica es una escala de cinco notas: quita a la escala mayor o menor las dos notas que crean más tensión. Por eso casi cualquier nota que toques sobre los acordes de la canción sonará bien.\n\nLa pentatónica menor (1 b3 4 5 b7) es la base del rock y del blues: La Do Re Mi Sol en La menor. La pentatónica mayor (1 2 3 5 6) suena dulce y abierta, típica del country y el pop: Do Re Mi Sol La en Do.\n\nTruco clave: la pentatónica menor de La y la mayor de Do tienen las mismas notas. La misma forma, con otra tónica, te da los dos sonidos. Para sonar mayor apóyate en la tónica mayor; para sonar a blues, en la menor.',
+          'theory.lessonBodies.positions' => 'Una posición o caja es el grupo de notas de la escala que alcanzas sin mover la mano: cuatro o cinco trastes, un dedo por traste. La pentatónica tiene cinco cajas y las escalas de siete notas, siete posiciones de tres notas por cuerda.\n\nLas cajas encajan como piezas de un puzle: el borde derecho de una es el izquierdo de la siguiente, y tras la última vuelve la primera doce trastes más arriba. Conocerlas todas te permite tocar la escala en todo el mástil.\n\nLa posición 1 de la pentatónica menor empieza con la tónica en la 6ª cuerda bajo el índice. Apréndela primero, después la 2, y conéctalas deslizando un dedo. Para cambiar de tonalidad no hay que aprender nada nuevo: mueve la caja entera hasta la nueva tónica.',
+          'theory.lessonBodies.blues' => 'La escala de blues es la pentatónica menor con una nota más: la quinta disminuida (b5), la famosa blue note. En La: La Do Re Re♯ Mi Sol. Úsala de paso, camino de la quinta; no te quedes en ella.\n\nEl blues clásico dura 12 compases con tres acordes de séptima: cuatro de I7, dos de IV7, dos de I7, luego V7, IV7, I7 y V7 para volver a empezar (el «turnaround»).\n\nEl ritmo es el shuffle: cada pulso se divide en un golpe largo y uno corto (ta-ka, ta-ka). Prueba el jam «Blues de 12 compases» y toca la escala de blues encima.',
+          'theory.lessonBodies.modes' => 'Si tocas las notas de Do mayor empezando en otra nota obtienes un modo: desde Re el dórico, desde Mi el frigio, desde Fa el lidio, desde Sol el mixolidio, desde La el eólico (menor natural) y desde Si el locrio.\n\nCada modo tiene una nota característica. El dórico es menor con sexta mayor (funk, Santana). El frigio, menor con segunda menor (flamenco, metal). El lidio, mayor con cuarta aumentada (soñador, bandas sonoras). El mixolidio, mayor con séptima menor (rock, blues, country).\n\nPara oírlos, toca el modo sobre un acorde fijo de su tónica: así la nota característica destaca. El explorador la marca con otro color.',
+          'theory.lessonBodies.harmony' => 'Si construyes un acorde sobre cada nota de la escala mayor usando solo notas de la escala obtienes siete acordes: I mayor, ii menor, iii menor, IV mayor, V mayor, vi menor y vii disminuido. En Do: C Dm Em F G Am B°.\n\nEsa lista es el campo armónico y explica por qué ciertos acordes suenan bien juntos: pertenecen a la misma tonalidad. Los números romanos permiten escribir progresiones sin depender del tono: «I-V-vi-IV» es igual en Do (C G Am F) que en Sol (G D Em C).\n\nCon cuatro notas aparecen los acordes de jazz: Imaj7, ii7, iii7, IVmaj7, V7, vi7 y viiø. El V7 es el único dominante: el que pide volver a la tónica.',
+          'theory.lessonBodies.degrees' => 'Cada grado de la escala cumple una función. La tónica (I) es el reposo. La subdominante (IV) se aleja suavemente. La dominante (V) crea tensión y quiere resolver en la tónica.\n\nLos demás grados sustituyen a estos tres: el vi y el iii comparten notas con el I (función de tónica) y el ii se parece al IV (subdominante). Por eso «I-vi-IV-V» y «I-IV-V» cuentan la misma historia: casa, viaje, tensión y regreso.\n\nCuando entiendes las funciones puedes adivinar el siguiente acorde de una canción, sacar temas de oído y componer tus propias progresiones.',
+          'theory.lessonBodies.progressions' => 'Una progresión es una secuencia de acordes que se repite. Unas pocas sostienen gran parte de la música popular: I-V-vi-IV (pop), I-IV-V (rock, country, folk, ranchera), ii-V-I (jazz), vi-IV-I-V (baladas) y la cadencia andaluza i-bVII-bVI-V (flamenco y rock latino).\n\nComo están escritas en grados puedes tocarlas en cualquier tono: elige uno cómodo para cantar. Aprende cada progresión en dos o tres tonos y empezarás a reconocerlas en todo lo que escuches.\n\nEn el jam guiado tienes todas estas progresiones con acompañamiento, metrónomo, el patrón de rasgueo y la escala recomendada para improvisar.',
+          'theory.lessonBodies.caged' => 'Las cinco formas de acorde abierto mayor —Do, La, Sol, Mi y Re (C-A-G-E-D)— se pueden mover por el mástil con cejilla. Encadenadas en ese orden cubren los doce trastes con el mismo acorde.\n\nPor ejemplo, Do mayor se toca en forma de Do (abierto), de La (cejilla en el traste 3), de Sol (traste 5), de Mi (traste 8) y de Re (traste 10). Cada forma comparte notas con la siguiente.\n\nCada forma CAGED coincide con una caja de la pentatónica mayor. Así se unen acordes y escalas: siempre sabes qué notas de solo tienes alrededor del acorde que estás tocando.',
+          'theory.lessonPoints.notes' => '12 notas: 7 naturales y 5 alteradas\n1 traste = 1 semitono; 2 trastes = 1 tono\nMi–Fa y Si–Do están a un semitono\nTraste 12 = la misma nota una octava arriba\nAprende primero las notas de la 6ª y la 5ª cuerda: son las raíces de las cejillas',
+          'theory.lessonPoints.intervals' => 'Tercera menor = 3 semitonos (triste)\nTercera mayor = 4 semitonos (alegre)\nQuinta justa = 7 semitonos (power chord)\nOctava = 12 semitonos: la misma nota más aguda\nLa cuerda Si desplaza las formas un traste',
+          'theory.lessonPoints.tonic' => 'Tónica = reposo; alejarse = tensión\nTonalidad = tónica + escala\nEl último acorde suele ser la tónica\nCada tonalidad mayor tiene una relativa menor con las mismas notas\nTransportar = mover todo el mismo número de trastes',
+          'theory.lessonPoints.rhythm' => '4/4: cuenta 1 y 2 y 3 y 4 y\n3/4: cuenta 1 y 2 y 3 y\nLa mano nunca para: abajo en el pulso, arriba en el «y»\nEmpieza lento con metrónomo y sube el tempo poco a poco\nCambia de acorde en el último golpe del compás',
+          'theory.lessonPoints.majorScale' => 'Fórmula: T T S T T T S (2-2-1-2-2-2-1 trastes)\nSiete notas, una de cada letra\nSus grados se numeran del 1 al 7\nDe ella salen los acordes de la tonalidad\nTiene 7 posiciones de 3 notas por cuerda',
+          'theory.lessonPoints.minorScales' => 'Menor natural: T S T T S T T\nRelativa menor = 3 semitonos por debajo de la mayor\nComparten notas, cambia la tónica\nMenor armónica: séptima elevada\nEl V mayor en menor da la cadencia flamenca',
+          'theory.lessonPoints.pentatonic' => 'Menor: 1 b3 4 5 b7\nMayor: 1 2 3 5 6\nDos notas por cuerda en cada caja\nPentatónica menor de La = mayor de Do (mismas notas)\nTermina tus frases en la tónica para sonar resuelto',
+          'theory.lessonPoints.positions' => 'Una caja = 4-5 trastes, un dedo por traste\nPentatónica: 5 cajas; escalas de 7 notas: 7 posiciones\nLas cajas se solapan y se repiten cada 12 trastes\nLocaliza siempre las tónicas dentro de la caja\nMover la caja entera = cambiar de tonalidad',
+          'theory.lessonPoints.blues' => 'Blues = pentatónica menor + b5\n12 compases: I7 – IV7 – I7 – V7 – IV7 – I7\nTodos los acordes son de séptima\nShuffle: largo-corto en cada pulso\nBends y vibrato dan el carácter',
+          'theory.lessonPoints.modes' => 'Jónico = mayor · Eólico = menor natural\nDórico: menor con 6ª mayor\nFrigio: menor con b2\nLidio: mayor con #4\nMixolidio: mayor con b7',
+          'theory.lessonPoints.harmony' => 'Mayúsculas = mayor · minúsculas = menor\nEn mayor: I ii iii IV V vi vii°\nEn menor: i ii° III iv v VI VII\nNúmeros romanos = progresiones en cualquier tono\nEl V7 empuja hacia el I',
+          'theory.lessonPoints.degrees' => 'I tónica: reposo\nIV subdominante: movimiento\nV dominante: tensión que vuelve al I\nvi y iii hacen de tónica; ii, de subdominante\nV → I es la cadencia más fuerte',
+          'theory.lessonPoints.progressions' => 'Pop: I – V – vi – IV\nRock y country: I – IV – V\nJazz: ii – V – I\nBalada: vi – IV – I – V\nAndaluza: i – bVII – bVI – V',
+          'theory.lessonPoints.caged' => 'Orden: C → A → G → E → D → C…\nCada forma es un acorde abierto movible\nCubren todo el mástil sin huecos\nCada forma se apoya en una caja de pentatónica\nLa raíz siempre está dentro de la forma',
+          'studio.sectionTitle' => 'Explora la guitarra',
+          'studio.theoryCard' => 'Teoría',
+          'studio.theoryCardBody' => 'Tónica, escalas, pentatónicas y armonía',
+          'studio.scalesCard' => 'Escalas',
+          'studio.scalesCardBody' => 'Mástil interactivo con posiciones',
+          'studio.genresCard' => 'Géneros',
+          'studio.genresCardBody' => 'Ritmos y acordes de cada estilo',
+          'studio.jamCard' => 'Jam guiado',
+          'studio.jamCardBody' => 'Toca con acompañamiento y puntuación',
+          'studio.songsCard' => 'Canciones',
+          'studio.songsCardBody' => 'Acordes y letra para tocar',
+          'studio.historyCard' => 'Historial',
+          'studio.historyCardBody' => 'Tus acordes recientes',
+          'studio.streakDays' =>
+            ({required num n}) =>
+                (_root.$meta.cardinalResolver ??
+                PluralResolvers.cardinal('es'))(
+                  n,
+                  one: '${n} día seguido tocando',
+                  other: '${n} días seguidos tocando',
+                ),
+          'studio.streakZero' => 'Toca hoy para empezar tu racha',
+          'studio.streakToday' => '¡Hoy ya practicaste!',
+          'studio.recentTitle' => 'Acordes recientes',
+          'studio.seeAll' => 'Ver todo',
+          'studio.clearHistory' => 'Borrar historial',
+          'studio.historyTitle' => 'Historial de acordes',
+          'studio.historyEmptyTitle' => 'Aún no hay historial',
+          'studio.historyEmptyBody' =>
+            'Los acordes que abras aparecerán aquí para repasarlos rápido.',
+          'studio.historyHint' => 'Del más reciente al más antiguo',
+          'jam.title' => 'Jam guiado',
+          'jam.subtitle' =>
+            'Elige qué tocar, ajusta el tono y el tempo y toca junto a la app.',
+          'jam.progressionsTab' => 'Progresiones',
+          'jam.songsTab' => 'Canciones',
+          'jam.customTab' => 'La tuya',
+          'jam.key' => 'Tonalidad',
+          'jam.tempo' => 'Tempo',
+          'jam.bpm' => ({required Object n}) => '${n} BPM',
+          'jam.loops' => ({required Object n}) => 'Vueltas: ${n}',
+          'jam.modeBacking' => 'Acompañar',
+          'jam.modeBackingBody' =>
+            'La app toca los acordes con el rasgueo del estilo.',
+          'jam.modeScore' => 'Puntuar',
+          'jam.modeScoreBody' =>
+            'Tocas tú y el micrófono puntúa cada compás (la app no suena).',
+          'jam.metronome' => 'Metrónomo',
+          'jam.start' => '¡A tocar!',
+          'jam.countIn' => 'Prepárate…',
+          'jam.now' => 'Ahora',
+          'jam.next' => 'Después',
+          'jam.end' => 'Fin',
+          'jam.barOf' => ({
+            required Object n,
+            required Object total,
+          }) => 'Compás ${n} de ${total}',
+          'jam.pause' => 'Pausa',
+          'jam.resume' => 'Seguir',
+          'jam.stop' => 'Terminar',
+          'jam.points' => ({required Object n}) => '${n} pts',
+          'jam.streak' => ({required Object n}) => 'Racha ${n}',
+          'jam.gradePerfect' => '¡Perfecto!',
+          'jam.gradeGood' => '¡Bien!',
+          'jam.gradeMiss' => 'Fallo',
+          'jam.gradeSilent' => 'No te oigo',
+          'jam.resultTitle' => 'Sesión terminada',
+          'jam.accuracy' => ({required Object n}) => 'Precisión: ${n}%',
+          'jam.bestStreak' => ({required Object n}) => 'Mejor racha: ${n}',
+          'jam.perfectBars' => ({
+            required Object n,
+          }) => 'Compases perfectos: ${n}',
+          'jam.playAgain' => 'Otra vez',
+          'jam.slower' => 'Más lento',
+          'jam.faster' => 'Más rápido',
+          'jam.back' => 'Elegir otra',
+          'jam.newBest' => '¡Nuevo récord!',
+          'jam.best' => ({required Object n}) => 'Récord: ${n}',
+          'jam.scaleHint' => ({
+            required Object scale,
+          }) => 'Improvisa con: ${scale}',
+          'jam.customHint' =>
+            'Toca acordes para añadirlos a tu progresión (hasta 8).',
+          'jam.customEmpty' => 'Añade al menos un acorde',
+          'jam.customTitle' => 'Mi progresión',
+          'jam.clear' => 'Borrar',
+          'jam.removeLast' => 'Quitar el último',
+          'jam.micProblem' => 'Sin acceso al micrófono: la sesión no puntuará.',
+          'jam.headphonesTip' => 'Truco: en «Puntuar» la app calla para oírte bien; usa el metrónomo visual.',
+          'jam.chooseTrack' => 'Elige qué tocar',
+          'jam.strum' => 'Rasgueo',
+          'jam.pickTrack' => 'Toca para elegir',
+          'songs.title' => 'Cancionero',
+          'songs.subtitle' =>
+            'Canciones tradicionales y de dominio público con acordes y letra.',
+          'songs.searchHint' => 'Busca una canción',
+          'songs.all' => 'Todas',
+          'songs.traditional' => 'Tradicional',
+          'songs.exercise' => 'Ejercicio de Chords',
+          'songs.transpose' => 'Tono',
+          'songs.transposeReset' => 'Tono original',
+          'songs.level' => ({required Object n}) => 'Nivel ${n}',
+          'songs.chordsUsed' => 'Acordes de la canción',
+          'songs.playJam' => 'Tocar en el jam',
+          'songs.empty' => 'Ninguna canción coincide',
+          'songs.emptyBody' =>
+            'Prueba con otro nombre o quita el filtro de género.',
+          'songs.notFound' => 'No encontramos esa canción',
+          'songs.exercises.bluesInA' => 'Blues en La · 12 compases',
+          'songs.exercises.rockInE' => 'Power chords en Mi',
+          'songs.exercises.popFourChords' => 'Los cuatro acordes del pop',
+          'songs.exercises.metalGallop' => 'Galope metalero en Mi menor',
+          'songs.exercises.funkVamp' => 'Vamp funky en Mi',
+          'songs.parts.intro' => 'Intro',
+          'songs.parts.verse' => 'Estrofa',
+          'songs.parts.chorus' => 'Estribillo',
+          'songs.parts.bridge' => 'Puente',
+          'songs.parts.outro' => 'Final',
           _ => null,
         };
   }

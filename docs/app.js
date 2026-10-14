@@ -119,7 +119,7 @@ const FEATURES = [
   {
     icon: 'library',
     title: 'Banco extenso',
-    text: '156 acordes (12 raíces × 13 cualidades) y 581 posiciones: cejillas, movibles, power chords, triadas e inversiones.',
+    text: '156 acordes (12 raíces × 13 cualidades) y 561 posiciones: cejillas, movibles, power chords, triadas e inversiones.',
   },
   {
     icon: 'sound',

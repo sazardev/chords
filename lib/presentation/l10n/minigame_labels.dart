@@ -11,8 +11,10 @@ import 'package:chords/domain/minigames/entities/mic_challenge.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
+import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
+import 'package:chords/presentation/l10n/theory_labels.dart';
 import 'package:chords/presentation/l10n/tuner_labels.dart';
 
 /// Nombre traducido de un minijuego.
@@ -33,6 +35,7 @@ String categoryTitle(Translations t, MiniGameCategory category) =>
       MiniGameCategory.ear => t.minigames.earTitle,
       MiniGameCategory.fretboard => t.minigames.fretboardTitle,
       MiniGameCategory.play => t.minigames.playTitle,
+      MiniGameCategory.theory => t.minigames.theoryTitle,
     };
 
 /// Subtítulo traducido de una familia de juegos.
@@ -41,6 +44,7 @@ String categorySubtitle(Translations t, MiniGameCategory category) =>
       MiniGameCategory.ear => t.minigames.earSubtitle,
       MiniGameCategory.fretboard => t.minigames.fretboardSubtitle,
       MiniGameCategory.play => t.minigames.playSubtitle,
+      MiniGameCategory.theory => t.minigames.theorySubtitle,
     };
 
 /// Nombre traducido de una dificultad.
@@ -90,6 +94,8 @@ String choiceLabel(Translations t, QuizChoice choice) =>
             ? t.minigames.choice.first
             : t.minigames.choice.second,
       ChoiceType.tuning => _tuningChoice(t, choice.value),
+      ChoiceType.degree => degreeChoice(t, int.tryParse(choice.value) ?? 1),
+      ChoiceType.progression => choice.value,
     };
 
 String _stringChoice(Translations t, String value) {
@@ -140,7 +146,7 @@ String questionPrompt(Translations t, QuizQuestion question) {
     ),
     MiniGameKind.fingerQuiz => t.minigames.prompt.fingerQuiz(string: string),
     MiniGameKind.readDiagram => t.minigames.prompt.readDiagram,
-    _ => gameTitle(t, question.kind),
+    _ => theoryPrompt(t, question) ?? gameTitle(t, question.kind),
   };
 }
 
@@ -171,4 +177,27 @@ String? challengeHint(Translations t, MicChallenge challenge) {
   return fret == 0
       ? t.minigames.micHintOpen(string: string)
       : t.minigames.micHintFret(string: string, fret: fret);
+}
+
+/// Enunciado de una pregunta de teoría; `null` si no lo es.
+String? theoryPrompt(Translations t, QuizQuestion question) {
+  final int tonic = question.keyTonic ?? 0;
+  final ScaleType scale = ScaleType.fromId(question.scaleId) ?? ScaleType.major;
+  final String key = keyName(t, tonic, minor: scale == ScaleType.naturalMinor);
+  return switch (question.kind) {
+    MiniGameKind.scaleNote => t.minigames.prompt.scaleNote(
+      scale: scaleInKey(t, scale, tonic),
+    ),
+    MiniGameKind.keyChord => t.minigames.prompt.keyChord(
+      key: key,
+      degree: romanOf(question.degree ?? 1),
+    ),
+    MiniGameKind.scaleDegree => t.minigames.prompt.scaleDegree(
+      key: key,
+      note: noteLabelOf(t, question.note ?? 'C'),
+    ),
+    MiniGameKind.findTonic => t.minigames.prompt.findTonic,
+    MiniGameKind.progressionEar => t.minigames.prompt.progressionEar,
+    _ => null,
+  };
 }

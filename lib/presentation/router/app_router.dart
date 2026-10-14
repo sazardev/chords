@@ -6,6 +6,7 @@ import 'package:chords/presentation/features/chords/chord_detail_page.dart';
 import 'package:chords/presentation/features/chords/chords_page.dart';
 import 'package:chords/presentation/features/game/game_page.dart';
 import 'package:chords/presentation/features/home/home_page.dart';
+import 'package:chords/presentation/features/jam/jam_page.dart';
 import 'package:chords/presentation/features/learn/learn_page.dart';
 import 'package:chords/presentation/features/live/live_page.dart';
 import 'package:chords/presentation/features/logs/logs_page.dart';
@@ -14,6 +15,13 @@ import 'package:chords/presentation/features/minigames/mini_games_hub_page.dart'
 import 'package:chords/presentation/features/practice/chord_practice_page.dart';
 import 'package:chords/presentation/features/profile/profile_page.dart';
 import 'package:chords/presentation/features/settings/settings_page.dart';
+import 'package:chords/presentation/features/songs/song_page.dart';
+import 'package:chords/presentation/features/songs/songs_page.dart';
+import 'package:chords/presentation/features/studio/history_page.dart';
+import 'package:chords/presentation/features/theory/genres_page.dart';
+import 'package:chords/presentation/features/theory/lesson_page.dart';
+import 'package:chords/presentation/features/theory/scale_explorer_page.dart';
+import 'package:chords/presentation/features/theory/theory_page.dart';
 import 'package:chords/presentation/router/logging_navigator_observer.dart';
 import 'package:chords/presentation/router/router_error_screen.dart';
 import 'package:chords/presentation/widgets/organisms/adaptive_navigation_shell.dart';
@@ -64,7 +72,37 @@ class AppRouter {
       _chordGameRoute(),
       _miniGameRoute(),
       _profileRoute(),
+      ..._studioRoutes(),
     ],
+  );
+
+  /// Rutas del estudio: teoría, escalas, géneros, jam, canciones e historial.
+  List<GoRoute> _studioRoutes() => <GoRoute>[
+    _rootRoute(kTheoryPath, (_) => const TheoryPage()),
+    _rootRoute(
+      kLessonPath,
+      (Map<String, String> q) => LessonPage(lessonId: q['id']),
+    ),
+    _rootRoute(kScalesPath, (_) => const ScaleExplorerPage()),
+    _rootRoute(kGenresPath, (_) => const GenresPage()),
+    _rootRoute(
+      kGenrePath,
+      (Map<String, String> q) => GenrePage(genreId: q['id']),
+    ),
+    _rootRoute(kJamPath, (_) => const JamPage()),
+    _rootRoute(kSongsPath, (_) => const SongsPage()),
+    _rootRoute(kSongPath, (Map<String, String> q) => SongPage(songId: q['id'])),
+    _rootRoute(kHistoryPath, (_) => const HistoryPage()),
+  ];
+
+  GoRoute _rootRoute(
+    String path,
+    Widget Function(Map<String, String> query) page,
+  ) => GoRoute(
+    path: path,
+    parentNavigatorKey: _rootKey,
+    builder: (BuildContext context, GoRouterState state) =>
+        page(state.uri.queryParameters),
   );
 
   StatefulShellBranch _homeBranch() => StatefulShellBranch(

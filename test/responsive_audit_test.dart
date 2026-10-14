@@ -9,6 +9,10 @@ import 'package:chords/domain/audio/repositories/audio_repository.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
+import 'package:chords/domain/songs/catalog/song_catalog.dart';
+import 'package:chords/domain/songs/entities/song.dart';
+import 'package:chords/domain/studio/theory_lesson.dart';
+import 'package:chords/domain/theory/catalog/genre_catalog.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
@@ -114,10 +118,13 @@ void main() {
     ];
 
     // Tamaños representativos de móvil (del más pequeño al grande).
+    // El último es estrecho pero muy alto: construye las listas largas del
+    // estudio enteras para comprobar también su parte baja.
     const List<Size> phoneSizes = <Size>[
       Size(320, 480),
       Size(360, 640),
       Size(412, 915),
+      Size(320, 5000),
     ];
 
     for (final Size size in phoneSizes) {
@@ -170,8 +177,72 @@ void main() {
         size: size,
       );
       await _visit(tester, kSettingsPath, expectText: 'Ajustes', size: size);
+      await _visitStudio(tester, size);
     }
   });
+}
+
+/// Recorre las pantallas del estudio: teoría, cada lección, escalas, cada
+/// género, jam, cancionero, cada canción e historial.
+Future<void> _visitStudio(WidgetTester tester, Size size) async {
+  final Translations es = AppLocale.es.buildSync();
+  await _visit(
+    tester,
+    kTheoryPath,
+    expectText: 'Escuela de guitarra',
+    size: size,
+  );
+  for (final TheoryLesson lesson in kTheoryLessons) {
+    await _visit(
+      tester,
+      '$kLessonPath?id=${lesson.id}',
+      expectText: es.theory.lessonTitles[lesson.id]!,
+      size: size,
+    );
+  }
+  await _visit(
+    tester,
+    '$kScalesPath?scale=blues&key=9&pos=2',
+    expectText: 'Explorador de escalas',
+    size: size,
+  );
+  await _visit(tester, kGenresPath, expectText: 'Géneros', size: size);
+  for (final GenreGuide guide in kGenreGuides) {
+    await _visit(
+      tester,
+      '$kGenrePath?id=${guide.id}',
+      expectText: '${guide.emoji}  ${es.theory.genreNames[guide.id]}',
+      size: size,
+    );
+  }
+  await _visit(tester, kJamPath, expectText: 'Progresiones', size: size);
+  await _visit(
+    tester,
+    '$kJamPath?prog=blues12&key=4',
+    expectText: 'Blues de 12 compases',
+    size: size,
+  );
+  await _visit(
+    tester,
+    '$kJamPath?song=cielito&transpose=2',
+    expectText: 'Cielito lindo',
+    size: size,
+  );
+  await _visit(tester, kSongsPath, expectText: 'Cancionero', size: size);
+  for (final Song song in kSongs) {
+    await _visit(
+      tester,
+      '$kSongPath?id=${song.id}',
+      expectText: 'Tocar en el jam',
+      size: size,
+    );
+  }
+  await _visit(
+    tester,
+    kHistoryPath,
+    expectText: 'Historial de acordes',
+    size: size,
+  );
 }
 
 /// Navega a una ruta y comprueba que la pantalla se renderiza sin excepciones.

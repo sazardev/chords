@@ -13,6 +13,7 @@ import 'package:chords/presentation/features/home/home_page.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/studio/studio_progress_controller.dart';
 import 'package:chords/presentation/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -53,6 +54,9 @@ void main() {
             ChangeNotifierProvider<SettingsController>.value(value: settings),
             ChangeNotifierProvider<GameScoreController>.value(
               value: GameScoreController(preferences),
+            ),
+            ChangeNotifierProvider<StudioProgressController>.value(
+              value: StudioProgressController(preferences),
             ),
           ],
           child: MaterialApp(theme: buildLightTheme(), home: const HomePage()),

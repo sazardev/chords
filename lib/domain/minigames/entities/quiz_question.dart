@@ -30,6 +30,12 @@ enum ChoiceType {
 
   /// Comparación de afinación (`value` = `flat`, `inTune` o `sharp`).
   tuning,
+
+  /// Grado de la tonalidad (`value` = `1`…`7`).
+  degree,
+
+  /// Progresión en grados (`label` = `I – V – vi – IV`).
+  progression,
 }
 
 /// Una opción de respuesta.
@@ -72,6 +78,9 @@ class QuizQuestion {
     this.stringNumber,
     this.fret,
     this.note,
+    this.keyTonic,
+    this.scaleId,
+    this.degree,
   });
 
   /// Juego al que pertenece.
@@ -101,6 +110,15 @@ class QuizQuestion {
   /// Nota a la que se refiere el enunciado (`C#`).
   final String? note;
 
+  /// Tónica de la tonalidad o escala del enunciado (0 = Do).
+  final int? keyTonic;
+
+  /// Escala del enunciado (identificador de `ScaleType`).
+  final String? scaleId;
+
+  /// Grado del enunciado (1-7).
+  final int? degree;
+
   /// `true` si hay que acertar varias opciones seguidas.
   bool get isSequence => answer.length > 1;
 
@@ -113,7 +131,7 @@ class QuizQuestion {
   /// Huella para evitar repetir la misma pregunta dos veces seguidas.
   String get signature =>
       '${kind.id}|${answer.map((int i) => choices[i].value).join(',')}|'
-      '$chordId|$stringNumber|$fret|$note|'
+      '$chordId|$stringNumber|$fret|$note|$keyTonic|$scaleId|$degree|'
       '${cues.map((SoundCue c) => switch (c) {
         ToneCue() => c.frequency.toStringAsFixed(1),
         ChordCue() => c.chordId,

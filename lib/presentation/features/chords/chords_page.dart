@@ -11,6 +11,7 @@ import 'package:chords/presentation/features/chords/chord_filters_sheet.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/studio/history_page.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
@@ -61,6 +62,10 @@ class _ChordsPageState extends State<ChordsPage> {
     final String? quality = params['quality'];
     final String? difficulty = params['difficulty'];
     final String? query = params['q'];
+    final String? genre = params['genre'];
+    if (genre != null && genre.isNotEmpty) {
+      filters.selectGenre(genre);
+    }
     if (root != null) {
       filters.selectRoot(ChordRoot.fromName(root));
     }
@@ -113,6 +118,8 @@ class _ChordsPageState extends State<ChordsPage> {
                 onChanged: filters.setQuery,
               ),
             ),
+            const RecentChordsRow(),
+            const SizedBox(height: 4),
             GenreFilterRow(
               selected: filters.filters.genre,
               onSelected: filters.selectGenre,

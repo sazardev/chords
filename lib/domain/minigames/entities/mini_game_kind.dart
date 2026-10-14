@@ -8,6 +8,9 @@ enum MiniGameCategory {
 
   /// Tocar la guitarra y que el micrófono lo compruebe.
   play,
+
+  /// Teoría: escalas, tonalidades, grados y progresiones.
+  theory,
 }
 
 /// Minijuegos disponibles.
@@ -61,7 +64,22 @@ enum MiniGameKind {
   playStringFret(MiniGameCategory.play, rounds: 6),
 
   /// Escuchar una melodía corta y tocarla.
-  echo(MiniGameCategory.play, rounds: 6);
+  echo(MiniGameCategory.play, rounds: 6),
+
+  /// Decir qué nota pertenece a una escala.
+  scaleNote(MiniGameCategory.theory),
+
+  /// Decir qué acorde ocupa un grado de la tonalidad.
+  keyChord(MiniGameCategory.theory),
+
+  /// Decir qué grado ocupa una nota en la tonalidad.
+  scaleDegree(MiniGameCategory.theory),
+
+  /// Escuchar una cadencia y reconocer su tónica.
+  findTonic(MiniGameCategory.theory, rounds: 8),
+
+  /// Escuchar una progresión y decir cuál es.
+  progressionEar(MiniGameCategory.theory, rounds: 8);
 
   /// Crea un minijuego de una familia con su número de rondas.
   const MiniGameKind(this.category, {this.rounds = 10});

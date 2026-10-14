@@ -10,7 +10,7 @@ enum ChordQuality {
     'Mayor',
     <int>[0, 4, 7],
     'Triada mayor; base de casi todo.',
-    <String>['Pop', 'Rock', 'Infantil', 'Gospel'],
+    <String>['Pop', 'Rock', 'Country', 'Infantil', 'Gospel'],
   ),
 
   /// Menor: melancólica.
@@ -30,7 +30,7 @@ enum ChordQuality {
     'Séptima de dominante',
     <int>[0, 4, 7, 10],
     'Blues y funk; tensión con resolución fuerte.',
-    <String>['Blues', 'Funk', 'Jazz', 'Rock'],
+    <String>['Blues', 'Country', 'Funk', 'Jazz', 'Rock'],
   ),
 
   /// Séptima menor: suave y versátil.
@@ -60,7 +60,7 @@ enum ChordQuality {
     'Suspendida 4',
     <int>[0, 5, 7],
     'Suspensión abierta; suele resolver a mayor.',
-    <String>['Pop', 'Rock', 'Ambient'],
+    <String>['Pop', 'Rock', 'Country', 'Ambient'],
   ),
 
   /// Suspendida 2: abierta y moderna.
@@ -70,7 +70,7 @@ enum ChordQuality {
     'Suspendida 2',
     <int>[0, 2, 7],
     'Abierta y etérea; habitual en pop y rock.',
-    <String>['Pop', 'Rock', 'Ambient'],
+    <String>['Pop', 'Rock', 'Country', 'Ambient'],
   ),
 
   /// Power chord de dos notas.

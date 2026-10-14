@@ -6,6 +6,7 @@ import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
+import 'package:chords/presentation/features/studio/studio_shortcuts.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
@@ -41,6 +42,11 @@ class LearnPage extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 32),
             children: <Widget>[
               _ProgressCard(controller: controller),
+              SectionHeader(title: t.studio.sectionTitle),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: StudioShortcuts(),
+              ),
               SectionHeader(title: t.learn.stepByStep),
               const _StepsCard(),
               for (final LearningLevel level in LearningLevel.values)

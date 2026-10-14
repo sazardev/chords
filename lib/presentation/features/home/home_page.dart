@@ -12,6 +12,8 @@ import 'package:chords/presentation/features/home/home_sections.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/studio/history_page.dart';
+import 'package:chords/presentation/features/studio/studio_shortcuts.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/entrance.dart';
 import 'package:chords/presentation/widgets/atoms/guitar_glyph.dart';
@@ -111,7 +113,9 @@ class HomePage extends StatelessWidget {
       ),
     ],
     const SizedBox(height: 28),
-    Entrance(index: 4, child: _Tools(total: chords.allChords.length)),
+    const Entrance(index: 4, child: _Studio()),
+    const SizedBox(height: 28),
+    Entrance(index: 5, child: _Tools(total: chords.allChords.length)),
   ];
 
   Chord? _find(List<Chord> chords, String? id) {
@@ -122,6 +126,26 @@ class HomePage extends StatelessWidget {
     }
     return null;
   }
+}
+
+/// Secciones para aprender la guitarra y su mundo, con los recientes.
+class _Studio extends StatelessWidget {
+  const _Studio();
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: <Widget>[
+      AppText(
+        context.t.studio.sectionTitle,
+        variant: AppTextVariant.titleLarge,
+      ),
+      const SizedBox(height: 12),
+      const StudioShortcuts(),
+      const SizedBox(height: 12),
+      const RecentChordsRow(padding: 0),
+    ],
+  );
 }
 
 /// Saludo según la hora y acceso al perfil.

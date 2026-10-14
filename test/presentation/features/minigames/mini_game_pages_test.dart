@@ -58,13 +58,13 @@ void main() {
   );
 
   group('catálogo', () {
-    testWidgets('muestra los 17 juegos y el progreso en estrellas', (
+    testWidgets('muestra los 22 juegos y el progreso en estrellas', (
       WidgetTester tester,
     ) async {
       await preferences.saveMiniGameBest('guessNote_easy', 95);
       await pumpApp(tester);
-      expect(find.text('0 de 51 estrellas'), findsNothing);
-      expect(find.text('3 de 51 estrellas'), findsOne);
+      expect(find.text('0 de 66 estrellas'), findsNothing);
+      expect(find.text('3 de 66 estrellas'), findsOne);
       final Translations t = Translations.of(
         tester.element(find.byType(MiniGamesHubPage)),
       );

@@ -14,6 +14,8 @@ import 'package:chords/domain/minigames/generators/note_quiz_generators.dart';
 import 'package:chords/domain/minigames/generators/pitch_quiz_generators.dart';
 import 'package:chords/domain/minigames/generators/quiz_generator.dart';
 import 'package:chords/domain/minigames/generators/string_quiz_generators.dart';
+import 'package:chords/domain/minigames/generators/theory_ear_generators.dart';
+import 'package:chords/domain/minigames/generators/theory_quiz_generators.dart';
 
 /// Caso de uso: construye las preguntas de un minijuego de opciones.
 class BuildQuizUseCase {
@@ -34,6 +36,11 @@ class BuildQuizUseCase {
         MiniGameKind.fretOfNote: const FretOfNoteGenerator(),
         MiniGameKind.fingerQuiz: FingerQuizGenerator(repository),
         MiniGameKind.readDiagram: ReadDiagramGenerator(repository),
+        MiniGameKind.scaleNote: const ScaleNoteGenerator(),
+        MiniGameKind.keyChord: const KeyChordGenerator(),
+        MiniGameKind.scaleDegree: const ScaleDegreeGenerator(),
+        MiniGameKind.findTonic: FindTonicGenerator(repository),
+        MiniGameKind.progressionEar: ProgressionEarGenerator(repository),
       };
 
   final math.Random _random;

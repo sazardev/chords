@@ -41,6 +41,7 @@ import 'package:chords/presentation/features/practice/chord_practice_controller.
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/appearance_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/features/studio/studio_kit.dart';
 import 'package:chords/presentation/l10n/locale_controller.dart';
 import 'package:chords/presentation/router/app_router.dart';
 import 'package:flutter/material.dart';
@@ -116,6 +117,7 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
         create: (_) => dependencies.profileController,
       ),
       ...dependencies.guitar.providers,
+      ...dependencies.studio.providers,
     ];
 
 /// Providers del juego, los minijuegos, la afinación y la práctica.
@@ -212,6 +214,7 @@ class AppDependencies {
     required this.chordPracticeController,
     required this.profileController,
     required this.guitar,
+    required this.studio,
   });
 
   /// Crea el grafo de dependencias por defecto.
@@ -320,6 +323,7 @@ class AppDependencies {
       chordPracticeController: practice,
       profileController: profile,
       guitar: guitar,
+      studio: StudioKit(preferences, chordRepository, audioRepository),
     );
   }
 
@@ -382,4 +386,7 @@ class AppDependencies {
 
   /// Control con la guitarra: oyente, guardián del micrófono y menú global.
   final GuitarKit guitar;
+
+  /// Estudio: historial, explorador de escalas y jam.
+  final StudioKit studio;
 }
