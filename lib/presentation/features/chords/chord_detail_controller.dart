@@ -7,6 +7,7 @@ import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/chords/services/chord_insights.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -22,6 +23,20 @@ enum ChordDetailProblem {
   failed,
 }
 
+/// Etiquetas por las que se pueden filtrar las posiciones, en el orden en
+/// que se ofrecen.
+const List<String> kVariantFilterTags = <String>[
+  'open',
+  'barre',
+  'movable',
+  'inversion',
+  'triad',
+  'shell',
+  'drop2',
+  'drop3',
+  'upper',
+];
+
 /// Controlador del detalle de un acorde.
 class ChordDetailController extends ChangeNotifier {
   /// Crea el controlador.
@@ -36,12 +51,49 @@ class ChordDetailController extends ChangeNotifier {
   final PreferencesRepository _preferences;
 
   Chord? _chord;
+  ChordInsights? _insights;
+  String? _variantFilter;
   int _selectedIndex = 0;
   bool _loading = false;
   ChordDetailProblem? _problem;
 
   /// Acorde cargado.
   Chord? get chord => _chord;
+
+  /// Notas, parientes, tonalidades, progresiones y escalas del acorde.
+  ChordInsights? get insights => _insights;
+
+  /// Etiqueta (`open`, `barre`, `drop2`…) por la que se filtran las
+  /// posiciones; `null` las muestra todas.
+  String? get variantFilter => _variantFilter;
+
+  /// Etiquetas que tiene al menos una posición del acorde, en un orden fijo.
+  List<String> get filterTags {
+    final Set<String> present = <String>{
+      for (final ChordVariant v in _chord?.variants ?? const <ChordVariant>[])
+        ...v.tags,
+    };
+    return <String>[
+      for (final String tag in kVariantFilterTags)
+        if (present.contains(tag)) tag,
+    ];
+  }
+
+  /// Índices de las posiciones que cumplen el filtro actual.
+  List<int> get visibleVariantIndices => <int>[
+    for (final (int i, ChordVariant v)
+        in (_chord?.variants ?? const <ChordVariant>[]).indexed)
+      if (_variantFilter == null || v.tags.contains(_variantFilter)) i,
+  ];
+
+  /// Filtra las posiciones por una etiqueta (`null` quita el filtro).
+  void setVariantFilter(String? tag) {
+    if (tag == _variantFilter) {
+      return;
+    }
+    _variantFilter = tag;
+    notifyListeners();
+  }
 
   /// Índice de la posición seleccionada.
   int get selectedIndex => _selectedIndex;
@@ -79,8 +131,11 @@ class ChordDetailController extends ChangeNotifier {
         );
         _problem = ChordDetailProblem.notFound;
         _chord = null;
+        _insights = null;
       } else {
         _chord = chord;
+        _insights = ChordInsights.of(chord, _repository.chords);
+        _variantFilter = null;
         _selectedIndex = 0;
         appLogger.debug(
           'detalle abierto: ${chord.id} (${chord.variantCount} posiciones)',

@@ -49,6 +49,7 @@ String qualityLabel(Translations translations, ChordQuality quality) =>
       ChordQuality.diminished => translations.data.quality.diminished,
       ChordQuality.augmented => translations.data.quality.augmented,
       ChordQuality.ninth => translations.data.quality.ninth,
+      _ => translations.chordTheory.qualityNames[quality.id] ?? quality.label,
     };
 
 /// Descripción traducida de una calidad de acorde.
@@ -71,6 +72,7 @@ String qualityDescription(
   ChordQuality.diminished => translations.data.qualityDescription.diminished,
   ChordQuality.augmented => translations.data.qualityDescription.augmented,
   ChordQuality.ninth => translations.data.qualityDescription.ninth,
+  _ => translations.chordTheory.qualityAbout[quality.id] ?? quality.description,
 };
 
 /// Etiqueta traducida de un nivel de dificultad.

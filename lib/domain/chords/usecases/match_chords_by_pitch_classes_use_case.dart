@@ -5,7 +5,8 @@ import 'package:chords/domain/chords/entities/pitch_classes.dart';
 ///
 /// Un acorde coincide exactamente si su posición más fácil contiene las mimas
 /// clases de tono detectadas, o parcialmente si el acorde contiene todas las
-/// notas detectadas.
+/// notas detectadas. Dentro de cada grupo van primero los acordes de uso
+/// corriente (mayor, menor, séptima…) y, a igual uso, los más fáciles.
 class MatchChordsByPitchClassesUseCase {
   /// Crea el caso de uso.
   const MatchChordsByPitchClassesUseCase();
@@ -28,8 +29,17 @@ class MatchChordsByPitchClassesUseCase {
         partial.add(chord);
       }
     }
-    return <Chord>[...exact, ...partial]..sort(
-      (Chord a, Chord b) => a.difficulty.level.compareTo(b.difficulty.level),
-    );
+    return <Chord>[
+      ...exact..sort(_byCommonness),
+      ...partial..sort(_byCommonness),
+    ];
+  }
+
+  /// Los acordes de uso corriente primero y, a igual uso, los más fáciles.
+  int _byCommonness(Chord a, Chord b) {
+    final int byUse = b.quality.popularity.compareTo(a.quality.popularity);
+    return byUse != 0
+        ? byUse
+        : a.difficulty.level.compareTo(b.difficulty.level);
   }
 }

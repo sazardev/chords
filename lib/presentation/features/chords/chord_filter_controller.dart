@@ -1,6 +1,7 @@
 import 'package:chords/domain/chords/entities/chord_filters.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
+import 'package:chords/domain/chords/services/chord_sorter.dart';
 import 'package:flutter/foundation.dart';
 
 /// Estado de los filtros de la biblioteca de acordes.
@@ -13,9 +14,22 @@ class ChordFilterController extends ChangeNotifier {
   ChordFilterController();
 
   ChordFilters _filters = const ChordFilters.empty();
+  ChordSort _sort = ChordSort.essentials;
 
   /// Filtros activos.
   ChordFilters get filters => _filters;
+
+  /// Orden con el que se presentan los acordes.
+  ChordSort get sort => _sort;
+
+  /// Cambia el orden de la lista.
+  void setSort(ChordSort value) {
+    if (value == _sort) {
+      return;
+    }
+    _sort = value;
+    notifyListeners();
+  }
 
   /// Cambia el texto de búsqueda.
   void setQuery(String value) => _update(_filters.copyWith(query: value));

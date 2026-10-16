@@ -26,7 +26,7 @@ List<ScaleType> scalesFor(MiniGameLevel level) => switch (level) {
     ScaleType.minorPentatonic,
     ScaleType.majorPentatonic,
   ],
-  MiniGameLevel.hard => ScaleType.values,
+  MiniGameLevel.hard => ScaleType.classics,
 };
 
 /// ¿Qué nota está en la escala?: una nota de la escala y tres que no.

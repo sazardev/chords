@@ -9,7 +9,8 @@ import 'package:chords/domain/profile/entities/player_profile.dart';
 ///
 /// Puntúa cada acorde por encaje de **género** (sus calidades suenan en los
 /// géneros favoritos), **dificultad** (cerca de la ideal para su experiencia y
-/// nunca por encima de su máximo) y **tipo de guitarra** (power chords para
+/// nunca por encima de su máximo), **uso** de la calidad del acorde y **tipo
+/// de guitarra** (power chords para
 /// eléctrica, abiertos para acústica, nada de power chords en clásica). Los
 /// acordes ya dominados no se recomiendan.
 class RecommendChordsUseCase {
@@ -53,9 +54,14 @@ class RecommendChordsUseCase {
       _genreScore(chord, profile) +
       _difficultyScore(chord, profile) +
       _guitarScore(chord, profile.guitar) +
+      _commonnessScore(chord) +
       (kEssentialChordIds.contains(chord.id)
           ? (profile.experience.maxDifficulty <= 2 ? 2.5 : 0.5)
           : 0);
+
+  /// Los acordes de uso corriente puntúan más que los de jazz o alterados:
+  /// con tantas calidades, un género afín no debe llenar la lista de rarezas.
+  double _commonnessScore(Chord chord) => (chord.quality.popularity - 3) * 0.75;
 
   double _genreScore(Chord chord, PlayerProfile profile) {
     final int matches = chord.quality.genres

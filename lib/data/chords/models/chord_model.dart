@@ -2,6 +2,7 @@ import 'package:chords/data/chords/models/chord_variant_model.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
+import 'package:chords/domain/chords/entities/chord_variant.dart';
 
 /// Modelo de serialización de un acorde completo.
 class ChordModel {
@@ -9,32 +10,16 @@ class ChordModel {
   factory ChordModel.fromJson(Map<String, Object?> json) {
     final Object? quality = json['quality'];
     final Object? root = json['root'];
-    final ChordRoot? rootEntity = root is String
-        ? ChordRoot.fromName(root)
-        : null;
-    final ChordQuality? qualityEntity = quality is String
-        ? ChordQuality.fromId(quality)
-        : null;
     return ChordModel._(
       id: _string(json['id']),
-      rootName: _string(json['root']),
-      qualityId: _string(json['quality']),
-      name: _string(json['name']),
-      aliases: _stringList(json['aliases']),
-      tags: _stringList(json['tags']),
       variants: _variantList(json['variants']),
-      rootEntity: rootEntity,
-      qualityEntity: qualityEntity,
+      rootEntity: root is String ? ChordRoot.fromName(root) : null,
+      qualityEntity: quality is String ? ChordQuality.fromId(quality) : null,
     );
   }
 
   const ChordModel._({
     required this.id,
-    required this.rootName,
-    required this.qualityId,
-    required this.name,
-    required this.aliases,
-    required this.tags,
     required this.variants,
     required this.rootEntity,
     required this.qualityEntity,
@@ -42,21 +27,6 @@ class ChordModel {
 
   /// Identificador del acorde.
   final String id;
-
-  /// Nombre de la raíz.
-  final String rootName;
-
-  /// Identificador de la calidad.
-  final String qualityId;
-
-  /// Nombre estándar del acorde.
-  final String name;
-
-  /// Alias buscables.
-  final List<String> aliases;
-
-  /// Etiquetas del acorde.
-  final List<String> tags;
 
   /// Posiciones del acorde.
   final List<ChordVariantModel> variants;
@@ -72,36 +42,52 @@ class ChordModel {
       rootEntity != null && qualityEntity != null && variants.isNotEmpty;
 
   /// Convierte el modelo a entidad de dominio.
-  Chord? toEntity() {
+  ///
+  /// [shapeLabels] son los nombres de las formas del catálogo (`e-shape` →
+  /// `Forma de Mi`) que guarda el banco.
+  Chord? toEntity({
+    Map<String, String> shapeLabels = const <String, String>{},
+  }) {
     if (!isComplete) {
       return null;
     }
+    final ChordRoot root = rootEntity!;
+    final ChordQuality quality = qualityEntity!;
+    final List<ChordVariant> positions = <ChordVariant>[
+      for (final ChordVariantModel v in variants)
+        v.toEntity(
+          chordId: id,
+          root: root,
+          quality: quality,
+          shapeLabels: shapeLabels,
+        ),
+    ];
     return Chord(
       id: id,
-      root: rootEntity!,
-      quality: qualityEntity!,
-      variants: variants.map((ChordVariantModel v) => v.toEntity()).toList(),
-      aliases: aliases,
-      tags: tags,
+      root: root,
+      quality: quality,
+      variants: positions,
+      aliases: <String>[
+        '${root.name}${quality.suffix}',
+        _display(root, quality),
+      ],
+      tags: <String>{for (final ChordVariant v in positions) ...v.tags}
+          .toList(),
     );
   }
 
-  static String _string(Object? value) => value is String ? value : '';
+  static String _display(ChordRoot root, ChordQuality quality) =>
+      '${root.displayName} ${quality.label}';
 
-  static List<String> _stringList(Object? value) => value is List<Object?>
-      ? value.whereType<String>().toList()
-      : const <String>[];
+  static String _string(Object? value) => value is String ? value : '';
 
   static List<ChordVariantModel> _variantList(Object? value) {
     if (value is! List<Object?>) {
       return const <ChordVariantModel>[];
     }
-    final List<ChordVariantModel> models = <ChordVariantModel>[];
-    for (final Object? item in value) {
-      if (item is Map<String, Object?>) {
-        models.add(ChordVariantModel.fromJson(item));
-      }
-    }
-    return models;
+    return <ChordVariantModel>[
+      for (final Object? item in value)
+        if (item is Map<String, Object?>) ChordVariantModel.fromJson(item),
+    ];
   }
 }

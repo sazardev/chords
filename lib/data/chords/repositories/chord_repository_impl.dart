@@ -1,20 +1,30 @@
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/chords/datasources/chord_asset_datasource.dart';
-import 'package:chords/data/chords/models/chord_model.dart';
+import 'package:chords/data/chords/models/chord_database_parser.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
-import 'package:chords/domain/chords/entities/essential_chords.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
 import 'package:chords/domain/chords/entities/pitch_classes.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/chords/services/chord_sorter.dart';
+import 'package:flutter/foundation.dart' show compute;
 
 /// Implementación del repositorio de acordes basada en el asset JSON.
 class ChordRepositoryImpl implements ChordRepository {
   /// Crea el repositorio con el origen de datos indicado.
-  ChordRepositoryImpl({ChordAssetDataSource? dataSource})
-    : _dataSource = dataSource ?? const ChordAssetDataSource();
+  ///
+  /// Con [parseInIsolate] el banco se decodifica y se construye en otro
+  /// isolate para no bloquear la interfaz durante el arranque.
+  ChordRepositoryImpl({
+    ChordAssetDataSource? dataSource,
+    this.parseInIsolate = false,
+  }) : _dataSource = dataSource ?? const ChordAssetDataSource();
+
+  /// Si el banco se lee en un isolate aparte.
+  final bool parseInIsolate;
 
   final ChordAssetDataSource _dataSource;
+  static const ChordSorter _sorter = ChordSorter();
   final Map<String, Chord> _byId = <String, Chord>{};
   List<Chord> _chords = const <Chord>[];
 
@@ -30,8 +40,21 @@ class ChordRepositoryImpl implements ChordRepository {
       return;
     }
     final Stopwatch watch = Stopwatch()..start();
-    final Map<String, Object?> database = await _dataSource.fetchDatabase();
-    final List<Chord> parsed = _parse(database);
+    final String raw = await _dataSource.fetchRaw();
+    final ParsedChordDatabase database = parseInIsolate
+        ? await compute(parseChordDatabaseText, raw)
+        : parseChordDatabaseText(raw);
+    final List<Chord> parsed = database.chords;
+    if (database.discarded > 0) {
+      appLogger.warning(
+        '${database.discarded} elementos del banco descartados',
+        channel: LogChannel.chords,
+        context: <String, Object?>{
+          'discarded': database.discarded,
+          'parsed': parsed.length,
+        },
+      );
+    }
     if (parsed.isEmpty) {
       throw const FormatException('El banco de acordes está vacío');
     }
@@ -76,62 +99,9 @@ class ChordRepositoryImpl implements ChordRepository {
       _chords
           .where((Chord chord) => LearningLevel.of(chord).level == level)
           .toList()
-        ..sort(
-          (Chord a, Chord b) => a.root.pitchClass.compareTo(b.root.pitchClass),
-        );
+        ..sort(_sorter.learning);
 
   @override
-  List<Chord> essentialFirst(List<Chord> chords) {
-    final List<Chord> sorted = List<Chord>.of(chords)
-      ..sort((Chord a, Chord b) {
-        final int byEssential = _essentialRank(b) - _essentialRank(a);
-        if (byEssential != 0) {
-          return byEssential;
-        }
-        final int byDifficulty = a.difficulty.level.compareTo(
-          b.difficulty.level,
-        );
-        if (byDifficulty != 0) {
-          return byDifficulty;
-        }
-        return a.root.pitchClass.compareTo(b.root.pitchClass);
-      });
-    return sorted;
-  }
-
-  /// 0 si el acorde es esencial, 1 en caso contrario.
-  int _essentialRank(Chord chord) =>
-      kEssentialChordIds.contains(chord.id) ? 0 : 1;
-
-  List<Chord> _parse(Map<String, Object?> database) {
-    final Object? rawChords = database['chords'];
-    if (rawChords is! List<Object?>) {
-      throw const FormatException('Falta la lista de acordes');
-    }
-    final List<Chord> result = <Chord>[];
-    int discarded = 0;
-    for (final Object? item in rawChords) {
-      if (item is! Map<String, Object?>) {
-        discarded++;
-        continue;
-      }
-      final Chord? chord = ChordModel.fromJson(item).toEntity();
-      if (chord != null) {
-        result.add(chord);
-      } else {
-        discarded++;
-      }
-    }
-    if (discarded > 0) {
-      appLogger.warning(
-        '$discarded elementos del banco descartados',
-        channel: LogChannel.chords,
-        context: <String, Object?>{
-          'discarded': discarded,
-          'parsed': result.length,
-        },
-      );
-    }
-    return result;
-  }
+  List<Chord> essentialFirst(List<Chord> chords) =>
+      _sorter.sort(chords, ChordSort.essentials);
 }

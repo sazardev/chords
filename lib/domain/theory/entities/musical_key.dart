@@ -21,6 +21,15 @@ class MusicalKey {
   /// `true` si es una tonalidad menor.
   final bool minor;
 
+  /// Calidades que se escriben con número romano en minúscula.
+  static const Set<ChordQuality> _lowerCase = <ChordQuality>{
+    ChordQuality.minor,
+    ChordQuality.minorSeven,
+    ChordQuality.diminished,
+    ChordQuality.diminishedSeven,
+    ChordQuality.halfDiminished,
+  };
+
   static const List<String> _romans = <String>[
     'I',
     'II',
@@ -56,10 +65,7 @@ class MusicalKey {
       fifth: above(4),
       seventh: sevenths ? above(6) : null,
     );
-    final bool lower =
-        quality == ChordQuality.minor ||
-        quality == ChordQuality.minorSeven ||
-        quality == ChordQuality.diminished;
+    final bool lower = _lowerCase.contains(quality);
     final String numeral = lower
         ? _romans[degree].toLowerCase()
         : _romans[degree];
@@ -76,10 +82,18 @@ class MusicalKey {
     int? seventh,
   }) {
     if (fifth == 6) {
-      return ChordQuality.diminished;
+      return switch (seventh) {
+        null => ChordQuality.diminished,
+        9 => ChordQuality.diminishedSeven,
+        _ => ChordQuality.halfDiminished,
+      };
     }
     if (fifth == 8) {
-      return ChordQuality.augmented;
+      return switch (seventh) {
+        null => ChordQuality.augmented,
+        11 => ChordQuality.majorSevenSharpFive,
+        _ => ChordQuality.sevenSharpFive,
+      };
     }
     final bool major = third == 4;
     return switch (seventh) {
@@ -91,6 +105,8 @@ class MusicalKey {
 
   static String _romanSuffix(ChordQuality quality) => switch (quality) {
     ChordQuality.diminished => '°',
+    ChordQuality.diminishedSeven => '°7',
+    ChordQuality.halfDiminished => 'ø7',
     ChordQuality.augmented => '+',
     ChordQuality.seven || ChordQuality.minorSeven => '7',
     ChordQuality.majorSeven => 'maj7',

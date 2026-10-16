@@ -19,7 +19,7 @@ String capitalized(String text) =>
 
 /// Nombre de una escala en minúsculas (`pentatónica menor`).
 String scaleName(Translations t, ScaleType scale) =>
-    t.theory.scaleNames[scale.id] ?? scale.id;
+    t.scalesPlus.names[scale.id] ?? t.theory.scaleNames[scale.id] ?? scale.id;
 
 /// Nombre de una escala como título (`Pentatónica menor`).
 String scaleTitle(Translations t, ScaleType scale) =>
@@ -31,7 +31,19 @@ String scaleInKey(Translations t, ScaleType scale, int tonic) =>
 
 /// Para qué sirve una escala.
 String scaleAbout(Translations t, ScaleType scale) =>
-    t.theory.scaleAbout[scale.id] ?? '';
+    t.scalesPlus.about[scale.id] ?? t.theory.scaleAbout[scale.id] ?? '';
+
+/// En qué estilos y contextos se usa una escala.
+String scaleStyles(Translations t, ScaleType scale) =>
+    t.scalesPlus.styles[scale.id] ?? '';
+
+/// Nombre de un bloque del selector de escalas (`Mayor y modos`).
+String scaleGroupName(Translations t, ScaleGroup group) =>
+    t.scalesPlus.groups[group.name] ?? group.name;
+
+/// Título de una sección del selector (`Modos de la menor armónica`).
+String scaleSectionName(Translations t, String sectionId) =>
+    t.scalesPlus.sections[sectionId] ?? sectionId;
 
 /// Nombre de una tonalidad (`Sol mayor`, `Mi menor`).
 String keyName(Translations t, int tonic, {bool minor = false}) =>

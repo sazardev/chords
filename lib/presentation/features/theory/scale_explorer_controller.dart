@@ -41,7 +41,7 @@ class ScaleExplorerController extends ChangeNotifier {
   bool get isPlaying => _playing;
 
   /// Número de posiciones (cajas) de la escala.
-  int get positionCount => ScalePositions(_scale, _tonic).positions().length;
+  int get positionCount => ScalePositions(_scale, _tonic).positionCount;
 
   /// Elige tónica y escala de golpe (al abrir desde una lección o un enlace).
   void show(ScaleType scale, int tonic, {int position = 0}) {

@@ -1,14 +1,15 @@
 import 'dart:async' show unawaited;
 
 import 'package:chords/domain/audio/services/fretboard.dart';
-import 'package:chords/domain/theory/entities/musical_key.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/theory/scale_explorer_controller.dart';
+import 'package:chords/presentation/features/theory/scale_harmony_card.dart';
 import 'package:chords/presentation/features/theory/scale_marks.dart';
+import 'package:chords/presentation/features/theory/scale_picker.dart';
+import 'package:chords/presentation/features/theory/scale_summary_card.dart';
 import 'package:chords/presentation/features/theory/theory_widgets.dart';
-import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/l10n/theory_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
@@ -76,14 +77,21 @@ class _ScaleExplorerPageState extends State<ScaleExplorerPage> {
             ),
             const SizedBox(height: 12),
             _Label(t.theory.explorerScale),
-            _ScalePicker(
+            ScalePicker(
               selected: c.scale,
               onSelected: (ScaleType scale) => c.show(scale, c.tonic),
             ),
             const SizedBox(height: 16),
-            _Summary(scale: c.scale, tonic: c.tonic),
+            ScaleSummaryCard(scale: c.scale, tonic: c.tonic),
             const SizedBox(height: 12),
             _PositionHeader(controller: c),
+            const SizedBox(height: 4),
+            AppText(
+              _positionsKind(t, c.scale, c.positionCount),
+              variant: AppTextVariant.labelMedium,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              maxLines: 2,
+            ),
             const SizedBox(height: 8),
             PositionChips(
               count: c.positionCount,
@@ -99,25 +107,14 @@ class _ScaleExplorerPageState extends State<ScaleExplorerPage> {
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               maxLines: 3,
             ),
-            if (_hasHarmony(c.scale)) ...<Widget>[
-              const SizedBox(height: 16),
-              HarmonyCard(
-                musicalKey: MusicalKey(
-                  c.tonic,
-                  minor: c.scale == ScaleType.naturalMinor,
-                ),
-              ),
-            ],
+            const SizedBox(height: 16),
+            ScaleHarmonyCard(scale: c.scale, tonic: c.tonic),
           ],
         ),
       ),
     );
   }
 }
-
-/// `true` si la escala da una tonalidad mayor o menor con sus acordes.
-bool _hasHarmony(ScaleType scale) =>
-    scale == ScaleType.major || scale == ScaleType.naturalMinor;
 
 /// El mástil del explorador dentro de una tarjeta.
 class ScaleFretboardCard extends StatelessWidget {
@@ -212,77 +209,17 @@ class _Label extends StatelessWidget {
   );
 }
 
-class _ScalePicker extends StatelessWidget {
-  const _ScalePicker({required this.selected, required this.onSelected});
-
-  final ScaleType selected;
-  final ValueChanged<ScaleType> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: <Widget>[
-        for (final ScaleType scale in ScaleType.values)
-          ChoiceChip(
-            label: Text(scaleTitle(t, scale)),
-            selected: scale == selected,
-            onSelected: (_) => onSelected(scale),
-          ),
-      ],
-    );
+/// Cómo se reparte la escala en posiciones, en una línea.
+String _positionsKind(Translations t, ScaleType scale, int count) {
+  if (scale.length == 5) {
+    return t.scalesPlus.positionsFive;
   }
-}
-
-class _Summary extends StatelessWidget {
-  const _Summary({required this.scale, required this.tonic});
-
-  final ScaleType scale;
-  final int tonic;
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    final String formula = scale.intervals
-        .map((int i) => degreeSymbol(0, i, scale: scale))
-        .join(' ');
-    final String notes = scale
-        .pitchClasses(tonic)
-        .map((int pc) => noteLabel(t, pc))
-        .join(' · ');
-    return AppCard(
-      color: scheme.primaryContainer,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          AppText(
-            capitalized(scaleInKey(t, scale, tonic)),
-            variant: AppTextVariant.titleLarge,
-            color: scheme.onPrimaryContainer,
-          ),
-          const SizedBox(height: 4),
-          AppText(
-            scaleAbout(t, scale),
-            color: scheme.onPrimaryContainer,
-            maxLines: 3,
-          ),
-          const SizedBox(height: 8),
-          AppText(
-            t.theory.formula(formula: formula),
-            variant: AppTextVariant.labelLarge,
-            color: scheme.onPrimaryContainer,
-          ),
-          AppText(
-            t.theory.notesOf(notes: notes),
-            variant: AppTextVariant.labelLarge,
-            color: scheme.onPrimaryContainer,
-            maxLines: 2,
-          ),
-        ],
-      ),
-    );
+  if (scale.length == 7) {
+    return t.scalesPlus.positionsSeven;
   }
+  return scale.family == ScaleFamily.symmetric &&
+          scale != ScaleType.bebopDominant &&
+          scale != ScaleType.bebopMajor
+      ? t.scalesPlus.positionsWindow(n: count)
+      : t.scalesPlus.positionsExtras(n: count);
 }

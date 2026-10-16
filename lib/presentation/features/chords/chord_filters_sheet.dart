@@ -1,3 +1,4 @@
+import 'package:chords/domain/chords/entities/chord_family.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
@@ -94,20 +95,25 @@ class _Body extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           _Title(t.chords.filterQuality),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: <Widget>[
-              for (final ChordQuality quality in ChordQuality.values)
-                FilterChip(
-                  label: Text(qualityLabel(t, quality)),
-                  selected: filters.filters.quality == quality,
-                  onSelected: (_) => filters.selectQuality(
-                    filters.filters.quality == quality ? null : quality,
-                  ),
-                ),
-            ],
-          ),
+          for (final ChordFamily family in ChordFamily.values) ...<Widget>[
+            _FamilyLabel(t.chordTheory.families[family.name] ?? family.name),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: <Widget>[
+                for (final ChordQuality quality in ChordQuality.values)
+                  if (quality.family == family)
+                    FilterChip(
+                      label: Text(qualityLabel(t, quality)),
+                      selected: filters.filters.quality == quality,
+                      onSelected: (_) => filters.selectQuality(
+                        filters.filters.quality == quality ? null : quality,
+                      ),
+                    ),
+              ],
+            ),
+            const SizedBox(height: 10),
+          ],
           const SizedBox(height: 20),
           _Title(t.chords.maxDifficulty(level: max ?? 5)),
           Slider(
@@ -123,6 +129,22 @@ class _Body extends StatelessWidget {
       ),
     );
   }
+}
+
+class _FamilyLabel extends StatelessWidget {
+  const _FamilyLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: AppText(
+      text,
+      variant: AppTextVariant.labelMedium,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    ),
+  );
 }
 
 class _Title extends StatelessWidget {

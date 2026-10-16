@@ -1,5 +1,6 @@
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/pitch_classes.dart';
+import 'package:chords/domain/theory/entities/chord_suffixes.dart';
 import 'package:meta/meta.dart';
 
 /// Un acorde escrito como cifra (`G`, `Em`, `Bb7`), independiente del banco.
@@ -22,24 +23,6 @@ class ChordSymbol {
   /// Calidad del acorde.
   final ChordQuality quality;
 
-  /// Sufijos admitidos de mayor a menor longitud (`maj7` antes que `m`).
-  static const List<(String, ChordQuality)> _suffixes =
-      <(String, ChordQuality)>[
-        ('maj7', ChordQuality.majorSeven),
-        ('sus4', ChordQuality.suspendedFourth),
-        ('sus2', ChordQuality.suspendedSecond),
-        ('dim', ChordQuality.diminished),
-        ('aug', ChordQuality.augmented),
-        ('m7', ChordQuality.minorSeven),
-        ('m6', ChordQuality.minorSixth),
-        ('7', ChordQuality.seven),
-        ('9', ChordQuality.ninth),
-        ('6', ChordQuality.sixth),
-        ('5', ChordQuality.power),
-        ('m', ChordQuality.minor),
-        ('', ChordQuality.major),
-      ];
-
   /// Interpreta una cifra como `F#m7` o `Bb`; `null` si no es válida.
   static ChordSymbol? tryParse(String text) {
     final RegExpMatch? match = RegExp(r'^([A-G])([#b]?)(.*)$')
@@ -53,13 +36,8 @@ class ChordSymbol {
       'b' => -1,
       _ => 0,
     };
-    final String suffix = match.group(3)!;
-    for (final (String text, ChordQuality quality) in _suffixes) {
-      if (text == suffix) {
-        return ChordSymbol(root % 12, quality);
-      }
-    }
-    return null;
+    final ChordQuality? quality = qualityOfSuffix(match.group(3)!);
+    return quality == null ? null : ChordSymbol(root % 12, quality);
   }
 
   /// Identificador del acorde en el banco (`A#-m7`).

@@ -103,8 +103,9 @@ void main() {
         expect(t.theory.genreTip[g.id], isNotEmpty, reason: g.id);
       }
       for (final ScaleType s in ScaleType.values) {
-        expect(t.theory.scaleNames[s.id], isNotEmpty, reason: s.id);
-        expect(t.theory.scaleAbout[s.id], isNotEmpty, reason: s.id);
+        expect(t.scalesPlus.names[s.id], isNotEmpty, reason: s.id);
+        expect(t.scalesPlus.about[s.id], isNotEmpty, reason: s.id);
+        expect(t.scalesPlus.styles[s.id], isNotEmpty, reason: s.id);
       }
       for (final StrumPattern p in StrumPattern.values) {
         expect(t.theory.strumNames[p.name], isNotEmpty, reason: p.name);

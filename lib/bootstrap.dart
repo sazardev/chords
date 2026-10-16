@@ -221,7 +221,9 @@ class AppDependencies {
   static Future<AppDependencies> create() async {
     final PreferencesService preferences = await PreferencesService.create();
     final LocaleRepository localeRepository = LocaleRepositoryImpl(preferences);
-    final ChordRepository chordRepository = ChordRepositoryImpl();
+    final ChordRepository chordRepository = ChordRepositoryImpl(
+      parseInIsolate: true,
+    );
     final AudioRepository audioRepository = AudioRepositoryImpl();
     final LocaleController locale = LocaleController(localeRepository);
     final AppearanceController appearance = AppearanceController(preferences);
