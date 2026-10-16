@@ -54,11 +54,20 @@ VariantDraft _rate(VariantDraft draft, ChordQuality quality) {
   return playable == null ? draft : rated(playable, floor: floor);
 }
 
-/// Orden de aprendizaje: primero las formas de siempre (de la más fácil a la
-/// más difícil) y después los voicings buscados, también por dificultad.
+/// Traste desde el que una posición se considera "alta": cuesta más de
+/// encontrar y de tocar que la misma forma junto a la cejuela.
+const int kHighPosition = 7;
+
+/// Peso de una posición al ordenar: su dificultad más un punto si es alta.
+int learningWeight(int difficulty, int lowestFret) =>
+    difficulty + (lowestFret >= kHighPosition ? 1 : 0);
+
+/// Orden de aprendizaje: primero las formas de siempre y luego los voicings;
+/// dentro de cada grupo, de lo más fácil a lo más difícil (una posición alta
+/// pesa un punto más que la misma junto a la cejuela).
 ///
-/// La primera es la recomendada. Dentro de cada dificultad van antes las
-/// tríadas que los shells y los drops, y las de traste más bajo.
+/// La primera es la recomendada. A igual peso van antes las tríadas que los
+/// shells y los drops, y las de traste más bajo.
 int byLearningOrder(VariantDraft a, VariantDraft b) {
   final int byGroup = (a.kind == VariantKind.shape ? 0 : 1).compareTo(
     b.kind == VariantKind.shape ? 0 : 1,
@@ -66,9 +75,12 @@ int byLearningOrder(VariantDraft a, VariantDraft b) {
   if (byGroup != 0) {
     return byGroup;
   }
-  final int byDifficulty = a.difficulty.level.compareTo(b.difficulty.level);
-  if (byDifficulty != 0) {
-    return byDifficulty;
+  final int byWeight = learningWeight(
+    a.difficulty.level,
+    _lowestFret(a),
+  ).compareTo(learningWeight(b.difficulty.level, _lowestFret(b)));
+  if (byWeight != 0) {
+    return byWeight;
   }
   final int byKind = _kindRank(a).compareTo(_kindRank(b));
   if (byKind != 0) {

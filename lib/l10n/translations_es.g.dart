@@ -1091,9 +1091,6 @@ class Translations$chordTheory$es {
   String noteMeaning({required Object note, required Object interval}) =>
       '${note} es la ${interval}';
 
-  /// es: 'Qué es este acorde'
-  String get aboutTitle => 'Qué es este acorde';
-
   /// es: 'En qué tonalidades está'
   String get keysTitle => 'En qué tonalidades está';
 
@@ -1380,9 +1377,6 @@ class Translations$scalesPlus$es {
 
   /// es: 'Fórmula'
   String get formulaTitle => 'Fórmula';
-
-  /// es: '$degrees'
-  String formulaLine({required Object degrees}) => '${degrees}';
 
   /// es: 'Intervalos: $steps'
   String intervalsLine({required Object steps}) => 'Intervalos: ${steps}';
@@ -4095,7 +4089,6 @@ extension on Translations {
             required Object note,
             required Object interval,
           }) => '${note} es la ${interval}',
-          'chordTheory.aboutTitle' => 'Qué es este acorde',
           'chordTheory.keysTitle' => 'En qué tonalidades está',
           'chordTheory.keysHint' => 'El grado que ocupa en cada tonalidad.',
           'chordTheory.keyChip' => ({
@@ -4246,11 +4239,11 @@ extension on Translations {
             'Lidia con segunda aumentada: brillante, rara y llamativa.',
           'scalesPlus.about.superLocrianBb7' =>
             'La más tensa de la armónica: simétrica y disminuida.',
+          'scalesPlus.about.dorianFlat2' =>
+            'Dórica con segunda menor: oscura y cinematográfica.',
           _ => null,
         } ??
         switch (path) {
-          'scalesPlus.about.dorianFlat2' =>
-            'Dórica con segunda menor: oscura y cinematográfica.',
           'scalesPlus.about.lydianAugmented' =>
             'Lidia con quinta aumentada: etérea, de acordes maj7#5.',
           'scalesPlus.about.lydianDominant' => 'Mixolidia con cuarta aumentada: dominante brillante de jazz y fusión.',
@@ -4372,9 +4365,6 @@ extension on Translations {
           'scalesPlus.sections.exotic' => 'Exóticas',
           'scalesPlus.notesCount' => ({required Object n}) => '${n} notas',
           'scalesPlus.formulaTitle' => 'Fórmula',
-          'scalesPlus.formulaLine' => ({
-            required Object degrees,
-          }) => '${degrees}',
           'scalesPlus.intervalsLine' => ({
             required Object steps,
           }) => 'Intervalos: ${steps}',
@@ -5010,11 +5000,11 @@ extension on Translations {
           'theory.genreAbout.country' => 'Acordes abiertos, bajo alternado y melodías con la pentatónica mayor. Historias sencillas y mucho swing en la mano derecha.',
           'theory.genreAbout.jazz' => 'Cuatriadas (maj7, m7, 7), el ii-V-I y cambios constantes de tonalidad. Se toca ligero y con swing.',
           'theory.genreAbout.funk' => 'Acordes de novena y m7 tocados cortos y percusivos. La guitarra es parte de la batería.',
+          'theory.genreAbout.ballad' => 'Tempos lentos y acordes que se dejan sonar. Arpegios o un golpe por pulso.',
+          'theory.genreAbout.latin' => 'Desde la ranchera en 3/4 hasta la cadencia andaluza y el bolero. Mucha menor armónica.',
           _ => null,
         } ??
         switch (path) {
-          'theory.genreAbout.ballad' => 'Tempos lentos y acordes que se dejan sonar. Arpegios o un golpe por pulso.',
-          'theory.genreAbout.latin' => 'Desde la ranchera en 3/4 hasta la cadencia andaluza y el bolero. Mucha menor armónica.',
           'theory.genreAbout.reggae' => 'El acorde suena solo en los contratiempos, corto y seco. El bajo y la batería llevan el pulso.',
           'theory.genreAbout.bossa' => 'Cuatriadas suaves, bajo con el pulgar y acordes sincopados con los dedos.',
           'theory.genreAbout.metal' => 'Power chords con palm mute, tempos rápidos y escalas menores, frigias y armónicas.',

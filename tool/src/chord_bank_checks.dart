@@ -6,6 +6,7 @@ import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/variant_identity.dart';
 
+import 'builder/chord_drafts.dart' show learningWeight;
 import 'validation_report.dart';
 
 /// Detecta posiciones con identificador o trastes repetidos en un acorde.
@@ -27,21 +28,25 @@ class VariantSetChecker {
 }
 
 /// Las posiciones van ordenadas: primero las formas de siempre y luego los
-/// voicings, cada grupo de la más fácil a la más difícil. La primera es la
-/// recomendada.
+/// voicings, cada grupo de la más fácil a la más difícil (una posición alta
+/// pesa un punto más). La primera es la recomendada.
 List<ValidationIssue> validateOrder(String id, List<Object?> variants) {
   int previousGroup = 0;
-  int previousLevel = 0;
+  int previousWeight = 0;
   for (final Object? v in variants) {
     if (v is! Map<String, Object?> ||
         v['difficulty'] is! int ||
-        v['id'] is! String) {
+        v['id'] is! String ||
+        v['frets'] is! List<Object?>) {
       continue;
     }
     final int group = VariantIdentity.parse(v['id']! as String).isShape ? 0 : 1;
-    final int level = v['difficulty']! as int;
+    final int weight = learningWeight(
+      v['difficulty']! as int,
+      _lowestFret((v['frets']! as List<Object?>).cast<int>()),
+    );
     if (group < previousGroup ||
-        (group == previousGroup && level < previousLevel)) {
+        (group == previousGroup && weight < previousWeight)) {
       return <ValidationIssue>[
         ValidationIssue(
           '$id.variants',
@@ -49,13 +54,18 @@ List<ValidationIssue> validateOrder(String id, List<Object?> variants) {
         ),
       ];
     }
-    if (group != previousGroup) {
-      previousLevel = 0;
-    }
     previousGroup = group;
-    previousLevel = level;
+    previousWeight = weight;
   }
   return const <ValidationIssue>[];
+}
+
+int _lowestFret(List<int> frets) {
+  final List<int> pressed = <int>[
+    for (final int fret in frets)
+      if (fret > 0) fret,
+  ];
+  return pressed.isEmpty ? 0 : pressed.reduce((int a, int b) => a < b ? a : b);
 }
 
 /// Debe existir cada raíz con cada calidad y los géneros han de ser conocidos.

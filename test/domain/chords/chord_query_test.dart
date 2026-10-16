@@ -169,6 +169,33 @@ void main() {
       expect(ids('shell'), isNotEmpty);
     });
 
+    test('es rápida: cientos de búsquedas seguidas en el banco entero', () {
+      const List<String> queries = <String>[
+        'C',
+        'Cm7',
+        'Re menor 7',
+        'C E G',
+        'septima',
+        'sus',
+        'blues',
+        'F#m7b5',
+        'drop 2',
+        'menor con septima mayor',
+      ];
+      final Stopwatch watch = Stopwatch()..start();
+      int found = 0;
+      for (int round = 0; round < 30; round++) {
+        for (final String query in queries) {
+          found += ids(query).length;
+        }
+      }
+      watch.stop();
+      expect(found, greaterThan(0));
+      // 300 búsquedas sobre 396 acordes: bien por debajo de un cuarto de
+      // segundo cada una incluso en una máquina lenta.
+      expect(watch.elapsedMilliseconds, lessThan(300 * 250));
+    });
+
     test('un texto sin sentido no encuentra nada', () {
       expect(ids('zzzz'), isEmpty);
     });

@@ -6,16 +6,31 @@ diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
-![tests](https://img.shields.io/badge/tests-565-1DB954)
-![acordes](https://img.shields.io/badge/acordes-156-8B5CF6)
-![posiciones](https://img.shields.io/badge/posiciones-561-8B5CF6)
+![tests](https://img.shields.io/badge/tests-698-1DB954)
+![acordes](https://img.shields.io/badge/acordes-396-8B5CF6)
+![posiciones](https://img.shields.io/badge/posiciones-3455-8B5CF6)
+![escalas](https://img.shields.io/badge/escalas-38-8B5CF6)
 
 ## Funciones
 
-- **Banco extenso**: 156 acordes (12 raíces × 13 cualidades) y 561 posiciones
-  verificadas (cejillas, formas movibles, power chords, triadas e inversiones),
-  cada una con su nivel de dificultad (1-5) y géneros asociados
-  (Pop, Rock, Blues, Funk, Jazz, Balada, Latino, Metal…).
+- **Banco extenso**: 396 acordes (12 raíces × 33 tipos) y 3.455 posiciones
+  verificadas, cada una con su dificultad (1-5, coherente con lo que exige la
+  mano) y los géneros del tipo de acorde (Pop, Rock, Blues, Funk, Jazz,
+  Balada, Latino, Metal…). Además de mayor, menor, 7, m7, maj7, sus2/sus4,
+  6, m6, dim, aug, 9 y power chord, trae **add9, madd9, 6/9, m9, maj9, 11,
+  m11, 13, 7sus4, 9sus4, mMaj7, m7b5, dim7, 7b9, 7#9, 7#5, 7b5, 7#11, maj7#11
+  y maj7#5**. Cada acorde tiene hasta 12 posiciones más todas sus formas del
+  catálogo: formas abiertas, CAGED y movibles con cejilla, power chords de
+  tres, cuatro y cinco cuerdas, tríadas e inversiones en cuerdas medias y
+  agudas, shells (1-3-7) y voicings de cuatro cuerdas (drop 2, drop 3 e
+  inversiones) para el jazz.
+- **Ficha de acorde**: el diagrama y el sonido de siempre más las notas con su
+  grado (`1 b3 5 b7`) y la fórmula, las tonalidades donde el acorde cae en un
+  grado (`IVmaj7 en Sol mayor`), las variantes con filtros (abierta, cejilla,
+  movible, inversión, tríada, shell, drop 2/3, cuerdas agudas), los acordes
+  parientes (misma raíz con otro color y la relativa) con salto a su ficha,
+  dónde se usa (géneros y progresiones del catálogo que lo incluyen, con
+  enlace al jam) y la escala para improvisar encima con salto al explorador.
 - **Onboarding**: introducción de 3 pantallas al primer arranque (persistida).
 - **Aprender**: itinerario por 5 niveles (🌱 primeros acordes → 🎷 jazz),
   progreso persistente por acorde dominado, guía paso a paso
@@ -27,11 +42,18 @@ diseño atómico y Material 3 Expressive.
   modos) y armonía (campo armónico, grados y funciones, progresiones, CAGED)—
   con ideas clave, demostración en el mástil, juego o jam para practicar y
   progreso de lecciones aprendidas.
-- **Explorador de escalas**: 10 escalas (mayor, menor natural y armónica,
-  pentatónicas, blues, dórica, frigia, lidia, mixolidia) en los 12 tonos sobre
-  un mástil de 15 trastes; posición a posición (5 cajas de pentatónica, 7 de
-  tres notas por cuerda), notas o grados, tónica y nota característica
-  resaltadas, sonido de la escala y de cada nota, y acordes de la tonalidad.
+- **Explorador de escalas**: 38 escalas y modos en los 12 tonos sobre un
+  mástil de 18 trastes, agrupadas en cuatro familias (mayor y modos; menores
+  con los modos de la armónica y de la melódica; pentatónicas, blues y
+  hexatónicas; exóticas y simétricas: tonos enteros, disminuidas, aumentada,
+  bebop, húngara, doble armónica, hirajoshi…). Muestra la fórmula de grados,
+  los pasos (T/S), el carácter, los estilos donde se usa y la nota
+  característica; reparte el mástil en 5 cajas (pentatónicas), 7 posiciones
+  de tres notas por cuerda (heptatónicas), las cajas de la escala base más
+  sus notas de paso (blues, hexatónicas y bebop) o ventanas de trastes (las
+  simétricas); enseña los acordes de la escala en tríadas y séptimas
+  (`Imaj7 ii7 … viiø7`, con alteraciones en los modos), suena la escala
+  ascendente y descendente y centra el mástil en la posición elegida.
 - **Guía de géneros**: 15 estilos (pop, rock, blues, country, jazz, funk,
   balada, latino, reggae, bossa, metal, punk, soul/R&B, gospel, folk) con
   tempo, rasgueo animado, escalas para solear, acordes típicos, progresiones
@@ -127,9 +149,15 @@ diseño atómico y Material 3 Expressive.
   YIN en lugar de exigir volumen alto).
 - **Micrófono en vivo**: captura PCM16 + detector de tono YIN: nota, cents y
   acordes sugeridos en tiempo real.
-- **Biblioteca con filtros**: búsqueda libre, chips por género (incluido
-  Country, R&B, Soul, Bossa, Punk y Gospel), acordes recientes, por nivel y
-  por calidad, más slider de dificultad máxima; los esenciales salen primero.
+- **Biblioteca con filtros**: búsqueda por cifrado (`Cm7`, `F#m7b5`, `Bb7`,
+  `CM7` frente a `Cm7`), por nombre en español o inglés (`Do mayor`, `Re
+  menor 7`, `Lam`, `D minor 7`), por notas (`C E G`, `do mi sol`) o por texto
+  libre (tipo, género, tipo de posición); los resultados salen por relevancia.
+  Cuatro órdenes (esenciales, más fáciles, por nota y por tipo, estos dos con
+  encabezados), selector rápido de nota y tipo agrupado por familias (con
+  botón para abrir la ficha), chips por género (incluido Country, R&B, Soul,
+  Bossa, Punk y Gospel), acordes recientes, por nivel y por tipo agrupado por
+  familias, más slider de dificultad máxima; los esenciales salen primero.
 - **Diseño Material 3 Expressive adaptable**: esquema semilla púrpura, formas
   amplias, curva de énfasis; barra inferior en móvil y riel lateral en
   escritorio, diagramas en espejo para zurdos.
@@ -178,7 +206,7 @@ lib/
 tool/                   Generador del banco, validador, auditoría y hooks
 bin/chords_cli.dart     CLI de desarrollo
 docs/                   Web de presentación (GitHub Pages)
-assets/chords/          Banco de acordes generado (156/561)
+assets/chords/          Banco de acordes generado (396/3.455, ~350 KB)
 ```
 
 Regla del proyecto: **1 archivo = 1 responsabilidad** (una clase o una
@@ -234,9 +262,42 @@ El estado se cablea en `bootstrap.dart` (provider + `TranslationProvider` de
 slang) y en `app.dart` (`locale`, `supportedLocales` y las delegadas de
 `GlobalMaterialLocalizations`, que traducen también los textos del sistema).
 
-**Pendiente de traducción:** las etiquetas de posición del banco
-(`Forma de Mi`, `Triada {…}`, `… · traste 8`) son datos generados; migrarlas a
-identificadores estables permitiría traducirlas sin cambiar el banco.
+Los nombres de las posiciones del banco también se traducen: el banco solo
+guarda el nombre de cada forma en español (`Forma de Mi menor`) y la app
+compone el resto (`Drop 2 · cuerdas 4-3-2-1 · 1ª inversión`, `E minor shape ·
+fret 8`) a partir del identificador de la posición, con las claves de
+`chordTheory`.
+
+## Banco de acordes
+
+`dart run bin/chords_cli.dart db generate` construye `assets/chords/chords_db.json`
+sin datos escritos a mano posición a posición:
+
+1. **Formas del catálogo** (`tool/src/shapes/`): cada forma se escribe como un
+   acorde de referencia (`refShape('maj7', 'c-maj7-shape', 'Forma de Do maj7',
+   'x32000', 'C')`); el generador deduce cuerda de anclaje y desplazamientos y
+   la transpone a las 12 raíces (también por debajo de la referencia cuando no
+   usa cuerdas al aire). Las digitaciones las busca un solucionador de dedos
+   con las reglas físicas del validador.
+2. **Buscador de voicings** (`tool/src/builder/`): para cada acorde reparte
+   las notas imprescindibles entre grupos de cuerdas (tríadas, shells 1-3-7,
+   cuatro cuerdas), elige la forma más cómoda de cada inversión y reconoce los
+   drop 2 y drop 3 por sus alturas.
+3. **Dificultad**: la de la mano (dedos, cejillo, meñique, apertura, cuerdas
+   mudas en medio) con un mínimo por tipo de acorde; el validador rechaza una
+   dificultad menor que la que exige la mano o exagerada.
+4. **Formato compacto (v2)**: solo guarda lo que no se puede deducir
+   (identificador, trastes, dedos, dificultad, cejillo y el nombre de cada
+   forma); la app calcula notas, etiquetas, nombres y alias. Pasa de ~417 KB
+   con 561 posiciones a ~350 KB con 3.455, y se lee y construye en otro isolate
+   al arrancar (en la VM, ~55 ms en caliente y ~170 ms en frío).
+
+`db validate` comprueba, además de lo musical y físico de siempre (solo notas
+del acorde, todas las que lo definen —con las omisiones que admite cada tipo
+(quinta, novena…)—, raíz en el bajo salvo inversiones declaradas, un dedo = un
+traste, máximo 4 trastes de apertura), que estén las 396 combinaciones, que no
+haya posiciones repetidas, que cada forma tenga nombre y que vayan de la más
+fácil a la más difícil (formas primero, voicings después).
 
 ## Registro y analíticas
 
@@ -275,6 +336,7 @@ dispositivo (ver `docs/privacy.html`). El catálogo de eventos está en
 ```bash
 dart run bin/chords_cli.dart db generate   # regenera el banco
 dart run bin/chords_cli.dart db validate   # valida integridad
+dart run bin/chords_cli.dart db show C-maj7 maj9 # muestra las posiciones
 dart run bin/chords_cli.dart hooks install # instala los hooks de git
 dart run bin/chords_cli.dart flavor list
 make l10n                                  # regenera las traducciones (slang)

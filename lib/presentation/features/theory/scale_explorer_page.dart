@@ -164,6 +164,7 @@ class _PlayButton extends StatelessWidget {
     final Translations t = context.t;
     final bool playing = controller.isPlaying;
     return FloatingActionButton.extended(
+      tooltip: t.scalesPlus.playUpDown,
       onPressed: () => unawaited(controller.play()),
       icon: Icon(playing ? Icons.stop_rounded : Icons.play_arrow_rounded),
       label: Text(playing ? t.theory.stopScale : t.theory.playScale),

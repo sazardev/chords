@@ -41,24 +41,13 @@ class Chord {
   /// Nombre en español (p. ej. `Do Séptima menor`).
   String get displayName => '${root.displayName} ${quality.label}';
 
-  /// Nivel de dificultad del acorde: el de su forma más fácil.
-  ///
-  /// Cuentan las formas del catálogo (las de siempre); los voicings sueltos
-  /// (tríadas, shells, drops) solo si el acorde no tiene ninguna forma.
-  Difficulty get difficulty => _easiestOf(
-    variants.where((ChordVariant v) => v.isShape),
-    fallback: variants,
-  );
+  /// Nivel de dificultad del acorde: el de su posición recomendada.
+  Difficulty get difficulty => easiestVariant.difficulty;
 
-  /// Posición recomendada: la primera (están de más fácil a más difícil).
+  /// Posición recomendada: la primera. Van ordenadas como se aprenden: las
+  /// formas de siempre de la más fácil a la más difícil y después los
+  /// voicings (tríadas, shells y drops).
   ChordVariant get easiestVariant => variants.first;
-
-  static Difficulty _easiestOf(
-    Iterable<ChordVariant> preferred, {
-    required Iterable<ChordVariant> fallback,
-  }) => (preferred.isEmpty ? fallback : preferred)
-      .map((ChordVariant v) => v.difficulty)
-      .reduce((Difficulty a, Difficulty b) => a.level <= b.level ? a : b);
 
   /// Número de posiciones disponibles.
   int get variantCount => variants.length;

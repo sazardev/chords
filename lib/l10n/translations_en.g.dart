@@ -924,8 +924,6 @@ class Translations$chordTheory$en extends Translations$chordTheory$es {
   String noteMeaning({required Object note, required Object interval}) =>
       '${note} is the ${interval}';
   @override
-  String get aboutTitle => 'What this chord is';
-  @override
   String get keysTitle => 'Which keys it belongs to';
   @override
   String get keysHint => 'The degree it takes in each key.';
@@ -1190,8 +1188,6 @@ class Translations$scalesPlus$en extends Translations$scalesPlus$es {
   String notesCount({required Object n}) => '${n} notes';
   @override
   String get formulaTitle => 'Formula';
-  @override
-  String formulaLine({required Object degrees}) => '${degrees}';
   @override
   String intervalsLine({required Object steps}) => 'Intervals: ${steps}';
   @override
@@ -3501,7 +3497,6 @@ extension on TranslationsEn {
             required Object note,
             required Object interval,
           }) => '${note} is the ${interval}',
-          'chordTheory.aboutTitle' => 'What this chord is',
           'chordTheory.keysTitle' => 'Which keys it belongs to',
           'chordTheory.keysHint' => 'The degree it takes in each key.',
           'chordTheory.keyChip' => ({
@@ -3649,11 +3644,11 @@ extension on TranslationsEn {
             'Lydian with an augmented second: bright, rare and striking.',
           'scalesPlus.about.superLocrianBb7' =>
             'The tensest of the harmonic modes: symmetric and diminished.',
+          'scalesPlus.about.dorianFlat2' =>
+            'Dorian with a flat second: dark and cinematic.',
           _ => null,
         } ??
         switch (path) {
-          'scalesPlus.about.dorianFlat2' =>
-            'Dorian with a flat second: dark and cinematic.',
           'scalesPlus.about.lydianAugmented' =>
             'Lydian with a sharp fifth: ethereal, for maj7#5 chords.',
           'scalesPlus.about.lydianDominant' =>
@@ -3774,9 +3769,6 @@ extension on TranslationsEn {
           'scalesPlus.sections.exotic' => 'Exotic',
           'scalesPlus.notesCount' => ({required Object n}) => '${n} notes',
           'scalesPlus.formulaTitle' => 'Formula',
-          'scalesPlus.formulaLine' => ({
-            required Object degrees,
-          }) => '${degrees}',
           'scalesPlus.intervalsLine' => ({
             required Object steps,
           }) => 'Intervals: ${steps}',
@@ -4427,11 +4419,11 @@ extension on TranslationsEn {
           'theory.genreAbout.country' => 'Open chords, alternating bass and major pentatonic melodies. Simple stories and lots of swing in the picking hand.',
           'theory.genreAbout.jazz' => 'Seventh chords (maj7, m7, 7), the ii-V-I and constant key changes. Played light and swinging.',
           'theory.genreAbout.funk' => 'Ninth and m7 chords played short and percussive. The guitar is part of the drum kit.',
+          'theory.genreAbout.ballad' => 'Slow tempos and chords left ringing. Arpeggios or one strum per beat.',
+          'theory.genreAbout.latin' => 'From the ranchera in 3/4 to the Andalusian cadence and bolero. Lots of harmonic minor.',
           _ => null,
         } ??
         switch (path) {
-          'theory.genreAbout.ballad' => 'Slow tempos and chords left ringing. Arpeggios or one strum per beat.',
-          'theory.genreAbout.latin' => 'From the ranchera in 3/4 to the Andalusian cadence and bolero. Lots of harmonic minor.',
           'theory.genreAbout.reggae' => 'The chord only sounds on the offbeats, short and dry. Bass and drums carry the beat.',
           'theory.genreAbout.bossa' => 'Soft seventh chords, thumb bass and syncopated chords with the fingers.',
           'theory.genreAbout.metal' => 'Palm-muted power chords, fast tempos and minor, phrygian and harmonic scales.',
