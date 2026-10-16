@@ -84,7 +84,9 @@ class WelcomeStep extends StatelessWidget {
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: box.maxHeight - 24),
+              constraints: BoxConstraints(
+                minHeight: (box.maxHeight - 24).clamp(0.0, double.infinity),
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
