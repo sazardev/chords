@@ -26,17 +26,19 @@ class ChordMatcher {
   /// Crea el comparador con las plantillas de [bank].
   ChordMatcher({
     ChordTemplateBank? bank,
-    this.presenceLow = 0.15,
-    this.presenceHigh = 0.4,
-    this.extraPenalty = 0.5,
-    this.complexityPenalty = 0.03,
+    this.presenceLow = 0.2,
+    this.presenceHigh = 0.45,
+    this.extraPenalty = 0.8,
+    this.complexityPenalty = 0.06,
+    this.rarityPenalty = 0.03,
     this.rootBassBonus = 0.08,
     this.foreignBassPenalty = 0.1,
     this.powerChordCap = 0.7,
     this.minScore = 0.7,
     this.scoreRange = 0.25,
   }) : _bank = bank ?? _shared,
-       _scores = Float64List((bank ?? _shared).length);
+       _scores = Float64List((bank ?? _shared).length),
+       _fits = Float64List((bank ?? _shared).length);
 
   /// Plantillas compartidas: se calculan una sola vez para toda la app.
   static final ChordTemplateBank _shared = ChordTemplateBank();
@@ -52,6 +54,10 @@ class ChordMatcher {
 
   /// Resta por cada nota del acorde por encima de tres (prefiere lo simple).
   final double complexityPenalty;
+
+  /// Resta por cada punto de popularidad que le falta a la calidad para ser
+  /// imprescindible (5): las calidades raras solo ganan con evidencia clara.
+  final double rarityPenalty;
 
   /// Suma cuando el bajo es la raíz del acorde.
   final double rootBassBonus;
@@ -71,6 +77,7 @@ class ChordMatcher {
 
   final ChordTemplateBank _bank;
   final Float64List _scores;
+  final Float64List _fits;
   final Float64List _presence = Float64List(12);
 
   /// Los [limit] mejores candidatos para [chroma] (12 valores >= 0).
@@ -82,7 +89,9 @@ class ChordMatcher {
       return const <ChordCandidate>[];
     }
     for (int i = 0; i < _scores.length; i++) {
-      _scores[i] = _score(_bank.templates[i], bass);
+      final ChordTemplate template = _bank.templates[i];
+      _fits[i] = _fit(template, bass);
+      _scores[i] = _fits[i] - _prior(template);
     }
     return _topCandidates(limit);
   }
@@ -104,7 +113,8 @@ class ChordMatcher {
     return true;
   }
 
-  double _score(ChordTemplate template, int bass) {
+  /// Cuánto encajan las notas con la plantilla, sin ninguna preferencia.
+  double _fit(ChordTemplate template, int bass) {
     double present = 0;
     double total = 0;
     double extra = 0;
@@ -117,11 +127,17 @@ class ChordMatcher {
         extra += _presence[note];
       }
     }
-    return present / total -
-        extraPenalty * extra -
-        complexityPenalty * math.max(0, template.notes.length - 3) +
-        _bassTerm(template, bass);
+    return present / total - extraPenalty * extra + _bassTerm(template, bass);
   }
+
+  /// Preferencia a priori por acordes simples y habituales.
+  ///
+  /// Solo decide entre candidatos: la confianza se calcula con el ajuste
+  /// puro, así que un acorde bien tocado no pierde seguridad por ser de
+  /// cinco notas.
+  double _prior(ChordTemplate template) =>
+      complexityPenalty * math.max(0, template.notes.length - 3) +
+      rarityPenalty * (5 - template.quality.popularity);
 
   double _bassTerm(ChordTemplate template, int bass) {
     if (bass < 0) {
@@ -156,7 +172,8 @@ class ChordMatcher {
         ? _scores[picked[1]]
         : _scores[picked[0]];
     final double margin = n == 0 ? raw - rival : 0;
-    final double absolute = ((raw - minScore) / scoreRange).clamp(0.0, 1.0);
+    final double fit = _fits[picked[n]];
+    final double absolute = ((fit - minScore) / scoreRange).clamp(0.0, 1.0);
     final double separation = (margin / 0.08).clamp(0.0, 1.0);
     final double confidence = absolute * (0.55 + 0.45 * separation);
     return ChordCandidate(

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:chords/domain/audio/entities/chord_candidate.dart';
 
 /// Histéresis sobre los candidatos: evita que el acorde parpadee.
@@ -5,7 +7,8 @@ import 'package:chords/domain/audio/entities/chord_candidate.dart';
 /// Entre C, Cmaj7 y Am7 las puntuaciones son parecidas y bailan de trama en
 /// trama. El estabilizador mantiene el acorde actual y solo cambia cuando el
 /// aspirante lo supera con claridad y se mantiene primero unas tramas
-/// seguidas (pocas si la ventaja es grande, más si es corta). Si la confianza
+/// seguidas (pocas si la ventaja es grande, más si es corta o si el acorde es
+/// raro). Si la confianza
 /// se queda baja varias tramas seguidas, suelta el acorde.
 class ChordStabilizer {
   /// Crea el estabilizador con los umbrales indicados.
@@ -66,7 +69,12 @@ class ChordStabilizer {
     final double lead = top.score - (incumbent?.score ?? 0);
     _streak = top == _challenger ? _streak + 1 : 1;
     _challenger = top;
-    final int needed = lead >= switchMargin ? fastFrames : slowFrames;
+    // Un acorde raro necesita más tramas: en un cambio, la mezcla de los dos
+    // acordes se parece a una extensión (C + G ≈ Em9) durante un instante.
+    final int rarity = 5 - top.quality.popularity;
+    final int needed = lead >= switchMargin
+        ? math.min(slowFrames, fastFrames + rarity)
+        : slowFrames;
     if (_streak >= needed) {
       _current = top;
       _challenger = null;

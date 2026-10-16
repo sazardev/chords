@@ -153,14 +153,40 @@ void main() {
       expect(ranked.first.confidence, greaterThan(0.5));
     });
 
-    test('la confianza baja cuando dos acordes empatan', () {
-      // Sin bajo, Do 6 y La m7 son indistinguibles.
+    test('la confianza baja cuando dos acordes suenan igual', () {
+      // Sin bajo, Do 6 y La m7 son indistinguibles: gana el más habitual,
+      // pero el otro queda muy cerca y la confianza no es total.
       final List<ChordCandidate> ranked = matcher.rank(
         _chroma(ChordRoot.c, ChordQuality.sixth),
         -1,
       );
 
-      expect(ranked.first.confidence, lessThan(0.8));
+      expect(ranked.first.id, 'A-m7');
+      expect(ranked[1].id, 'C-6');
+      expect(ranked.first.confidence, lessThan(0.95));
+    });
+
+    test('una extensión rara no gana al acorde habitual sin su nota', () {
+      // Do mayor con un Re (la novena) apenas insinuado sigue siendo Do.
+      final Float64List chroma = _only(<int, double>{
+        0: 1,
+        4: 0.8,
+        7: 0.8,
+        2: 0.22,
+      });
+
+      expect(matcher.rank(chroma, 0).first.id, 'C-maj');
+    });
+
+    test('una extensión con su nota clara sí gana', () {
+      final Float64List chroma = _only(<int, double>{
+        0: 1,
+        4: 0.8,
+        7: 0.8,
+        2: 0.9,
+      });
+
+      expect(matcher.rank(chroma, 0).first.id, 'C-add9');
     });
 
     test('devuelve los candidatos ordenados y respeta el límite', () {
