@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:chords/data/audio/band/drums/drum_parts.dart';
+import 'package:chords/data/audio/band/dsp/biquad.dart';
 import 'package:chords/data/audio/band/dsp/dsp_kit.dart';
 
 /// Shaker: ruido agudo que crece un instante y cae rápido.
@@ -44,5 +45,5 @@ Float64List renderGuiro({required bool hard}) {
     low += 0.5 * (x - low);
     out[i] = (x - low) * ridge * decayAt(t, 0.085) * (hard ? 1 : 0.6);
   }
-  return out;
+  return Biquad.bandPass(3600, 0.6, kBandRate).apply(out);
 }

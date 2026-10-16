@@ -74,11 +74,11 @@ void _release(Float64List out, NoteLength length, KeysKind kind) {
 /// desafinadas que laten y un golpe de martillo.
 void _pianoNote(Float64List out, double hz, int midi) {
   final double tau0 = (3.0 * math.pow(261 / hz, 0.55)).clamp(0.6, 6.0);
-  final int harmonics = hz < 200 ? 12 : (hz < 500 ? 8 : 5);
+  final int harmonics = hz < 200 ? 16 : (hz < 500 ? 12 : 7);
   final double inharmonic = 0.00018 * math.pow(hz / 261, 2);
   for (int k = 1; k <= harmonics; k++) {
     final double fk = hz * k * math.sqrt(1 + inharmonic * k * k);
-    final double amp = math.exp(-(k - 1) * 0.2) / k;
+    final double amp = math.exp(-(k - 1) * 0.07) / math.pow(k, 0.9);
     final double tau = tau0 / (1 + 0.9 * math.pow(k - 1, 0.8));
     addDamped(out, fk * 1.0006, tau, amp * 0.6, phase: k * 0.3);
     addDamped(out, fk * 0.9995, tau * 1.05, amp * 0.6, phase: k * 0.7);
@@ -102,7 +102,7 @@ void _rhodesNote(Float64List out, double hz) {
   final double indexStep = math.exp(-1 / (0.28 * kBandRate));
   final double bellStep = math.exp(-1 / (0.035 * kBandRate));
   double envelope = 1;
-  double index = 1.9;
+  double index = 3;
   double bell = 1;
   for (int i = 0; i < out.length; i++) {
     final double phase = w * i;
@@ -142,8 +142,8 @@ void _padNote(Float64List out, double hz, LoopPlan? plan) {
     addHarmonics(
       out,
       hz,
-      10,
-      (int k) => 0.5 / math.pow(k, 1.25),
+      16,
+      (int k) => 0.5 / math.pow(k, 0.95),
       plan: plan,
       detuneCents: cents,
     );

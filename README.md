@@ -6,7 +6,7 @@ diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
-![tests](https://img.shields.io/badge/tests-565-1DB954)
+![tests](https://img.shields.io/badge/tests-799-1DB954)
 ![acordes](https://img.shields.io/badge/acordes-156-8B5CF6)
 ![posiciones](https://img.shields.io/badge/posiciones-561-8B5CF6)
 
@@ -37,12 +37,13 @@ diseño atómico y Material 3 Expressive.
   tempo, rasgueo animado, escalas para solear, acordes típicos, progresiones
   para jammear, canciones y enlace a la biblioteca filtrada.
 - **Jam guiado** (estilo Rocksmith/Yousician): 23 progresiones por género,
-  canciones o una progresión propia; tono, tempo y vueltas; cuenta atrás,
-  acorde actual y siguiente con diagrama, carril de compases, rasgueo golpe a
-  golpe, letra y escala sugerida. Modo *acompañar* (la app rasguea con el
-  patrón del estilo, bajo y metrónomo) o *puntuar* (la app calla y el
-  micrófono califica cada compás: perfecto/bien/fallo, racha, multiplicador
-  ×1-×4, precisión, estrellas y récord por pista).
+  canciones o una progresión propia; tono, tempo y vueltas; cuenta atrás de
+  0-2 compases, acorde actual y siguiente con diagrama, carril de compases,
+  rasgueo golpe a golpe, letra y escala sugerida. Modo *acompañar* (una
+  **banda completa sintetizada por género**, ver [Banda del jam](#banda-del-jam))
+  o *puntuar* (la app calla y el micrófono califica cada compás:
+  perfecto/bien/fallo, racha, multiplicador ×1-×4, precisión, estrellas y
+  récord por pista).
 - **Cancionero**: canciones tradicionales y de dominio público (Cielito lindo,
   La bamba, Las mañanitas, La Llorona, Amazing Grace, Oh! Susanna, Red River
   Valley, Greensleeves…) y ejercicios por género, con acordes por compás,
@@ -158,8 +159,10 @@ make check                    # formato + analyze + i18n + audit + tests
 lib/
 ├── config/            Flavors, parámetros de app y deep links
 ├── domain/            Entidades, repositorios (abstractos) y casos de uso
+│   ├── band/          Banda del jam: patrones, presets por género, director y reloj
 │   └── l10n/          Idioma soportado (AppLanguage) y su repositorio
-├── data/              Datasource de assets, modelos, síntesis de audio, YIN
+├── data/              Datasource de assets, modelos, síntesis de audio (acordes y
+│                      banda en `audio/band/`), YIN
 │   ├── analytics/     Backend Firebase de analíticas (Analytics + Crashlytics)
 │   └── l10n/          Persistencia del idioma elegido
 ├── core/              Núcleo puro sin Flutter: logging y analíticas
@@ -183,6 +186,63 @@ assets/chords/          Banco de acordes generado (156/561)
 
 Regla del proyecto: **1 archivo = 1 responsabilidad** (una clase o una
 concern por archivo).
+
+## Banda del jam
+
+En modo *acompañar* el jam toca una banda entera, generada en Dart (sin
+muestras externas) y cargada en SoLoud:
+
+| Canal | Instrumentos |
+| --- | --- |
+| Batería | bombo, caja, aro (cross-stick), palmada, charles cerrado/abierto/pedal, ride y campana, crash, 3 toms; kits acústico, jazz y caja de ritmos |
+| Percusión | shaker, pandereta, cencerro, claves, congas (abierta/slap/apagada), bongós, timbal, güiro, palmas claras y sordas, cajón |
+| Bajo | eléctrico de dedos, de púa, contrabajo y sintetizado/sub (808) |
+| Guitarra | acústica (Karplus-Strong + caja), eléctrica limpia con coro, saturada (power chords y palm-mute) y nailon con rasgueado de flamenco |
+| Teclados | piano, piano eléctrico tipo Rhodes (FM), órgano de ruedas (barras de armónicos + Leslie) y cuerdas |
+| Vientos | acordeón (musette) y metales cortos |
+| Clic | metrónomo con acento en el primer pulso |
+
+**27 géneros con su propia banda** (`lib/domain/band/presets/`, indexados por
+id de género; un id desconocido usa el preset de pop): pop, rock, blues,
+country, jazz, funk, balada (`ballad`), latino (`latin`), reggae, bossa,
+metal, punk, soul, gospel, folk, cumbia, salsa, ranchera, flamenco, disco,
+ska, indie, grunge, reggaetón, lofi, tango y bolero. Cada preset define, en
+rejilla de semicorcheas (16 pasos en 4/4, 12 en 3/4), dos variantes de
+batería y su relleno (cada 4 u 8 compases, con plato al empezar cada vuelta),
+la línea de bajo consciente del acorde (raíz-quinta, octavas de disco, bajo
+caminante de jazz/blues/ska, tumbao de salsa, dembow, bolero, tango, skank
+de reggae…), el comping de teclado, el rasgueo de guitarra (el de la pista
+cuando no es el del género), los vientos, el swing y la fuerza del género.
+
+- **Reloj**: `TickScheduler` calcula cada semicorchea contra un reloj
+  monótono (`ancla + n·intervalo`, aritmética entera en µs) y arma el aviso
+  para el siguiente plazo absoluto: no hay jitter acumulado ni deriva. Swing
+  real (corcheas o semicorcheas), cambio de tempo sin saltos (la siguiente
+  semicorchea conserva su hora), pausa sin perder el hueco, adelanto para
+  humanizar ±9 ms y reanclado tras paradas largas.
+- **Precarga**: al empezar se sintetizan y cargan todas las muestras de la
+  pista en isolates (`compute`, por lotes y en paralelo) con barra de
+  progreso; lo de los canales silenciados se carga después en segundo plano.
+  Durante la sesión solo se hace `play`. En un equipo de escritorio una
+  pista de 8 acordes y 2 vueltas tarda 50-470 ms (26-77 muestras, 1,6-6,4
+  MiB de WAV); un compás de cualquier género, 30-200 ms.
+- **Mezclador** (panel *Banda* en la preparación, persistido en
+  `band_config_v1`): por canal activar/silenciar y volumen; atajos *Banda
+  completa / Solo ritmo / Sin guitarra / Solo clic*; estilo de la banda y tipo
+  de kit, bajo, guitarra, teclado y viento; swing, humanización, intensidad
+  (suave/normal/fuerte) y rellenos; cuenta atrás (0/1/2), vueltas,
+  transposición/capo (±6) y metrónomo con su volumen. En la escena cada
+  instrumento se ilumina al sonar y se silencia o activa al tocarlo, y el
+  tempo se ajusta con ±1, ±5 o escribiéndolo.
+- **Modo puntuar**: la banda (clic incluido) calla, igual que antes: sus
+  golpes cada semicorchea mantendrían cerrada la `PlaybackEchoGate` y el
+  micrófono no oiría la guitarra. `BandAudioRepositoryImpl` acepta una
+  `PlaybackEchoGate` y la avisa en cada golpe por si se quisiera permitir.
+
+```bash
+# Mezcla un fragmento de cada género y lo guarda como WAV para escucharlo:
+BAND_DEMO_DIR=/tmp/banda flutter test test/data/audio/band/band_mix_test.dart
+```
 
 ## Internacionalización (i18n)
 

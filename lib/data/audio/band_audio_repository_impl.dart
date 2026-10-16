@@ -97,21 +97,37 @@ class BandAudioRepositoryImpl implements BandAudioRepository {
       }
     }
     if (todo.isNotEmpty) {
-      await _engine.ensureReady();
       await _loadAll(todo.values.toList(), onProgress);
     }
     await Future.wait(waiting);
     onProgress?.call(1);
   }
 
+  /// Sintetiza y carga [sounds]. Los marca como "en curso" antes de ceder el
+  /// control, para que otra precarga que llegue a la vez los espere en lugar
+  /// de repetirlos.
   Future<void> _loadAll(
     List<BandSound> sounds,
     void Function(double progress)? onProgress,
   ) async {
     final Completer<void> finished = Completer<void>();
-    for (final BandSound sound in sounds) {
-      _inFlight[sound.key] = finished.future;
+    final Set<String> keys = <String>{for (final BandSound s in sounds) s.key};
+    for (final String key in keys) {
+      _inFlight[key] = finished.future;
     }
+    try {
+      await _engine.ensureReady();
+      await _renderAll(sounds, onProgress);
+    } finally {
+      _inFlight.removeWhere((String key, Future<void> _) => keys.contains(key));
+      finished.complete();
+    }
+  }
+
+  Future<void> _renderAll(
+    List<BandSound> sounds,
+    void Function(double progress)? onProgress,
+  ) async {
     final Queue<List<BandSound>> batches = Queue<List<BandSound>>();
     for (int i = 0; i < sounds.length; i += batchSize) {
       batches.add(sounds.sublist(i, (i + batchSize).clamp(0, sounds.length)));
@@ -128,17 +144,10 @@ class BandAudioRepositoryImpl implements BandAudioRepository {
       }
     }
 
-    try {
-      await Future.wait(<Future<void>>[
-        for (int i = 0; i < concurrency.clamp(1, batches.length); i++) worker(),
-      ]);
-    } finally {
-      _inFlight.removeWhere(
-        (String key, Future<void> _) =>
-            sounds.any((BandSound s) => s.key == key),
-      );
-      finished.complete();
-    }
+    final int workers = concurrency.clamp(1, batches.length);
+    await Future.wait(<Future<void>>[
+      for (int i = 0; i < workers; i++) worker(),
+    ]);
   }
 
   Future<void> _register(EncodedSound encoded) async {

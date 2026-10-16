@@ -67,11 +67,11 @@ class BandConfig {
   static const Map<BandChannel, ChannelMix> kDefaultMix =
       <BandChannel, ChannelMix>{
         BandChannel.drums: ChannelMix(volume: 0.85),
-        BandChannel.percussion: ChannelMix(volume: 0.7),
+        BandChannel.percussion: ChannelMix(volume: 0.85),
         BandChannel.bass: ChannelMix(volume: 0.85),
-        BandChannel.guitar: ChannelMix(volume: 0.7),
-        BandChannel.keys: ChannelMix(volume: 0.6),
-        BandChannel.winds: ChannelMix(volume: 0.6),
+        BandChannel.guitar: ChannelMix(volume: 0.85),
+        BandChannel.keys: ChannelMix(volume: 0.65),
+        BandChannel.winds: ChannelMix(volume: 0.75),
         BandChannel.click: ChannelMix(enabled: false, volume: 0.6),
       };
 

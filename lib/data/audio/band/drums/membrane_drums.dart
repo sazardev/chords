@@ -20,18 +20,26 @@ Float64List renderKick(DrumKit kit, {required bool hard}) {
     pitchTau: 0.03,
     ampTau: setup.$3,
   );
-  if (kit != DrumKit.electronic) {
-    addNoiseBurst(
-      out,
-      noise: Noise(11),
-      tau: 0.004,
-      amp: hard ? 0.35 : 0.12,
-      bandHz: 3200,
-      bandQ: 0.8,
-    );
-  }
+  // El golpe del pedal: un "tump" medio y un chasquido que se oyen aunque
+  // el altavoz no llegue a los graves.
+  addSweepTone(
+    out,
+    startHz: 420,
+    endHz: 130,
+    pitchTau: 0.012,
+    ampTau: 0.035,
+    amp: hard ? 0.55 : 0.3,
+  );
+  addNoiseBurst(
+    out,
+    noise: Noise(11),
+    tau: kit == DrumKit.electronic ? 0.003 : 0.006,
+    amp: (hard ? 0.9 : 0.35) * (kit == DrumKit.electronic ? 0.6 : 1),
+    bandHz: 3000,
+    bandQ: 0.7,
+  );
   for (int i = 0; i < out.length; i++) {
-    out[i] = softClip(out[i] * (kit == DrumKit.electronic ? 1.8 : 1.3));
+    out[i] = softClip(out[i] * (kit == DrumKit.electronic ? 2.4 : 1.5));
   }
   return out;
 }
@@ -48,11 +56,13 @@ Float64List renderTom(int size, DrumKit kit, {required bool hard}) {
     pitchTau: 0.05,
     ampTau: kit == DrumKit.electronic ? 0.3 : 0.17,
   );
+  addDamped(out, top * 2.3, 0.06, hard ? 0.45 : 0.25);
+  addDamped(out, top * 3.6, 0.035, 0.2);
   addNoiseBurst(
     out,
     noise: Noise(21 + size),
-    tau: 0.006,
-    amp: hard ? 0.3 : 0.1,
+    tau: 0.01,
+    amp: hard ? 0.6 : 0.25,
     bandHz: 2400,
   );
   return out;
@@ -135,7 +145,8 @@ Float64List renderCajon({required bool slap}) {
     );
   } else {
     addSweepTone(out, startHz: 120, endHz: 68, pitchTau: 0.04, ampTau: 0.14);
-    addNoiseBurst(out, noise: Noise(62), tau: 0.01, amp: 0.25, lowPassHz: 1200);
+    addDamped(out, 190, 0.05, 0.4);
+    addNoiseBurst(out, noise: Noise(62), tau: 0.012, amp: 0.6, lowPassHz: 2600);
   }
   return out;
 }

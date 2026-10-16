@@ -13,6 +13,7 @@ import 'package:chords/domain/band/presets/drum_fills.dart';
 /// Latino (pop latino): clave 3-2, shaker, congas y bajo de tumbao suave.
 const BandPreset kLatinPreset = BandPreset(
   id: 'latin',
+  trim: 0.45,
   baseStrum: 'D-D-D-D-',
   guitarKind: GuitarKind.nylon,
   punch: 0.9,
@@ -43,6 +44,7 @@ const BandPreset kLatinPreset = BandPreset(
 /// Bossa nova: clave en el aro, bajo de dos notas y guitarra de nailon.
 const BandPreset kBossaPreset = BandPreset(
   id: 'bossa',
+  trim: 0.71,
   baseStrum: 'B-DB-DB-',
   kit: DrumKit.jazz,
   guitarKind: GuitarKind.nylon,
@@ -73,6 +75,7 @@ const BandPreset kBossaPreset = BandPreset(
 /// Salsa: clave, campana, bongó de martillo, tumbao, piano montuno y metales.
 const BandPreset kSalsaPreset = BandPreset(
   id: 'salsa',
+  trim: 0.44,
   baseStrum: 'D-D-D-D-',
   guitarKind: GuitarKind.nylon,
   drums: DrumGroove(
@@ -106,6 +109,7 @@ const BandPreset kSalsaPreset = BandPreset(
 /// Cumbia: güiro continuo, congas alternadas, bajo "oom-pah" y acordeón.
 const BandPreset kCumbiaPreset = BandPreset(
   id: 'cumbia',
+  trim: 0.47,
   baseStrum: 'D-D-D-D-',
   windKind: WindKind.accordion,
   punch: 0.92,
@@ -137,6 +141,7 @@ const BandPreset kCumbiaPreset = BandPreset(
 /// batería ligera (en vals usa el ritmo ternario genérico).
 const BandPreset kRancheraPreset = BandPreset(
   id: 'ranchera',
+  trim: 0.51,
   baseStrum: 'D-D-D-D-',
   bassKind: BassKind.upright,
   punch: 0.78,
@@ -164,6 +169,7 @@ const BandPreset kRancheraPreset = BandPreset(
 /// Flamenco (rumba): cajón, palmas, guitarra de nailon con rasgueado y bajo.
 const BandPreset kFlamencoPreset = BandPreset(
   id: 'flamenco',
+  trim: 0.55,
   baseStrum: 'D-DU-UDU',
   bassKind: BassKind.upright,
   guitarKind: GuitarKind.nylon,
@@ -192,6 +198,7 @@ const BandPreset kFlamencoPreset = BandPreset(
 /// Tango: marcato en cuatro, bajo de contrabajo, bandoneón y piano.
 const BandPreset kTangoPreset = BandPreset(
   id: 'tango',
+  trim: 0.62,
   baseStrum: 'D-D-D-D-',
   kit: DrumKit.jazz,
   bassKind: BassKind.upright,
@@ -222,6 +229,7 @@ const BandPreset kTangoPreset = BandPreset(
 /// Bolero: bongó y maracas, claves suaves, bajo largo y guitarra de nailon.
 const BandPreset kBoleroPreset = BandPreset(
   id: 'bolero',
+  trim: 0.59,
   baseStrum: 'D-D-D-D-',
   bassKind: BassKind.upright,
   guitarKind: GuitarKind.nylon,

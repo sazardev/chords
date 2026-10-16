@@ -81,14 +81,16 @@ class JamBand {
 
   /// Toca los [events] de la semicorchea [tick].
   ///
-  /// [force] toca aunque el canal esté silenciado (el clic de la cuenta
-  /// atrás). Cada canal desvía su golpe un poco distinto con la
-  /// humanización; el clic nunca.
+  /// [trim] es la ganancia final del género (ver `BandPreset.trim`); [force]
+  /// toca aunque el canal esté silenciado (el clic de la cuenta atrás). Cada
+  /// canal desvía su golpe un poco distinto con la humanización; el clic
+  /// nunca.
   void play(
     List<BandEvent> events,
     Tick tick,
     BandConfig config, {
     required Duration lead,
+    double trim = 1,
     bool force = false,
   }) {
     final BandAudioRepository? audio = _audio;
@@ -113,7 +115,7 @@ class JamBand {
       );
       audio.play(
         event.sound,
-        volume: _volume(event, config, force: force),
+        volume: _volume(event, config, trim: trim, force: force),
         delay: delay.isNegative ? Duration.zero : delay,
       );
     }
@@ -126,16 +128,28 @@ class JamBand {
           if (config.isOn(event.channel)) event.channel,
       };
 
+  /// Libera las muestras de memoria (al salir del jam), cuando ya terminó el
+  /// fundido con que se calló la banda.
+  Future<void> release() async {
+    await Future<void>.delayed(const Duration(milliseconds: 150));
+    await _audio?.release();
+  }
+
   /// Calla un canal (o toda la banda) con un fundido.
   void silence({BandChannel? channel}) => _audio?.silence(channel: channel);
 
-  double _volume(BandEvent event, BandConfig config, {required bool force}) {
+  double _volume(
+    BandEvent event,
+    BandConfig config, {
+    required double trim,
+    required bool force,
+  }) {
     final double humanized =
         event.velocity * (1 + _signed() * 0.1 * config.humanize);
     final double mix = force && !config.isOn(event.channel)
         ? 0.6
         : config.mixOf(event.channel).volume;
-    return (humanized * mix).clamp(0.0, 1.0);
+    return (humanized * mix * trim).clamp(0.0, 1.0);
   }
 
   /// Número aleatorio entre -1 y 1.

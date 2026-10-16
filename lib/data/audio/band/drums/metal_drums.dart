@@ -25,7 +25,8 @@ Float64List renderHat(int open, DrumKit kit, {required bool hard}) {
     amp: hard ? 0.5 : 0.3,
     highPassHz: 7000,
   );
-  Biquad.highPass(open == 2 ? 4500 : 6500, 0.8, kBandRate).apply(out);
+  Biquad.highPass(open == 2 ? 3800 : 5200, 0.8, kBandRate).apply(out);
+  Biquad.lowPass(12500, 0.7, kBandRate).apply(out);
   return out;
 }
 
@@ -71,7 +72,8 @@ Float64List renderCrash({required bool hard}) {
     attack: 0.004,
   );
   addMetal(out, tau: 0.5, amp: 0.8, scale: 1.7);
-  Biquad.highPass(3000, 0.7, kBandRate).apply(out);
+  Biquad.highPass(2800, 0.7, kBandRate).apply(out);
+  Biquad.lowPass(11000, 0.7, kBandRate).apply(out);
   return out;
 }
 

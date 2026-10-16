@@ -62,9 +62,9 @@ Float64List _finger(double hz, int n, int midi) {
     velocity: 0.5,
     pickPosition: 0.3,
   );
-  Biquad.lowPass(1900, 0.7, kBandRate).apply(out);
-  addSine(out, hz, _rms(out) * 0.9);
-  return _saturate(out, 2.2);
+  Biquad.lowPass(2300, 0.7, kBandRate).apply(out);
+  Biquad.peaking(750, 1, 4, kBandRate).apply(out);
+  return _saturate(out, 3);
 }
 
 /// Eléctrico de púa: más ataque, más brillo y un chasquido.
@@ -120,7 +120,7 @@ Float64List _synth(double hz, int n, NoteLength length) {
     endHz: hz,
     pitchTau: 0.03,
     ampTau: length == NoteLength.long ? 1.4 : 0.4,
-    amp: 0.9,
+    amp: 0.55,
   );
   final Float64List saw = Float64List(n);
   double phase = 0;
@@ -130,11 +130,15 @@ Float64List _synth(double hz, int n, NoteLength length) {
     phase -= phase.floorToDouble();
     saw[i] = (2 * phase - 1) * decayAt(i / kBandRate, 0.25);
   }
-  Biquad.lowPass(800, 1.4, kBandRate).apply(saw);
+  Biquad.lowPass(1500, 1.1, kBandRate).apply(saw);
   for (int i = 0; i < n; i++) {
-    out[i] += saw[i] * 0.35;
+    out[i] += saw[i] * 0.9;
   }
-  return _saturate(out, 2.4);
+  // Armónicos de la nota: dan altura donde el altavoz no llega al sub.
+  for (int k = 2; k <= 5; k++) {
+    addDamped(out, hz * k, length == NoteLength.long ? 0.7 : 0.25, 0.5 / k);
+  }
+  return _saturate(out, 3.2);
 }
 
 /// Lleva la señal a pico 1 y la satura con [drive]: los armónicos que añade

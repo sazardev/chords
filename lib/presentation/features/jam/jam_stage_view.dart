@@ -118,24 +118,28 @@ class _CountIn extends StatelessWidget {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return AppCard(
       color: scheme.tertiaryContainer,
-      child: SizedBox(
-        height: 200,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AppText(
-              t.jam.countIn,
-              variant: AppTextVariant.titleLarge,
-              color: scheme.onTertiaryContainer,
-            ),
-            Text(
-              '$count',
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                fontWeight: FontWeight.w900,
+      child: Semantics(
+        liveRegion: true,
+        label: '${t.jam.countIn} $count',
+        child: SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AppText(
+                t.jam.countIn,
+                variant: AppTextVariant.titleLarge,
                 color: scheme.onTertiaryContainer,
               ),
-            ),
-          ],
+              Text(
+                '$count',
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: scheme.onTertiaryContainer,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

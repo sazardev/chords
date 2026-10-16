@@ -126,8 +126,8 @@ class JamController extends ChangeNotifier {
     _halt();
     final int run = ++_run;
     final JamTrack track = _transposed(base);
-    _config = _settings.config;
-    final BandArranger arranger = BandArranger(track, _config);
+    final BandConfig config = _config = _settings.config;
+    final BandArranger arranger = BandArranger(track, config);
     final bool audible = _state.mode == JamMode.backing;
     _state = _state.copyWith(
       track: track,
@@ -143,23 +143,28 @@ class JamController extends ChangeNotifier {
     );
     notifyListeners();
     if (audible) {
-      await _band.prepare(arranger, _config, onProgress: _loading(run));
+      await _band.prepare(arranger, config, onProgress: _loading(run));
     } else if (!await _scoring.open()) {
       _state = _state.copyWith(micProblem: true);
     }
     if (run != _run) {
       return;
     }
-    final bool counting = _config.countInBars > 0;
+    // Si se tocaron los ajustes mientras cargaba, la banda lee los nuevos.
+    final BandConfig live = _config;
+    final BandArranger score = live == config
+        ? arranger
+        : BandArranger(track, live);
+    final bool counting = live.countInBars > 0;
     _state = _state.copyWith(
       phase: counting ? JamPhase.countIn : JamPhase.playing,
-      countdown: counting ? track.strum.beatsPerBar * _config.countInBars : 0,
+      countdown: counting ? track.strum.beatsPerBar * live.countInBars : 0,
     );
     notifyListeners();
     _session.start(
       track: track,
-      arranger: arranger,
-      config: _config,
+      arranger: score,
+      config: live,
       audible: audible,
     );
   }
@@ -184,6 +189,7 @@ class JamController extends ChangeNotifier {
   /// Sale de la pantalla: corta el reloj, la banda y el micrófono sin avisar.
   void leave() {
     _halt();
+    unawaited(_band.release());
     _state = _state.copyWith(phase: JamPhase.setup);
   }
 

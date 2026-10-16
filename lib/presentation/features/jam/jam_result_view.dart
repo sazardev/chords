@@ -51,10 +51,13 @@ class _ResultCard extends StatelessWidget {
       color: scheme.primaryContainer,
       child: Column(
         children: <Widget>[
-          AppText(
-            t.jam.resultTitle,
-            variant: AppTextVariant.headlineMedium,
-            color: ink,
+          Semantics(
+            header: true,
+            child: AppText(
+              t.jam.resultTitle,
+              variant: AppTextVariant.headlineMedium,
+              color: ink,
+            ),
           ),
           const SizedBox(height: 8),
           if (scored)

@@ -14,6 +14,7 @@ import 'package:chords/domain/band/presets/drum_fills.dart';
 /// piano con comping.
 const BandPreset kJazzPreset = BandPreset(
   id: 'jazz',
+  trim: 0.64,
   baseStrum: 'D-D-D-D-',
   kit: DrumKit.jazz,
   bassKind: BassKind.upright,
@@ -46,6 +47,7 @@ const BandPreset kJazzPreset = BandPreset(
 /// guitarra y piano eléctrico.
 const BandPreset kFunkPreset = BandPreset(
   id: 'funk',
+  trim: 0.42,
   baseStrum: 'DUDUDUDU',
   guitarKind: GuitarKind.clean,
   keysKind: KeysKind.rhodes,
@@ -76,6 +78,7 @@ const BandPreset kFunkPreset = BandPreset(
 /// cuerdas.
 const BandPreset kDiscoPreset = BandPreset(
   id: 'disco',
+  trim: 0.4,
   baseStrum: 'DUDUDUDU',
   guitarKind: GuitarKind.clean,
   keysKind: KeysKind.pad,
@@ -109,6 +112,7 @@ const BandPreset kDiscoPreset = BandPreset(
 /// skank de guitarra y órgano "bubble".
 const BandPreset kReggaePreset = BandPreset(
   id: 'reggae',
+  trim: 0.66,
   baseStrum: '--D---D-',
   guitarKind: GuitarKind.clean,
   keysKind: KeysKind.organ,
@@ -137,6 +141,7 @@ const BandPreset kReggaePreset = BandPreset(
 /// rápida.
 const BandPreset kSkaPreset = BandPreset(
   id: 'ska',
+  trim: 0.39,
   baseStrum: '-U-U-U-U',
   guitarKind: GuitarKind.clean,
   punch: 0.95,
@@ -162,6 +167,7 @@ const BandPreset kSkaPreset = BandPreset(
 /// nailon.
 const BandPreset kReggaetonPreset = BandPreset(
   id: 'reggaeton',
+  trim: 0.48,
   baseStrum: 'D-D-D-D-',
   kit: DrumKit.electronic,
   bassKind: BassKind.synth,
@@ -194,6 +200,7 @@ const BandPreset kReggaetonPreset = BandPreset(
 /// eléctrico y guitarra limpia.
 const BandPreset kLofiPreset = BandPreset(
   id: 'lofi',
+  trim: 0.89,
   baseStrum: 'D-------',
   bassKind: BassKind.synth,
   guitarKind: GuitarKind.clean,

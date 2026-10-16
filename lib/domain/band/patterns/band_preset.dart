@@ -36,6 +36,7 @@ class BandPreset {
     this.loopAccent = DrumVoice.crash,
     this.fillEvery = 4,
     this.punch = 1,
+    this.trim = 1,
   });
 
   /// Identificador del género (`rock`).
@@ -99,6 +100,11 @@ class BandPreset {
 
   /// Fuerza general de la banda en el género (0-1).
   final double punch;
+
+  /// Ganancia final que compensa lo densa que es la banda del género: las
+  /// de rock o metal suman más voces fuertes que las de bossa y, sin ella,
+  /// saturarían la salida.
+  final double trim;
 
   /// Ritmo de batería para un compás de [beats] pulsos.
   DrumGroove drumsFor(int beats) =>

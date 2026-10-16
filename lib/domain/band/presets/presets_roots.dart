@@ -14,6 +14,7 @@ import 'package:chords/domain/band/presets/drum_fills.dart';
 /// órgano.
 const BandPreset kBluesPreset = BandPreset(
   id: 'blues',
+  trim: 0.49,
   baseStrum: 'D-UD-UD-',
   guitarKind: GuitarKind.clean,
   keysKind: KeysKind.organ,
@@ -42,6 +43,7 @@ const BandPreset kBluesPreset = BandPreset(
 /// Country: tren de caja, bajo de "boom-chick" y acústica.
 const BandPreset kCountryPreset = BandPreset(
   id: 'country',
+  trim: 0.5,
   baseStrum: 'B-D-B-D-',
   swing: 0.1,
   punch: 0.88,
@@ -66,6 +68,7 @@ const BandPreset kCountryPreset = BandPreset(
 /// Folk: batería de salón, shaker y acústica con bajo caminante suave.
 const BandPreset kFolkPreset = BandPreset(
   id: 'folk',
+  trim: 0.63,
   baseStrum: 'D-D-D-D-',
   bassKind: BassKind.upright,
   punch: 0.72,
@@ -92,6 +95,7 @@ const BandPreset kFolkPreset = BandPreset(
 /// Gospel: palmas en el dos y el cuatro, órgano y swing ligero.
 const BandPreset kGospelPreset = BandPreset(
   id: 'gospel',
+  trim: 0.43,
   baseStrum: 'D-D-D-D-',
   keysKind: KeysKind.organ,
   swing: 0.3,
@@ -120,6 +124,7 @@ const BandPreset kGospelPreset = BandPreset(
 /// Soul: groove de Motown, pandereta, piano eléctrico y metales cortos.
 const BandPreset kSoulPreset = BandPreset(
   id: 'soul',
+  trim: 0.44,
   baseStrum: 'D-D-D-D-',
   guitarKind: GuitarKind.clean,
   keysKind: KeysKind.rhodes,
@@ -151,6 +156,7 @@ const BandPreset kSoulPreset = BandPreset(
 /// Balada: batería suave con aro, bajo largo, acústica y cuerdas.
 const BandPreset kBalladPreset = BandPreset(
   id: 'ballad',
+  trim: 0.64,
   baseStrum: 'D-------',
   keysKind: KeysKind.pad,
   punch: 0.7,

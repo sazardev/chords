@@ -13,6 +13,7 @@ import 'package:chords/domain/band/presets/drum_fills.dart';
 /// Pop: batería de estudio, bajo con los dedos, acústica y piano.
 const BandPreset kPopPreset = BandPreset(
   id: 'pop',
+  trim: 0.46,
   baseStrum: 'D-DU-UDU',
   punch: 0.9,
   drums: DrumGroove(
@@ -39,6 +40,7 @@ const BandPreset kPopPreset = BandPreset(
 /// Rock: caja con pegada, platos abiertos, bajo de púa y guitarra saturada.
 const BandPreset kRockPreset = BandPreset(
   id: 'rock',
+  trim: 0.42,
   baseStrum: 'DUDUDUDU',
   bassKind: BassKind.pick,
   guitarKind: GuitarKind.distorted,
@@ -63,6 +65,7 @@ const BandPreset kRockPreset = BandPreset(
 /// Punk: rápido y recto, todo a golpe de bajada y platos a corcheas.
 const BandPreset kPunkPreset = BandPreset(
   id: 'punk',
+  trim: 0.35,
   baseStrum: 'DUDUDUDU',
   bassKind: BassKind.pick,
   guitarKind: GuitarKind.distorted,
@@ -88,6 +91,7 @@ const BandPreset kPunkPreset = BandPreset(
 /// Metal: doble bombo a galope, platos y guitarra con palm-mute.
 const BandPreset kMetalPreset = BandPreset(
   id: 'metal',
+  trim: 0.33,
   baseStrum: 'DUDUDUDU',
   bassKind: BassKind.pick,
   guitarKind: GuitarKind.distorted,
@@ -113,6 +117,7 @@ const BandPreset kMetalPreset = BandPreset(
 /// Grunge: batería suelta y pesada, bajo grave y guitarra sucia.
 const BandPreset kGrungePreset = BandPreset(
   id: 'grunge',
+  trim: 0.43,
   baseStrum: 'DUDUDUDU',
   bassKind: BassKind.pick,
   guitarKind: GuitarKind.distorted,
@@ -139,6 +144,7 @@ const BandPreset kGrungePreset = BandPreset(
 /// Indie: batería abierta, guitarra limpia y teclado eléctrico.
 const BandPreset kIndiePreset = BandPreset(
   id: 'indie',
+  trim: 0.48,
   baseStrum: 'D-DU-UDU',
   guitarKind: GuitarKind.clean,
   keysKind: KeysKind.rhodes,
