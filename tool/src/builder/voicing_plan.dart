@@ -37,7 +37,7 @@ class VoicingPlan {
     final int tones = quality.intervals.length;
     final int required = quality.requiredIntervals.length;
     return switch (kind) {
-      VoicingKind.triad => tones == 3,
+      VoicingKind.triad => tones == 3 || quality == ChordQuality.power,
       VoicingKind.shell =>
         tones >= 4 && required == 3 && quality.requiredIntervals.contains(0),
       VoicingKind.fourString => tones >= 4 && required <= 4,

@@ -38,7 +38,7 @@ enum LearningLevel {
     if (level <= 2 && _isEasy(quality)) {
       return LearningLevel.second;
     }
-    if (level == 3) {
+    if (level == 3 && _isCommon(quality)) {
       return LearningLevel.third;
     }
     return _isColor(quality) ? LearningLevel.fourth : LearningLevel.fifth;
@@ -46,6 +46,13 @@ enum LearningLevel {
 
   static bool _isBasic(ChordQuality quality) =>
       quality == ChordQuality.major || quality == ChordQuality.minor;
+
+  /// Calidades de uso corriente: las extendidas y las alteradas, aunque se
+  /// toquen con un cejillo, son ya de jazz.
+  static bool _isCommon(ChordQuality quality) =>
+      quality.popularity >= 3 &&
+      quality.family != ChordFamily.extended &&
+      quality.family != ChordFamily.altered;
 
   /// Triadas de siempre (con mini cejilla incluida), séptimas y quintas.
   static bool _isEasy(ChordQuality quality) =>

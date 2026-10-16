@@ -629,7 +629,7 @@ class Translations$onboarding$en extends Translations$onboarding$es {
   String get slideOneTitle => 'Every chord, every position';
   @override
   String get slideOneBody =>
-      '156 chords and 561 verified positions, from the essential open shapes to jazz voicings.';
+      '396 chords (33 types on 12 notes) and over 3,400 verified positions, from the essential open shapes to jazz voicings.';
   @override
   String get slideTwoTitle => 'Listen to every chord and its arpeggio';
   @override
@@ -3236,7 +3236,7 @@ extension on TranslationsEn {
           'settings.cli' => 'Development CLI',
           'settings.cliCommand' => 'dart run bin/chords_cli.dart db generate',
           'onboarding.slideOneTitle' => 'Every chord, every position',
-          'onboarding.slideOneBody' => '156 chords and 561 verified positions, from the essential open shapes to jazz voicings.',
+          'onboarding.slideOneBody' => '396 chords (33 types on 12 notes) and over 3,400 verified positions, from the essential open shapes to jazz voicings.',
           'onboarding.slideTwoTitle' =>
             'Listen to every chord and its arpeggio',
           'onboarding.slideTwoBody' => 'We synthesize each string so you can recognise the sound before playing.',

@@ -96,28 +96,8 @@ class _ChordsPageState extends State<ChordsPage> {
     final bool mirror = context.select<SettingsController, bool>(
       (SettingsController settings) => settings.mirrorChords,
     );
-    final int advanced = _advancedFilterCount(filters.filters);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.chords.title),
-        actions: <Widget>[
-          IconButton(
-            tooltip: t.chords.filters,
-            icon: Badge(
-              isLabelVisible: advanced > 0,
-              label: Text('$advanced'),
-              child: const Icon(Icons.tune_rounded),
-            ),
-            onPressed: () => unawaited(showChordFiltersSheet(context)),
-          ),
-          ChordSortButton(selected: filters.sort, onSelected: filters.setSort),
-          IconButton(
-            tooltip: t.chordTheory.pickChord,
-            icon: const Icon(Icons.apps_rounded),
-            onPressed: () => unawaited(showChordQuickPickSheet(context)),
-          ),
-        ],
-      ),
+      appBar: _appBar(t, filters),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -150,6 +130,31 @@ class _ChordsPageState extends State<ChordsPage> {
           ],
         ),
       ),
+    );
+  }
+
+  /// Barra superior: filtros avanzados, orden y selector rápido.
+  PreferredSizeWidget _appBar(Translations t, ChordFilterController filters) {
+    final int advanced = _advancedFilterCount(filters.filters);
+    return AppBar(
+      title: Text(t.chords.title),
+      actions: <Widget>[
+        IconButton(
+          tooltip: t.chords.filters,
+          icon: Badge(
+            isLabelVisible: advanced > 0,
+            label: Text('$advanced'),
+            child: const Icon(Icons.tune_rounded),
+          ),
+          onPressed: () => unawaited(showChordFiltersSheet(context)),
+        ),
+        ChordSortButton(selected: filters.sort, onSelected: filters.setSort),
+        IconButton(
+          tooltip: t.chordTheory.pickChord,
+          icon: const Icon(Icons.apps_rounded),
+          onPressed: () => unawaited(showChordQuickPickSheet(context)),
+        ),
+      ],
     );
   }
 

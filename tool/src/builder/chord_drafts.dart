@@ -25,10 +25,6 @@ const int kMinSearchedVariants = 3;
 /// Dificultad mínima de un voicing buscado: no son los acordes de siempre.
 const int kSearchedFloor = 2;
 
-/// Lo que pesa de más un voicing buscado frente a una forma del catálogo a
-/// igual dificultad al ordenar: la forma de siempre se aprende antes.
-const double kSearchedPenalty = 1.5;
-
 /// Posiciones de [root] y [quality] sin repetir y en orden de aprendizaje.
 ///
 /// Las formas del catálogo (curadas a mano) entran siempre; los voicings que
@@ -58,12 +54,21 @@ VariantDraft _rate(VariantDraft draft, ChordQuality quality) {
   return playable == null ? draft : rated(playable, floor: floor);
 }
 
-/// Orden de aprendizaje: dificultad (con el recargo de los voicings
-/// buscados), formas antes que voicings y traste más bajo primero.
+/// Orden de aprendizaje: primero las formas de siempre (de la más fácil a la
+/// más difícil) y después los voicings buscados, también por dificultad.
+///
+/// La primera es la recomendada. Dentro de cada dificultad van antes las
+/// tríadas que los shells y los drops, y las de traste más bajo.
 int byLearningOrder(VariantDraft a, VariantDraft b) {
-  final int byWeight = _weight(a).compareTo(_weight(b));
-  if (byWeight != 0) {
-    return byWeight;
+  final int byGroup = (a.kind == VariantKind.shape ? 0 : 1).compareTo(
+    b.kind == VariantKind.shape ? 0 : 1,
+  );
+  if (byGroup != 0) {
+    return byGroup;
+  }
+  final int byDifficulty = a.difficulty.level.compareTo(b.difficulty.level);
+  if (byDifficulty != 0) {
+    return byDifficulty;
   }
   final int byKind = _kindRank(a).compareTo(_kindRank(b));
   if (byKind != 0) {
@@ -72,10 +77,6 @@ int byLearningOrder(VariantDraft a, VariantDraft b) {
   final int byFret = _lowestFret(a).compareTo(_lowestFret(b));
   return byFret != 0 ? byFret : a.id.compareTo(b.id);
 }
-
-double _weight(VariantDraft draft) =>
-    draft.difficulty.level +
-    (draft.kind == VariantKind.shape ? 0 : kSearchedPenalty);
 
 /// 0 formas del catálogo, 1 tríadas, 2 shells y voicings buscados.
 int _kindRank(VariantDraft draft) => switch (draft.kind) {

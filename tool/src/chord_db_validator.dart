@@ -192,7 +192,7 @@ void _validateChordVariants(
       );
     }
   }
-  issues.addAll(validateFirstIsEasiest(id, variants));
+  issues.addAll(validateOrder(id, variants));
 }
 
 /// Comprueba que existan las 12 raíces con todas las calidades.

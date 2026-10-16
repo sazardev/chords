@@ -6,10 +6,12 @@
 library;
 
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
+import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/l10n/minigame_labels.dart';
 
 /// Nombre traducido de un género musical.
 String genreLabel(Translations translations, String genre) => switch (genre) {
@@ -51,6 +53,12 @@ String qualityLabel(Translations translations, ChordQuality quality) =>
       ChordQuality.ninth => translations.data.quality.ninth,
       _ => translations.chordTheory.qualityNames[quality.id] ?? quality.label,
     };
+
+/// Nombre completo de un acorde en el idioma activo (`Do Séptima menor`,
+/// `C Minor seventh`).
+String chordDisplayName(Translations translations, Chord chord) =>
+    '${noteLabel(translations, chord.root.pitchClass)} '
+    '${qualityLabel(translations, chord.quality)}';
 
 /// Descripción traducida de una calidad de acorde.
 String qualityDescription(

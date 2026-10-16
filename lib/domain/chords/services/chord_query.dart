@@ -7,6 +7,10 @@ import 'package:chords/domain/chords/services/note_name_parser.dart';
 import 'package:chords/domain/chords/services/search_text.dart';
 import 'package:meta/meta.dart';
 
+/// Longitud mínima del texto para que también se busque en los géneros y en
+/// el nombre de las posiciones: con una o dos letras saldría todo.
+const int kMinWideSearch = 3;
+
 /// Búsqueda de acordes ya interpretada.
 ///
 /// Entiende el cifrado (`Cm7`, `F#maj9`, `Bb7`), los nombres en español
@@ -120,13 +124,23 @@ class ChordQuery {
       return 1;
     }
     final String display = normalizeSearchText(chord.displayName);
-    if (display.startsWith(text) || _qualityWords(chord).any(_startsWithText)) {
+    final bool wordMatch =
+        !_isStructured && _qualityWords(chord).any(_startsWithText);
+    if (display.startsWith(text) || wordMatch) {
       return 1;
     }
-    return _haystack(chord).any((String item) => item.contains(text))
+    if (name.contains(text)) {
+      return 2;
+    }
+    final bool looksOnlyAtNames = _isStructured || text.length < kMinWideSearch;
+    return !looksOnlyAtNames &&
+            _haystack(chord).any((String item) => item.contains(text))
         ? 2
         : null;
   }
+
+  /// `true` si el texto se entendió como un acorde o una lista de notas.
+  bool get _isStructured => root != null || notes.isNotEmpty;
 
   bool _startsWithText(String word) => word.startsWith(text);
 

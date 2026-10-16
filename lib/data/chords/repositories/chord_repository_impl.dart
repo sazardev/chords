@@ -95,11 +95,10 @@ class ChordRepositoryImpl implements ChordRepository {
       .toList();
 
   @override
-  List<Chord> chordsByLevel(int level) =>
-      _chords
-          .where((Chord chord) => LearningLevel.of(chord).level == level)
-          .toList()
-        ..sort(_sorter.learning);
+  List<Chord> chordsByLevel(int level) => _sorter.learningOrder(<Chord>[
+    for (final Chord chord in _chords)
+      if (LearningLevel.of(chord).level == level) chord,
+  ]);
 
   @override
   List<Chord> essentialFirst(List<Chord> chords) =>

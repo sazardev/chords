@@ -4,6 +4,7 @@ import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/chords/chord_detail_extras.dart';
 import 'package:chords/presentation/l10n/variant_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/chord_play_button.dart';
@@ -15,17 +16,31 @@ import 'package:flutter/material.dart';
 /// Las posiciones del acorde: las mismas notas en otros trastes, con filtros
 /// por tipo (abiertas, cejilla, inversiones, drop 2…).
 class ChordVariantsSection extends StatelessWidget {
-  /// Crea la sección con el estado de [controller].
-  const ChordVariantsSection({required this.controller, super.key});
+  /// Crea la sección con el estado de [controller] y sus [extras].
+  const ChordVariantsSection({
+    required this.controller,
+    required this.extras,
+    super.key,
+  });
 
-  /// Controlador del detalle.
+  /// Controlador del detalle (posición elegida y sonido).
   final ChordDetailController controller;
+
+  /// Filtro de posiciones del acorde.
+  final ChordDetailExtras extras;
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final Chord chord = controller.chord!;
-    final List<int> visible = controller.visibleVariantIndices;
+    final Chord chord = extras.chord;
+    return ListenableBuilder(
+      listenable: extras,
+      builder: (BuildContext context, Widget? _) => _content(context, t, chord),
+    );
+  }
+
+  Widget _content(BuildContext context, Translations t, Chord chord) {
+    final List<int> visible = extras.visibleIndices;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -39,7 +54,7 @@ class ChordVariantsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        _FilterRow(controller: controller),
+        _FilterRow(extras: extras),
         const SizedBox(height: 4),
         if (visible.isEmpty)
           Padding(
@@ -55,14 +70,14 @@ class ChordVariantsSection extends StatelessWidget {
 
 /// Chips para quedarse solo con un tipo de posición.
 class _FilterRow extends StatelessWidget {
-  const _FilterRow({required this.controller});
+  const _FilterRow({required this.extras});
 
-  final ChordDetailController controller;
+  final ChordDetailExtras extras;
 
   @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final List<String> tags = controller.filterTags;
+    final List<String> tags = extras.availableTags;
     if (tags.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -73,17 +88,16 @@ class _FilterRow extends StatelessWidget {
         children: <Widget>[
           ChoiceChip(
             label: Text(t.chordTheory.filterAll),
-            selected: controller.variantFilter == null,
-            onSelected: (_) => controller.setVariantFilter(null),
+            selected: extras.filter == null,
+            onSelected: (_) => extras.setFilter(null),
           ),
           for (final String tag in tags) ...<Widget>[
             const SizedBox(width: 6),
             ChoiceChip(
               label: Text(t.chordTheory.tags[tag] ?? tag),
-              selected: controller.variantFilter == tag,
-              onSelected: (_) => controller.setVariantFilter(
-                controller.variantFilter == tag ? null : tag,
-              ),
+              selected: extras.filter == tag,
+              onSelected: (_) =>
+                  extras.setFilter(extras.filter == tag ? null : tag),
             ),
           ],
         ],

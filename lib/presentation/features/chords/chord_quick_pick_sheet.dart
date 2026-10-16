@@ -36,38 +36,12 @@ class ChordQuickPickSheet extends StatelessWidget {
     final Translations t = context.t;
     final ChordFilterController filters = context
         .watch<ChordFilterController>();
-    final ChordsController chords = context.watch<ChordsController>();
-    final ChordRoot? root = filters.filters.root;
-    final ChordQuality? quality = filters.filters.quality;
-    final Chord? picked = root == null || quality == null
-        ? null
-        : _find(chords.allChords, root, quality);
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 12, 0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: AppText(
-                    t.chordTheory.pickChord,
-                    variant: AppTextVariant.titleLarge,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    filters
-                      ..selectRoot(null)
-                      ..selectQuality(null);
-                  },
-                  child: Text(t.chordTheory.pickClear),
-                ),
-              ],
-            ),
-          ),
+          _Header(filters: filters),
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
@@ -83,31 +57,83 @@ class ChordQuickPickSheet extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      t.chordTheory.pickShow(n: chords.visibleChords.length),
-                    ),
-                  ),
-                ),
-                if (picked != null) ...<Widget>[
-                  const SizedBox(width: 8),
-                  FilledButton.tonal(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      unawaited(context.push(chordDetailRoute(picked.id)));
-                    },
-                    child: Text(t.chordTheory.pickOpen(name: picked.name)),
-                  ),
-                ],
-              ],
+          _Footer(filters: filters),
+        ],
+      ),
+    );
+  }
+}
+
+/// Título de la hoja y botón para quitar la selección.
+class _Header extends StatelessWidget {
+  const _Header({required this.filters});
+
+  final ChordFilterController filters;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 12, 0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: AppText(
+              t.chordTheory.pickChord,
+              variant: AppTextVariant.titleLarge,
             ),
           ),
+          TextButton(
+            onPressed: () {
+              filters
+                ..selectRoot(null)
+                ..selectQuality(null);
+            },
+            child: Text(t.chordTheory.pickClear),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Botones de abajo: ver los acordes que quedan y abrir la ficha elegida.
+class _Footer extends StatelessWidget {
+  const _Footer({required this.filters});
+
+  final ChordFilterController filters;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final ChordsController chords = context.watch<ChordsController>();
+    final ChordRoot? root = filters.filters.root;
+    final ChordQuality? quality = filters.filters.quality;
+    final Chord? picked = root == null || quality == null
+        ? null
+        : _find(chords.allChords, root, quality);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: FilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                t.chordTheory.pickShow(n: chords.visibleChords.length),
+              ),
+            ),
+          ),
+          if (picked != null) ...<Widget>[
+            const SizedBox(width: 8),
+            FilledButton.tonal(
+              onPressed: () {
+                Navigator.of(context).pop();
+                unawaited(context.push(chordDetailRoute(picked.id)));
+              },
+              child: Text(t.chordTheory.pickOpen(name: picked.name)),
+            ),
+          ],
         ],
       ),
     );

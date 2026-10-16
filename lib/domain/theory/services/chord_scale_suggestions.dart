@@ -31,8 +31,8 @@ kChordScales = <ChordQuality, List<ScaleType>>{
     ScaleType.majorPentatonic,
   ],
   ChordQuality.suspendedFourth: <ScaleType>[
+    ScaleType.suspendedPentatonic,
     ScaleType.mixolydian,
-    ScaleType.majorPentatonic,
   ],
   ChordQuality.suspendedSecond: <ScaleType>[
     ScaleType.majorPentatonic,
@@ -78,11 +78,11 @@ kChordScales = <ChordQuality, List<ScaleType>>{
   ChordQuality.thirteenth: <ScaleType>[ScaleType.mixolydian, ScaleType.blues],
   ChordQuality.sevenSus4: <ScaleType>[
     ScaleType.mixolydian,
-    ScaleType.minorPentatonic,
+    ScaleType.suspendedPentatonic,
   ],
   ChordQuality.nineSus4: <ScaleType>[
     ScaleType.mixolydian,
-    ScaleType.minorPentatonic,
+    ScaleType.suspendedPentatonic,
   ],
   ChordQuality.minorMajorSeven: <ScaleType>[
     ScaleType.melodicMinor,

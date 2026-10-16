@@ -746,9 +746,9 @@ class Translations$onboarding$es {
   /// es: 'Todos los acordes, todas las posiciones'
   String get slideOneTitle => 'Todos los acordes, todas las posiciones';
 
-  /// es: '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.'
+  /// es: '396 acordes (33 tipos en 12 notas) y más de 3.400 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.'
   String get slideOneBody =>
-      '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.';
+      '396 acordes (33 tipos en 12 notas) y más de 3.400 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.';
 
   /// es: 'Escucha cada acorde y su arpegio'
   String get slideTwoTitle => 'Escucha cada acorde y su arpegio';
@@ -3823,7 +3823,7 @@ extension on Translations {
           'settings.cliCommand' => 'dart run bin/chords_cli.dart db generate',
           'onboarding.slideOneTitle' =>
             'Todos los acordes, todas las posiciones',
-          'onboarding.slideOneBody' => '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.',
+          'onboarding.slideOneBody' => '396 acordes (33 tipos en 12 notas) y más de 3.400 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.',
           'onboarding.slideTwoTitle' => 'Escucha cada acorde y su arpegio',
           'onboarding.slideTwoBody' => 'Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.',
           'onboarding.slideThreeTitle' => 'Aprende por niveles y practica',

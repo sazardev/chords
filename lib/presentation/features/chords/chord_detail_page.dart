@@ -3,10 +3,10 @@ import 'dart:async' show unawaited;
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
-import 'package:chords/domain/chords/services/chord_insights.dart';
 import 'package:chords/domain/profile/entities/playing_style.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/chords/chord_detail_extras.dart';
 import 'package:chords/presentation/features/chords/chord_notes_section.dart';
 import 'package:chords/presentation/features/chords/chord_position_guide.dart';
 import 'package:chords/presentation/features/chords/chord_relatives_section.dart';
@@ -154,7 +154,7 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
   Widget _chordBody(ChordDetailController controller, bool mirror) {
     final Translations t = context.t;
     final Chord chord = controller.chord!;
-    final ChordInsights? insights = controller.insights;
+    final ChordDetailExtras? extras = controller.extras;
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
       children: <Widget>[
@@ -172,17 +172,17 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: ChordPositionGuide(variant: controller.selectedVariant!),
         ),
-        if (insights != null)
+        if (extras != null)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: ChordNotesSection(chord: chord, insights: insights),
+            child: ChordNotesSection(chord: chord, insights: extras.insights),
           ),
         SectionHeader(title: t.chordDetail.arpeggios),
         _ArpeggioRow(controller: controller),
-        ChordVariantsSection(controller: controller),
-        if (insights != null) ...<Widget>[
-          ChordRelativesSection(chord: chord, insights: insights),
-          ChordUsageSection(chord: chord, insights: insights),
+        if (extras != null) ...<Widget>[
+          ChordVariantsSection(controller: controller, extras: extras),
+          ChordRelativesSection(chord: chord, insights: extras.insights),
+          ChordUsageSection(chord: chord, insights: extras.insights),
         ],
       ],
     );
@@ -213,7 +213,7 @@ class _ChordSummary extends StatelessWidget {
         children: <Widget>[
           AppText(chord.name, variant: AppTextVariant.displayLarge),
           AppText(
-            chord.displayName,
+            chordDisplayName(t, chord),
             variant: AppTextVariant.bodyLarge,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -282,7 +282,8 @@ class _ArpeggioRow extends StatelessWidget {
                   level: pattern.difficulty,
                 ),
               ),
-              onPressed: () => unawaited(controller.playArpeggio(pattern)),
+              onPressed: () =>
+                  unawaited(controller.playSelected(arpeggio: pattern)),
             ),
             const SizedBox(width: 8),
           ],

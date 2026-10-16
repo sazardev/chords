@@ -15,7 +15,7 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fingersOpen: <int>[0, 0, 0, 1, 3, 2],
     fingersBarre: <int>[0, 0, 1, 3, 4, 2],
     difficultyOpen: 1,
-    difficultyBarre: 4,
+    difficultyBarre: 3,
     tags: <String>['movable', 'upper'],
   ),
   MovableShapeSpec(
@@ -27,7 +27,7 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fingersOpen: <int>[0, 0, 0, 2, 3, 1],
     fingersBarre: <int>[0, 0, 1, 2, 4, 1],
     difficultyOpen: 1,
-    difficultyBarre: 4,
+    difficultyBarre: 3,
     tags: <String>['movable', 'upper'],
   ),
   MovableShapeSpec(
@@ -38,8 +38,8 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fretOffsets: <int?>[null, null, 0, 2, 3, 3],
     fingersOpen: <int>[0, 0, 0, 1, 3, 4],
     fingersBarre: <int>[0, 0, 1, 2, 3, 4],
-    difficultyOpen: 2,
-    difficultyBarre: 4,
+    difficultyOpen: 1,
+    difficultyBarre: 3,
     tags: <String>['movable', 'upper'],
   ),
   MovableShapeSpec(
@@ -50,8 +50,8 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fretOffsets: <int?>[null, null, 0, 2, 1, 1],
     fingersOpen: <int>[0, 0, 0, 2, 1, 1],
     fingersBarre: <int>[0, 0, 1, 3, 1, 2],
-    difficultyOpen: 3,
-    difficultyBarre: 5,
+    difficultyOpen: 2,
+    difficultyBarre: 3,
     tags: <String>['movable', 'jazz'],
   ),
   // Formas de Do y Sol (raíz con offset sobre cuerdas intermedias).
@@ -64,7 +64,7 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fingersOpen: <int>[0, 3, 2, 0, 1, 0],
     fingersBarre: <int>[0, 3, 2, 1, 4, 1],
     difficultyOpen: 1,
-    difficultyBarre: 4,
+    difficultyBarre: 3,
     tags: <String>['movable'],
   ),
   MovableShapeSpec(
@@ -76,7 +76,7 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fingersOpen: <int>[2, 1, 0, 0, 0, 3],
     fingersBarre: <int>[3, 1, 1, 1, 1, 4],
     difficultyOpen: 1,
-    difficultyBarre: 5,
+    difficultyBarre: 4,
     tags: <String>['movable'],
   ),
   MovableShapeSpec(
@@ -88,7 +88,7 @@ const List<MovableShapeSpec> kFourthStringShapes = <MovableShapeSpec>[
     fingersOpen: <int>[3, 2, 0, 0, 0, 1],
     fingersBarre: <int>[3, 1, 1, 1, 1, 1],
     difficultyOpen: 1,
-    difficultyBarre: 4,
+    difficultyBarre: 3,
     tags: <String>['movable', 'dominant'],
   ),
 ];

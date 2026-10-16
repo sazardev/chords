@@ -2,13 +2,10 @@
 /// cobertura del banco entero (no una posición suelta).
 library;
 
-import 'dart:math' as math;
-
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/variant_identity.dart';
 
-import 'builder/chord_drafts.dart' show kSearchedPenalty;
 import 'validation_report.dart';
 
 /// Detecta posiciones con identificador o trastes repetidos en un acorde.
@@ -29,33 +26,37 @@ class VariantSetChecker {
       ];
 }
 
-/// La primera posición es la recomendada: debe ser la más fácil, contando que
-/// un voicing buscado pesa [kSearchedPenalty] más que una forma de siempre.
-List<ValidationIssue> validateFirstIsEasiest(
-  String id,
-  List<Object?> variants,
-) {
-  final List<double> weights = <double>[
-    for (final Object? v in variants)
-      if (v is Map<String, Object?> &&
-          v['difficulty'] is int &&
-          v['id'] is String)
-        _weight(v['difficulty']! as int, v['id']! as String),
-  ];
-  if (weights.isEmpty || weights.first == weights.reduce(math.min)) {
-    return const <ValidationIssue>[];
+/// Las posiciones van ordenadas: primero las formas de siempre y luego los
+/// voicings, cada grupo de la más fácil a la más difícil. La primera es la
+/// recomendada.
+List<ValidationIssue> validateOrder(String id, List<Object?> variants) {
+  int previousGroup = 0;
+  int previousLevel = 0;
+  for (final Object? v in variants) {
+    if (v is! Map<String, Object?> ||
+        v['difficulty'] is! int ||
+        v['id'] is! String) {
+      continue;
+    }
+    final int group = VariantIdentity.parse(v['id']! as String).isShape ? 0 : 1;
+    final int level = v['difficulty']! as int;
+    if (group < previousGroup ||
+        (group == previousGroup && level < previousLevel)) {
+      return <ValidationIssue>[
+        ValidationIssue(
+          '$id.variants',
+          'las posiciones no van de fácil a difícil',
+        ),
+      ];
+    }
+    if (group != previousGroup) {
+      previousLevel = 0;
+    }
+    previousGroup = group;
+    previousLevel = level;
   }
-  return <ValidationIssue>[
-    ValidationIssue(
-      '$id.variants',
-      'la primera posición no es la más fácil (pesa ${weights.first})',
-    ),
-  ];
+  return const <ValidationIssue>[];
 }
-
-double _weight(int difficulty, String variantId) =>
-    difficulty +
-    (VariantIdentity.parse(variantId).isShape ? 0 : kSearchedPenalty);
 
 /// Debe existir cada raíz con cada calidad y los géneros han de ser conocidos.
 List<ValidationIssue> validateCoverage(

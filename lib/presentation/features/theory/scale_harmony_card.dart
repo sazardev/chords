@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 /// Acordes que nacen de la escala (tríadas o séptimas) con su grado; al
 /// tocarlos abre la ficha del acorde. Las escalas que no tienen siete notas
 /// no forman acordes por terceras y lo explican.
-class ScaleHarmonyCard extends StatefulWidget {
+class ScaleHarmonyCard extends StatelessWidget {
   /// Crea la tarjeta de [scale] en la tónica [tonic].
   const ScaleHarmonyCard({required this.scale, required this.tonic, super.key});
 
@@ -24,16 +24,9 @@ class ScaleHarmonyCard extends StatefulWidget {
   final int tonic;
 
   @override
-  State<ScaleHarmonyCard> createState() => _ScaleHarmonyCardState();
-}
-
-class _ScaleHarmonyCardState extends State<ScaleHarmonyCard> {
-  bool _sevenths = true;
-
-  @override
   Widget build(BuildContext context) {
     final Translations t = context.t;
-    final ScaleHarmony harmony = ScaleHarmony(widget.scale, widget.tonic);
+    final ScaleHarmony harmony = ScaleHarmony(scale, tonic);
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,26 +37,15 @@ class _ScaleHarmonyCardState extends State<ScaleHarmonyCard> {
           ),
           const SizedBox(height: 10),
           if (harmony.hasHarmony) ...<Widget>[
-            SegmentedButton<bool>(
-              segments: <ButtonSegment<bool>>[
-                ButtonSegment<bool>(
-                  value: false,
-                  label: Text(t.scalesPlus.triads),
-                ),
-                ButtonSegment<bool>(
-                  value: true,
-                  label: Text(t.scalesPlus.sevenths),
-                ),
-              ],
-              selected: <bool>{_sevenths},
-              onSelectionChanged: (Set<bool> value) =>
-                  setState(() => _sevenths = value.first),
+            _Row(label: t.scalesPlus.triads, chords: harmony.chords()),
+            const SizedBox(height: 12),
+            _Row(
+              label: t.scalesPlus.sevenths,
+              chords: harmony.chords(sevenths: true),
             ),
-            const SizedBox(height: 10),
-            _ChordChips(chords: harmony.chords(sevenths: _sevenths)),
           ] else
             AppText(
-              t.scalesPlus.noHarmony(n: widget.scale.length),
+              t.scalesPlus.noHarmony(n: scale.length),
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               maxLines: 3,
             ),
@@ -71,6 +53,28 @@ class _ScaleHarmonyCardState extends State<ScaleHarmonyCard> {
       ),
     );
   }
+}
+
+/// Un grupo de acordes (tríadas o séptimas) con su título.
+class _Row extends StatelessWidget {
+  const _Row({required this.label, required this.chords});
+
+  final String label;
+  final List<DiatonicChord> chords;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      AppText(
+        label,
+        variant: AppTextVariant.labelLarge,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+      const SizedBox(height: 6),
+      _ChordChips(chords: chords),
+    ],
+  );
 }
 
 class _ChordChips extends StatelessWidget {

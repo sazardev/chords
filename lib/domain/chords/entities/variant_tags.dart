@@ -16,8 +16,27 @@ List<String> variantTags({
   required int rootPitchClass,
   required List<int> frets,
   required bool hasBarre,
-}) {
+}) => <String>[
+  ..._kindTags(identity.kind),
+  ..._bassTags(rootPitchClass, frets),
+  ..._shapeTags(frets, hasBarre: hasBarre),
+];
+
+/// `inversion` y `upper` según la cuerda y la nota más graves que suenan.
+List<String> _bassTags(int rootPitchClass, List<int> frets) {
   final List<int> sounding = soundingStrings(frets);
+  if (sounding.isEmpty) {
+    return const <String>[];
+  }
+  final int bass = sounding.first;
+  return <String>[
+    if (pitchClassOfFret(bass, frets[bass]) != rootPitchClass) 'inversion',
+    if (bass >= 3) 'upper',
+  ];
+}
+
+/// `open`, `barre`, `movable` y `high-position` según los trastes.
+List<String> _shapeTags(List<int> frets, {required bool hasBarre}) {
   final List<int> pressed = <int>[
     for (final int fret in frets)
       if (fret > 0) fret,
@@ -26,13 +45,7 @@ List<String> variantTags({
       ? 0
       : pressed.reduce((int a, int b) => a < b ? a : b);
   final bool hasOpen = frets.any((int f) => f == 0);
-  final bool inversion =
-      sounding.isNotEmpty &&
-      pitchClassOfFret(sounding.first, frets[sounding.first]) != rootPitchClass;
   return <String>[
-    ..._kindTags(identity.kind),
-    if (inversion) 'inversion',
-    if (sounding.isNotEmpty && sounding.first >= 3) 'upper',
     if (!hasBarre && hasOpen && lowest <= 4) 'open',
     if (hasBarre) 'barre',
     if (!hasOpen) 'movable',

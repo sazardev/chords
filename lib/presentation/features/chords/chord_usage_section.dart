@@ -172,9 +172,12 @@ class _ScaleCard extends StatelessWidget {
             children: <Widget>[
               const Icon(Icons.stairs_rounded, size: 18),
               const SizedBox(width: 6),
-              AppText(
-                t.scalesPlus.openInExplorer,
-                variant: AppTextVariant.labelLarge,
+              Expanded(
+                child: AppText(
+                  t.scalesPlus.openInExplorer,
+                  variant: AppTextVariant.labelLarge,
+                  maxLines: 2,
+                ),
               ),
             ],
           ),

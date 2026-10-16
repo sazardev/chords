@@ -5,6 +5,30 @@ import 'package:chords/presentation/l10n/theory_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:flutter/material.dart';
 
+/// Abre el selector de escalas en una hoja y cierra al elegir.
+Future<void> showScalePickerSheet(
+  BuildContext context, {
+  required ScaleType selected,
+  required ValueChanged<ScaleType> onSelected,
+}) => showModalBottomSheet<void>(
+  context: context,
+  useRootNavigator: true,
+  isScrollControlled: true,
+  showDragHandle: true,
+  builder: (BuildContext sheet) => SafeArea(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      child: ScalePicker(
+        selected: selected,
+        onSelected: (ScaleType scale) {
+          Navigator.of(sheet).pop();
+          onSelected(scale);
+        },
+      ),
+    ),
+  ),
+);
+
 /// Selector de escalas por familias: primero el bloque (mayor y modos,
 /// menores, pentatónicas, exóticas) y debajo sus secciones y escalas.
 ///
@@ -47,20 +71,17 @@ class _ScalePickerState extends State<ScalePicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: <Widget>[
-              for (final ScaleGroup group in ScaleGroup.values) ...<Widget>[
-                if (group != ScaleGroup.major) const SizedBox(width: 6),
-                ChoiceChip(
-                  label: Text(scaleGroupName(t, group)),
-                  selected: group == _group,
-                  onSelected: (_) => setState(() => _group = group),
-                ),
-              ],
-            ],
-          ),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: <Widget>[
+            for (final ScaleGroup group in ScaleGroup.values)
+              ChoiceChip(
+                label: Text(scaleGroupName(t, group)),
+                selected: group == _group,
+                onSelected: (_) => setState(() => _group = group),
+              ),
+          ],
         ),
         for (final ScaleSection section in sectionsOf(_group))
           _Section(

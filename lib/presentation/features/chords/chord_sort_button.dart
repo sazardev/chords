@@ -31,10 +31,20 @@ class ChordSortButton extends StatelessWidget {
       onSelected: onSelected,
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ChordSort>>[
         for (final ChordSort sort in ChordSort.values)
-          CheckedPopupMenuItem<ChordSort>(
+          PopupMenuItem<ChordSort>(
             value: sort,
-            checked: sort == selected,
-            child: Text(_label(t, sort)),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 24,
+                  child: sort == selected
+                      ? const Icon(Icons.check_rounded, size: 20)
+                      : null,
+                ),
+                const SizedBox(width: 8),
+                Flexible(child: Text(_label(t, sort))),
+              ],
+            ),
           ),
       ],
     );

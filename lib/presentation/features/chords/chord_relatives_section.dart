@@ -82,7 +82,7 @@ class _RelativeChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final Translations t = context.t;
     return Tooltip(
-      message: '${chord.displayName} · ${qualityLabel(t, chord.quality)}',
+      message: chordDisplayName(t, chord),
       child: ActionChip(
         avatar: highlighted
             ? const Icon(Icons.swap_horiz_rounded, size: 18)

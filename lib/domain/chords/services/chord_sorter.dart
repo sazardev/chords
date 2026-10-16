@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/essential_chords.dart';
 
 /// Orden con el que se presenta la lista de acordes.
@@ -54,11 +55,53 @@ class ChordSorter {
     ChordSort.quality => _byQuality,
   };
 
-  /// Orden de estudio: más fácil primero, calidades en orden pedagógico y
-  /// raíces cómodas antes (lo usa el itinerario de aprendizaje).
-  int learning(Chord a, Chord b) => _chain(<int>[
+  /// Orden de estudio de un grupo de acordes: los más fáciles primero y, para
+  /// que la lista tenga variedad, alternando tipos de acorde (una séptima, un
+  /// power chord, un mayor, un menor…) en lugar de agotar un tipo tras otro.
+  ///
+  /// Dentro de cada tipo van antes los de menor dificultad y las raíces
+  /// cómodas (Do, Sol, Re, La, Mi…).
+  List<Chord> learningOrder(List<Chord> chords) {
+    final Map<ChordQuality, List<Chord>> byQuality =
+        <ChordQuality, List<Chord>>{};
+    for (final Chord chord in chords) {
+      byQuality.putIfAbsent(chord.quality, () => <Chord>[]).add(chord);
+    }
+    final List<List<Chord>> buckets = <List<Chord>>[
+      for (final ChordQuality quality
+          in byQuality.keys.toList()..sort(_byLearningRank))
+        byQuality[quality]!..sort(_easyThenFriendly),
+    ];
+    final List<Chord> result = <Chord>[];
+    for (int round = 0; result.length < chords.length; round++) {
+      for (final List<Chord> bucket in buckets) {
+        if (round < bucket.length) {
+          result.add(bucket[round]);
+        }
+      }
+    }
+    return result;
+  }
+
+  /// Tipos de acorde en el orden en que se enseñan: séptimas y power chords
+  /// antes que las triadas, que ya se saben, y luego el orden del enum.
+  static const List<ChordQuality> _firstQualities = <ChordQuality>[
+    ChordQuality.seven,
+    ChordQuality.power,
+    ChordQuality.major,
+    ChordQuality.minor,
+  ];
+
+  int _byLearningRank(ChordQuality a, ChordQuality b) =>
+      _learningRank(a).compareTo(_learningRank(b));
+
+  int _learningRank(ChordQuality quality) {
+    final int first = _firstQualities.indexOf(quality);
+    return first >= 0 ? first : _firstQualities.length + quality.index;
+  }
+
+  int _easyThenFriendly(Chord a, Chord b) => _chain(<int>[
     a.difficulty.level.compareTo(b.difficulty.level),
-    a.quality.index.compareTo(b.quality.index),
     _friendly(a).compareTo(_friendly(b)),
   ]);
 

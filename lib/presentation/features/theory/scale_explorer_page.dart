@@ -1,6 +1,7 @@
 import 'dart:async' show unawaited;
 
 import 'package:chords/domain/audio/services/fretboard.dart';
+import 'package:chords/domain/theory/catalog/scale_catalog.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
@@ -77,10 +78,7 @@ class _ScaleExplorerPageState extends State<ScaleExplorerPage> {
             ),
             const SizedBox(height: 12),
             _Label(t.theory.explorerScale),
-            ScalePicker(
-              selected: c.scale,
-              onSelected: (ScaleType scale) => c.show(scale, c.tonic),
-            ),
+            _ScaleButton(controller: c),
             const SizedBox(height: 16),
             ScaleSummaryCard(scale: c.scale, tonic: c.tonic),
             const SizedBox(height: 12),
@@ -222,4 +220,49 @@ String _positionsKind(Translations t, ScaleType scale, int count) {
           scale != ScaleType.bebopMajor
       ? t.scalesPlus.positionsWindow(n: count)
       : t.scalesPlus.positionsExtras(n: count);
+}
+
+/// La escala elegida; al pulsarla se abre el selector por familias.
+class _ScaleButton extends StatelessWidget {
+  const _ScaleButton({required this.controller});
+
+  final ScaleExplorerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final ScaleExplorerController c = controller;
+    return AppCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      onTap: () => unawaited(
+        showScalePickerSheet(
+          context,
+          selected: c.scale,
+          onSelected: (ScaleType scale) => c.show(scale, c.tonic),
+        ),
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                AppText(
+                  scaleGroupName(t, groupOf(c.scale)),
+                  variant: AppTextVariant.labelMedium,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                AppText(
+                  scaleTitle(t, c.scale),
+                  variant: AppTextVariant.titleMedium,
+                  maxLines: 2,
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.unfold_more_rounded),
+        ],
+      ),
+    );
+  }
 }
