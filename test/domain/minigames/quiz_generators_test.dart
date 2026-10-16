@@ -32,12 +32,24 @@ void main() {
       if (quiz.supports(kind)) kind,
   ];
 
-  test('hay 22 minijuegos repartidos en cuatro familias', () {
-    expect(MiniGameKind.values.length, 22);
+  test('hay 39 minijuegos repartidos en seis familias', () {
+    expect(MiniGameKind.values.length, 39);
     expect(MiniGameKind.of(MiniGameCategory.ear).length, 9);
     expect(MiniGameKind.of(MiniGameCategory.fretboard).length, 5);
-    expect(MiniGameKind.of(MiniGameCategory.play).length, 3);
+    expect(MiniGameKind.of(MiniGameCategory.play).length, 4);
     expect(MiniGameKind.of(MiniGameCategory.theory).length, 5);
+    expect(MiniGameKind.of(MiniGameCategory.chords).length, 11);
+    expect(MiniGameKind.of(MiniGameCategory.harmony).length, 5);
+  });
+
+  test('las novedades son los 17 juegos con acordes', () {
+    final List<MiniGameKind> news = <MiniGameKind>[
+      for (final MiniGameKind kind in MiniGameKind.values)
+        if (kind.isNew) kind,
+    ];
+    expect(news.length, 17);
+    expect(news, contains(MiniGameKind.chordChanges));
+    expect(news, isNot(contains(MiniGameKind.guessNote)));
   });
 
   test('cada juego es de opciones, del tablero o de micrófono', () {
@@ -46,7 +58,8 @@ void main() {
       final int handlers =
           (quiz.supports(kind) ? 1 : 0) +
           (mic.supports(kind) ? 1 : 0) +
-          (kind == MiniGameKind.buildChord ? 1 : 0);
+          (kind == MiniGameKind.buildChord ? 1 : 0) +
+          (kind == MiniGameKind.chordChanges ? 1 : 0);
       expect(handlers, 1, reason: '${kind.id} debe tener un solo motor');
     }
   });

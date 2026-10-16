@@ -208,7 +208,7 @@ void main() {
     routerOf(tester).go(kGamePath);
     await tester.pumpAndSettle();
     expect(find.text('Toca el acorde'), findsOneWidget);
-    expect(find.text('Entrena el oído'), findsOneWidget);
+    expect(find.text('Entrena el oído'), findsWidgets);
     expect(find.text('Adivina la nota'), findsOneWidget);
 
     // Modo "toca el acorde": iniciar serie y ver el objetivo.

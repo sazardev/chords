@@ -6,10 +6,12 @@ import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/usecases/build_minigame_use_cases.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/minigames/hub_filter.dart';
 import 'package:chords/presentation/features/minigames/mini_game_page.dart';
 import 'package:chords/presentation/features/minigames/mini_games_hub_page.dart';
 import 'package:chords/presentation/features/minigames/quiz_choices.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
+import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/widgets/organisms/fretboard_pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,19 +60,28 @@ void main() {
   );
 
   group('catálogo', () {
-    testWidgets('muestra los 22 juegos y el progreso en estrellas', (
+    testWidgets('muestra los 39 juegos y el progreso en estrellas', (
       WidgetTester tester,
     ) async {
       await preferences.saveMiniGameBest('guessNote_easy', 95);
       await pumpApp(tester);
-      expect(find.text('0 de 66 estrellas'), findsNothing);
-      expect(find.text('3 de 66 estrellas'), findsOne);
+      expect(find.text('0 de 117 estrellas'), findsNothing);
+      expect(find.text('3 de 117 estrellas'), findsOne);
       final Translations t = Translations.of(
         tester.element(find.byType(MiniGamesHubPage)),
       );
-      for (final MiniGameKind kind in MiniGameKind.values) {
-        final Finder title = find.text(t.minigames.titles[kind.id]!);
-        await tester.scrollUntilVisible(title, 200);
+      final List<MiniGameKind> inCatalogOrder = <MiniGameKind>[
+        for (final MiniGameCategory category in kHubCategoryOrder)
+          ...MiniGameKind.of(category),
+      ];
+      expect(inCatalogOrder.length, MiniGameKind.values.length);
+      for (final MiniGameKind kind in inCatalogOrder) {
+        final Finder title = find.text(gameTitle(t, kind));
+        await tester.scrollUntilVisible(
+          title,
+          200,
+          scrollable: mainScrollable(),
+        );
         expect(title, findsOne, reason: kind.id);
       }
       expect(tester.takeException(), isNull);
@@ -99,13 +110,18 @@ void main() {
     QuizQuestion current() => kit.quiz.state.question!;
 
     Future<void> choose(WidgetTester tester, int index) async {
+      await tester.scrollUntilVisible(
+        find.byType(QuizChoices),
+        200,
+        scrollable: mainScrollable(),
+      );
       final Finder button = find
           .descendant(
             of: find.byType(QuizChoices),
             matching: find.byType(InkWell),
           )
           .at(index);
-      await tester.scrollUntilVisible(button, 200);
+      await tester.ensureVisible(button);
       await tester.pumpAndSettle();
       await tester.tap(button);
       await tester.pumpAndSettle();

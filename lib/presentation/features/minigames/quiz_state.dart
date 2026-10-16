@@ -21,6 +21,8 @@ class QuizState {
     this.isPlaying = false,
     this.wasCorrect = false,
     this.isNewBest = false,
+    this.msLeft = 0,
+    this.timedOut = false,
   });
 
   /// Juego en curso.
@@ -56,6 +58,12 @@ class QuizState {
   /// Si la partida terminada es un récord.
   final bool isNewBest;
 
+  /// Milisegundos que quedan para responder (solo en los juegos con tiempo).
+  final int msLeft;
+
+  /// Si la última pregunta se perdió por agotar el tiempo.
+  final bool timedOut;
+
   /// Pregunta actual; `null` fuera de partida.
   QuizQuestion? get question =>
       index < questions.length ? questions[index] : null;
@@ -79,6 +87,8 @@ class QuizState {
     bool? isPlaying,
     bool? wasCorrect,
     bool? isNewBest,
+    int? msLeft,
+    bool? timedOut,
   }) => QuizState(
     kind: kind,
     level: level,
@@ -91,5 +101,7 @@ class QuizState {
     isPlaying: isPlaying ?? this.isPlaying,
     wasCorrect: wasCorrect ?? this.wasCorrect,
     isNewBest: isNewBest ?? this.isNewBest,
+    msLeft: msLeft ?? this.msLeft,
+    timedOut: timedOut ?? this.timedOut,
   );
 }

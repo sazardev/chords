@@ -1,5 +1,7 @@
+import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/minigames/quiz_diagram_choice.dart';
 import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
@@ -8,7 +10,8 @@ import 'package:flutter/material.dart';
 /// Cuadrícula de opciones de respuesta.
 ///
 /// Antes de responder todas son neutras; al responder, la correcta se pinta
-/// de verde y la elegida equivocada de rojo.
+/// de verde y la elegida equivocada de rojo. En las secuencias de notas
+/// distintas ("deletrea el acorde") las ya tocadas quedan marcadas.
 class QuizChoices extends StatelessWidget {
   /// Crea la cuadrícula para [question].
   const QuizChoices({
@@ -35,11 +38,17 @@ class QuizChoices extends StatelessWidget {
 
   int _columns() {
     final int count = question.choices.length;
+    if (question.choices.first.type == ChoiceType.diagram) {
+      return 2;
+    }
     if (question.isSequence) {
       return 3;
     }
     return count <= 4 ? 2 : 3;
   }
+
+  /// Las opciones ya tocadas de una secuencia de notas no se repiten.
+  bool get _picksOnce => question.kind == MiniGameKind.spellChord;
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +66,11 @@ class QuizChoices extends StatelessWidget {
                 width: width,
                 child: _ChoiceButton(
                   choice: question.choices[i],
+                  number: i + 1,
                   style: _styleOf(i),
-                  onTap: revealed ? null : () => onChoose(i),
+                  onTap: revealed || (_picksOnce && chosen.contains(i))
+                      ? null
+                      : () => onChoose(i),
                 ),
               ),
           ],
@@ -68,10 +80,12 @@ class QuizChoices extends StatelessWidget {
   }
 
   _ChoiceStyle _styleOf(int index) {
-    if (!revealed) {
-      return _ChoiceStyle.neutral;
-    }
     if (question.isSequence) {
+      return !revealed && _picksOnce && chosen.contains(index)
+          ? _ChoiceStyle.picked
+          : _ChoiceStyle.neutral;
+    }
+    if (!revealed) {
       return _ChoiceStyle.neutral;
     }
     if (question.answer.contains(index)) {
@@ -81,16 +95,18 @@ class QuizChoices extends StatelessWidget {
   }
 }
 
-enum _ChoiceStyle { neutral, right, wrong }
+enum _ChoiceStyle { neutral, picked, right, wrong }
 
 class _ChoiceButton extends StatelessWidget {
   const _ChoiceButton({
     required this.choice,
+    required this.number,
     required this.style,
     required this.onTap,
   });
 
   final QuizChoice choice;
+  final int number;
   final _ChoiceStyle style;
   final VoidCallback? onTap;
 
@@ -102,11 +118,16 @@ class _ChoiceButton extends StatelessWidget {
     final (Color background, Color ink) = switch (style) {
       _ChoiceStyle.right => (colors.inTune, Colors.black),
       _ChoiceStyle.wrong => (scheme.error, scheme.onError),
+      _ChoiceStyle.picked => (
+        scheme.surfaceContainerHighest,
+        scheme.onSurfaceVariant,
+      ),
       _ChoiceStyle.neutral => (
         scheme.secondaryContainer,
         scheme.onSecondaryContainer,
       ),
     };
+    final bool isDiagram = choice.type == ChoiceType.diagram;
     return Semantics(
       button: true,
       enabled: onTap != null,
@@ -119,15 +140,20 @@ class _ChoiceButton extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 60),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              padding: EdgeInsets.symmetric(
+                horizontal: isDiagram ? 6 : 10,
+                vertical: isDiagram ? 6 : 12,
+              ),
               child: Center(
-                child: AppText(
-                  choiceLabel(t, choice),
-                  variant: AppTextVariant.titleMedium,
-                  color: ink,
-                  align: TextAlign.center,
-                  maxLines: 3,
-                ),
+                child: isDiagram
+                    ? QuizDiagramChoice(choice: choice, number: number)
+                    : AppText(
+                        choiceLabel(t, choice),
+                        variant: AppTextVariant.titleMedium,
+                        color: ink,
+                        align: TextAlign.center,
+                        maxLines: 3,
+                      ),
               ),
             ),
           ),

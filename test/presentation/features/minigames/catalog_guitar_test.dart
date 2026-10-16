@@ -78,13 +78,13 @@ void main() {
   ) async {
     await settings.setGuitarBrowse(value: true);
     await pumpApp(tester);
-    expect(find.textContaining('1 de 23'), findsOne);
+    expect(find.textContaining('1 de 40'), findsOne);
     expect(find.text('Menú'), findsOne);
     expect(find.text('Siguiente'), findsOne);
 
     await tester.tap(find.text('Siguiente'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('2 de 23'), findsOne);
+    expect(find.textContaining('2 de 40'), findsOne);
 
     await tester.tap(find.text('Menú'));
     await tester.pumpAndSettle();

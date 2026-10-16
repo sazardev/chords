@@ -165,6 +165,7 @@ class ReadDiagramGenerator implements QuizGenerator {
       answer: <int>[options.indexOf(answer)],
       chordId: answer.id,
       variantIndex: easiestVariantIndex(answer),
+      diagram: QuizDiagram.fingers,
     );
   }
 }
@@ -196,6 +197,7 @@ class FingerQuizGenerator implements QuizGenerator {
       chordId: chord.id,
       variantIndex: easiestVariantIndex(chord),
       stringNumber: 6 - stringIndex,
+      diagram: QuizDiagram.plain,
     );
   }
 

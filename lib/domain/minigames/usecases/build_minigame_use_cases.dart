@@ -10,38 +10,15 @@ import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/generators/chord_quiz_generators.dart';
 import 'package:chords/domain/minigames/generators/mic_challenge_generators.dart';
-import 'package:chords/domain/minigames/generators/note_quiz_generators.dart';
-import 'package:chords/domain/minigames/generators/pitch_quiz_generators.dart';
 import 'package:chords/domain/minigames/generators/quiz_generator.dart';
-import 'package:chords/domain/minigames/generators/string_quiz_generators.dart';
-import 'package:chords/domain/minigames/generators/theory_ear_generators.dart';
-import 'package:chords/domain/minigames/generators/theory_quiz_generators.dart';
+import 'package:chords/domain/minigames/generators/quiz_generator_registry.dart';
 
 /// Caso de uso: construye las preguntas de un minijuego de opciones.
 class BuildQuizUseCase {
   /// Crea el caso de uso; [random] permite fijar la semilla en las pruebas.
   BuildQuizUseCase(ChordRepository repository, {math.Random? random})
     : _random = random ?? math.Random(),
-      _generators = <MiniGameKind, QuizGenerator>{
-        MiniGameKind.guessNote: const GuessNoteGenerator(),
-        MiniGameKind.whichString: const WhichStringGenerator(),
-        MiniGameKind.whichFret: const WhichFretGenerator(),
-        MiniGameKind.interval: const IntervalGenerator(),
-        MiniGameKind.higherLower: const HigherLowerGenerator(),
-        MiniGameKind.chordQuality: ChordQualityGenerator(repository),
-        MiniGameKind.nameChord: NameChordGenerator(repository),
-        MiniGameKind.tuneEar: const TuneEarGenerator(),
-        MiniGameKind.memory: const MemoryGenerator(),
-        MiniGameKind.noteAtFret: const NoteAtFretGenerator(),
-        MiniGameKind.fretOfNote: const FretOfNoteGenerator(),
-        MiniGameKind.fingerQuiz: FingerQuizGenerator(repository),
-        MiniGameKind.readDiagram: ReadDiagramGenerator(repository),
-        MiniGameKind.scaleNote: const ScaleNoteGenerator(),
-        MiniGameKind.keyChord: const KeyChordGenerator(),
-        MiniGameKind.scaleDegree: const ScaleDegreeGenerator(),
-        MiniGameKind.findTonic: FindTonicGenerator(repository),
-        MiniGameKind.progressionEar: ProgressionEarGenerator(repository),
-      };
+      _generators = buildQuizGenerators(repository);
 
   final math.Random _random;
   final Map<MiniGameKind, QuizGenerator> _generators;

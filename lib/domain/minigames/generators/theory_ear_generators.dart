@@ -7,6 +7,7 @@ import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/entities/sound_cue.dart';
 import 'package:chords/domain/minigames/generators/chord_quiz_generators.dart';
+import 'package:chords/domain/minigames/generators/ear_progression_pool.dart';
 import 'package:chords/domain/minigames/generators/quiz_generator.dart';
 import 'package:chords/domain/minigames/generators/theory_quiz_generators.dart';
 import 'package:chords/domain/theory/entities/chord_symbol.dart';
@@ -71,17 +72,6 @@ class FindTonicGenerator implements QuizGenerator {
   }
 }
 
-/// Progresiones que se distinguen al oído, de las más fáciles a las más
-/// parecidas entre sí.
-const List<String> kEarProgressions = <String>[
-  'I IV V I',
-  'I V vi IV',
-  'vi IV I V',
-  'I vi IV V',
-  'ii V I I',
-  'I bVII IV I',
-];
-
 /// Progresión al oído: suenan cuatro acordes y hay que reconocer los grados.
 class ProgressionEarGenerator implements QuizGenerator {
   /// Crea el generador con el banco de acordes.
@@ -91,13 +81,14 @@ class ProgressionEarGenerator implements QuizGenerator {
 
   @override
   QuizQuestion generate(math.Random random, MiniGameLevel level, int index) {
-    final int count = switch (level) {
-      MiniGameLevel.easy => 2,
-      MiniGameLevel.medium => 4,
-      MiniGameLevel.hard => kEarProgressions.length,
-    };
-    final List<String> pool = kEarProgressions.take(count).toList();
-    final String answer = pool[random.nextInt(pool.length)];
+    final List<String> available = <String>[
+      for (final String progression in earProgressionsFor(level))
+        if (_isPlayable(progression)) progression,
+    ];
+    final String answer = available[random.nextInt(available.length)];
+    final List<String> pool = level == MiniGameLevel.hard
+        ? _mostSimilar(random, answer, available, 6)
+        : available;
     final int tonic = randomTonic(random, MiniGameLevel.easy);
     final List<ChordSymbol> chords = <ChordSymbol>[
       for (final String degree in answer.split(' '))
@@ -117,5 +108,32 @@ class ProgressionEarGenerator implements QuizGenerator {
       answer: <int>[pool.indexOf(answer)],
       keyTonic: tonic,
     );
+  }
+
+  /// `true` si todos los acordes de la progresión están en el banco.
+  bool _isPlayable(String progression) => progression
+      .split(' ')
+      .every(
+        (String degree) =>
+            _repository.chordById(RomanChord.parse(degree).inKey(0).chordId) !=
+            null,
+      );
+
+  /// [answer] y las [count] - 1 progresiones de [pool] que más se le parecen.
+  List<String> _mostSimilar(
+    math.Random random,
+    String answer,
+    List<String> pool,
+    int count,
+  ) {
+    final List<String> others = pool.where((String p) => p != answer).toList()
+      ..shuffle(random)
+      ..sort(
+        (String a, String b) => progressionSimilarity(
+          answer,
+          b,
+        ).compareTo(progressionSimilarity(answer, a)),
+      );
+    return <String>[answer, ...others.take(count - 1)]..shuffle(random);
   }
 }

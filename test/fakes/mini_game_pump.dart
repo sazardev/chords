@@ -68,10 +68,14 @@ Future<void> pumpMiniGameApp(
   await tester.pumpAndSettle();
 }
 
+/// Lista principal de la pantalla: la primera que se desplaza (el catálogo
+/// tiene además la fila horizontal de filtros y el campo de búsqueda).
+Finder mainScrollable() => find.byType(Scrollable).first;
+
 /// Pulsa el texto [text] desplazando la lista hasta verlo.
 Future<void> tapText(WidgetTester tester, String text) async {
   final Finder finder = find.text(text);
-  await tester.scrollUntilVisible(finder, 200);
+  await tester.scrollUntilVisible(finder, 200, scrollable: mainScrollable());
   await tester.pumpAndSettle();
   await tester.tap(finder);
   await tester.pumpAndSettle();

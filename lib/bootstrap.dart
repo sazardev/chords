@@ -31,11 +31,7 @@ import 'package:chords/presentation/features/guitar_control/guitar_kit.dart';
 import 'package:chords/presentation/features/learn/learn_controller.dart';
 import 'package:chords/presentation/features/live/live_controller.dart';
 import 'package:chords/presentation/features/live/tuner_controller.dart';
-import 'package:chords/presentation/features/minigames/build_chord_controller.dart';
-import 'package:chords/presentation/features/minigames/mic_game_controller.dart';
-import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
-import 'package:chords/presentation/features/minigames/quiz_controller.dart';
-import 'package:chords/presentation/features/minigames/sound_cue_player.dart';
+import 'package:chords/presentation/features/minigames/minigames_kit.dart';
 import 'package:chords/presentation/features/onboarding/onboarding_controller.dart';
 import 'package:chords/presentation/features/practice/chord_practice_controller.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
@@ -113,6 +109,7 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
         create: (_) => dependencies.learnController,
       ),
       ..._gameProviders(dependencies),
+      ...dependencies.miniGames.providers,
       ChangeNotifierProvider<ProfileController>(
         create: (_) => dependencies.profileController,
       ),
@@ -120,7 +117,7 @@ List<SingleChildWidget> _appProviders(AppDependencies dependencies) =>
       ...dependencies.studio.providers,
     ];
 
-/// Providers del juego, los minijuegos, la afinación y la práctica.
+/// Providers del juego, la afinación y la práctica.
 List<SingleChildWidget> _gameProviders(AppDependencies dependencies) =>
     <SingleChildWidget>[
       ChangeNotifierProvider<GameController>(
@@ -131,18 +128,6 @@ List<SingleChildWidget> _gameProviders(AppDependencies dependencies) =>
       ),
       ChangeNotifierProvider<GameAudioController>(
         create: (_) => dependencies.gameAudioController,
-      ),
-      ChangeNotifierProvider<MiniGameProgressController>(
-        create: (_) => dependencies.miniGameProgressController,
-      ),
-      ChangeNotifierProvider<QuizController>(
-        create: (_) => dependencies.quizController,
-      ),
-      ChangeNotifierProvider<BuildChordController>(
-        create: (_) => dependencies.buildChordController,
-      ),
-      ChangeNotifierProvider<MicGameController>(
-        create: (_) => dependencies.micGameController,
       ),
       ChangeNotifierProvider<LiveController>(
         create: (_) => dependencies.liveController,
@@ -205,10 +190,7 @@ class AppDependencies {
     required this.gameController,
     required this.gameScoreController,
     required this.gameAudioController,
-    required this.miniGameProgressController,
-    required this.quizController,
-    required this.buildChordController,
-    required this.micGameController,
+    required this.miniGames,
     required this.liveController,
     required this.tunerController,
     required this.chordPracticeController,
@@ -258,26 +240,10 @@ class AppDependencies {
       guitar: guitar.listener,
       keeper: guitar.keeper,
     );
-    final MiniGameProgressController miniGameProgress =
-        MiniGameProgressController(preferences);
-    final SoundCuePlayer cuePlayer = SoundCuePlayer(
+    final MiniGamesKit miniGames = MiniGamesKit(
       audioRepository,
       chordRepository,
-    );
-    final QuizController quiz = QuizController(
-      chordRepository,
-      cuePlayer,
-      miniGameProgress,
-    );
-    final BuildChordController buildChord = BuildChordController(
-      chordRepository,
-      audioRepository,
-      miniGameProgress,
-    );
-    final MicGameController micGame = MicGameController(
-      audioRepository,
-      cuePlayer,
-      miniGameProgress,
+      preferences,
       guitar: guitar.listener,
     );
     final LiveController live = LiveController(
@@ -314,10 +280,7 @@ class AppDependencies {
       gameController: game,
       gameScoreController: gameScore,
       gameAudioController: gameTuner,
-      miniGameProgressController: miniGameProgress,
-      quizController: quiz,
-      buildChordController: buildChord,
-      micGameController: micGame,
+      miniGames: miniGames,
       liveController: live,
       tunerController: tuner,
       chordPracticeController: practice,
@@ -360,17 +323,8 @@ class AppDependencies {
   /// Controlador de la escucha y afinación del juego.
   final GameAudioController gameAudioController;
 
-  /// Controlador del progreso y las estrellas de los minijuegos.
-  final MiniGameProgressController miniGameProgressController;
-
-  /// Controlador de los minijuegos de preguntas de opciones.
-  final QuizController quizController;
-
-  /// Controlador del minijuego "arma el acorde".
-  final BuildChordController buildChordController;
-
-  /// Controlador de los minijuegos con micrófono.
-  final MicGameController micGameController;
+  /// Minijuegos: progreso, opciones, "arma el acorde", micrófono y cambios.
+  final MiniGamesKit miniGames;
 
   /// Controlador de la afinación en vivo.
   final LiveController liveController;
