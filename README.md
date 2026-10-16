@@ -6,7 +6,7 @@ diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
-![tests](https://img.shields.io/badge/tests-565-1DB954)
+![tests](https://img.shields.io/badge/tests-845-1DB954)
 ![acordes](https://img.shields.io/badge/acordes-156-8B5CF6)
 ![posiciones](https://img.shields.io/badge/posiciones-561-8B5CF6)
 
@@ -49,8 +49,11 @@ diseño atómico y Material 3 Expressive.
   letra, diagramas, transporte ±6 semitonos y tocar en el jam.
 - **Historial y racha**: acordes abiertos recientemente (en Inicio, en la
   biblioteca y en su pantalla) y días seguidos practicando.
-- **22 minijuegos** (pestaña *Jugar*), cada uno con tres dificultades,
-  partidas de 6-10 preguntas, racha, puntos y hasta 3 estrellas guardadas:
+- **39 minijuegos** (pestaña *Jugar*), cada uno con tres dificultades,
+  partidas de 6-10 preguntas, racha, puntos, hasta 3 estrellas y récord
+  guardado por juego y dificultad. El catálogo se divide en seis familias y
+  tiene **buscador**, chips de filtro (todos, nuevos y cada familia) y la
+  marca *Nuevo* en los juegos recién añadidos:
   - **Entrena el oído** (sin guitarra): adivina la nota, qué cuerda suena, qué
     traste es, intervalos, agudo o grave, mayor o menor (calidad del acorde),
     reconoce el acorde, oído de afinador (¿floja, afinada o alta?) y memoria
@@ -59,10 +62,34 @@ diseño atómico y Material 3 Expressive.
     nota (cuerda + nota → traste), ¿qué dedo?, lee el diagrama (forma → acorde)
     y **arma el acorde** (nombre → coloca los dedos en un tablero tocable y,
     después, practícalo con el micrófono).
-  - **Toca la guitarra** (micrófono): toca la nota, cuerda y traste exactos y
-    eco de guitarra (escucha una melodía y tócala).
+  - **Acordes y variantes** (11, nuevos), construidos sobre el banco real: se
+    recorren sus calidades y posiciones, así que las que se añadan al banco
+    entran solas en los juegos y las más complejas salen en difícil.
+    *Deletrea el acorde* (qué notas lo forman; en difícil se tocan de la raíz
+    hacia arriba), *fórmula del acorde* (`1-♭3-5-♭7` ↔ nombre), *¿qué variante
+    es?* (maj7, 7, 6, sus… de oído sobre una misma raíz), *memoria de acordes*,
+    *raíz y bajo* (qué cuerda lleva la raíz y qué nota hace de bajo),
+    *inversiones* (fundamental, 1ª, 2ª o 3ª, leyendo el diagrama o de oído),
+    *diagrama incorrecto* (cuatro diagramas del mismo acorde, uno con una nota
+    ajena, una cuerda sin mutear o sin una nota esencial), *formas CAGED*
+    (forma de un diagrama y traste de la cejilla) y tres **retos con tiempo**
+    —*racha* de acordes abiertos, de cejillas y de séptimas— con puntos extra
+    por rapidez.
+  - **Progresiones y armonía** (5, nuevos): *completa la progresión* (una del
+    catálogo con un acorde oculto, en distintos tonos; en difícil, por grado
+    romano), *grados romanos* (grado ↔ acorde, con séptimas y acordes
+    prestados), *transporta* (semitonos y capo), *relativos y quintas*
+    (relativo, dominante, subdominante, círculo de quintas, paralelo y
+    sustitución de tritono) y *duelo de estilos* (género por la progresión y el
+    rasgueo, con el ritmo del patrón).
+  - **Toca la guitarra** (micrófono): toca la nota, cuerda y traste exactos,
+    eco de guitarra (escucha una melodía y tócala) y **cambios de acorde**
+    (60 s: el juego pide acordes sucesivos y cuenta los cambios limpios; el
+    juez exige las notas nuevas del acorde para que el eco del anterior no
+    puntúe y el oído de acordes es intercambiable por un detector polifónico).
   - **Teoría musical**: notas de la escala, acordes del tono, ¿qué grado es?,
-    encuentra la tónica (de oído) y progresión al oído.
+    encuentra la tónica (de oído) y progresión al oído (en difícil, también
+    las progresiones del catálogo: rock, blues de 12 compases, ii-V-I…).
   - Además, el modo **"toca el acorde"**: elige el acorde, escucha 5 s por el
     micrófono, puntúa por notas reconocidas y encadena series con racha y
     récord.
@@ -75,8 +102,10 @@ diseño atómico y Material 3 Expressive.
   cada ronda tras una cuenta atrás; no hay botones de "estoy listo". La app
   espera a que la nota anterior se apague antes de aceptar una orden y se
   silencia mientras suena su propia referencia. En *Jugar* se puede recorrer el
-  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir) y todo se
-  puede desactivar en Ajustes (los botones siguen).
+  catálogo con la guitarra (Re siguiente · La anterior · Mi abrir), solo por
+  los juegos que deja ver el buscador o el filtro, y todo se puede desactivar
+  en Ajustes (los botones siguen). "Cambios de acorde" se maneja con los
+  botones mientras corre el reloj y con las cuerdas en la bienvenida.
 - **Modo guitarra en toda la app**: con el interruptor de *Jugar* o de Ajustes
   un panel fijo sustituye a la barra de navegación en todas las pantallas
   (también sobre juegos y práctica). Dice qué hace cada cuerda en la pantalla

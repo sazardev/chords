@@ -1,5 +1,4 @@
 import 'package:chords/domain/chords/entities/chord.dart';
-import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
@@ -63,6 +62,45 @@ void main() {
       expect(medium, lessThanOrEqualTo(hard));
       expect(hard, bankQualities(s.bank).length);
     });
+  });
+
+  group('respuestas equivalentes', () {
+    const List<MiniGameKind> chordNameKinds = <MiniGameKind>[
+      MiniGameKind.nameChord,
+      MiniGameKind.readDiagram,
+      MiniGameKind.rushOpen,
+      MiniGameKind.rushBarre,
+      MiniGameKind.rushSeventh,
+      MiniGameKind.fillProgression,
+      MiniGameKind.romanDegree,
+      MiniGameKind.transposeChord,
+      MiniGameKind.chordNeighbors,
+      MiniGameKind.chordFormula,
+      MiniGameKind.chordVariantEar,
+    ];
+
+    for (final MiniGameKind kind in chordNameKinds) {
+      test('${kind.id}: ningún distractor tiene las notas de la respuesta', () {
+        for (final MiniGameLevel level in MiniGameLevel.values) {
+          for (final QuizQuestion q in s.sample(kind, level)) {
+            if (q.choices.first.type != ChoiceType.chord) {
+              continue;
+            }
+            final ChordSymbol answer = s.symbolOf(q.correctChoice.value);
+            for (final QuizChoice c in q.choices) {
+              if (c == q.correctChoice) {
+                continue;
+              }
+              expect(
+                sameNotes(answer, s.symbolOf(c.value)),
+                isFalse,
+                reason: '${kind.id}: ${c.label} suena como ${answer.name}',
+              );
+            }
+          }
+        }
+      });
+    }
   });
 
   group('deletrea el acorde', () {
@@ -134,15 +172,15 @@ void main() {
     });
 
     test('las fórmulas tienen el grado y la alteración correctos', () {
-      expect(formulaText(ChordQuality.major.intervals), '1 – 3 – 5');
-      expect(formulaText(ChordQuality.minor.intervals), '1 – ♭3 – 5');
-      expect(formulaText(ChordQuality.seven.intervals), '1 – 3 – 5 – ♭7');
-      expect(formulaText(ChordQuality.majorSeven.intervals), '1 – 3 – 5 – 7');
-      expect(formulaText(ChordQuality.minorSixth.intervals), '1 – ♭3 – 5 – 6');
-      expect(formulaText(ChordQuality.ninth.intervals), '1 – 3 – 5 – ♭7 – 9');
-      expect(formulaText(ChordQuality.suspendedFourth.intervals), '1 – 4 – 5');
-      expect(formulaText(ChordQuality.diminished.intervals), '1 – ♭3 – ♭5');
-      expect(formulaText(ChordQuality.augmented.intervals), '1 – 3 – ♯5');
+      expect(formulaText(<int>[0, 4, 7]), '1 – 3 – 5');
+      expect(formulaText(<int>[0, 3, 7]), '1 – ♭3 – 5');
+      expect(formulaText(<int>[0, 4, 7, 10]), '1 – 3 – 5 – ♭7');
+      expect(formulaText(<int>[0, 4, 7, 11]), '1 – 3 – 5 – 7');
+      expect(formulaText(<int>[0, 3, 7, 9]), '1 – ♭3 – 5 – 6');
+      expect(formulaText(<int>[0, 4, 7, 10, 14]), '1 – 3 – 5 – ♭7 – 9');
+      expect(formulaText(<int>[0, 5, 7]), '1 – 4 – 5');
+      expect(formulaText(<int>[0, 3, 6]), '1 – ♭3 – ♭5');
+      expect(formulaText(<int>[0, 4, 8]), '1 – 3 – ♯5');
       expect(formulaText(<int>[0, 3, 6, 9]), '1 – ♭3 – ♭5 – ♭♭7');
       expect(formulaText(<int>[0, 3, 6, 10]), '1 – ♭3 – ♭5 – ♭7');
       expect(formulaText(<int>[0, 4, 7, 10, 13]), '1 – 3 – 5 – ♭7 – ♭9');

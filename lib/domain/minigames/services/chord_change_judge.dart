@@ -1,10 +1,10 @@
 /// Juez de un cambio de acorde: decide si ya suena el acorde pedido.
 ///
 /// Acumula las notas oídas desde que apareció el acorde y exige dos cosas: que
-/// suene una proporción mínima de las notas del acorde y que estén las notas
-/// nuevas, las que no tenía el acorde anterior. Sin lo segundo, el eco del
-/// acorde que aún se apaga daría por buena una mano que no se ha movido
-/// (`Am` tras `C` comparte `C` y `E`).
+/// suene una proporción mínima de las notas del acorde y que suene esa misma
+/// proporción de las notas nuevas, las que no tenía el acorde anterior. Sin lo
+/// segundo, el eco del acorde que aún se apaga daría por buena una mano que no
+/// se ha movido (`Am` tras `C` comparte `C` y `E`).
 class ChordChangeJudge {
   /// Crea el juez del acorde de notas [target] tras el de notas [previous].
   ChordChangeJudge({
@@ -29,9 +29,13 @@ class ChordChangeJudge {
   /// Proporción de notas del acorde oídas (0-1).
   double get ratio => target.isEmpty ? 0 : heardNotes.length / target.length;
 
+  /// Proporción de las notas nuevas oídas (1 si no hay notas nuevas).
+  double get freshRatio =>
+      _fresh.isEmpty ? 1 : _heard.intersection(_fresh).length / _fresh.length;
+
   /// `true` si el acorde pedido ya suena.
   bool get isMatch =>
-      target.isNotEmpty && ratio >= minRatio && heardNotes.containsAll(_fresh);
+      target.isNotEmpty && ratio >= minRatio && freshRatio >= minRatio;
 
   /// Anota las notas oídas en un instante.
   void feed(Set<int> detected) => _heard.addAll(detected);

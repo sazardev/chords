@@ -35,10 +35,9 @@ class HubSearchBar extends StatelessWidget {
         Semantics(
           label: t.chordGames.filterLabel,
           container: true,
-          child: SizedBox(
-            height: 44,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               children: <Widget>[
                 _chip(
                   label: t.chordGames.filterAll,
