@@ -96,12 +96,14 @@ class JamSelection {
   );
 
   /// Pista lista para el controlador; `null` si la progresión propia está
-  /// vacía.
-  JamTrack? toTrack(Translations t) => switch (source) {
+  /// vacía. [loops] son las vueltas de las progresiones y de la propia (las
+  /// canciones suenan una vez).
+  JamTrack? toTrack(Translations t, {int loops = 4}) => switch (source) {
     JamSource.progression => JamTrack.fromProgression(
       progression,
       tonic: progressionTonic,
       title: progressionName(t, progression),
+      loops: loops,
     ),
     JamSource.song => JamTrack.fromSong(
       song,
@@ -109,6 +111,8 @@ class JamSelection {
       title: songTitle(t, song),
     ),
     JamSource.custom =>
-      custom.isEmpty ? null : JamTrack.custom(custom, title: t.jam.customTitle),
+      custom.isEmpty
+          ? null
+          : JamTrack.custom(custom, title: t.jam.customTitle, loops: loops),
   };
 }

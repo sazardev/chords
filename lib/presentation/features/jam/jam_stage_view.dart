@@ -1,12 +1,14 @@
-import 'dart:async' show unawaited;
-
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/jam/jam_track.dart';
 import 'package:chords/domain/theory/entities/chord_symbol.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/jam/band_settings_controller.dart';
+import 'package:chords/presentation/features/jam/jam_band_strip.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
+import 'package:chords/presentation/features/jam/jam_controls.dart';
 import 'package:chords/presentation/features/jam/jam_hud.dart';
+import 'package:chords/presentation/features/jam/jam_loading_view.dart';
 import 'package:chords/presentation/features/jam/jam_state.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/theory/scale_marks.dart';
@@ -30,52 +32,76 @@ class JamStageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final JamTrack track = state.track!;
     final JamController controller = context.read<JamController>();
+    final bool loading = state.phase == JamPhase.loading;
     return Column(
       children: <Widget>[
-        LinearProgressIndicator(value: state.progress),
+        LinearProgressIndicator(value: loading ? null : state.progress),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            children: <Widget>[
-              if (state.mode == JamMode.score) ...<Widget>[
-                JamScoreBar(state: state),
-                const SizedBox(height: 12),
-              ],
-              if (state.phase == JamPhase.countIn)
-                _CountIn(count: state.countdown)
-              else
-                _NowNext(state: state),
-              const SizedBox(height: 12),
-              _Lyric(state: state),
-              JamBarsLane(state: state),
-              const SizedBox(height: 12),
-              StrumPatternView(
-                pattern: track.strum,
-                active: state.phase == JamPhase.playing ? state.slot : null,
-              ),
-              const SizedBox(height: 4),
-              Center(
-                child: AppText(
-                  '${t.jam.barOf(n: state.bar + 1, total: track.bars.length)}'
-                  ' · ${t.jam.bpm(n: track.bpm)}',
-                  variant: AppTextVariant.labelMedium,
-                ),
-              ),
-              if (state.micProblem) ...<Widget>[
-                const SizedBox(height: 8),
-                AppText(t.jam.micProblem, maxLines: 2),
-              ],
-              if (track.scale != null) ...<Widget>[
-                const SizedBox(height: 12),
-                _ScaleHint(scale: track.scale!, tonic: track.tonic),
-              ],
-            ],
+          child: loading
+              ? JamLoadingView(progress: state.loadProgress)
+              : _Scene(state: state, controller: controller),
+        ),
+        JamControls(state: state, controller: controller),
+      ],
+    );
+  }
+}
+
+/// Lo que se ve mientras suena: acorde actual y siguiente, carril de
+/// compases, rasgueo, actividad de la banda y escala.
+class _Scene extends StatelessWidget {
+  const _Scene({required this.state, required this.controller});
+
+  final JamState state;
+  final JamController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final JamTrack track = state.track!;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      children: <Widget>[
+        if (state.mode == JamMode.score) ...<Widget>[
+          JamScoreBar(state: state),
+          const SizedBox(height: 12),
+        ],
+        if (state.phase == JamPhase.countIn)
+          _CountIn(count: state.countdown)
+        else
+          _NowNext(state: state),
+        const SizedBox(height: 12),
+        _Lyric(state: state),
+        JamBarsLane(state: state),
+        const SizedBox(height: 12),
+        StrumPatternView(
+          pattern: track.strum,
+          active: state.phase == JamPhase.playing ? state.slot : null,
+        ),
+        const SizedBox(height: 4),
+        Center(
+          child: AppText(
+            '${t.jam.barOf(n: state.bar + 1, total: track.bars.length)}'
+            ' · ${t.jam.bpm(n: track.bpm)}',
+            variant: AppTextVariant.labelMedium,
           ),
         ),
-        _Controls(state: state, controller: controller),
+        if (state.mode == JamMode.backing) ...<Widget>[
+          const SizedBox(height: 12),
+          JamBandStrip(
+            activity: controller.activity,
+            settings: context.read<BandSettingsController>(),
+          ),
+        ],
+        if (state.micProblem) ...<Widget>[
+          const SizedBox(height: 8),
+          AppText(t.jam.micProblem, maxLines: 2),
+        ],
+        if (track.scale != null) ...<Widget>[
+          const SizedBox(height: 12),
+          _ScaleHint(scale: track.scale!, tonic: track.tonic),
+        ],
       ],
     );
   }
@@ -273,56 +299,6 @@ class _ScaleHint extends StatelessWidget {
               window: positionWindow(scale, tonic, 1),
               mirror: mirror,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Controls extends StatelessWidget {
-  const _Controls({required this.state, required this.controller});
-
-  final JamState state;
-  final JamController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final int bpm = state.track!.bpm;
-    final bool paused = state.phase == JamPhase.paused;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-      child: Row(
-        children: <Widget>[
-          IconButton.filledTonal(
-            tooltip: t.jam.slower,
-            icon: const Icon(Icons.remove_rounded),
-            onPressed: () => controller.setTempo(bpm - 5),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: FilledButton.icon(
-              icon: Icon(
-                paused ? Icons.play_arrow_rounded : Icons.pause_rounded,
-              ),
-              label: Text(paused ? t.jam.resume : t.jam.pause),
-              onPressed: state.phase == JamPhase.countIn
-                  ? null
-                  : controller.togglePause,
-            ),
-          ),
-          const SizedBox(width: 8),
-          IconButton.outlined(
-            tooltip: t.jam.stop,
-            icon: const Icon(Icons.stop_rounded),
-            onPressed: () => unawaited(controller.stop()),
-          ),
-          const SizedBox(width: 8),
-          IconButton.filledTonal(
-            tooltip: t.jam.faster,
-            icon: const Icon(Icons.add_rounded),
-            onPressed: () => controller.setTempo(bpm + 5),
           ),
         ],
       ),

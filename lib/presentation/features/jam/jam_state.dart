@@ -8,6 +8,9 @@ enum JamPhase {
   /// Eligiendo pista, tono y tempo.
   setup,
 
+  /// Preparando los sonidos de la banda (síntesis y carga).
+  loading,
+
   /// Cuenta atrás de un compás antes de empezar.
   countIn,
 
@@ -44,7 +47,7 @@ class JamState {
     this.track,
     this.phase = JamPhase.setup,
     this.mode = JamMode.backing,
-    this.metronome = true,
+    this.loadProgress = 0,
     this.bar = 0,
     this.slot = 0,
     this.countdown = 0,
@@ -63,8 +66,8 @@ class JamState {
   /// Modo.
   final JamMode mode;
 
-  /// `true` si suena el metrónomo.
-  final bool metronome;
+  /// Avance de la preparación de la banda (0-1) en [JamPhase.loading].
+  final double loadProgress;
 
   /// Compás actual (desde 0).
   final int bar;
@@ -89,6 +92,7 @@ class JamState {
 
   /// `true` mientras la sesión está en marcha (sonando o en pausa).
   bool get isRunning =>
+      phase == JamPhase.loading ||
       phase == JamPhase.countIn ||
       phase == JamPhase.playing ||
       phase == JamPhase.paused;
@@ -135,7 +139,7 @@ class JamState {
     JamTrack? track,
     JamPhase? phase,
     JamMode? mode,
-    bool? metronome,
+    double? loadProgress,
     int? bar,
     int? slot,
     int? countdown,
@@ -148,7 +152,7 @@ class JamState {
     track: track ?? this.track,
     phase: phase ?? this.phase,
     mode: mode ?? this.mode,
-    metronome: metronome ?? this.metronome,
+    loadProgress: loadProgress ?? this.loadProgress,
     bar: bar ?? this.bar,
     slot: slot ?? this.slot,
     countdown: countdown ?? this.countdown,

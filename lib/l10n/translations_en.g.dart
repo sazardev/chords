@@ -112,6 +112,8 @@ class TranslationsEn extends Translations
   @override
   late final Translations$jam$en jam = Translations$jam$en._(_root);
   @override
+  late final Translations$jamBand$en jamBand = Translations$jamBand$en._(_root);
+  @override
   late final Translations$songs$en songs = Translations$songs$en._(_root);
 }
 
@@ -1946,6 +1948,215 @@ class Translations$jam$en extends Translations$jam$es {
   String get strum => 'Strumming';
   @override
   String get pickTrack => 'Tap to choose';
+}
+
+// Path: jamBand
+class Translations$jamBand$en extends Translations$jamBand$es {
+  Translations$jamBand$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get title => 'Band';
+  @override
+  String get subtitle => 'Who plays, how it sounds and how hard it pushes.';
+  @override
+  String get modeHint => 'Mix shortcuts';
+  @override
+  Map<String, String> get modes => {
+    'fullBand': 'Full band',
+    'rhythm': 'Rhythm only',
+    'noGuitar': 'No guitar',
+    'clickOnly': 'Click only',
+  };
+  @override
+  String get rhythmTip =>
+      '"Rhythm only" keeps drums, percussion and bass so you can play on top.';
+  @override
+  String get scoreSilent =>
+      'In "Score" the band stays silent so it doesn\'t drown out your guitar; these settings apply when backing.';
+  @override
+  String get mixer => 'Mixer';
+  @override
+  Map<String, String> get channels => {
+    'drums': 'Drums',
+    'percussion': 'Percussion',
+    'bass': 'Bass',
+    'guitar': 'Guitar',
+    'keys': 'Keys',
+    'winds': 'Winds',
+    'click': 'Metronome',
+  };
+  @override
+  String muteChannel({required Object name}) => 'Mute ${name}';
+  @override
+  String unmuteChannel({required Object name}) => 'Unmute ${name}';
+  @override
+  String channelVolume({required Object name}) => '${name} volume';
+  @override
+  String channelOn({required Object name}) => '${name}: playing';
+  @override
+  String channelOff({required Object name}) => '${name}: muted';
+  @override
+  String get style => 'Band style';
+  @override
+  String get styleAuto => 'From the track';
+  @override
+  Map<String, String> get styles => {
+    'pop': 'Pop',
+    'rock': 'Rock',
+    'blues': 'Blues',
+    'country': 'Country',
+    'jazz': 'Jazz',
+    'funk': 'Funk',
+    'ballad': 'Ballad',
+    'latin': 'Latin',
+    'reggae': 'Reggae',
+    'bossa': 'Bossa nova',
+    'metal': 'Metal',
+    'punk': 'Punk',
+    'soul': 'Soul & R&B',
+    'gospel': 'Gospel',
+    'folk': 'Folk',
+    'cumbia': 'Cumbia',
+    'salsa': 'Salsa',
+    'ranchera': 'Ranchera',
+    'flamenco': 'Flamenco',
+    'disco': 'Disco',
+    'ska': 'Ska',
+    'indie': 'Indie',
+    'grunge': 'Grunge',
+    'reggaeton': 'Reggaeton',
+    'lofi': 'Lofi',
+    'tango': 'Tango',
+    'bolero': 'Bolero',
+  };
+  @override
+  String get instruments => 'Instruments';
+  @override
+  String get instrumentAuto => 'From the style';
+  @override
+  String get kitLabel => 'Drum kit';
+  @override
+  String get bassLabel => 'Bass type';
+  @override
+  String get guitarLabel => 'Guitar type';
+  @override
+  String get keysLabel => 'Keys';
+  @override
+  String get windLabel => 'Winds';
+  @override
+  Map<String, String> get kits => {
+    'acoustic': 'Studio acoustic',
+    'jazz': 'Jazz (small kit)',
+    'electronic': 'Drum machine',
+  };
+  @override
+  Map<String, String> get basses => {
+    'finger': 'Fingerstyle electric',
+    'pick': 'Picked electric',
+    'upright': 'Upright bass',
+    'synth': 'Synth and sub',
+  };
+  @override
+  Map<String, String> get guitars => {
+    'acoustic': 'Acoustic',
+    'clean': 'Clean electric',
+    'distorted': 'Distorted electric',
+    'nylon': 'Nylon and flamenco',
+  };
+  @override
+  Map<String, String> get keysKinds => {
+    'piano': 'Piano',
+    'rhodes': 'Electric piano',
+    'organ': 'Organ',
+    'pad': 'Strings',
+  };
+  @override
+  Map<String, String> get winds => {'accordion': 'Accordion', 'brass': 'Brass'};
+  @override
+  String get feel => 'Feel';
+  @override
+  String swing({required Object n}) => 'Swing: ${n}%';
+  @override
+  String get swingAuto => 'Style\'s swing';
+  @override
+  String humanize({required Object n}) => 'Humanize: ${n}%';
+  @override
+  String get humanizeHint =>
+      'Nudges the timing and strength of each hit a little, the way a person would.';
+  @override
+  String get intensity => 'Intensity';
+  @override
+  Map<String, String> get intensities => {
+    'soft': 'Soft',
+    'normal': 'Normal',
+    'strong': 'Strong',
+  };
+  @override
+  String get fills => 'Drum fills';
+  @override
+  String get structure => 'Structure';
+  @override
+  String get countInLabel => 'Count-in';
+  @override
+  Map<String, String> get countInOptions => {
+    'none': 'None',
+    'one': '1 bar',
+    'two': '2 bars',
+  };
+  @override
+  String loops({required Object n}) => 'Loops: ${n}';
+  @override
+  String transpose({required Object n}) => 'Transpose / capo: ${n}';
+  @override
+  String get transposeLess => 'Down a semitone';
+  @override
+  String get transposeMore => 'Up a semitone';
+  @override
+  String get loopsLess => 'One loop less';
+  @override
+  String get loopsMore => 'One loop more';
+  @override
+  String get reset => 'Factory settings';
+  @override
+  String get loading => 'Getting the band ready…';
+  @override
+  String loadingBody({required Object n}) =>
+      'Synthesizing the instruments: ${n}%';
+  @override
+  String get loadingTip =>
+      'This only happens when preparing the track; afterwards it plays without gaps.';
+  @override
+  String get activity => 'Band instruments';
+  @override
+  String get activityTip => 'Tap an instrument to mute or unmute it.';
+  @override
+  String get tempoDown5 => 'Down 5 BPM';
+  @override
+  String get tempoDown1 => 'Down 1 BPM';
+  @override
+  String get tempoUp1 => 'Up 1 BPM';
+  @override
+  String get tempoUp5 => 'Up 5 BPM';
+  @override
+  String get tempoEdit => 'Type the tempo';
+  @override
+  String get tempoDialog => 'Tempo in BPM';
+  @override
+  String tempoRange({required Object min, required Object max}) =>
+      'Between ${min} and ${max}';
+  @override
+  String get accept => 'OK';
+  @override
+  String get cancel => 'Cancel';
+  @override
+  String resultBand({required Object style}) => 'Band: ${style}';
+  @override
+  String resultTranspose({required Object n}) => 'Transposition: ${n}';
 }
 
 // Path: songs
@@ -3793,6 +4004,136 @@ extension on TranslationsEn {
           'jam.chooseTrack' => 'Pick what to play',
           'jam.strum' => 'Strumming',
           'jam.pickTrack' => 'Tap to choose',
+          'jamBand.title' => 'Band',
+          'jamBand.subtitle' =>
+            'Who plays, how it sounds and how hard it pushes.',
+          'jamBand.modeHint' => 'Mix shortcuts',
+          'jamBand.modes.fullBand' => 'Full band',
+          'jamBand.modes.rhythm' => 'Rhythm only',
+          'jamBand.modes.noGuitar' => 'No guitar',
+          'jamBand.modes.clickOnly' => 'Click only',
+          'jamBand.rhythmTip' => '"Rhythm only" keeps drums, percussion and bass so you can play on top.',
+          'jamBand.scoreSilent' => 'In "Score" the band stays silent so it doesn\'t drown out your guitar; these settings apply when backing.',
+          'jamBand.mixer' => 'Mixer',
+          'jamBand.channels.drums' => 'Drums',
+          'jamBand.channels.percussion' => 'Percussion',
+          'jamBand.channels.bass' => 'Bass',
+          'jamBand.channels.guitar' => 'Guitar',
+          'jamBand.channels.keys' => 'Keys',
+          'jamBand.channels.winds' => 'Winds',
+          'jamBand.channels.click' => 'Metronome',
+          'jamBand.muteChannel' => ({required Object name}) => 'Mute ${name}',
+          'jamBand.unmuteChannel' => ({
+            required Object name,
+          }) => 'Unmute ${name}',
+          'jamBand.channelVolume' => ({
+            required Object name,
+          }) => '${name} volume',
+          'jamBand.channelOn' => ({required Object name}) => '${name}: playing',
+          'jamBand.channelOff' => ({required Object name}) => '${name}: muted',
+          'jamBand.style' => 'Band style',
+          'jamBand.styleAuto' => 'From the track',
+          'jamBand.styles.pop' => 'Pop',
+          'jamBand.styles.rock' => 'Rock',
+          'jamBand.styles.blues' => 'Blues',
+          'jamBand.styles.country' => 'Country',
+          'jamBand.styles.jazz' => 'Jazz',
+          'jamBand.styles.funk' => 'Funk',
+          'jamBand.styles.ballad' => 'Ballad',
+          'jamBand.styles.latin' => 'Latin',
+          'jamBand.styles.reggae' => 'Reggae',
+          'jamBand.styles.bossa' => 'Bossa nova',
+          'jamBand.styles.metal' => 'Metal',
+          'jamBand.styles.punk' => 'Punk',
+          'jamBand.styles.soul' => 'Soul & R&B',
+          'jamBand.styles.gospel' => 'Gospel',
+          'jamBand.styles.folk' => 'Folk',
+          'jamBand.styles.cumbia' => 'Cumbia',
+          'jamBand.styles.salsa' => 'Salsa',
+          'jamBand.styles.ranchera' => 'Ranchera',
+          'jamBand.styles.flamenco' => 'Flamenco',
+          'jamBand.styles.disco' => 'Disco',
+          'jamBand.styles.ska' => 'Ska',
+          'jamBand.styles.indie' => 'Indie',
+          'jamBand.styles.grunge' => 'Grunge',
+          'jamBand.styles.reggaeton' => 'Reggaeton',
+          'jamBand.styles.lofi' => 'Lofi',
+          'jamBand.styles.tango' => 'Tango',
+          'jamBand.styles.bolero' => 'Bolero',
+          'jamBand.instruments' => 'Instruments',
+          'jamBand.instrumentAuto' => 'From the style',
+          'jamBand.kitLabel' => 'Drum kit',
+          'jamBand.bassLabel' => 'Bass type',
+          'jamBand.guitarLabel' => 'Guitar type',
+          'jamBand.keysLabel' => 'Keys',
+          'jamBand.windLabel' => 'Winds',
+          'jamBand.kits.acoustic' => 'Studio acoustic',
+          'jamBand.kits.jazz' => 'Jazz (small kit)',
+          'jamBand.kits.electronic' => 'Drum machine',
+          'jamBand.basses.finger' => 'Fingerstyle electric',
+          'jamBand.basses.pick' => 'Picked electric',
+          'jamBand.basses.upright' => 'Upright bass',
+          'jamBand.basses.synth' => 'Synth and sub',
+          'jamBand.guitars.acoustic' => 'Acoustic',
+          'jamBand.guitars.clean' => 'Clean electric',
+          'jamBand.guitars.distorted' => 'Distorted electric',
+          'jamBand.guitars.nylon' => 'Nylon and flamenco',
+          'jamBand.keysKinds.piano' => 'Piano',
+          'jamBand.keysKinds.rhodes' => 'Electric piano',
+          'jamBand.keysKinds.organ' => 'Organ',
+          'jamBand.keysKinds.pad' => 'Strings',
+          'jamBand.winds.accordion' => 'Accordion',
+          'jamBand.winds.brass' => 'Brass',
+          'jamBand.feel' => 'Feel',
+          'jamBand.swing' => ({required Object n}) => 'Swing: ${n}%',
+          'jamBand.swingAuto' => 'Style\'s swing',
+          'jamBand.humanize' => ({required Object n}) => 'Humanize: ${n}%',
+          'jamBand.humanizeHint' => 'Nudges the timing and strength of each hit a little, the way a person would.',
+          'jamBand.intensity' => 'Intensity',
+          'jamBand.intensities.soft' => 'Soft',
+          'jamBand.intensities.normal' => 'Normal',
+          'jamBand.intensities.strong' => 'Strong',
+          'jamBand.fills' => 'Drum fills',
+          'jamBand.structure' => 'Structure',
+          'jamBand.countInLabel' => 'Count-in',
+          'jamBand.countInOptions.none' => 'None',
+          'jamBand.countInOptions.one' => '1 bar',
+          'jamBand.countInOptions.two' => '2 bars',
+          'jamBand.loops' => ({required Object n}) => 'Loops: ${n}',
+          'jamBand.transpose' => ({
+            required Object n,
+          }) => 'Transpose / capo: ${n}',
+          'jamBand.transposeLess' => 'Down a semitone',
+          'jamBand.transposeMore' => 'Up a semitone',
+          _ => null,
+        } ??
+        switch (path) {
+          'jamBand.loopsLess' => 'One loop less',
+          'jamBand.loopsMore' => 'One loop more',
+          'jamBand.reset' => 'Factory settings',
+          'jamBand.loading' => 'Getting the band ready…',
+          'jamBand.loadingBody' => ({
+            required Object n,
+          }) => 'Synthesizing the instruments: ${n}%',
+          'jamBand.loadingTip' => 'This only happens when preparing the track; afterwards it plays without gaps.',
+          'jamBand.activity' => 'Band instruments',
+          'jamBand.activityTip' => 'Tap an instrument to mute or unmute it.',
+          'jamBand.tempoDown5' => 'Down 5 BPM',
+          'jamBand.tempoDown1' => 'Down 1 BPM',
+          'jamBand.tempoUp1' => 'Up 1 BPM',
+          'jamBand.tempoUp5' => 'Up 5 BPM',
+          'jamBand.tempoEdit' => 'Type the tempo',
+          'jamBand.tempoDialog' => 'Tempo in BPM',
+          'jamBand.tempoRange' => ({
+            required Object min,
+            required Object max,
+          }) => 'Between ${min} and ${max}',
+          'jamBand.accept' => 'OK',
+          'jamBand.cancel' => 'Cancel',
+          'jamBand.resultBand' => ({required Object style}) => 'Band: ${style}',
+          'jamBand.resultTranspose' => ({
+            required Object n,
+          }) => 'Transposition: ${n}',
           'songs.title' => 'Songbook',
           'songs.subtitle' =>
             'Traditional and public-domain songs with chords and lyrics.',

@@ -6,10 +6,12 @@ import 'package:chords/domain/theory/catalog/genre_catalog.dart';
 import 'package:chords/domain/theory/catalog/progression_catalog.dart';
 import 'package:chords/domain/theory/entities/chord_progression.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/jam/jam_band_panel.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
 import 'package:chords/presentation/features/jam/jam_custom_builder.dart';
 import 'package:chords/presentation/features/jam/jam_selection.dart';
 import 'package:chords/presentation/features/jam/jam_state.dart';
+import 'package:chords/presentation/features/jam/jam_tempo_control.dart';
 import 'package:chords/presentation/features/studio/studio_progress_controller.dart';
 import 'package:chords/presentation/features/theory/theory_widgets.dart';
 import 'package:chords/presentation/l10n/theory_labels.dart';
@@ -79,6 +81,8 @@ class JamSetupView extends StatelessWidget {
         _TempoCard(state: state, controller: controller),
         const SizedBox(height: 12),
         _ModeCard(state: state, controller: controller),
+        const SizedBox(height: 12),
+        JamBandPanel(scoreMode: state.mode == JamMode.score),
         const SizedBox(height: 16),
         if (best > 0) Center(child: AppText(t.jam.best(n: best))),
         const SizedBox(height: 8),
@@ -259,6 +263,8 @@ class _TempoCard extends StatelessWidget {
                 ? null
                 : (double v) => controller.setTempo(v.round()),
           ),
+          if (state.track != null)
+            JamTempoControl(bpm: bpm, onChanged: controller.setTempo),
           if (state.track != null) ...<Widget>[
             AppText(
               t.theory.strumLabel(name: strumName(t, state.track!.strum)),
@@ -314,13 +320,6 @@ class _ModeCard extends StatelessWidget {
               variant: AppTextVariant.labelMedium,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               maxLines: 3,
-            )
-          else
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(t.jam.metronome),
-              value: state.metronome,
-              onChanged: (_) => controller.toggleMetronome(),
             ),
         ],
       ),
