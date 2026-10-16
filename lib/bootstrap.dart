@@ -13,6 +13,7 @@ import 'package:chords/core/logging/runtime/app_error_zone.dart';
 import 'package:chords/core/logging/runtime/logging_bootstrap.dart';
 import 'package:chords/data/analytics/analytics_bootstrap.dart';
 import 'package:chords/data/audio/audio_repository_impl.dart';
+import 'package:chords/data/audio/band_audio_repository_impl.dart';
 import 'package:chords/data/chords/repositories/chord_repository_impl.dart';
 import 'package:chords/data/l10n/locale_repository_impl.dart';
 import 'package:chords/data/local/preferences_service.dart';
@@ -286,7 +287,12 @@ class AppDependencies {
       chordPracticeController: practice,
       profileController: profile,
       guitar: guitar,
-      studio: StudioKit(preferences, chordRepository, audioRepository),
+      studio: StudioKit(
+        preferences,
+        chordRepository,
+        audioRepository,
+        band: BandAudioRepositoryImpl(),
+      ),
     );
   }
 

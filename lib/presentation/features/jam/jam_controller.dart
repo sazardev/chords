@@ -1,38 +1,76 @@
 import 'dart:async';
 
-import 'package:chords/core/logging/app_log.dart';
-import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
+import 'package:chords/domain/audio/repositories/band_audio_repository.dart';
+import 'package:chords/domain/band/clock/monotonic_clock.dart';
+import 'package:chords/domain/band/clock/tick.dart';
+import 'package:chords/domain/band/clock/tick_scheduler.dart';
+import 'package:chords/domain/band/entities/band_config.dart';
+import 'package:chords/domain/band/services/band_arranger.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
 import 'package:chords/domain/jam/jam_scorer.dart';
+import 'package:chords/domain/jam/jam_timeline.dart';
 import 'package:chords/domain/jam/jam_track.dart';
 import 'package:chords/domain/theory/entities/chord_symbol.dart';
+import 'package:chords/presentation/features/jam/band_activity.dart';
+import 'package:chords/presentation/features/jam/band_settings_controller.dart';
 import 'package:chords/presentation/features/jam/jam_band.dart';
-import 'package:chords/presentation/features/jam/jam_mic_judge.dart';
+import 'package:chords/presentation/features/jam/jam_cursor_state.dart';
+import 'package:chords/presentation/features/jam/jam_score_keeper.dart';
+import 'package:chords/presentation/features/jam/jam_session.dart';
 import 'package:chords/presentation/features/jam/jam_state.dart';
 import 'package:chords/presentation/features/studio/studio_progress_controller.dart';
 import 'package:flutter/foundation.dart';
 
 /// Controlador del jam guiado.
 ///
-/// Lleva el reloj en corcheas: en cada hueco toca el golpe del patrón de
-/// rasgueo (modo acompañar) o escucha el micrófono y, al cerrar cada compás,
-/// lo puntúa (modo puntuar). Empieza con un compás de cuenta atrás.
+/// Lleva el estado de la sesión y la puntuación; el reloj y el sonido de la
+/// banda los lleva [JamSession]. En modo acompañar prepara las muestras
+/// (con barra de progreso), da la cuenta atrás configurada y toca la banda;
+/// en modo puntuar la banda calla y el micrófono califica cada compás.
 class JamController extends ChangeNotifier {
   /// Crea el controlador.
-  JamController(AudioRepository audio, this._chords, this._progress)
-    : _judge = JamMicJudge(audio),
-      _band = JamBand(audio, _chords);
+  ///
+  /// [band] es el audio de la banda (sin él la sesión corre en silencio) y
+  /// [settings] sus ajustes. [clock] y [timerFactory] sustituyen el reloj y
+  /// los temporizadores en las pruebas.
+  JamController(
+    AudioRepository audio,
+    this._chords,
+    StudioProgressController progress, {
+    required BandSettingsController settings,
+    BandAudioRepository? band,
+    MonotonicClock? clock,
+    TimerFactory? timerFactory,
+  }) : _scoring = JamScoreKeeper(audio, progress),
+       _band = JamBand(band, _chords),
+       _settings = settings,
+       activity = BandActivity() {
+    _session = JamSession(
+      _band,
+      activity,
+      onCursor: _onCursor,
+      clock: clock,
+      timerFactory: timerFactory,
+    );
+    _config = settings.config;
+    settings.addListener(_onSettings);
+  }
 
   final ChordRepository _chords;
-  final StudioProgressController _progress;
-
-  final JamMicJudge _judge;
+  final BandSettingsController _settings;
+  final JamScoreKeeper _scoring;
   final JamBand _band;
 
+  /// Qué instrumentos acaban de sonar (para los indicadores de la escena).
+  final BandActivity activity;
+
+  late final JamSession _session;
+  late BandConfig _config;
   JamState _state = const JamState();
-  Timer? _timer;
+  JamTrack? _baseTrack;
+  int _run = 0;
 
   /// Estado actual.
   JamState get state => _state;
@@ -46,8 +84,9 @@ class JamController extends ChangeNotifier {
     if (!_chords.isLoaded) {
       await _chords.load();
     }
+    _baseTrack = track;
     _state = _state.copyWith(
-      track: track,
+      track: _transposed(track),
       phase: JamPhase.setup,
       bar: 0,
       slot: 0,
@@ -65,64 +104,81 @@ class JamController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Cambia el tempo; se aplica también en marcha.
+  /// Cambia el tempo; se aplica también en marcha y sin saltos.
   void setTempo(int bpm) {
-    final JamTrack? track = _state.track;
-    if (track == null) {
+    final JamTrack? base = _baseTrack;
+    if (base == null) {
       return;
     }
-    _state = _state.copyWith(
-      track: track.withBpm(bpm.clamp(kJamMinBpm, kJamMaxBpm)),
-    );
-    if (_timer != null) {
-      _schedule();
-    }
+    final int value = bpm.clamp(kJamMinBpm, kJamMaxBpm);
+    _baseTrack = base.withBpm(value);
+    _state = _state.copyWith(track: _state.track!.withBpm(value));
+    _session.setBpm(value);
     notifyListeners();
   }
 
-  /// Enciende o apaga el metrónomo.
-  void toggleMetronome() {
-    _state = _state.copyWith(metronome: !_state.metronome);
-    notifyListeners();
-  }
-
-  /// Empieza la sesión con un compás de cuenta atrás.
+  /// Prepara la banda y empieza la sesión (con la cuenta atrás elegida).
   Future<void> start() async {
-    final JamTrack? track = _state.track;
-    if (track == null) {
+    final JamTrack? base = _baseTrack;
+    if (base == null) {
       return;
     }
     _halt();
+    final int run = ++_run;
+    final JamTrack track = _transposed(base);
+    final BandConfig config = _config = _settings.config;
+    final BandArranger arranger = BandArranger(track, config);
+    final bool audible = _state.mode == JamMode.backing;
     _state = _state.copyWith(
-      phase: JamPhase.countIn,
+      track: track,
+      phase: JamPhase.loading,
+      loadProgress: 0,
       bar: 0,
       slot: 0,
-      countdown: track.strum.beatsPerBar,
+      countdown: 0,
       score: const JamScore(),
       clearGrade: true,
       isNewBest: false,
       micProblem: false,
     );
     notifyListeners();
-    if (_state.mode == JamMode.score && !await _judge.open()) {
+    if (audible) {
+      await _band.prepare(arranger, config, onProgress: _loading(run));
+    } else if (!await _scoring.open()) {
       _state = _state.copyWith(micProblem: true);
-      notifyListeners();
     }
-    _click(accent: true);
-    _schedule();
+    if (run != _run) {
+      return;
+    }
+    // Si se tocaron los ajustes mientras cargaba, la banda lee los nuevos.
+    final BandConfig live = _config;
+    final BandArranger score = live == config
+        ? arranger
+        : BandArranger(track, live);
+    final bool counting = live.countInBars > 0;
+    _state = _state.copyWith(
+      phase: counting ? JamPhase.countIn : JamPhase.playing,
+      countdown: counting ? track.strum.beatsPerBar * live.countInBars : 0,
+    );
+    notifyListeners();
+    _session.start(
+      track: track,
+      arranger: score,
+      config: live,
+      audible: audible,
+    );
   }
 
   /// Pausa o reanuda.
   void togglePause() {
     if (_state.phase == JamPhase.playing) {
-      _timer?.cancel();
-      _timer = null;
-      _judge.counting = false;
+      _session.pause();
+      _scoring.hold();
       _state = _state.copyWith(phase: JamPhase.paused);
     } else if (_state.phase == JamPhase.paused) {
-      _judge.counting = true;
+      _scoring.resume();
       _state = _state.copyWith(phase: JamPhase.playing);
-      _schedule();
+      _session.resume();
     }
     notifyListeners();
   }
@@ -130,131 +186,85 @@ class JamController extends ChangeNotifier {
   /// Termina la sesión ahora y muestra el resultado.
   Future<void> stop() => _finish();
 
-  /// Sale de la pantalla: corta el reloj y el micrófono sin avisar.
+  /// Sale de la pantalla: corta el reloj, la banda y el micrófono sin avisar.
   void leave() {
     _halt();
+    unawaited(_band.release());
     _state = _state.copyWith(phase: JamPhase.setup);
   }
 
-  void _schedule() {
-    _timer?.cancel();
-    final int bpm = _state.track!.bpm;
-    _timer = Timer.periodic(
-      Duration(microseconds: 30000000 ~/ bpm),
-      (Timer _) => _tick(),
-    );
-  }
-
-  void _tick() {
-    if (_state.phase == JamPhase.countIn) {
-      _countInTick();
-    } else if (_state.phase == JamPhase.playing) {
-      _playTick();
+  /// Anota el avance de la preparación si la sesión sigue siendo [run].
+  void Function(double) _loading(int run) => (double progress) {
+    if (run == _run) {
+      _state = _state.copyWith(loadProgress: progress);
+      notifyListeners();
     }
-  }
+  };
 
-  void _countInTick() {
-    final int slot = _state.slot + 1;
-    if (slot.isOdd) {
-      _state = _state.copyWith(slot: slot);
+  /// La pista con la transposición (capo) de los ajustes.
+  JamTrack _transposed(JamTrack track) =>
+      track.transposed(_settings.config.transpose);
+
+  /// Reacciona a un cambio de ajustes: en la preparación refresca la pista
+  /// transpuesta; en marcha reajusta la banda sin cortar el compás.
+  void _onSettings() {
+    final BandConfig next = _settings.config;
+    final BandConfig previous = _config;
+    _config = next;
+    final JamTrack? track = _state.track;
+    if (track == null) {
       return;
     }
-    final int left = _state.countdown - 1;
-    if (left <= 0) {
-      _state = _state.copyWith(phase: JamPhase.playing, slot: 0, countdown: 0);
-      _judge
-        ..reset()
-        ..counting = true;
-      _sound();
-    } else {
-      _state = _state.copyWith(slot: slot, countdown: left);
-      _click(accent: false);
+    if (_state.phase == JamPhase.setup) {
+      _state = _state.copyWith(track: _transposed(_baseTrack!));
+      notifyListeners();
+    } else if (_state.isRunning && _state.phase != JamPhase.loading) {
+      _session.retune(track, previous, next);
     }
-    notifyListeners();
   }
 
-  void _playTick() {
-    final JamTrack track = _state.track!;
-    int slot = _state.slot + 1;
-    int bar = _state.bar;
-    if (slot >= track.slotsPerBar) {
+  /// Recibe cada semicorchea de la sesión y actualiza el estado.
+  void _onCursor(JamCursor cursor, Tick _) {
+    if (cursor.kind == CursorKind.finished) {
       _closeBar();
-      slot = 0;
-      bar++;
-      if (bar >= track.bars.length) {
-        unawaited(_finish());
-        return;
+      unawaited(_finish());
+      return;
+    }
+    if (cursor.kind == CursorKind.playing) {
+      if (cursor.step == 0 && cursor.bar > 0) {
+        _closeBar();
+      }
+      if (_state.phase != JamPhase.playing) {
+        _scoring.begin();
       }
     }
-    _state = _state.copyWith(bar: bar, slot: slot);
-    _sound();
-    notifyListeners();
-  }
-
-  /// Toca lo que corresponde al hueco actual.
-  void _sound() {
-    if (_state.mode == JamMode.score) {
-      return;
-    }
-    final JamTrack track = _state.track!;
-    _band.play(
-      track.strum.strokes[_state.slot],
-      track.chordAt(_state.bar, _state.slot),
-      click: _state.metronome && _state.slot.isEven,
-    );
-  }
-
-  void _click({required bool accent}) {
-    if (_state.metronome && _state.mode == JamMode.backing) {
-      _band.click(accent: accent);
+    final JamState next = advanceTo(_state, cursor);
+    if (!identical(next, _state)) {
+      _state = next;
+      notifyListeners();
     }
   }
 
-  void _closeBar() {
-    if (_state.mode != JamMode.score || _state.micProblem) {
-      return;
-    }
-    final JamTrack track = _state.track!;
-    final ChordSymbol chord = track.chordAt(_state.bar, track.slotsPerBar - 1);
-    final BarGrade grade = _judge.grade(chord);
-    _state = _state.copyWith(
-      score: _state.score.record(grade),
-      lastGrade: grade,
-    );
-  }
+  void _closeBar() => _state = _scoring.closeBar(_state);
 
   Future<void> _finish() async {
     if (_state.phase == JamPhase.finished || _state.track == null) {
       return;
     }
     _halt();
-    final bool scored = _state.mode == JamMode.score && !_state.micProblem;
-    final bool record =
-        scored &&
-        await _progress.saveJam(_state.track!.key, _state.score.points);
-    if (!scored) {
-      await _progress.markPracticed();
-    }
-    _state = _state.copyWith(phase: JamPhase.finished, isNewBest: record);
-    appLogger.info(
-      'jam terminado: ${_state.track!.key}',
-      channel: LogChannel.learn,
-      context: <String, Object?>{
-        'mode': _state.mode.name,
-        'points': _state.score.points,
-      },
-    );
+    _state = await _scoring.finish(_state);
     notifyListeners();
   }
 
   void _halt() {
-    _timer?.cancel();
-    _timer = null;
-    _judge.close();
+    _run++;
+    _session.stop();
+    _scoring.close();
   }
 
   @override
   void dispose() {
+    _settings.removeListener(_onSettings);
     _halt();
     super.dispose();
   }

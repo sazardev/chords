@@ -2,6 +2,7 @@ import 'dart:async' show unawaited;
 
 import 'package:chords/domain/jam/jam_track.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/jam/band_settings_controller.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
 import 'package:chords/presentation/features/jam/jam_result_view.dart';
 import 'package:chords/presentation/features/jam/jam_selection.dart';
@@ -27,6 +28,7 @@ class JamPage extends StatefulWidget {
 class _JamPageState extends State<JamPage> {
   JamSelection _selection = const JamSelection();
   String? _appliedQuery;
+  int? _loops;
   late final JamController _controller = context.read<JamController>();
 
   @override
@@ -37,6 +39,7 @@ class _JamPageState extends State<JamPage> {
       return;
     }
     _appliedQuery = uri.query;
+    _loops = context.read<BandSettingsController>().config.loops;
     _selection = JamSelection.fromQuery(uri.queryParameters);
     WidgetsBinding.instance.addPostFrameCallback((_) => _reload());
   }
@@ -50,7 +53,10 @@ class _JamPageState extends State<JamPage> {
     if (!mounted) {
       return;
     }
-    final JamTrack? track = _selection.toTrack(context.t);
+    final JamTrack? track = _selection.toTrack(
+      context.t,
+      loops: _loops ?? context.read<BandSettingsController>().config.loops,
+    );
     if (track != null) {
       unawaited(_controller.load(track));
     }
@@ -66,6 +72,13 @@ class _JamPageState extends State<JamPage> {
   Widget build(BuildContext context) {
     final Translations t = context.t;
     final JamState state = context.watch<JamController>().state;
+    final int loops = context.select<BandSettingsController, int>(
+      (BandSettingsController s) => s.config.loops,
+    );
+    if (_loops != null && _loops != loops) {
+      _loops = loops;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _reload());
+    }
     return PopScope(
       canPop: !state.isRunning,
       onPopInvokedWithResult: (bool didPop, Object? _) {

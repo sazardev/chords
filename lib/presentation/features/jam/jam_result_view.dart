@@ -1,9 +1,13 @@
 import 'dart:async' show unawaited;
 
+import 'package:chords/domain/band/entities/band_config.dart';
+import 'package:chords/domain/band/presets/band_preset_catalog.dart';
 import 'package:chords/domain/jam/jam_scorer.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/jam/band_settings_controller.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
 import 'package:chords/presentation/features/jam/jam_state.dart';
+import 'package:chords/presentation/l10n/band_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +51,13 @@ class _ResultCard extends StatelessWidget {
       color: scheme.primaryContainer,
       child: Column(
         children: <Widget>[
-          AppText(
-            t.jam.resultTitle,
-            variant: AppTextVariant.headlineMedium,
-            color: ink,
+          Semantics(
+            header: true,
+            child: AppText(
+              t.jam.resultTitle,
+              variant: AppTextVariant.headlineMedium,
+              color: ink,
+            ),
           ),
           const SizedBox(height: 8),
           if (scored)
@@ -62,9 +69,40 @@ class _ResultCard extends StatelessWidget {
               variant: AppTextVariant.titleMedium,
               color: ink,
             ),
+            _BandSummary(state: state, ink: ink),
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Con qué banda se tocó: estilo y transposición.
+class _BandSummary extends StatelessWidget {
+  const _BandSummary({required this.state, required this.ink});
+
+  final JamState state;
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final BandConfig config = context.read<BandSettingsController>().config;
+    final String style = bandStyleName(t, bandStyleOf(state.track!, config));
+    return Column(
+      children: <Widget>[
+        AppText(
+          t.jamBand.resultBand(style: style),
+          color: ink,
+          align: TextAlign.center,
+          maxLines: 2,
+        ),
+        if (config.transpose != 0)
+          AppText(
+            t.jamBand.resultTranspose(n: signedSemitones(config.transpose)),
+            color: ink,
+          ),
+      ],
     );
   }
 }

@@ -20,6 +20,8 @@ class JamTrack {
     required this.strum,
     required this.tonic,
     this.scale,
+    this.genre,
+    this.loopLength = 0,
   });
 
   /// Pista a partir de una progresión en la tónica [tonic], repetida [loops]
@@ -42,6 +44,8 @@ class JamTrack {
       strum: progression.strum,
       tonic: tonic,
       scale: progression.scale,
+      genre: progression.genre,
+      loopLength: once.length,
     );
   }
 
@@ -74,6 +78,7 @@ class JamTrack {
       scale: first.quality.intervals.contains(3)
           ? ScaleType.minorPentatonic
           : ScaleType.majorPentatonic,
+      genre: song.genre,
     );
   }
 
@@ -95,6 +100,7 @@ class JamTrack {
     bpm: bpm,
     strum: strum,
     tonic: chords.first.root,
+    loopLength: chords.length,
   );
 
   /// Identificador para guardar el récord (`song:bamba`).
@@ -118,8 +124,20 @@ class JamTrack {
   /// Escala sugerida para improvisar encima, si la hay.
   final ScaleType? scale;
 
+  /// Género de la pista (`rock`), si se conoce: elige la banda.
+  final String? genre;
+
+  /// Compases de una vuelta; 0 = la pista entera es una vuelta.
+  final int loopLength;
+
+  /// Compases de cada vuelta (la banda marca el principio de cada una).
+  int get loopBars => loopLength > 0 ? loopLength : bars.length;
+
   /// Huecos de corchea por compás.
   int get slotsPerBar => strum.notation.length;
+
+  /// Pasos de semicorchea por compás: 16 en 4/4 y 12 en 3/4.
+  int get stepsPerBar => slotsPerBar * 2;
 
   /// Acorde que suena en el hueco [slot] del compás [bar].
   ChordSymbol chordAt(int bar, int slot) {
@@ -128,14 +146,46 @@ class JamTrack {
     return chords[part.clamp(0, chords.length - 1)];
   }
 
+  /// Acorde que suena en el paso de semicorchea [step] del compás [bar].
+  ChordSymbol chordAtStep(int bar, int step) {
+    final List<ChordSymbol> chords = bars[bar].chords;
+    final int part = step * chords.length ~/ stepsPerBar;
+    return chords[part.clamp(0, chords.length - 1)];
+  }
+
   /// La misma pista a otro tempo.
-  JamTrack withBpm(int value) => JamTrack(
+  JamTrack withBpm(int value) => _copy(bpm: value);
+
+  /// La misma pista [semitones] semitonos más aguda (o más grave si es
+  /// negativo).
+  JamTrack transposed(int semitones) {
+    if (semitones == 0) {
+      return this;
+    }
+    return _copy(
+      bars: <JamBar>[
+        for (final JamBar bar in bars)
+          (
+            chords: <ChordSymbol>[
+              for (final ChordSymbol chord in bar.chords)
+                chord.transpose(semitones),
+            ],
+            lyric: bar.lyric,
+          ),
+      ],
+      tonic: (tonic + semitones) % 12,
+    );
+  }
+
+  JamTrack _copy({List<JamBar>? bars, int? bpm, int? tonic}) => JamTrack(
     key: key,
     title: title,
-    bars: bars,
-    bpm: value,
+    bars: bars ?? this.bars,
+    bpm: bpm ?? this.bpm,
     strum: strum,
-    tonic: tonic,
+    tonic: tonic ?? this.tonic,
     scale: scale,
+    genre: genre,
+    loopLength: loopLength,
   );
 }

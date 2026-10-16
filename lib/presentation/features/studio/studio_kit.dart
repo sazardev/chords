@@ -1,7 +1,11 @@
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
+import 'package:chords/domain/audio/repositories/band_audio_repository.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/preferences/repositories/band_preferences.dart';
 import 'package:chords/domain/preferences/repositories/studio_preferences.dart';
+import 'package:chords/presentation/features/jam/band_settings_controller.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
+import 'package:chords/presentation/features/jam/memory_band_preferences.dart';
 import 'package:chords/presentation/features/minigames/sound_cue_player.dart';
 import 'package:chords/presentation/features/studio/studio_progress_controller.dart';
 import 'package:chords/presentation/features/theory/scale_explorer_controller.dart';
@@ -15,19 +19,34 @@ class StudioKit {
   factory StudioKit(
     StudioPreferences preferences,
     ChordRepository chords,
-    AudioRepository audio,
-  ) {
+    AudioRepository audio, {
+    BandAudioRepository? band,
+    BandPreferences? bandPreferences,
+  }) {
     final StudioProgressController progress = StudioProgressController(
       preferences,
+    );
+    final BandSettingsController bandSettings = BandSettingsController(
+      bandPreferences ??
+          (preferences is BandPreferences
+              ? preferences as BandPreferences
+              : MemoryBandPreferences()),
     );
     return StudioKit._(
       progress,
       ScaleExplorerController(SoundCuePlayer(audio, chords)),
-      JamController(audio, chords, progress),
+      JamController(
+        audio,
+        chords,
+        progress,
+        settings: bandSettings,
+        band: band,
+      ),
+      bandSettings,
     );
   }
 
-  StudioKit._(this.progress, this.explorer, this.jam);
+  StudioKit._(this.progress, this.explorer, this.jam, this.bandSettings);
 
   /// Historial, racha, lecciones y récords.
   final StudioProgressController progress;
@@ -38,10 +57,14 @@ class StudioKit {
   /// Jam guiado.
   final JamController jam;
 
+  /// Ajustes de la banda del jam.
+  final BandSettingsController bandSettings;
+
   /// Proveedores para el árbol de widgets.
   List<SingleChildWidget> get providers => <SingleChildWidget>[
     ChangeNotifierProvider<StudioProgressController>.value(value: progress),
     ChangeNotifierProvider<ScaleExplorerController>.value(value: explorer),
+    ChangeNotifierProvider<BandSettingsController>.value(value: bandSettings),
     ChangeNotifierProvider<JamController>.value(value: jam),
   ];
 }

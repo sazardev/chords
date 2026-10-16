@@ -1,3 +1,4 @@
+import 'package:chords/data/local/band_preferences_store.dart';
 import 'package:chords/data/local/guitar_preferences_store.dart';
 import 'package:chords/data/local/studio_preferences_store.dart';
 import 'package:chords/domain/preferences/entities/app_accent_color.dart';
@@ -15,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// Centraliza todas las claves para evitar duplicados.
 class PreferencesService
-    with GuitarPreferencesStore, StudioPreferencesStore
+    with GuitarPreferencesStore, StudioPreferencesStore, BandPreferencesStore
     implements PreferencesRepository {
   /// Crea el servicio.
   const PreferencesService(this._prefs);

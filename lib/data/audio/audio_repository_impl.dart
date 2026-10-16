@@ -9,6 +9,7 @@ import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/audio/chord_audio_synthesizer.dart';
 import 'package:chords/data/audio/mic_pitch_analyzer.dart';
 import 'package:chords/data/audio/microphone_stream_service.dart';
+import 'package:chords/data/audio/soloud_bootstrap.dart';
 import 'package:chords/data/audio/wav_encoder.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
@@ -191,7 +192,7 @@ class AudioRepositoryImpl implements AudioRepository {
     if (_engineReady) {
       return;
     }
-    await SoLoud.instance.init();
+    await ensureSoLoudReady();
     _engineReady = true;
     appLogger.debug(
       'motor de audio (SoLoud) iniciado',

@@ -1,6 +1,7 @@
 import 'package:chords/data/local/preferences_service.dart';
 import 'package:chords/domain/songs/catalog/song_catalog.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/features/jam/band_settings_controller.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/songs/song_page.dart';
@@ -39,6 +40,7 @@ void main() {
                 FakeAudioRepository(),
                 loadChordBank(),
                 progress,
+                settings: BandSettingsController(preferences),
               ),
             ),
             ChangeNotifierProvider<SettingsController>.value(
