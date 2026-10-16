@@ -1455,6 +1455,8 @@ class Translations$theory$en extends Translations$theory$es {
   @override
   String get unitHarmony => 'Harmony and progressions';
   @override
+  String get unitTechnique => 'Technique and style';
+  @override
   String get keyPoints => 'Key ideas';
   @override
   String get tryIt => 'Try it on the fretboard';
@@ -1519,6 +1521,12 @@ class Translations$theory$en extends Translations$theory$es {
   String get genresSubtitle =>
       'How each style sounds: tempo, strumming, scales, chords and progressions.';
   @override
+  String get genresEmptyBody => 'Try another name or a chord such as Am or E7.';
+  @override
+  String get genresEmpty => 'No genre matches your search';
+  @override
+  String get genresSearch => 'Search a genre or a chord';
+  @override
   String tempoRange({required Object min, required Object max}) =>
       '${min}–${max} BPM';
   @override
@@ -1538,6 +1546,12 @@ class Translations$theory$en extends Translations$theory$es {
       'See ${genre} chords in the library';
   @override
   String strumLabel({required Object name}) => 'Strumming: ${name}';
+  @override
+  String get strumMutedHint => '✕ = muted (percussive) hit';
+  @override
+  String get strumStop => 'Stop';
+  @override
+  String get strumPlay => 'Watch the strum in motion';
   @override
   Map<String, String> get scaleNames => {
     'major': 'major',
@@ -1579,6 +1593,28 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get strumNames => {
+    'cumbia': 'Cumbia',
+    'salsa': 'Salsa (montuno)',
+    'reggaeton': 'Reggaeton (dembow)',
+    'rumba': 'Flamenco rumba',
+    'ska': 'Ska (fast offbeats)',
+    'disco': 'Disco (four on the floor)',
+    'bolero': 'Bolero',
+    'tango': 'Tango (marcato)',
+    'valsRanchero': 'Ranchero waltz',
+    'valsCriollo': 'Creole waltz',
+    'merengue': 'Merengue',
+    'bachata': 'Bachata',
+    'campfire': 'Campfire folk',
+    'funkMuted': 'Muted funk',
+    'arpeggio': 'Arpeggiated ballad',
+    'downstrokes': 'All downstrokes',
+    'gallop': 'Metal gallop',
+    'lofi': 'Lazy lo-fi',
+    'charleston': 'Charleston (jazz)',
+    'trainBeat': 'Country train beat',
+    'tresillo': 'Tresillo (habanera)',
+    'rockBallad': 'Rock ballad',
     'whole': 'One strum per bar',
     'quarters': 'Quarter notes',
     'pop': 'Pop',
@@ -1590,7 +1626,68 @@ class Translations$theory$en extends Translations$theory$es {
     'waltz': 'Waltz 3/4',
   };
   @override
+  Map<String, String> get genreFamilies => {
+    'roots': 'Roots and Latin rhythms',
+    'rock': 'Rock and metal',
+    'soulJazz': 'Blues, jazz and soul',
+    'pop': 'Pop and dance',
+  };
+  @override
+  Map<String, String> get strumAbout => {
+    'whole': 'A single downstroke at the start of the bar; let the chord ring. Ideal for changing chords calmly.',
+    'quarters': 'A downstroke on every beat (1, 2, 3 and 4). Simple and steady: the best way to start.',
+    'pop': 'The universal strum: ↓ ↓↑ ↑↓↑. Your arm never stops moving; you just skip a few hits.',
+    'eighths':
+        'Steady eighths ↓↑↓↑↓↑↓↑ accenting the beats: the energy of rock.',
+    'boomChick': 'Bass on 1 and 3 and a strum on 2 and 4: "boom-chick". Alternate root and fifth in the bass.',
+    'skank': 'Silence on the beats and a dry hit only on the offbeat.',
+    'bossa': 'Thumb on the bass and syncopated chords with the fingers: the soft sway of bossa nova.',
+    'shuffle': 'Long-short on every beat, like a triplet without the middle note: the sway of the blues.',
+    'waltz':
+        'In 3/4: bass on 1 and two light strums on 2 and 3, "one-two-three".',
+    'cumbia': 'Bass on 1 and 3 and a short ↓↑ strum on the offbeat: "boom-chiki, boom-chiki".',
+    'salsa': 'Syncopated hits leaning on the "and" of the beats, leaving room for the bass and the clave.',
+    'reggaeton': 'The dembow: hits on 1, the "and" of 2, 3 and 4. It demands a very steady pulse.',
+    'rumba': 'Down, down-up, a dry tap on the top (✕), up and down-up: the hallmark of the flamenco rumba.',
+    'ska': 'Only very short upstrokes on every offbeat: ·↑·↑·↑·↑.',
+    'disco': 'A strong hit on every beat with the offbeat muted (✕), like the "four on the floor" kick.',
+    'bolero': 'Bass on 1 and chords falling between the beats with a soft syncopation.',
+    'tango': 'Marcato: firm, dry hits on the beats, a muted hit (✕) and a ↑ push at the end.',
+    'valsRanchero': 'In 3/4: bass on 1, chord on 2 and a ↓↑ bounce on 3 that pushes into the next bar.',
+    'valsCriollo': 'In 3/4: bass on 1 and a dragged ↓↑↓ chord leaning toward the third beat.',
+    'merengue': 'A constant pulse with the hand tuned to the offbeat, quick and cheerful.',
+    'bachata': 'Bass on 1 and linked ↓↑ hits accenting 2 and 4.',
+    'campfire':
+        '↓ ↓ ↓↑ ↓↑: the strum heard around every campfire. Easy and wide open.',
+    'funkMuted': 'Dry hits (✕) dragging between open chords: the hand never stops moving.',
+    'arpeggio':
+        'Bass and single notes going up and down, softly: ideal for ballads.',
+    'downstrokes':
+        'Eighths always downward: the speed and drive of punk and grunge.',
+    'gallop':
+        'An eighth and two sixteenths, all down: the metal gallop, palm-muted.',
+    'lofi': 'Lazy, dragging chords: ↓ ·· ↑ ↓ · ↑. Let the gaps breathe.',
+    'charleston':
+        'A chord on 1 and on the "and" of 2: the rhythm of pre-swing jazz.',
+    'trainBeat': 'Bass and two quick ↓↓ hits in each half of the bar: the country "chug-a-chug" train.',
+    'tresillo': '3+3+2: hits on 1, the "and" of 2 and 4; the rhythm of habanera and milonga.',
+    'rockBallad':
+        'Two firm hits and a ↓↑↓ push into the next bar: the rock ballad.',
+  };
+  @override
   Map<String, String> get genreNames => {
+    'cumbia': 'Cumbia',
+    'salsa': 'Salsa',
+    'ranchera': 'Ranchera',
+    'flamenco': 'Flamenco',
+    'bolero': 'Bolero',
+    'tango': 'Tango',
+    'ska': 'Ska',
+    'indie': 'Indie',
+    'grunge': 'Grunge',
+    'disco': 'Disco',
+    'reggaeton': 'Reggaeton',
+    'lofi': 'Lo-fi',
     'pop': 'Pop',
     'rock': 'Rock',
     'blues': 'Blues',
@@ -1609,6 +1706,18 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get genreAbout => {
+    'cumbia': 'Born on Colombia\'s Caribbean coast and adopted across Latin America. Simple chords (i–iv–V7), a marked bass on 1 and 3 and the "chiqui" strum on the offbeat. Very danceable and easy to learn.',
+    'salsa': 'Caribbean and New York music built on clave, horns and percussion. The guitar rarely leads: it plays montunos and syncopated chords (I–IV–V7, ii–V–I) that talk to the bass and the clave.',
+    'ranchera': 'Mexican popular song with mariachi, guitar and guitarrón. It works as a waltz (3/4), polka, corrido or bolero, with major chords, the dominant seventh and a lot of feeling in the singing.',
+    'flamenco': 'Gypsy-Andalusian music built on the phrygian cadence (Am–G–F–E) and the phrygian scale. The guitar backs singing and dance in 12-beat or 4/4 compás (rumba, tangos), with fan strums and taps on the top.',
+    'bolero': 'Cuban and Mexican romance: slow tempo and sighing chords (I–vi–ii–V7, i–VI–iv–V7). Played with guitar and requinto, with a soft syncopation in the picking hand.',
+    'tango': 'Music from the River Plate born in Buenos Aires and Montevideo. Minor harmony with very dramatic dominants (V7), bandoneon, violin and piano. The guitar marks the beat firmly.',
+    'ska': 'Pre-reggae Jamaica, faster and happier. The guitar plays short upstrokes on every offbeat while the bass walks. Its later waves (two-tone, third wave) blend it with punk.',
+    'indie': 'Bright guitars, open chords with suspended 2nds and 4ths, arpeggios and pop progressions. Intimate yet polished, with layered guitars and lots of texture.',
+    'grunge': 'Seattle, 1990s: dirty distorted guitars, power chords and a strong contrast between quiet verses and huge choruses. A blend of punk, metal and pop with gloomy lyrics.',
+    'disco': 'Seventies dance floor: octave bass, "four on the floor" drums, strings and a guitar chopping the offbeat with short chords (m7, 9, maj7).',
+    'reggaeton': 'Born in Panama and Puerto Rico out of Spanish-language reggae and the dembow. A heavily marked drum pattern, minor chords on loop and catchy melodies.',
+    'lofi': 'Mellow beats for studying or relaxing: maj7 and m7 chords with a jazzy flavor, a lazy pulse and a slightly "worn" sound. The guitar repeats a short progression very calmly.',
     'pop': 'Catchy songs over a few progressions (I-V-vi-IV). The guitar backs them with open chords and a steady strum.',
     'rock': 'Power chords, driving eighth notes and minor pentatonic riffs. I-IV-V and the bVII rule.',
     'blues': 'Twelve bars, seventh chords and the blues scale. Feel matters more than speed.',
@@ -1628,6 +1737,18 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get genreRhythm => {
+    'cumbia': 'Bass on 1 and 3 and a short ↓↑ strum on the offbeat: \'boom-chiki, boom-chiki\'.',
+    'salsa': 'Syncopated chords landing on the "and" of the beats, leaving room for the bass (tumbao) and the 3-2 or 2-3 clave. Often just the top strings.',
+    'ranchera': 'In waltz time: bass on 1, chord on 2 and a ↓↑ bounce on 3. In polka or corrido the bass and strum alternate (boom-chick).',
+    'flamenco': 'Flamenco rumba: down, down-up, a dry tap on the top (✕), up and down-up. Each chord is struck hard with precise silences.',
+    'bolero': 'Bass on 1 and chords falling between the beats for a soft syncopation: boom – cha-ka – cha-ka. Slow and heartfelt.',
+    'tango': 'Marcato: firm, dry hits on every beat with an occasional muted hit (✕) and a final ↑ leading into the next bar.',
+    'ska': 'A very short upstroke on every offbeat (the "and" of each beat) with the bass walking on the beats.',
+    'indie': 'Campfire strum (↓ ↓ ↓↑ ↓↑) with a soft pick, alternating with arpeggios that let the open strings ring.',
+    'grunge': 'Eighths all downstrokes on power chords; loose in the verse and with hard accents in the chorus.',
+    'disco': 'A strong hit on every beat with the offbeat muted (↓ ✕ ↓↑): a steady groove around 120 bpm.',
+    'reggaeton': 'The "dembow": hits on 1, the "and" of 2, 3 and 4. The strum leans on those accents and leaves silences between them.',
+    'lofi': 'Long, dragging chords with a lazy rhythm (↓ ·· ↑ ↓ · ↑); leave gaps so it can breathe.',
     'pop': '↓ ↓↑ ↑↓↑ in 4/4. Accent beats 2 and 4.',
     'rock': 'Down or down-up eighths, palm-muted in the verses.',
     'blues': 'Shuffle: each beat long-short (da-ga da-ga).',
@@ -1648,6 +1769,18 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get genreTip => {
+    'cumbia': 'Mute the strings with your palm between hits for a dry "chiqui", and start with just Am, Dm and E7.',
+    'salsa': 'Learn a two-chord montuno (C6–A7), let the bass mark beat 1 and listen to the clave before you play.',
+    'ranchera': 'Alternate the bass between the root and fifth of the chord and never forget the V7 that returns to I: it is the ranchera hallmark.',
+    'flamenco': 'Start with the Andalusian cadence in A minor and strum everything with one pattern before adding ornaments; a capo changes key without changing shapes.',
+    'bolero': 'Play the bass with your thumb (root and fifth) and the syncopated chord with the other fingers; the softer, the better.',
+    'tango': 'Practice the V7 → i phrase ending and stop your hand for an instant before changing: silence is tango too.',
+    'ska': 'Strum only the top three strings with a relaxed hand and mute them at once; practice with a metronome at 120 before speeding up.',
+    'indie': 'Try chords with open strings (Dsus2, Asus4, Gsus2) and let them ring; one guitar holds the rhythm while another plays a melodic line over it.',
+    'grunge': 'Play with contrast: a muted, sparse verse and open, full-arm strokes in the chorus.',
+    'disco': 'Mute the strings with your fretting hand right after each hit; the cleanness of the cut is the groove.',
+    'reggaeton': 'With only four chords (Am–F–C–G) a rock-steady pulse is what matters; the guitar often doubles the synth line.',
+    'lofi': 'Play the chords on four strings, let them ring and add a pentatonic fill every four bars, no more.',
     'pop': 'Learn I-V-vi-IV in G, C and D: you\'ll play hundreds of songs.',
     'rock': 'Palm-mute the verses and let the chorus ring open.',
     'blues':
@@ -1668,6 +1801,88 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get progressionNames => {
+    'folkWaltz': 'Folk waltz',
+    'folkScarborough': 'Dorian ballad (Scarborough style)',
+    'folkCampfire': 'Campfire in three chords',
+    'countryWaltz': 'Country waltz',
+    'countryTrain': 'Freight train (country)',
+    'countryBallad': 'Country ballad',
+    'reggaeAxis': 'Reggae axis (I–V–vi–IV)',
+    'reggaeMinor': 'Minor reggae',
+    'bossaTritone': 'Bossa with tritone substitution',
+    'bossaMinor': 'Minor bossa',
+    'latinMinor': 'Latin minor (i–iv–V7)',
+    'latinPop': 'Latin pop (I–V–IV–V)',
+    'rancheraPolka': 'Norteño polka',
+    'rancheraCorrido': 'Corrido waltz',
+    'rancheraMinor': 'Minor ranchera',
+    'rancheraBolero': 'Ranchero bolero (I–VI7–ii–V7)',
+    'cumbiaMajor': 'Major cumbia',
+    'cumbiaMinor': 'Minor cumbia',
+    'cumbiaSonidera': 'Sonidera cumbia',
+    'cumbiaVillera': 'Villera cumbia',
+    'salsaMontuno': 'Classic montuno (I–IV–V7–IV)',
+    'salsaMinor': 'Minor salsa (Andalusian cadence)',
+    'salsaRomantica': 'Romantic salsa',
+    'salsaTurnaround': 'Salsa turnaround (ii–V–I–VI7)',
+    'boleroClassic': 'Classic bolero (I–vi–ii–V7)',
+    'boleroMinor': 'Minor bolero',
+    'boleroEight': 'Eight-bar bolero',
+    'tangoMinor': 'Minor tango',
+    'tangoVuelta': 'Tango with turnaround',
+    'tangoMajor': 'Major tango',
+    'flamencoCadence': 'Andalusian cadence in E',
+    'flamencoRumba': 'Flamenco rumba',
+    'flamencoPorArriba': 'Flamenco "por arriba" (phrygian)',
+    'flamencoTangos': 'Flamenco tangos',
+    'rockMinor': 'Minor rock (i–bVII–bVI–bVII)',
+    'rockEpic': 'Epic anthem (bVI–bVII–I)',
+    'rockRiff': 'Power-chord riff (I–bIII–IV)',
+    'grungeMinor': 'Heavy grunge',
+    'grungeSlow': 'Mid-tempo grunge',
+    'grungeRiff': 'Grunge riff (i–bIII–bVII–IV)',
+    'indieJangle': 'Jangly indie',
+    'indieSus': 'Suspended indie',
+    'indieDream': 'Dreamy indie',
+    'punkPop': 'Pop punk (I–V–vi–IV)',
+    'punkOi': 'Street punk (Oi!)',
+    'skaClassic': 'Classic ska (I–IV–V7)',
+    'skaMinor': 'Minor ska',
+    'skaThirdWave': 'Third wave (vi–V–IV–I)',
+    'metalGallop': 'Epic gallop',
+    'metalDoom': 'Slow doom (phrygian)',
+    'bluesQuick': 'Quick-change blues',
+    'bluesJazz': 'Jazz blues',
+    'blues8bar': 'Eight-bar blues',
+    'jazzRhythmA': 'Rhythm changes (A section)',
+    'jazzCircle': 'Diatonic circle of fifths',
+    'jazzMinor251': 'Minor ii–V–i',
+    'jazzBackdoor': 'Backdoor (iv7–bVII7–I)',
+    'jazzTritone': 'ii–V with tritone substitution',
+    'soulMotown': 'Motown soul (I–vi–ii–V)',
+    'soulNeo': 'Neo-soul (ii7–V7–Imaj7–IVmaj7)',
+    'soulMinor': 'Slow minor soul',
+    'funkVamp': 'Funk vamp with IV9',
+    'funkNinth': 'Dominant-ninth funk',
+    'funkGroove': 'Minor groove (i7–bVII9–IV9)',
+    'gospelShout': 'Shout gospel',
+    'gospelWaltz': 'Hymn in 3/4',
+    'gospelMinor': 'Minor spiritual',
+    'popRoyalRoad': 'Royal road (IV–V–iii–vi)',
+    'popEmo': 'Emotional pop (vi–iii–IV–I)',
+    'popBorrowed': 'Pop with a borrowed chord (IV–iv)',
+    'balladGentle': 'Gentle ballad (I–iii–IV–V)',
+    'balladMinor': 'Minor ballad (i–bIII–bVII–bVI)',
+    'discoMinor': 'Minor disco (i7–iv7–bVII–bIII)',
+    'discoStrings': 'Disco strings (IVmaj7–V7–iii7–vi7)',
+    'discoGroove': 'Minor disco groove',
+    'reggaetonMinor': 'Minor reggaeton (i–bVI–bIII–bVII)',
+    'reggaetonRomantic': 'Romantic reggaeton (vi–IV–I–V)',
+    'reggaetonDark': 'Dark reggaeton (i–iv–bVI–V)',
+    'lofiDreamy': 'Dreamy lo-fi',
+    'lofiMinor': 'Nocturnal lo-fi',
+    'lofiJazzy': 'Lo-fi with ii–V–I',
+    'lofiNinth': 'Lo-fi with a ninth (V9)',
     'popAxis': 'The pop axis',
     'dooWop': '50s doo-wop',
     'rockClassic': 'Classic rock I-IV-V',
@@ -1694,6 +1909,18 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get lessonTitles => {
+    'intervalSongs': 'Intervals in songs',
+    'subdivision': 'Subdividing: eighths, triplets and swing',
+    'modesPractical': 'Modes in practice',
+    'triads': 'How a chord is built',
+    'extensions': 'Extensions, sus and add chords',
+    'inversions': 'Inversions and slash chords',
+    'circleFifths': 'The circle of fifths',
+    'cadences': 'Cadences: how phrases end',
+    'relativeParallel': 'Relative and parallel keys',
+    'transposeCapo': 'Transposing and the capo',
+    'styleComping': 'Comping by style',
+    'tunings': 'Alternate tunings',
     'notes': 'Notes and the fretboard',
     'intervals': 'Intervals: the distance between notes',
     'tonic': 'The tonic and the key',
@@ -1711,6 +1938,24 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get lessonSummaries => {
+    'intervalSongs':
+        'Recognize each interval by the opening of a melody you already know.',
+    'subdivision':
+        'Split the beat in 2, 3 or 4 and understand syncopation and swing.',
+    'modesPractical': 'When and how to use dorian, phrygian, lydian and mixolydian over a single chord.',
+    'triads': 'Triads and sevenths built by stacking thirds above the root.',
+    'extensions':
+        'Ninths, elevenths and thirteenths; suspended chords and added notes.',
+    'inversions': 'Change the lowest note of a chord to create bass lines and smooth links.',
+    'circleFifths':
+        'The map of the 12 keys: key signatures, neighbors and progressions.',
+    'cadences': 'Authentic, plagal, half, deceptive and Andalusian: each one says something different.',
+    'relativeParallel':
+        'Two ways keys are related, and one trick: modal interchange.',
+    'transposeCapo': 'Change key without changing fingers: the capo and the equivalence chart.',
+    'styleComping': 'The same chords sound like pop, reggae, ballad or cumbia depending on the rhythm.',
+    'tunings':
+        'Drop D, DADGAD and open G: what they change and what they are for.',
     'notes':
         'The 12 notes, sharps and flats, and how to find them on the guitar.',
     'intervals':
@@ -1733,6 +1978,18 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get lessonBodies => {
+    'intervalSongs': 'An interval is the distance between two notes, counted in semitones (frets on the same string). Learning them from songs is the shortcut to recognizing them by ear: your memory already knows how each leap sounds.\n\nMinor second (1 semitone): the "Jaws" theme. Major second (2): "Frère Jacques". Major third (4): the opening of "When the Saints Go Marching In". Perfect fourth (5): "Amazing Grace" (A-ma-zing) or the bridal march. Tritone (6): "Maria" from West Side Story and the Simpsons theme. Perfect fifth (7): "Twinkle, Twinkle, Little Star" and the Star Wars theme. Major sixth (9): "My Bonnie Lies over the Ocean". Octave (12): "Somewhere over the Rainbow".\n\nTo practice, play the first interval on two strings and sing it before checking. On the guitar the same distance looks the same all over the neck, so every shape you learn can be moved.',
+    'subdivision': 'The beat can be divided in several ways. Quarter notes: one hit per beat ("1 2 3 4"). Eighths: two per beat ("1 and 2 and"), the engine of rock and pop: down on the beat, up on the "and". Sixteenths: four per beat ("1 e and a"), typical of funk. Triplets: three per beat ("1-trip-let"), the sway of slow blues, creole waltz and 6/8.\n\nSyncopation means accenting where it is not expected: the offbeat (the "and") or leaving the beat silent. Reggae, ska and salsa live on it. Swing and shuffle are "uneven" eighths: the first lasts twice as long as the second (like the first and third notes of a triplet), which gives the sway.\n\nStudy trick: keep your arm moving constantly (down on the beat, up on the "and") and only change which hits you play and which you leave silent. That way the patterns in the genre guide come almost on their own.',
+    'modesPractical': 'In practice you choose a mode from the chord that is sounding, not from theory. Over a minor 7 chord (Em7) play dorian: the minor scale "with a major sixth", the recipe of funk, jazz and Santana. Over a dominant 7 (G7) or a rock major chord with a bVII, play mixolydian: major "with a flat seventh". Over a dreamy major chord (Fmaj7) play lydian: major with a raised fourth, cinematic. Over a minor chord with a bII (Em–F) play phrygian: the flavor of flamenco and metal.\n\nEach mode is told apart by its characteristic note: the major 6th in dorian, the b2 in phrygian, the #4 in lydian and the b7 in mixolydian. Lean on that note, resolve it to the tonic and the mode will be heard at once.\n\nQuick recipe: pick a one- or two-chord vamp, find the tonic on the 6th string and play the scale from there; use the scale explorer to see the positions in all 12 keys.',
+    'triads': 'A chord is built by stacking thirds above a note, the root. A major third is 4 semitones and a minor third 3. The major triad is root + major third + fifth (0-4-7, like C–E–G); the minor one swaps in a minor third (0-3-7: C–E♭–G). The diminished stacks two minor thirds (0-3-6) and the augmented two major ones (0-4-8).\n\nAdd another third on top and the sevenths appear: major 7 (0-4-7-11, dreamy), dominant 7 (0-4-7-10, tense and wanting to resolve), minor 7 (0-3-7-10, soft) and, on the diminished triad, the half-diminished (m7♭5), typical of the minor ii–V. The third is the note that decides whether a chord sounds happy or sad.\n\nThis way you can work out any chord without memorizing it: count the semitones from the root and look for those notes on the strings. In C major, stacking thirds on every scale note gives seven chords: three major, three minor and one diminished.',
+    'extensions': 'If you keep stacking thirds past the seventh you get the extensions: the ninth (9), the eleventh (11) and the thirteenth (13). They are notes 2, 4 and 6 an octave higher. A ninth chord (C9) is a dominant 7 with the ninth added: richer and funkier than C7. In practice not every note is played: the fifth is left out and, on dominants, the eleventh clashes with the third.\n\nSuspended chords (sus) replace the third with another note: sus2 uses the second and sus4 the fourth. They are neither major nor minor; they sound open, in suspension, and sus4 usually resolves to the major chord (Dsus4 → D). Add chords add a note without the seventh: Cadd9 is a major triad with the ninth, bright and modern (very common in indie and pop).\n\nWhat to use where: 9 in funk and soul, maj7 and m7 in jazz and lo-fi, sus2 and sus4 in pop and indie, 6 and m6 in bossa and bolero. Try swapping a chord in a progression for its colorful version and hear how the mood changes.',
+    'inversions': 'A chord does not always sound with its root in the bass. If the lowest note is the third it is in first inversion; if it is the fifth, in second inversion. It is written with a slash: C/E is a C with E in the bass, C/G a C with G. The note after the slash is always the bass note, and it can even be a non-chord note (C/D).\n\nThey do two jobs: they give the bass some movement and they smooth the changes. A descending line C – G/B – Am – Am/G – F – C/E – Dm – G (the "canon bass line") sounds fluid because the bass moves by step. On guitar, C/E is an open C played with the open 6th string too; G/B is a G with the B on the 5th string (fret 2) and D/F♯ puts the F♯ on the 6th string (fret 2).\n\nIn the Chords bank many chords have inversion shapes (movable triads with the root or the third in the bass). Look them up on the chord page and practice the C – G/B – Am link.',
+    'circleFifths': 'The circle of fifths lines up the 12 keys by fifths. Going right, each step adds a sharp: C (none), G (1), D (2), A (3), E (4), B (5), F♯ (6). Going left it adds a flat: F (1), B♭ (2), E♭ (3), A♭ (4). Inside each major key lives its relative minor (C–A minor, G–E minor…).\n\nIt is a map of kinship: two neighbors on the circle share six of seven notes, so modulating between them is smooth. And it gives you the chords of a key at a glance: the I (your key) with its two neighbors, the IV on the left and the V on the right. In G major, C (IV) and D (V) are its neighbors.\n\nIt also marks a very natural harmonic path: descending fifths. iii–vi–ii–V–I (Em–Am–Dm–G7–C) follows the circle to the left and sounds like a "resolution" at every step; it is the basis of jazz, rancheras and half of classic pop.',
+    'cadences': 'A cadence is the formula of two or more chords that ends a phrase, like punctuation. The authentic one (V–I, best with V7–I) is the full stop: the most conclusive, because the leading note rises to the tonic. The plagal (IV–I) is the gospel "amen" and sounds gentler and more solemn.\n\nThe half cadence ends on V (I–V, ii–V…): a comma, the phrase stays open and asks for more. The deceptive cadence (V–vi) fools the ear: you expect I and get vi, which sounds similar but sad, and extends the phrase. And the Andalusian cadence (i–♭VII–♭VI–V, Am–G–F–E) steps down to a major V: it is the cadence of flamenco, rumba and many rock and Latin pop songs.\n\nListen to them by feeling: has it ended? is something missing? did it surprise me? Learn to hear when a song "makes a comma" and when it "puts the full stop" and it will be much easier to accompany and anticipate the changes.',
+    'relativeParallel': 'The relative key shares the same notes but has a different tonic: C major and A minor use the same seven notes. The relative minor sits three semitones below the major tonic (or the major, three above the minor). That is why the same chords work in both: C, Dm, Em, F, G and Am belong to both C major and A minor; only which one sounds like "home" changes.\n\nThe parallel key shares the tonic but changes the mode: C major and C minor. Here the notes change (the 3rd, 6th and 7th drop a semitone) and so do the chords: C major has F, C minor has Fm.\n\nThat allows modal interchange: borrowing a chord from the parallel key for color. The IV–iv of gospel (F → Fm over C), the rock ♭VII (B♭ over C) or the epic ♭VI come from the parallel minor. When a song suddenly sounds "darker" it is often borrowing a chord.',
+    'transposeCapo': 'Transposing means moving a whole song to another key while keeping the degrees: every chord moves by the same number of semitones. It is done to fit the singer\'s voice or to use more comfortable shapes. In the Chords songbook you can transpose ±6 semitones with one tap.\n\nThe capo raises all the open strings by a semitone per fret: with the capo on fret 2, G shapes sound as A, C shapes as D and E shapes as F♯. The formula is: sounding key = shape + capo fret. If the song is in D and you want to play C shapes, put the capo on fret 2.\n\nTo choose: look at the chords in the original key, find a key where they can be played with open shapes (G, C, D, Em, Am) and work out the fret. The capo also gives a bright timbre and more open strings, widely used in folk and pop.',
+    'styleComping': 'A progression like I–V–vi–IV can be pop, reggae, ballad, indie or cumbia: what changes is how you play it. There are four ingredients. The strumming pattern (which hits you play and which you leave silent), the dynamics (soft in the verse, loud in the chorus), the register (low strings, high strings or all) and the muting (long chords or short, dry ones).\n\nExamples: pop uses ↓ ↓↑ ↑↓↑; reggae stays silent on the beats and plays only on the offbeat; the ballad arpeggiates or strums once per bar; cumbia puts the bass on 1 and 3 and a "chiqui" on the offbeat; funk mutes almost everything and leaves a few hits; heavy rock uses palm-muted power chords. The genre guide gathers each style\'s pattern with its tempo.\n\nExercise: pick a jam progression and play the same loop in four different styles. If you change the pattern and the tempo, even the meaning of the song changes.',
+    'tunings': 'Standard tuning is E–A–D–G–B–E (EADGBE). Changing a string opens new sounds. In Drop D you lower just the 6th string a whole step (D–A–D–G–B–E): power chords are played with one finger across the three low strings and the low end sounds heavier; it is the tuning of grunge, metal and hard rock.\n\nDADGAD (D–A–D–G–A–D) has no third in its open chords: it sounds open, neither major nor minor, which is why it is used in Celtic folk and fingerstyle. In open G (D–G–D–G–B–D) the open strings form a G major chord: with one finger or a slide you reach every chord; it is the tuning of Delta blues and slide rock.\n\nTips: tune string by string with the app\'s tuner, lower the pitch slowly (the neck adapts) and recheck the tuning after a while. When the tuning changes, the chords you know change shape: learn four or five shapes first and go back to standard when you finish.',
     'notes': 'Western music uses only 12 notes that repeat in octaves: C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯ and B.\n\nBetween two neighboring notes there is a half step, and on the guitar a half step is exactly one fret; two frets make a whole step. There is no sharp between E and F or between B and C: they are a half step apart.\n\nA sharp (♯) raises a note a half step and a flat (♭) lowers it, so C♯ and D♭ are the same note with two names. At the 12th fret every string repeats its open note an octave higher: that\'s where the neck starts over.',
     'intervals': 'An interval is the distance between two notes, measured in half steps (frets). Each distance has its own color: the major third (4 half steps) sounds happy, the minor third (3) sad and the perfect fifth (7) solid and open.\n\nChords are built by stacking intervals on a root: a major chord is root + major third + fifth; a minor chord only changes the third. That\'s why moving a single note one fret turns C into C minor.\n\nOn the guitar every interval has a shape: the fifth is on the next (higher) string, two frets up, and the octave two strings over and two frets up. When crossing the 2nd (B) string the shape shifts one fret.',
     'tonic': 'The tonic is the note a song revolves around: the home everything wants to return to. When the melody or chord lands on the tonic we feel rest; moving away creates tension.\n\nThe key is the tonic plus its scale. \'G major\' means G is home and the notes come from the G major scale. Almost every song ends, and many start, on the tonic chord.\n\nTo find a song\'s key, look for the chord that sounds like an ending, check that the other chords belong to that key and sing the note that \'closes\' the melody. With practice you\'ll hear it instantly: play \'Find the tonic\'.',
@@ -1750,6 +2007,18 @@ class Translations$theory$en extends Translations$theory$es {
   };
   @override
   Map<String, String> get lessonPoints => {
+    'intervalSongs': 'Interval = distance in semitones between two notes\nm2 = "Jaws" · M2 = "Frère Jacques" · M3 = "When the Saints"\nPerfect 4th = "Amazing Grace" · perfect 5th = "Twinkle Twinkle"\nTritone (6) = "Maria"; the most unstable one\nSing the interval before playing it, then check',
+    'subdivision': 'Quarters = beat · eighths = "1 and 2 and" · sixteenths = "1 e and a"\nTriplet = three notes in one beat (slow blues, 6/8)\nSyncopation = accent on the offbeat or silence on the beat\nSwing/shuffle: a long + a short eighth (2 to 1)\nKeep the arm always moving: down on the beat, up on the "and"',
+    'modesPractical': 'Dorian = minor 7 · major sixth (funk, jazz)\nMixolydian = dominant 7 · b7 (rock, blues, country)\nLydian = major maj7 · #4 (dreamy sound)\nPhrygian = minor with b2 (flamenco, metal)\nPlay the characteristic note and resolve it to the tonic',
+    'triads': 'Major third = 4 semitones · minor third = 3\nMajor 0-4-7 · minor 0-3-7 · diminished 0-3-6 · augmented 0-4-8\nSevenths: maj7 (0-4-7-11) · 7 (0-4-7-10) · m7 (0-3-7-10)\nThe third decides whether it sounds happy or sad\nIn a major key: 3 major, 3 minor and 1 diminished chord',
+    'extensions': '9 = 2nd up · 11 = 4th · 13 = 6th (an octave higher)\nC9 = C7 + ninth: funk, soul, r&b\nsus2 and sus4 replace the third; sus4 usually resolves to major\nadd9 = triad + ninth, no seventh (indie, pop)\nSwap a chord for its colorful version and compare',
+    'inversions': 'First inversion = third in the bass · second = fifth\nC/E = a C chord with E in the bass (the note after the slash)\nA bass moving by step sounds fluid\nC/E, G/B and D/F♯ are the most useful slash chords on guitar\nFind the inversion shapes on each chord page',
+    'circleFifths': 'Right = +1 sharp per step · left = +1 flat\nCircle neighbors share 6 of 7 notes\nI with its IV (left) and V (right) = the three basic chords\nEvery major key holds its relative minor\nDescending fifths: iii–vi–ii–V–I (jazz, ranchera, classic pop)',
+    'cadences': 'Authentic V–I (V7–I): the full stop\nPlagal IV–I: the "amen", softer\nHalf cadence (ends on V): a comma, stays open\nDeceptive V–vi: you expect I and get vi\nAndalusian i–♭VII–♭VI–V (Am–G–F–E): flamenco and rumba',
+    'relativeParallel': 'Relative: same notes, different tonic (C ↔ A minor)\nThe relative minor is 3 semitones below the major tonic\nParallel: same tonic, different mode (C ↔ C minor)\nModal interchange: IV → iv, ♭VII, ♭VI come from the parallel key\nIf a song suddenly darkens, look for the borrowed chord',
+    'transposeCapo': 'Transposing = the same degrees in another key\nCapo on fret N: raises everything by N semitones\nSounding key = shape + fret (G + 2 = A, C + 2 = D, D + 2 = E)\nPick open shapes (G, C, D, Em, Am) and work out the fret\nThe songbook transposes ±6 semitones',
+    'styleComping': 'Four ingredients: pattern, dynamics, register and muting\nPop: ↓ ↓↑ ↑↓↑ · reggae: only the offbeat\nBallad: arpeggio or one strum per bar\nCumbia: bass on 1 and 3 and a "chiqui" · funk: almost all muted\nPlay the same loop in four styles and compare',
+    'tunings': 'Standard = EADGBE\nDrop D = DADGBE: one-finger power chords, heavy low end\nDADGAD = open chords with no third (folk, fingerstyle)\nOpen G = DGDGBD: one finger or a slide makes the chords (blues)\nTune string by string and lower the pitch slowly',
     'notes': '12 notes: 7 natural and 5 sharps/flats\n1 fret = 1 half step; 2 frets = 1 whole step\nE–F and B–C are a half step apart\nFret 12 = the same note an octave up\nLearn the notes on the 6th and 5th strings first: they are your barre-chord roots',
     'intervals': 'Minor third = 3 half steps (sad)\nMajor third = 4 half steps (happy)\nPerfect fifth = 7 half steps (power chord)\nOctave = 12 half steps: the same note higher\nThe B string shifts shapes by one fret',
     'tonic': 'Tonic = rest; moving away = tension\nKey = tonic + scale\nThe last chord is usually the tonic\nEvery major key has a relative minor with the same notes\nTransposing = moving everything by the same number of frets',
@@ -1988,6 +2257,34 @@ class Translations$songs$en extends Translations$songs$es {
   String get notFound => 'We couldn\'t find that song';
   @override
   Map<String, String> get exercises => {
+    'cumbiaInAm': 'Cumbia in A minor',
+    'salsaMontuno': 'Salsa montuno in C',
+    'rancheraInG': 'Ranchera waltz in G',
+    'polkaNortena': 'Norteño polka in G',
+    'flamencoRumba': 'Flamenco rumba in A minor',
+    'tangoInDm': 'Tango in D minor',
+    'boleroInC': 'Bolero in C',
+    'reggaetonInAm': 'Dembow in A minor',
+    'merengueInG': 'Merengue in G',
+    'bachataInAm': 'Bachata in A minor',
+    'valsCriolloInAm': 'Creole waltz in A minor',
+    'discoInAm': 'Disco in A minor',
+    'skaInG': 'Ska in G',
+    'indieInD': 'Bright indie in D',
+    'grungeInE': 'Grunge in E',
+    'lofiInC': 'Lo-fi in C',
+    'punkInE': 'Punk in E',
+    'folkInG': 'Campfire folk in G',
+    'countryInG': 'Boom-chick country in G',
+    'countryTrainInE': 'Freight train in E',
+    'reggaeInC': 'Reggae in C',
+    'bossaInC': 'Bossa in C',
+    'jazz251InC': 'ii–V–I in C',
+    'soulInC': 'Soul with major sevenths',
+    'gospelInC': 'Gospel with the minor iv',
+    'balladInC': 'Arpeggiated ballad in C',
+    'andaluzaInAm': 'Andalusian cadence in A minor',
+    'bluesMinorInE': 'Minor blues in E',
     'bluesInA': 'Blues in A · 12 bars',
     'rockInE': 'Power chords in E',
     'popFourChords': 'The four pop chords',
@@ -3427,6 +3724,7 @@ extension on TranslationsEn {
           'theory.unitBasics' => 'Fundamentals',
           'theory.unitScales' => 'Scales and positions',
           'theory.unitHarmony' => 'Harmony and progressions',
+          'theory.unitTechnique' => 'Technique and style',
           'theory.keyPoints' => 'Key ideas',
           'theory.tryIt' => 'Try it on the fretboard',
           'theory.openExplorer' => 'Open in the explorer',
@@ -3473,6 +3771,10 @@ extension on TranslationsEn {
           }) => 'Fretboard showing ${scale}',
           'theory.genresTitle' => 'Genres',
           'theory.genresSubtitle' => 'How each style sounds: tempo, strumming, scales, chords and progressions.',
+          'theory.genresEmptyBody' =>
+            'Try another name or a chord such as Am or E7.',
+          'theory.genresEmpty' => 'No genre matches your search',
+          'theory.genresSearch' => 'Search a genre or a chord',
           'theory.tempoRange' => ({
             required Object min,
             required Object max,
@@ -3489,6 +3791,9 @@ extension on TranslationsEn {
           'theory.strumLabel' => ({
             required Object name,
           }) => 'Strumming: ${name}',
+          'theory.strumMutedHint' => '✕ = muted (percussive) hit',
+          'theory.strumStop' => 'Stop',
+          'theory.strumPlay' => 'Watch the strum in motion',
           'theory.scaleNames.major' => 'major',
           'theory.scaleNames.minor' => 'natural minor',
           'theory.scaleNames.harmonicMinor' => 'harmonic minor',
@@ -3523,6 +3828,28 @@ extension on TranslationsEn {
           'theory.degreeNames.d5' => 'dominant',
           'theory.degreeNames.d6' => 'submediant',
           'theory.degreeNames.d7' => 'leading tone',
+          'theory.strumNames.cumbia' => 'Cumbia',
+          'theory.strumNames.salsa' => 'Salsa (montuno)',
+          'theory.strumNames.reggaeton' => 'Reggaeton (dembow)',
+          'theory.strumNames.rumba' => 'Flamenco rumba',
+          'theory.strumNames.ska' => 'Ska (fast offbeats)',
+          'theory.strumNames.disco' => 'Disco (four on the floor)',
+          'theory.strumNames.bolero' => 'Bolero',
+          'theory.strumNames.tango' => 'Tango (marcato)',
+          'theory.strumNames.valsRanchero' => 'Ranchero waltz',
+          'theory.strumNames.valsCriollo' => 'Creole waltz',
+          'theory.strumNames.merengue' => 'Merengue',
+          'theory.strumNames.bachata' => 'Bachata',
+          'theory.strumNames.campfire' => 'Campfire folk',
+          'theory.strumNames.funkMuted' => 'Muted funk',
+          'theory.strumNames.arpeggio' => 'Arpeggiated ballad',
+          'theory.strumNames.downstrokes' => 'All downstrokes',
+          'theory.strumNames.gallop' => 'Metal gallop',
+          'theory.strumNames.lofi' => 'Lazy lo-fi',
+          'theory.strumNames.charleston' => 'Charleston (jazz)',
+          'theory.strumNames.trainBeat' => 'Country train beat',
+          'theory.strumNames.tresillo' => 'Tresillo (habanera)',
+          'theory.strumNames.rockBallad' => 'Rock ballad',
           'theory.strumNames.whole' => 'One strum per bar',
           'theory.strumNames.quarters' => 'Quarter notes',
           'theory.strumNames.pop' => 'Pop',
@@ -3532,6 +3859,61 @@ extension on TranslationsEn {
           'theory.strumNames.bossa' => 'Bossa nova',
           'theory.strumNames.shuffle' => 'Shuffle',
           'theory.strumNames.waltz' => 'Waltz 3/4',
+          'theory.genreFamilies.roots' => 'Roots and Latin rhythms',
+          'theory.genreFamilies.rock' => 'Rock and metal',
+          'theory.genreFamilies.soulJazz' => 'Blues, jazz and soul',
+          'theory.genreFamilies.pop' => 'Pop and dance',
+          'theory.strumAbout.whole' => 'A single downstroke at the start of the bar; let the chord ring. Ideal for changing chords calmly.',
+          'theory.strumAbout.quarters' => 'A downstroke on every beat (1, 2, 3 and 4). Simple and steady: the best way to start.',
+          'theory.strumAbout.pop' => 'The universal strum: ↓ ↓↑ ↑↓↑. Your arm never stops moving; you just skip a few hits.',
+          'theory.strumAbout.eighths' =>
+            'Steady eighths ↓↑↓↑↓↑↓↑ accenting the beats: the energy of rock.',
+          'theory.strumAbout.boomChick' => 'Bass on 1 and 3 and a strum on 2 and 4: "boom-chick". Alternate root and fifth in the bass.',
+          'theory.strumAbout.skank' =>
+            'Silence on the beats and a dry hit only on the offbeat.',
+          'theory.strumAbout.bossa' => 'Thumb on the bass and syncopated chords with the fingers: the soft sway of bossa nova.',
+          'theory.strumAbout.shuffle' => 'Long-short on every beat, like a triplet without the middle note: the sway of the blues.',
+          'theory.strumAbout.waltz' => 'In 3/4: bass on 1 and two light strums on 2 and 3, "one-two-three".',
+          'theory.strumAbout.cumbia' => 'Bass on 1 and 3 and a short ↓↑ strum on the offbeat: "boom-chiki, boom-chiki".',
+          'theory.strumAbout.salsa' => 'Syncopated hits leaning on the "and" of the beats, leaving room for the bass and the clave.',
+          'theory.strumAbout.reggaeton' => 'The dembow: hits on 1, the "and" of 2, 3 and 4. It demands a very steady pulse.',
+          'theory.strumAbout.rumba' => 'Down, down-up, a dry tap on the top (✕), up and down-up: the hallmark of the flamenco rumba.',
+          'theory.strumAbout.ska' =>
+            'Only very short upstrokes on every offbeat: ·↑·↑·↑·↑.',
+          'theory.strumAbout.disco' => 'A strong hit on every beat with the offbeat muted (✕), like the "four on the floor" kick.',
+          'theory.strumAbout.bolero' => 'Bass on 1 and chords falling between the beats with a soft syncopation.',
+          'theory.strumAbout.tango' => 'Marcato: firm, dry hits on the beats, a muted hit (✕) and a ↑ push at the end.',
+          'theory.strumAbout.valsRanchero' => 'In 3/4: bass on 1, chord on 2 and a ↓↑ bounce on 3 that pushes into the next bar.',
+          'theory.strumAbout.valsCriollo' => 'In 3/4: bass on 1 and a dragged ↓↑↓ chord leaning toward the third beat.',
+          'theory.strumAbout.merengue' => 'A constant pulse with the hand tuned to the offbeat, quick and cheerful.',
+          'theory.strumAbout.bachata' =>
+            'Bass on 1 and linked ↓↑ hits accenting 2 and 4.',
+          'theory.strumAbout.campfire' => '↓ ↓ ↓↑ ↓↑: the strum heard around every campfire. Easy and wide open.',
+          'theory.strumAbout.funkMuted' => 'Dry hits (✕) dragging between open chords: the hand never stops moving.',
+          'theory.strumAbout.arpeggio' => 'Bass and single notes going up and down, softly: ideal for ballads.',
+          'theory.strumAbout.downstrokes' =>
+            'Eighths always downward: the speed and drive of punk and grunge.',
+          'theory.strumAbout.gallop' => 'An eighth and two sixteenths, all down: the metal gallop, palm-muted.',
+          'theory.strumAbout.lofi' =>
+            'Lazy, dragging chords: ↓ ·· ↑ ↓ · ↑. Let the gaps breathe.',
+          'theory.strumAbout.charleston' =>
+            'A chord on 1 and on the "and" of 2: the rhythm of pre-swing jazz.',
+          'theory.strumAbout.trainBeat' => 'Bass and two quick ↓↓ hits in each half of the bar: the country "chug-a-chug" train.',
+          'theory.strumAbout.tresillo' => '3+3+2: hits on 1, the "and" of 2 and 4; the rhythm of habanera and milonga.',
+          'theory.strumAbout.rockBallad' =>
+            'Two firm hits and a ↓↑↓ push into the next bar: the rock ballad.',
+          'theory.genreNames.cumbia' => 'Cumbia',
+          'theory.genreNames.salsa' => 'Salsa',
+          'theory.genreNames.ranchera' => 'Ranchera',
+          'theory.genreNames.flamenco' => 'Flamenco',
+          'theory.genreNames.bolero' => 'Bolero',
+          'theory.genreNames.tango' => 'Tango',
+          'theory.genreNames.ska' => 'Ska',
+          'theory.genreNames.indie' => 'Indie',
+          'theory.genreNames.grunge' => 'Grunge',
+          'theory.genreNames.disco' => 'Disco',
+          'theory.genreNames.reggaeton' => 'Reggaeton',
+          'theory.genreNames.lofi' => 'Lo-fi',
           'theory.genreNames.pop' => 'Pop',
           'theory.genreNames.rock' => 'Rock',
           'theory.genreNames.blues' => 'Blues',
@@ -3547,6 +3929,18 @@ extension on TranslationsEn {
           'theory.genreNames.soul' => 'Soul and R&B',
           'theory.genreNames.gospel' => 'Gospel',
           'theory.genreNames.folk' => 'Folk and traditional',
+          'theory.genreAbout.cumbia' => 'Born on Colombia\'s Caribbean coast and adopted across Latin America. Simple chords (i–iv–V7), a marked bass on 1 and 3 and the "chiqui" strum on the offbeat. Very danceable and easy to learn.',
+          'theory.genreAbout.salsa' => 'Caribbean and New York music built on clave, horns and percussion. The guitar rarely leads: it plays montunos and syncopated chords (I–IV–V7, ii–V–I) that talk to the bass and the clave.',
+          'theory.genreAbout.ranchera' => 'Mexican popular song with mariachi, guitar and guitarrón. It works as a waltz (3/4), polka, corrido or bolero, with major chords, the dominant seventh and a lot of feeling in the singing.',
+          'theory.genreAbout.flamenco' => 'Gypsy-Andalusian music built on the phrygian cadence (Am–G–F–E) and the phrygian scale. The guitar backs singing and dance in 12-beat or 4/4 compás (rumba, tangos), with fan strums and taps on the top.',
+          'theory.genreAbout.bolero' => 'Cuban and Mexican romance: slow tempo and sighing chords (I–vi–ii–V7, i–VI–iv–V7). Played with guitar and requinto, with a soft syncopation in the picking hand.',
+          'theory.genreAbout.tango' => 'Music from the River Plate born in Buenos Aires and Montevideo. Minor harmony with very dramatic dominants (V7), bandoneon, violin and piano. The guitar marks the beat firmly.',
+          'theory.genreAbout.ska' => 'Pre-reggae Jamaica, faster and happier. The guitar plays short upstrokes on every offbeat while the bass walks. Its later waves (two-tone, third wave) blend it with punk.',
+          'theory.genreAbout.indie' => 'Bright guitars, open chords with suspended 2nds and 4ths, arpeggios and pop progressions. Intimate yet polished, with layered guitars and lots of texture.',
+          'theory.genreAbout.grunge' => 'Seattle, 1990s: dirty distorted guitars, power chords and a strong contrast between quiet verses and huge choruses. A blend of punk, metal and pop with gloomy lyrics.',
+          'theory.genreAbout.disco' => 'Seventies dance floor: octave bass, "four on the floor" drums, strings and a guitar chopping the offbeat with short chords (m7, 9, maj7).',
+          'theory.genreAbout.reggaeton' => 'Born in Panama and Puerto Rico out of Spanish-language reggae and the dembow. A heavily marked drum pattern, minor chords on loop and catchy melodies.',
+          'theory.genreAbout.lofi' => 'Mellow beats for studying or relaxing: maj7 and m7 chords with a jazzy flavor, a lazy pulse and a slightly "worn" sound. The guitar repeats a short progression very calmly.',
           'theory.genreAbout.pop' => 'Catchy songs over a few progressions (I-V-vi-IV). The guitar backs them with open chords and a steady strum.',
           'theory.genreAbout.rock' => 'Power chords, driving eighth notes and minor pentatonic riffs. I-IV-V and the bVII rule.',
           'theory.genreAbout.blues' => 'Twelve bars, seventh chords and the blues scale. Feel matters more than speed.',
@@ -3562,6 +3956,18 @@ extension on TranslationsEn {
           'theory.genreAbout.soul' => 'Color chords (maj7, m7, 9), a relaxed groove and major pentatonic fills.',
           'theory.genreAbout.gospel' => 'Church harmony: I-IV-V with sevenths, the minor iv and plagal (\'amen\') cadences.',
           'theory.genreAbout.folk' => 'Timeless songs with three or four open chords. Perfect for singing along.',
+          'theory.genreRhythm.cumbia' => 'Bass on 1 and 3 and a short ↓↑ strum on the offbeat: \'boom-chiki, boom-chiki\'.',
+          'theory.genreRhythm.salsa' => 'Syncopated chords landing on the "and" of the beats, leaving room for the bass (tumbao) and the 3-2 or 2-3 clave. Often just the top strings.',
+          'theory.genreRhythm.ranchera' => 'In waltz time: bass on 1, chord on 2 and a ↓↑ bounce on 3. In polka or corrido the bass and strum alternate (boom-chick).',
+          'theory.genreRhythm.flamenco' => 'Flamenco rumba: down, down-up, a dry tap on the top (✕), up and down-up. Each chord is struck hard with precise silences.',
+          'theory.genreRhythm.bolero' => 'Bass on 1 and chords falling between the beats for a soft syncopation: boom – cha-ka – cha-ka. Slow and heartfelt.',
+          'theory.genreRhythm.tango' => 'Marcato: firm, dry hits on every beat with an occasional muted hit (✕) and a final ↑ leading into the next bar.',
+          'theory.genreRhythm.ska' => 'A very short upstroke on every offbeat (the "and" of each beat) with the bass walking on the beats.',
+          'theory.genreRhythm.indie' => 'Campfire strum (↓ ↓ ↓↑ ↓↑) with a soft pick, alternating with arpeggios that let the open strings ring.',
+          'theory.genreRhythm.grunge' => 'Eighths all downstrokes on power chords; loose in the verse and with hard accents in the chorus.',
+          'theory.genreRhythm.disco' => 'A strong hit on every beat with the offbeat muted (↓ ✕ ↓↑): a steady groove around 120 bpm.',
+          'theory.genreRhythm.reggaeton' => 'The "dembow": hits on 1, the "and" of 2, 3 and 4. The strum leans on those accents and leaves silences between them.',
+          'theory.genreRhythm.lofi' => 'Long, dragging chords with a lazy rhythm (↓ ·· ↑ ↓ · ↑); leave gaps so it can breathe.',
           'theory.genreRhythm.pop' => '↓ ↓↑ ↑↓↑ in 4/4. Accent beats 2 and 4.',
           'theory.genreRhythm.rock' =>
             'Down or down-up eighths, palm-muted in the verses.',
@@ -3587,6 +3993,18 @@ extension on TranslationsEn {
             'Firm quarter notes accenting 2 and 4; call and response.',
           'theory.genreRhythm.folk' =>
             'Quarters or the pop pattern; in 3/4, bass plus two strums.',
+          'theory.genreTip.cumbia' => 'Mute the strings with your palm between hits for a dry "chiqui", and start with just Am, Dm and E7.',
+          'theory.genreTip.salsa' => 'Learn a two-chord montuno (C6–A7), let the bass mark beat 1 and listen to the clave before you play.',
+          'theory.genreTip.ranchera' => 'Alternate the bass between the root and fifth of the chord and never forget the V7 that returns to I: it is the ranchera hallmark.',
+          'theory.genreTip.flamenco' => 'Start with the Andalusian cadence in A minor and strum everything with one pattern before adding ornaments; a capo changes key without changing shapes.',
+          'theory.genreTip.bolero' => 'Play the bass with your thumb (root and fifth) and the syncopated chord with the other fingers; the softer, the better.',
+          'theory.genreTip.tango' => 'Practice the V7 → i phrase ending and stop your hand for an instant before changing: silence is tango too.',
+          'theory.genreTip.ska' => 'Strum only the top three strings with a relaxed hand and mute them at once; practice with a metronome at 120 before speeding up.',
+          'theory.genreTip.indie' => 'Try chords with open strings (Dsus2, Asus4, Gsus2) and let them ring; one guitar holds the rhythm while another plays a melodic line over it.',
+          'theory.genreTip.grunge' => 'Play with contrast: a muted, sparse verse and open, full-arm strokes in the chorus.',
+          'theory.genreTip.disco' => 'Mute the strings with your fretting hand right after each hit; the cleanness of the cut is the groove.',
+          'theory.genreTip.reggaeton' => 'With only four chords (Am–F–C–G) a rock-steady pulse is what matters; the guitar often doubles the synth line.',
+          'theory.genreTip.lofi' => 'Play the chords on four strings, let them ring and add a pentatonic fill every four bars, no more.',
           'theory.genreTip.pop' =>
             'Learn I-V-vi-IV in G, C and D: you\'ll play hundreds of songs.',
           'theory.genreTip.rock' =>
@@ -3612,6 +4030,107 @@ extension on TranslationsEn {
             'Try IV → iv → I: the major-to-minor change is pure emotion.',
           'theory.genreTip.folk' =>
             'Sing while you play: the strumming hand should run on autopilot.',
+          'theory.progressionNames.folkWaltz' => 'Folk waltz',
+          'theory.progressionNames.folkScarborough' =>
+            'Dorian ballad (Scarborough style)',
+          'theory.progressionNames.folkCampfire' => 'Campfire in three chords',
+          'theory.progressionNames.countryWaltz' => 'Country waltz',
+          'theory.progressionNames.countryTrain' => 'Freight train (country)',
+          'theory.progressionNames.countryBallad' => 'Country ballad',
+          'theory.progressionNames.reggaeAxis' => 'Reggae axis (I–V–vi–IV)',
+          'theory.progressionNames.reggaeMinor' => 'Minor reggae',
+          'theory.progressionNames.bossaTritone' =>
+            'Bossa with tritone substitution',
+          'theory.progressionNames.bossaMinor' => 'Minor bossa',
+          'theory.progressionNames.latinMinor' => 'Latin minor (i–iv–V7)',
+          'theory.progressionNames.latinPop' => 'Latin pop (I–V–IV–V)',
+          'theory.progressionNames.rancheraPolka' => 'Norteño polka',
+          'theory.progressionNames.rancheraCorrido' => 'Corrido waltz',
+          'theory.progressionNames.rancheraMinor' => 'Minor ranchera',
+          'theory.progressionNames.rancheraBolero' =>
+            'Ranchero bolero (I–VI7–ii–V7)',
+          'theory.progressionNames.cumbiaMajor' => 'Major cumbia',
+          'theory.progressionNames.cumbiaMinor' => 'Minor cumbia',
+          'theory.progressionNames.cumbiaSonidera' => 'Sonidera cumbia',
+          'theory.progressionNames.cumbiaVillera' => 'Villera cumbia',
+          'theory.progressionNames.salsaMontuno' =>
+            'Classic montuno (I–IV–V7–IV)',
+          'theory.progressionNames.salsaMinor' =>
+            'Minor salsa (Andalusian cadence)',
+          'theory.progressionNames.salsaRomantica' => 'Romantic salsa',
+          'theory.progressionNames.salsaTurnaround' =>
+            'Salsa turnaround (ii–V–I–VI7)',
+          'theory.progressionNames.boleroClassic' =>
+            'Classic bolero (I–vi–ii–V7)',
+          'theory.progressionNames.boleroMinor' => 'Minor bolero',
+          'theory.progressionNames.boleroEight' => 'Eight-bar bolero',
+          'theory.progressionNames.tangoMinor' => 'Minor tango',
+          'theory.progressionNames.tangoVuelta' => 'Tango with turnaround',
+          'theory.progressionNames.tangoMajor' => 'Major tango',
+          'theory.progressionNames.flamencoCadence' =>
+            'Andalusian cadence in E',
+          'theory.progressionNames.flamencoRumba' => 'Flamenco rumba',
+          'theory.progressionNames.flamencoPorArriba' =>
+            'Flamenco "por arriba" (phrygian)',
+          'theory.progressionNames.flamencoTangos' => 'Flamenco tangos',
+          'theory.progressionNames.rockMinor' => 'Minor rock (i–bVII–bVI–bVII)',
+          'theory.progressionNames.rockEpic' => 'Epic anthem (bVI–bVII–I)',
+          'theory.progressionNames.rockRiff' => 'Power-chord riff (I–bIII–IV)',
+          'theory.progressionNames.grungeMinor' => 'Heavy grunge',
+          'theory.progressionNames.grungeSlow' => 'Mid-tempo grunge',
+          'theory.progressionNames.grungeRiff' =>
+            'Grunge riff (i–bIII–bVII–IV)',
+          'theory.progressionNames.indieJangle' => 'Jangly indie',
+          'theory.progressionNames.indieSus' => 'Suspended indie',
+          'theory.progressionNames.indieDream' => 'Dreamy indie',
+          'theory.progressionNames.punkPop' => 'Pop punk (I–V–vi–IV)',
+          'theory.progressionNames.punkOi' => 'Street punk (Oi!)',
+          'theory.progressionNames.skaClassic' => 'Classic ska (I–IV–V7)',
+          'theory.progressionNames.skaMinor' => 'Minor ska',
+          'theory.progressionNames.skaThirdWave' => 'Third wave (vi–V–IV–I)',
+          'theory.progressionNames.metalGallop' => 'Epic gallop',
+          'theory.progressionNames.metalDoom' => 'Slow doom (phrygian)',
+          'theory.progressionNames.bluesQuick' => 'Quick-change blues',
+          'theory.progressionNames.bluesJazz' => 'Jazz blues',
+          'theory.progressionNames.blues8bar' => 'Eight-bar blues',
+          'theory.progressionNames.jazzRhythmA' => 'Rhythm changes (A section)',
+          'theory.progressionNames.jazzCircle' => 'Diatonic circle of fifths',
+          'theory.progressionNames.jazzMinor251' => 'Minor ii–V–i',
+          'theory.progressionNames.jazzBackdoor' => 'Backdoor (iv7–bVII7–I)',
+          'theory.progressionNames.jazzTritone' =>
+            'ii–V with tritone substitution',
+          'theory.progressionNames.soulMotown' => 'Motown soul (I–vi–ii–V)',
+          'theory.progressionNames.soulNeo' => 'Neo-soul (ii7–V7–Imaj7–IVmaj7)',
+          'theory.progressionNames.soulMinor' => 'Slow minor soul',
+          'theory.progressionNames.funkVamp' => 'Funk vamp with IV9',
+          'theory.progressionNames.funkNinth' => 'Dominant-ninth funk',
+          'theory.progressionNames.funkGroove' => 'Minor groove (i7–bVII9–IV9)',
+          'theory.progressionNames.gospelShout' => 'Shout gospel',
+          'theory.progressionNames.gospelWaltz' => 'Hymn in 3/4',
+          'theory.progressionNames.gospelMinor' => 'Minor spiritual',
+          'theory.progressionNames.popRoyalRoad' => 'Royal road (IV–V–iii–vi)',
+          'theory.progressionNames.popEmo' => 'Emotional pop (vi–iii–IV–I)',
+          'theory.progressionNames.popBorrowed' =>
+            'Pop with a borrowed chord (IV–iv)',
+          'theory.progressionNames.balladGentle' =>
+            'Gentle ballad (I–iii–IV–V)',
+          'theory.progressionNames.balladMinor' =>
+            'Minor ballad (i–bIII–bVII–bVI)',
+          'theory.progressionNames.discoMinor' =>
+            'Minor disco (i7–iv7–bVII–bIII)',
+          'theory.progressionNames.discoStrings' =>
+            'Disco strings (IVmaj7–V7–iii7–vi7)',
+          'theory.progressionNames.discoGroove' => 'Minor disco groove',
+          'theory.progressionNames.reggaetonMinor' =>
+            'Minor reggaeton (i–bVI–bIII–bVII)',
+          'theory.progressionNames.reggaetonRomantic' =>
+            'Romantic reggaeton (vi–IV–I–V)',
+          'theory.progressionNames.reggaetonDark' =>
+            'Dark reggaeton (i–iv–bVI–V)',
+          'theory.progressionNames.lofiDreamy' => 'Dreamy lo-fi',
+          'theory.progressionNames.lofiMinor' => 'Nocturnal lo-fi',
+          'theory.progressionNames.lofiJazzy' => 'Lo-fi with ii–V–I',
+          'theory.progressionNames.lofiNinth' => 'Lo-fi with a ninth (V9)',
           'theory.progressionNames.popAxis' => 'The pop axis',
           'theory.progressionNames.dooWop' => '50s doo-wop',
           'theory.progressionNames.rockClassic' => 'Classic rock I-IV-V',
@@ -3635,6 +4154,20 @@ extension on TranslationsEn {
           'theory.progressionNames.soulGroove' => 'Soul groove',
           'theory.progressionNames.gospelPlagal' => 'Gospel with minor iv',
           'theory.progressionNames.folkThree' => 'Three-chord folk',
+          'theory.lessonTitles.intervalSongs' => 'Intervals in songs',
+          'theory.lessonTitles.subdivision' =>
+            'Subdividing: eighths, triplets and swing',
+          'theory.lessonTitles.modesPractical' => 'Modes in practice',
+          'theory.lessonTitles.triads' => 'How a chord is built',
+          'theory.lessonTitles.extensions' => 'Extensions, sus and add chords',
+          'theory.lessonTitles.inversions' => 'Inversions and slash chords',
+          'theory.lessonTitles.circleFifths' => 'The circle of fifths',
+          'theory.lessonTitles.cadences' => 'Cadences: how phrases end',
+          'theory.lessonTitles.relativeParallel' =>
+            'Relative and parallel keys',
+          'theory.lessonTitles.transposeCapo' => 'Transposing and the capo',
+          'theory.lessonTitles.styleComping' => 'Comping by style',
+          'theory.lessonTitles.tunings' => 'Alternate tunings',
           'theory.lessonTitles.notes' => 'Notes and the fretboard',
           'theory.lessonTitles.intervals' =>
             'Intervals: the distance between notes',
@@ -3651,6 +4184,24 @@ extension on TranslationsEn {
           'theory.lessonTitles.degrees' => 'Degrees and functions',
           'theory.lessonTitles.progressions' => 'Famous progressions',
           'theory.lessonTitles.caged' => 'The CAGED system',
+          'theory.lessonSummaries.intervalSongs' => 'Recognize each interval by the opening of a melody you already know.',
+          'theory.lessonSummaries.subdivision' =>
+            'Split the beat in 2, 3 or 4 and understand syncopation and swing.',
+          'theory.lessonSummaries.modesPractical' => 'When and how to use dorian, phrygian, lydian and mixolydian over a single chord.',
+          _ => null,
+        } ??
+        switch (path) {
+          'theory.lessonSummaries.triads' =>
+            'Triads and sevenths built by stacking thirds above the root.',
+          'theory.lessonSummaries.extensions' => 'Ninths, elevenths and thirteenths; suspended chords and added notes.',
+          'theory.lessonSummaries.inversions' => 'Change the lowest note of a chord to create bass lines and smooth links.',
+          'theory.lessonSummaries.circleFifths' => 'The map of the 12 keys: key signatures, neighbors and progressions.',
+          'theory.lessonSummaries.cadences' => 'Authentic, plagal, half, deceptive and Andalusian: each one says something different.',
+          'theory.lessonSummaries.relativeParallel' =>
+            'Two ways keys are related, and one trick: modal interchange.',
+          'theory.lessonSummaries.transposeCapo' => 'Change key without changing fingers: the capo and the equivalence chart.',
+          'theory.lessonSummaries.styleComping' => 'The same chords sound like pop, reggae, ballad or cumbia depending on the rhythm.',
+          'theory.lessonSummaries.tunings' => 'Drop D, DADGAD and open G: what they change and what they are for.',
           'theory.lessonSummaries.notes' => 'The 12 notes, sharps and flats, and how to find them on the guitar.',
           'theory.lessonSummaries.intervals' => 'Half steps, thirds, fifths and octaves: the DNA of scales and chords.',
           'theory.lessonSummaries.tonic' =>
@@ -3676,6 +4227,18 @@ extension on TranslationsEn {
             'The chord combinations behind thousands of songs.',
           'theory.lessonSummaries.caged' =>
             'Five open chord shapes that cover the whole neck.',
+          'theory.lessonBodies.intervalSongs' => 'An interval is the distance between two notes, counted in semitones (frets on the same string). Learning them from songs is the shortcut to recognizing them by ear: your memory already knows how each leap sounds.\n\nMinor second (1 semitone): the "Jaws" theme. Major second (2): "Frère Jacques". Major third (4): the opening of "When the Saints Go Marching In". Perfect fourth (5): "Amazing Grace" (A-ma-zing) or the bridal march. Tritone (6): "Maria" from West Side Story and the Simpsons theme. Perfect fifth (7): "Twinkle, Twinkle, Little Star" and the Star Wars theme. Major sixth (9): "My Bonnie Lies over the Ocean". Octave (12): "Somewhere over the Rainbow".\n\nTo practice, play the first interval on two strings and sing it before checking. On the guitar the same distance looks the same all over the neck, so every shape you learn can be moved.',
+          'theory.lessonBodies.subdivision' => 'The beat can be divided in several ways. Quarter notes: one hit per beat ("1 2 3 4"). Eighths: two per beat ("1 and 2 and"), the engine of rock and pop: down on the beat, up on the "and". Sixteenths: four per beat ("1 e and a"), typical of funk. Triplets: three per beat ("1-trip-let"), the sway of slow blues, creole waltz and 6/8.\n\nSyncopation means accenting where it is not expected: the offbeat (the "and") or leaving the beat silent. Reggae, ska and salsa live on it. Swing and shuffle are "uneven" eighths: the first lasts twice as long as the second (like the first and third notes of a triplet), which gives the sway.\n\nStudy trick: keep your arm moving constantly (down on the beat, up on the "and") and only change which hits you play and which you leave silent. That way the patterns in the genre guide come almost on their own.',
+          'theory.lessonBodies.modesPractical' => 'In practice you choose a mode from the chord that is sounding, not from theory. Over a minor 7 chord (Em7) play dorian: the minor scale "with a major sixth", the recipe of funk, jazz and Santana. Over a dominant 7 (G7) or a rock major chord with a bVII, play mixolydian: major "with a flat seventh". Over a dreamy major chord (Fmaj7) play lydian: major with a raised fourth, cinematic. Over a minor chord with a bII (Em–F) play phrygian: the flavor of flamenco and metal.\n\nEach mode is told apart by its characteristic note: the major 6th in dorian, the b2 in phrygian, the #4 in lydian and the b7 in mixolydian. Lean on that note, resolve it to the tonic and the mode will be heard at once.\n\nQuick recipe: pick a one- or two-chord vamp, find the tonic on the 6th string and play the scale from there; use the scale explorer to see the positions in all 12 keys.',
+          'theory.lessonBodies.triads' => 'A chord is built by stacking thirds above a note, the root. A major third is 4 semitones and a minor third 3. The major triad is root + major third + fifth (0-4-7, like C–E–G); the minor one swaps in a minor third (0-3-7: C–E♭–G). The diminished stacks two minor thirds (0-3-6) and the augmented two major ones (0-4-8).\n\nAdd another third on top and the sevenths appear: major 7 (0-4-7-11, dreamy), dominant 7 (0-4-7-10, tense and wanting to resolve), minor 7 (0-3-7-10, soft) and, on the diminished triad, the half-diminished (m7♭5), typical of the minor ii–V. The third is the note that decides whether a chord sounds happy or sad.\n\nThis way you can work out any chord without memorizing it: count the semitones from the root and look for those notes on the strings. In C major, stacking thirds on every scale note gives seven chords: three major, three minor and one diminished.',
+          'theory.lessonBodies.extensions' => 'If you keep stacking thirds past the seventh you get the extensions: the ninth (9), the eleventh (11) and the thirteenth (13). They are notes 2, 4 and 6 an octave higher. A ninth chord (C9) is a dominant 7 with the ninth added: richer and funkier than C7. In practice not every note is played: the fifth is left out and, on dominants, the eleventh clashes with the third.\n\nSuspended chords (sus) replace the third with another note: sus2 uses the second and sus4 the fourth. They are neither major nor minor; they sound open, in suspension, and sus4 usually resolves to the major chord (Dsus4 → D). Add chords add a note without the seventh: Cadd9 is a major triad with the ninth, bright and modern (very common in indie and pop).\n\nWhat to use where: 9 in funk and soul, maj7 and m7 in jazz and lo-fi, sus2 and sus4 in pop and indie, 6 and m6 in bossa and bolero. Try swapping a chord in a progression for its colorful version and hear how the mood changes.',
+          'theory.lessonBodies.inversions' => 'A chord does not always sound with its root in the bass. If the lowest note is the third it is in first inversion; if it is the fifth, in second inversion. It is written with a slash: C/E is a C with E in the bass, C/G a C with G. The note after the slash is always the bass note, and it can even be a non-chord note (C/D).\n\nThey do two jobs: they give the bass some movement and they smooth the changes. A descending line C – G/B – Am – Am/G – F – C/E – Dm – G (the "canon bass line") sounds fluid because the bass moves by step. On guitar, C/E is an open C played with the open 6th string too; G/B is a G with the B on the 5th string (fret 2) and D/F♯ puts the F♯ on the 6th string (fret 2).\n\nIn the Chords bank many chords have inversion shapes (movable triads with the root or the third in the bass). Look them up on the chord page and practice the C – G/B – Am link.',
+          'theory.lessonBodies.circleFifths' => 'The circle of fifths lines up the 12 keys by fifths. Going right, each step adds a sharp: C (none), G (1), D (2), A (3), E (4), B (5), F♯ (6). Going left it adds a flat: F (1), B♭ (2), E♭ (3), A♭ (4). Inside each major key lives its relative minor (C–A minor, G–E minor…).\n\nIt is a map of kinship: two neighbors on the circle share six of seven notes, so modulating between them is smooth. And it gives you the chords of a key at a glance: the I (your key) with its two neighbors, the IV on the left and the V on the right. In G major, C (IV) and D (V) are its neighbors.\n\nIt also marks a very natural harmonic path: descending fifths. iii–vi–ii–V–I (Em–Am–Dm–G7–C) follows the circle to the left and sounds like a "resolution" at every step; it is the basis of jazz, rancheras and half of classic pop.',
+          'theory.lessonBodies.cadences' => 'A cadence is the formula of two or more chords that ends a phrase, like punctuation. The authentic one (V–I, best with V7–I) is the full stop: the most conclusive, because the leading note rises to the tonic. The plagal (IV–I) is the gospel "amen" and sounds gentler and more solemn.\n\nThe half cadence ends on V (I–V, ii–V…): a comma, the phrase stays open and asks for more. The deceptive cadence (V–vi) fools the ear: you expect I and get vi, which sounds similar but sad, and extends the phrase. And the Andalusian cadence (i–♭VII–♭VI–V, Am–G–F–E) steps down to a major V: it is the cadence of flamenco, rumba and many rock and Latin pop songs.\n\nListen to them by feeling: has it ended? is something missing? did it surprise me? Learn to hear when a song "makes a comma" and when it "puts the full stop" and it will be much easier to accompany and anticipate the changes.',
+          'theory.lessonBodies.relativeParallel' => 'The relative key shares the same notes but has a different tonic: C major and A minor use the same seven notes. The relative minor sits three semitones below the major tonic (or the major, three above the minor). That is why the same chords work in both: C, Dm, Em, F, G and Am belong to both C major and A minor; only which one sounds like "home" changes.\n\nThe parallel key shares the tonic but changes the mode: C major and C minor. Here the notes change (the 3rd, 6th and 7th drop a semitone) and so do the chords: C major has F, C minor has Fm.\n\nThat allows modal interchange: borrowing a chord from the parallel key for color. The IV–iv of gospel (F → Fm over C), the rock ♭VII (B♭ over C) or the epic ♭VI come from the parallel minor. When a song suddenly sounds "darker" it is often borrowing a chord.',
+          'theory.lessonBodies.transposeCapo' => 'Transposing means moving a whole song to another key while keeping the degrees: every chord moves by the same number of semitones. It is done to fit the singer\'s voice or to use more comfortable shapes. In the Chords songbook you can transpose ±6 semitones with one tap.\n\nThe capo raises all the open strings by a semitone per fret: with the capo on fret 2, G shapes sound as A, C shapes as D and E shapes as F♯. The formula is: sounding key = shape + capo fret. If the song is in D and you want to play C shapes, put the capo on fret 2.\n\nTo choose: look at the chords in the original key, find a key where they can be played with open shapes (G, C, D, Em, Am) and work out the fret. The capo also gives a bright timbre and more open strings, widely used in folk and pop.',
+          'theory.lessonBodies.styleComping' => 'A progression like I–V–vi–IV can be pop, reggae, ballad, indie or cumbia: what changes is how you play it. There are four ingredients. The strumming pattern (which hits you play and which you leave silent), the dynamics (soft in the verse, loud in the chorus), the register (low strings, high strings or all) and the muting (long chords or short, dry ones).\n\nExamples: pop uses ↓ ↓↑ ↑↓↑; reggae stays silent on the beats and plays only on the offbeat; the ballad arpeggiates or strums once per bar; cumbia puts the bass on 1 and 3 and a "chiqui" on the offbeat; funk mutes almost everything and leaves a few hits; heavy rock uses palm-muted power chords. The genre guide gathers each style\'s pattern with its tempo.\n\nExercise: pick a jam progression and play the same loop in four different styles. If you change the pattern and the tempo, even the meaning of the song changes.',
+          'theory.lessonBodies.tunings' => 'Standard tuning is E–A–D–G–B–E (EADGBE). Changing a string opens new sounds. In Drop D you lower just the 6th string a whole step (D–A–D–G–B–E): power chords are played with one finger across the three low strings and the low end sounds heavier; it is the tuning of grunge, metal and hard rock.\n\nDADGAD (D–A–D–G–A–D) has no third in its open chords: it sounds open, neither major nor minor, which is why it is used in Celtic folk and fingerstyle. In open G (D–G–D–G–B–D) the open strings form a G major chord: with one finger or a slide you reach every chord; it is the tuning of Delta blues and slide rock.\n\nTips: tune string by string with the app\'s tuner, lower the pitch slowly (the neck adapts) and recheck the tuning after a while. When the tuning changes, the chords you know change shape: learn four or five shapes first and go back to standard when you finish.',
           'theory.lessonBodies.notes' => 'Western music uses only 12 notes that repeat in octaves: C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯ and B.\n\nBetween two neighboring notes there is a half step, and on the guitar a half step is exactly one fret; two frets make a whole step. There is no sharp between E and F or between B and C: they are a half step apart.\n\nA sharp (♯) raises a note a half step and a flat (♭) lowers it, so C♯ and D♭ are the same note with two names. At the 12th fret every string repeats its open note an octave higher: that\'s where the neck starts over.',
           'theory.lessonBodies.intervals' => 'An interval is the distance between two notes, measured in half steps (frets). Each distance has its own color: the major third (4 half steps) sounds happy, the minor third (3) sad and the perfect fifth (7) solid and open.\n\nChords are built by stacking intervals on a root: a major chord is root + major third + fifth; a minor chord only changes the third. That\'s why moving a single note one fret turns C into C minor.\n\nOn the guitar every interval has a shape: the fifth is on the next (higher) string, two frets up, and the octave two strings over and two frets up. When crossing the 2nd (B) string the shape shifts one fret.',
           'theory.lessonBodies.tonic' => 'The tonic is the note a song revolves around: the home everything wants to return to. When the melody or chord lands on the tonic we feel rest; moving away creates tension.\n\nThe key is the tonic plus its scale. \'G major\' means G is home and the notes come from the G major scale. Almost every song ends, and many start, on the tonic chord.\n\nTo find a song\'s key, look for the chord that sounds like an ending, check that the other chords belong to that key and sing the note that \'closes\' the melody. With practice you\'ll hear it instantly: play \'Find the tonic\'.',
@@ -3690,6 +4253,18 @@ extension on TranslationsEn {
           'theory.lessonBodies.degrees' => 'Each scale degree has a function. The tonic (I) is rest. The subdominant (IV) gently moves away. The dominant (V) builds tension and wants to resolve to the tonic.\n\nThe other degrees stand in for these three: vi and iii share notes with I (tonic function) and ii resembles IV (subdominant). That\'s why \'I-vi-IV-V\' and \'I-IV-V\' tell the same story: home, journey, tension and return.\n\nOnce you understand functions you can guess a song\'s next chord, figure out songs by ear and write your own progressions.',
           'theory.lessonBodies.progressions' => 'A progression is a repeating sequence of chords. A handful hold up much of popular music: I-V-vi-IV (pop), I-IV-V (rock, country, folk, ranchera), ii-V-I (jazz), vi-IV-I-V (ballads) and the Andalusian cadence i-bVII-bVI-V (flamenco and Latin rock).\n\nBecause they\'re written in degrees you can play them in any key: pick one that\'s comfortable to sing. Learn each progression in two or three keys and you\'ll start recognizing them everywhere.\n\nThe guided jam has all these progressions with backing, metronome, the strumming pattern and the recommended scale to improvise.',
           'theory.lessonBodies.caged' => 'The five open major chord shapes —C, A, G, E and D (C-A-G-E-D)— can move up the neck with a barre. Chained in that order they cover all twelve frets with the same chord.\n\nFor example, C major can be played as a C shape (open), an A shape (barre at fret 3), a G shape (fret 5), an E shape (fret 8) and a D shape (fret 10). Each shape shares notes with the next.\n\nEach CAGED shape matches a major pentatonic box. That\'s how chords and scales connect: you always know which solo notes surround the chord you\'re playing.',
+          'theory.lessonPoints.intervalSongs' => 'Interval = distance in semitones between two notes\nm2 = "Jaws" · M2 = "Frère Jacques" · M3 = "When the Saints"\nPerfect 4th = "Amazing Grace" · perfect 5th = "Twinkle Twinkle"\nTritone (6) = "Maria"; the most unstable one\nSing the interval before playing it, then check',
+          'theory.lessonPoints.subdivision' => 'Quarters = beat · eighths = "1 and 2 and" · sixteenths = "1 e and a"\nTriplet = three notes in one beat (slow blues, 6/8)\nSyncopation = accent on the offbeat or silence on the beat\nSwing/shuffle: a long + a short eighth (2 to 1)\nKeep the arm always moving: down on the beat, up on the "and"',
+          'theory.lessonPoints.modesPractical' => 'Dorian = minor 7 · major sixth (funk, jazz)\nMixolydian = dominant 7 · b7 (rock, blues, country)\nLydian = major maj7 · #4 (dreamy sound)\nPhrygian = minor with b2 (flamenco, metal)\nPlay the characteristic note and resolve it to the tonic',
+          'theory.lessonPoints.triads' => 'Major third = 4 semitones · minor third = 3\nMajor 0-4-7 · minor 0-3-7 · diminished 0-3-6 · augmented 0-4-8\nSevenths: maj7 (0-4-7-11) · 7 (0-4-7-10) · m7 (0-3-7-10)\nThe third decides whether it sounds happy or sad\nIn a major key: 3 major, 3 minor and 1 diminished chord',
+          'theory.lessonPoints.extensions' => '9 = 2nd up · 11 = 4th · 13 = 6th (an octave higher)\nC9 = C7 + ninth: funk, soul, r&b\nsus2 and sus4 replace the third; sus4 usually resolves to major\nadd9 = triad + ninth, no seventh (indie, pop)\nSwap a chord for its colorful version and compare',
+          'theory.lessonPoints.inversions' => 'First inversion = third in the bass · second = fifth\nC/E = a C chord with E in the bass (the note after the slash)\nA bass moving by step sounds fluid\nC/E, G/B and D/F♯ are the most useful slash chords on guitar\nFind the inversion shapes on each chord page',
+          'theory.lessonPoints.circleFifths' => 'Right = +1 sharp per step · left = +1 flat\nCircle neighbors share 6 of 7 notes\nI with its IV (left) and V (right) = the three basic chords\nEvery major key holds its relative minor\nDescending fifths: iii–vi–ii–V–I (jazz, ranchera, classic pop)',
+          'theory.lessonPoints.cadences' => 'Authentic V–I (V7–I): the full stop\nPlagal IV–I: the "amen", softer\nHalf cadence (ends on V): a comma, stays open\nDeceptive V–vi: you expect I and get vi\nAndalusian i–♭VII–♭VI–V (Am–G–F–E): flamenco and rumba',
+          'theory.lessonPoints.relativeParallel' => 'Relative: same notes, different tonic (C ↔ A minor)\nThe relative minor is 3 semitones below the major tonic\nParallel: same tonic, different mode (C ↔ C minor)\nModal interchange: IV → iv, ♭VII, ♭VI come from the parallel key\nIf a song suddenly darkens, look for the borrowed chord',
+          'theory.lessonPoints.transposeCapo' => 'Transposing = the same degrees in another key\nCapo on fret N: raises everything by N semitones\nSounding key = shape + fret (G + 2 = A, C + 2 = D, D + 2 = E)\nPick open shapes (G, C, D, Em, Am) and work out the fret\nThe songbook transposes ±6 semitones',
+          'theory.lessonPoints.styleComping' => 'Four ingredients: pattern, dynamics, register and muting\nPop: ↓ ↓↑ ↑↓↑ · reggae: only the offbeat\nBallad: arpeggio or one strum per bar\nCumbia: bass on 1 and 3 and a "chiqui" · funk: almost all muted\nPlay the same loop in four styles and compare',
+          'theory.lessonPoints.tunings' => 'Standard = EADGBE\nDrop D = DADGBE: one-finger power chords, heavy low end\nDADGAD = open chords with no third (folk, fingerstyle)\nOpen G = DGDGBD: one finger or a slide makes the chords (blues)\nTune string by string and lower the pitch slowly',
           'theory.lessonPoints.notes' => '12 notes: 7 natural and 5 sharps/flats\n1 fret = 1 half step; 2 frets = 1 whole step\nE–F and B–C are a half step apart\nFret 12 = the same note an octave up\nLearn the notes on the 6th and 5th strings first: they are your barre-chord roots',
           'theory.lessonPoints.intervals' => 'Minor third = 3 half steps (sad)\nMajor third = 4 half steps (happy)\nPerfect fifth = 7 half steps (power chord)\nOctave = 12 half steps: the same note higher\nThe B string shifts shapes by one fret',
           'theory.lessonPoints.tonic' => 'Tonic = rest; moving away = tension\nKey = tonic + scale\nThe last chord is usually the tonic\nEvery major key has a relative minor with the same notes\nTransposing = moving everything by the same number of frets',
@@ -3808,6 +4383,34 @@ extension on TranslationsEn {
           'songs.empty' => 'No songs match',
           'songs.emptyBody' => 'Try another name or clear the genre filter.',
           'songs.notFound' => 'We couldn\'t find that song',
+          'songs.exercises.cumbiaInAm' => 'Cumbia in A minor',
+          'songs.exercises.salsaMontuno' => 'Salsa montuno in C',
+          'songs.exercises.rancheraInG' => 'Ranchera waltz in G',
+          'songs.exercises.polkaNortena' => 'Norteño polka in G',
+          'songs.exercises.flamencoRumba' => 'Flamenco rumba in A minor',
+          'songs.exercises.tangoInDm' => 'Tango in D minor',
+          'songs.exercises.boleroInC' => 'Bolero in C',
+          'songs.exercises.reggaetonInAm' => 'Dembow in A minor',
+          'songs.exercises.merengueInG' => 'Merengue in G',
+          'songs.exercises.bachataInAm' => 'Bachata in A minor',
+          'songs.exercises.valsCriolloInAm' => 'Creole waltz in A minor',
+          'songs.exercises.discoInAm' => 'Disco in A minor',
+          'songs.exercises.skaInG' => 'Ska in G',
+          'songs.exercises.indieInD' => 'Bright indie in D',
+          'songs.exercises.grungeInE' => 'Grunge in E',
+          'songs.exercises.lofiInC' => 'Lo-fi in C',
+          'songs.exercises.punkInE' => 'Punk in E',
+          'songs.exercises.folkInG' => 'Campfire folk in G',
+          'songs.exercises.countryInG' => 'Boom-chick country in G',
+          'songs.exercises.countryTrainInE' => 'Freight train in E',
+          'songs.exercises.reggaeInC' => 'Reggae in C',
+          'songs.exercises.bossaInC' => 'Bossa in C',
+          'songs.exercises.jazz251InC' => 'ii–V–I in C',
+          'songs.exercises.soulInC' => 'Soul with major sevenths',
+          'songs.exercises.gospelInC' => 'Gospel with the minor iv',
+          'songs.exercises.balladInC' => 'Arpeggiated ballad in C',
+          'songs.exercises.andaluzaInAm' => 'Andalusian cadence in A minor',
+          'songs.exercises.bluesMinorInE' => 'Minor blues in E',
           'songs.exercises.bluesInA' => 'Blues in A · 12 bars',
           'songs.exercises.rockInE' => 'Power chords in E',
           'songs.exercises.popFourChords' => 'The four pop chords',

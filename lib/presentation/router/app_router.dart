@@ -18,6 +18,7 @@ import 'package:chords/presentation/features/settings/settings_page.dart';
 import 'package:chords/presentation/features/songs/song_page.dart';
 import 'package:chords/presentation/features/songs/songs_page.dart';
 import 'package:chords/presentation/features/studio/history_page.dart';
+import 'package:chords/presentation/features/theory/genre_page.dart';
 import 'package:chords/presentation/features/theory/genres_page.dart';
 import 'package:chords/presentation/features/theory/lesson_page.dart';
 import 'package:chords/presentation/features/theory/scale_explorer_page.dart';

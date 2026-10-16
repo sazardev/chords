@@ -12,6 +12,9 @@ enum LessonUnit {
 
   /// Acordes de la tonalidad, funciones, progresiones y CAGED.
   harmony,
+
+  /// Técnica y estilo: acompañamiento, transposición y afinaciones.
+  technique,
 }
 
 /// Una lección de teoría: texto (en las traducciones), demostración en el
@@ -74,6 +77,12 @@ const List<TheoryLesson> kTheoryLessons = <TheoryLesson>[
     game: MiniGameKind.interval,
   ),
   TheoryLesson(
+    id: 'intervalSongs',
+    unit: LessonUnit.basics,
+    emoji: '🎶',
+    game: MiniGameKind.interval,
+  ),
+  TheoryLesson(
     id: 'tonic',
     unit: LessonUnit.basics,
     emoji: '🏠',
@@ -86,6 +95,12 @@ const List<TheoryLesson> kTheoryLessons = <TheoryLesson>[
     unit: LessonUnit.basics,
     emoji: '🥁',
     progressionId: 'popAxis',
+  ),
+  TheoryLesson(
+    id: 'subdivision',
+    unit: LessonUnit.basics,
+    emoji: '⏱️',
+    progressionId: 'blues12',
   ),
   TheoryLesson(
     id: 'majorScale',
@@ -137,6 +152,35 @@ const List<TheoryLesson> kTheoryLessons = <TheoryLesson>[
     progressionId: 'funkDorian',
   ),
   TheoryLesson(
+    id: 'modesPractical',
+    unit: LessonUnit.scales,
+    emoji: '🌈',
+    scale: ScaleType.phrygian,
+    tonic: 4,
+    progressionId: 'flamencoCadence',
+  ),
+  TheoryLesson(
+    id: 'triads',
+    unit: LessonUnit.harmony,
+    emoji: '🧱',
+    showHarmony: true,
+    game: MiniGameKind.chordQuality,
+  ),
+  TheoryLesson(
+    id: 'extensions',
+    unit: LessonUnit.harmony,
+    emoji: '🍰',
+    game: MiniGameKind.nameChord,
+    progressionId: 'indieSus',
+  ),
+  TheoryLesson(
+    id: 'inversions',
+    unit: LessonUnit.harmony,
+    emoji: '🔄',
+    game: MiniGameKind.readDiagram,
+    progressionId: 'canon',
+  ),
+  TheoryLesson(
     id: 'harmony',
     unit: LessonUnit.harmony,
     emoji: '🏛️',
@@ -159,12 +203,52 @@ const List<TheoryLesson> kTheoryLessons = <TheoryLesson>[
     progressionId: 'dooWop',
   ),
   TheoryLesson(
+    id: 'circleFifths',
+    unit: LessonUnit.harmony,
+    emoji: '⭕',
+    game: MiniGameKind.keyChord,
+    progressionId: 'jazzCircle',
+  ),
+  TheoryLesson(
+    id: 'cadences',
+    unit: LessonUnit.harmony,
+    emoji: '🏁',
+    game: MiniGameKind.progressionEar,
+    progressionId: 'gospelPlagal',
+  ),
+  TheoryLesson(
+    id: 'relativeParallel',
+    unit: LessonUnit.harmony,
+    emoji: '👯',
+    showHarmony: true,
+    game: MiniGameKind.findTonic,
+    progressionId: 'popBorrowed',
+  ),
+  TheoryLesson(
     id: 'caged',
     unit: LessonUnit.harmony,
     emoji: '🗺️',
     scale: ScaleType.majorPentatonic,
     showPositions: true,
     progressionId: 'countryRoad',
+  ),
+  TheoryLesson(
+    id: 'transposeCapo',
+    unit: LessonUnit.technique,
+    emoji: '🧷',
+    progressionId: 'popAxis',
+  ),
+  TheoryLesson(
+    id: 'styleComping',
+    unit: LessonUnit.technique,
+    emoji: '🎸',
+    progressionId: 'reggaeAxis',
+  ),
+  TheoryLesson(
+    id: 'tunings',
+    unit: LessonUnit.technique,
+    emoji: '🔧',
+    progressionId: 'grungeMinor',
   ),
 ];
 
