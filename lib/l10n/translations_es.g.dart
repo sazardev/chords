@@ -1700,6 +1700,12 @@ class Translations$tuner$es {
 
   /// es: 'Volver al afinador'
   String get switchToTuner => 'Volver al afinador';
+
+  /// es: 'Afinador'
+  String get modeTuner => 'Afinador';
+
+  /// es: 'Acordes'
+  String get modeChords => 'Acordes';
 }
 
 // Path: practice
@@ -5497,6 +5503,8 @@ extension on Translations {
           'tuner.chordsTitle' => 'Detectar acordes',
           'tuner.switchToChords' => 'Detectar acordes',
           'tuner.switchToTuner' => 'Volver al afinador',
+          'tuner.modeTuner' => 'Afinador',
+          'tuner.modeChords' => 'Acordes',
           'practice.title' => 'Practicar acorde',
           'practice.intro' => 'Toca las cuerdas una a una. Las reconozco en el orden que quieras.',
           'practice.start' => 'Empezar a practicar',
@@ -6103,11 +6111,11 @@ extension on Translations {
             required Object n,
           }) => 'Empieza en ${n}',
           'chordGames.changes.playThis' => 'Toca este acorde',
-          'chordGames.changes.clean' => 'Cambios limpios',
-          'chordGames.changes.goal' => ({required Object n}) => 'Meta: ${n}',
           _ => null,
         } ??
         switch (path) {
+          'chordGames.changes.clean' => 'Cambios limpios',
+          'chordGames.changes.goal' => ({required Object n}) => 'Meta: ${n}',
           'chordGames.changes.heard' => ({
             required Object count,
             required Object total,
@@ -6728,6 +6736,9 @@ extension on Translations {
           'studio.songsCard' => 'Canciones',
           'studio.songsCardBody' => 'Acordes y letra para tocar',
           'studio.historyCard' => 'Historial',
+          _ => null,
+        } ??
+        switch (path) {
           'studio.historyCardBody' => 'Tus acordes recientes',
           'studio.streakDays' =>
             ({required num n}) =>
@@ -6737,9 +6748,6 @@ extension on Translations {
                   one: '${n} día seguido tocando',
                   other: '${n} días seguidos tocando',
                 ),
-          _ => null,
-        } ??
-        switch (path) {
           'studio.streakZero' => 'Toca hoy para empezar tu racha',
           'studio.streakToday' => '¡Hoy ya practicaste!',
           'studio.recentTitle' => 'Acordes recientes',

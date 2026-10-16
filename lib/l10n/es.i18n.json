@@ -774,7 +774,9 @@
     "modeManual": "Fijada: $string",
     "chordsTitle": "Detectar acordes",
     "switchToChords": "Detectar acordes",
-    "switchToTuner": "Volver al afinador"
+    "switchToTuner": "Volver al afinador",
+    "modeTuner": "Afinador",
+    "modeChords": "Acordes"
   },
   "practice": {
     "title": "Practicar acorde",

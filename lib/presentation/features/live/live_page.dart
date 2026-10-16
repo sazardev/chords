@@ -90,24 +90,45 @@ class _LivePageState extends State<LivePage> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Text(_chords ? t.tuner.chordsTitle : t.live.title),
-          actions: <Widget>[
-            IconButton(
-              tooltip: _chords ? t.tuner.switchToTuner : t.tuner.switchToChords,
-              icon: Icon(
-                _chords ? Icons.tune_rounded : Icons.library_music_rounded,
-              ),
-              onPressed: () => unawaited(_toggleMode()),
-            ),
-          ],
         ),
         body: SafeArea(
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints box) =>
-                SingleChildScrollView(
-                  child: _chords
-                      ? const ChordsView()
-                      : TunerView(minHeight: box.maxHeight),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: SegmentedButton<bool>(
+                  showSelectedIcon: false,
+                  segments: <ButtonSegment<bool>>[
+                    ButtonSegment<bool>(
+                      value: false,
+                      icon: const Icon(Icons.tune_rounded),
+                      label: Text(t.tuner.modeTuner),
+                    ),
+                    ButtonSegment<bool>(
+                      value: true,
+                      icon: const Icon(Icons.library_music_rounded),
+                      label: Text(t.tuner.modeChords),
+                    ),
+                  ],
+                  selected: <bool>{_chords},
+                  onSelectionChanged: (Set<bool> mode) {
+                    if (mode.first != _chords) {
+                      unawaited(_toggleMode());
+                    }
+                  },
                 ),
+              ),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints box) =>
+                      SingleChildScrollView(
+                        child: _chords
+                            ? const ChordsView()
+                            : TunerView(minHeight: box.maxHeight),
+                      ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

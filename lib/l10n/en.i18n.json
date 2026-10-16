@@ -774,7 +774,9 @@
     "modeManual": "Locked: $string",
     "chordsTitle": "Detect chords",
     "switchToChords": "Detect chords",
-    "switchToTuner": "Back to tuner"
+    "switchToTuner": "Back to tuner",
+    "modeTuner": "Tuner",
+    "modeChords": "Chords"
   },
   "practice": {
     "title": "Practice chord",

@@ -48,7 +48,16 @@ List<ChordKeyRole> keyRolesOf(ChordSymbol chord) {
         tonic,
       ).chords(sevenths: !triad);
       for (final DiatonicChord candidate in harmony) {
-        if (candidate.symbol == chord) {
+        // La menor armónica repite casi todos los acordes de la natural: solo
+        // cuenta el primero de cada tonalidad y grado.
+        final bool repeated = roles.any(
+          (ChordKeyRole r) =>
+              r.tonic == tonic &&
+              r.degree == candidate.degree &&
+              r.roman == candidate.roman &&
+              r.scale.isMinor == scale.isMinor,
+        );
+        if (candidate.symbol == chord && !repeated) {
           roles.add(
             ChordKeyRole(
               tonic: tonic,

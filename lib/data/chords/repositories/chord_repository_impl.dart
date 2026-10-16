@@ -34,11 +34,18 @@ class ChordRepositoryImpl implements ChordRepository {
   @override
   bool get isLoaded => _chords.isNotEmpty;
 
+  /// Carga en curso: las llamadas simultáneas esperan a la misma lectura.
+  Future<void>? _loading;
+
   @override
-  Future<void> load() async {
+  Future<void> load() {
     if (isLoaded) {
-      return;
+      return Future<void>.value();
     }
+    return _loading ??= _read().whenComplete(() => _loading = null);
+  }
+
+  Future<void> _read() async {
     final Stopwatch watch = Stopwatch()..start();
     final String raw = await _dataSource.fetchRaw();
     final ParsedChordDatabase database = parseInIsolate

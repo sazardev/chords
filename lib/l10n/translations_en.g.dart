@@ -1437,6 +1437,10 @@ class Translations$tuner$en extends Translations$tuner$es {
   String get switchToChords => 'Detect chords';
   @override
   String get switchToTuner => 'Back to tuner';
+  @override
+  String get modeTuner => 'Tuner';
+  @override
+  String get modeChords => 'Chords';
 }
 
 // Path: practice
@@ -4789,6 +4793,8 @@ extension on TranslationsEn {
           'tuner.chordsTitle' => 'Detect chords',
           'tuner.switchToChords' => 'Detect chords',
           'tuner.switchToTuner' => 'Back to tuner',
+          'tuner.modeTuner' => 'Tuner',
+          'tuner.modeChords' => 'Chords',
           'practice.title' => 'Practice chord',
           'practice.intro' =>
             'Play the strings one by one. I recognize them in any order.',
@@ -5409,11 +5415,11 @@ extension on TranslationsEn {
             required Object n,
           }) => 'Starting in ${n}',
           'chordGames.changes.playThis' => 'Play this chord',
-          'chordGames.changes.clean' => 'Clean changes',
-          'chordGames.changes.goal' => ({required Object n}) => 'Goal: ${n}',
           _ => null,
         } ??
         switch (path) {
+          'chordGames.changes.clean' => 'Clean changes',
+          'chordGames.changes.goal' => ({required Object n}) => 'Goal: ${n}',
           'chordGames.changes.heard' => ({
             required Object count,
             required Object total,
@@ -6037,6 +6043,9 @@ extension on TranslationsEn {
           'studio.songsCard' => 'Songs',
           'studio.songsCardBody' => 'Chords and lyrics to play',
           'studio.historyCard' => 'History',
+          _ => null,
+        } ??
+        switch (path) {
           'studio.historyCardBody' => 'Your recent chords',
           'studio.streakDays' =>
             ({required num n}) =>
@@ -6046,9 +6055,6 @@ extension on TranslationsEn {
                   one: '${n} day in a row',
                   other: '${n} days in a row',
                 ),
-          _ => null,
-        } ??
-        switch (path) {
           'studio.streakZero' => 'Play today to start your streak',
           'studio.streakToday' => 'You already practiced today!',
           'studio.recentTitle' => 'Recent chords',
