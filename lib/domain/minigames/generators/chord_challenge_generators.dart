@@ -100,10 +100,11 @@ class RushChordGenerator implements QuizGenerator {
     if (theme == RushTheme.seventh) {
       return _isSeventh(chord.quality);
     }
-    return level != MiniGameLevel.easy ||
-        chord.quality == ChordQuality.major ||
-        chord.quality == ChordQuality.minor ||
-        chord.quality == ChordQuality.seven;
+    return switch (level) {
+      MiniGameLevel.easy => chord.quality.popularity >= 5,
+      MiniGameLevel.medium => chord.quality.popularity >= 3,
+      MiniGameLevel.hard => true,
+    };
   }
 
   bool _fitsVariant(ChordVariant variant, int maxDifficulty) {
@@ -111,8 +112,8 @@ class RushChordGenerator implements QuizGenerator {
       return false;
     }
     return switch (theme) {
-      RushTheme.open => variant.tags.contains('open'),
-      RushTheme.barre => variant.tags.contains('barre'),
+      RushTheme.open => variant.isShape && variant.tags.contains('open'),
+      RushTheme.barre => variant.isShape && variant.tags.contains('barre'),
       RushTheme.seventh => true,
     };
   }
@@ -176,7 +177,7 @@ class ChordMemoryGenerator implements QuizGenerator {
     final List<int> sequence = <int>[];
     while (sequence.length < length) {
       final int next = random.nextInt(options.length);
-      if (sequence.isEmpty || sequence.last != next) {
+      if (sequence.isEmpty || sequence.last != next || options.length < 2) {
         sequence.add(next);
       }
     }

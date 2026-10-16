@@ -39,14 +39,17 @@ class FlawedVoicing {
   final int pitchClass;
 }
 
-/// Notas que definen el acorde: todas menos la quinta (si hay más de dos).
+/// Notas que definen el acorde: las que el banco no marca como opcionales
+/// (casi siempre la quinta; en los extendidos también la novena o la oncena).
 Set<int> requiredTones(Chord chord) => <int>{
-  for (final int interval in chord.quality.intervals)
-    if (interval % 12 != 7 || chord.quality.intervals.length == 2)
-      (chord.root.pitchClass + interval) % 12,
+  for (final int interval in chord.quality.requiredIntervals)
+    (chord.root.pitchClass + interval) % 12,
 };
 
 /// `true` si [frets] suena solo notas del acorde y todas las que lo definen.
+///
+/// Es el criterio del validador del banco: no pide la raíz en el bajo ni la
+/// 6ª cuerda, porque hay tríadas en cuerdas agudas, shells y drops.
 bool isValidVoicing(Chord chord, List<int> frets) {
   final Set<int> sounding = soundingPitchClasses(frets).toSet();
   return sounding.difference(pitchClassesOfChord(chord)).isEmpty &&

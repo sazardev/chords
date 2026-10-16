@@ -193,12 +193,16 @@ class ChordNeighborGenerator implements QuizGenerator {
 
   @override
   QuizQuestion generate(math.Random random, MiniGameLevel level, int index) {
-    final List<String> ids = relationsFor(level);
-    final String id = ids[random.nextInt(ids.length)];
+    final List<String> ids = relationsFor(level).toList()..shuffle(random);
+    // La primera relación para la que el banco tiene un acorde de partida.
+    final String id = ids.firstWhere(
+      (String id) => _source(random, level, id) != null,
+      orElse: () => throw StateError('El banco no tiene acordes para esto'),
+    );
     final _Relation relation = _relations.firstWhere(
       (_Relation r) => r.id == id,
     );
-    final ChordSymbol source = _source(random, level, id);
+    final ChordSymbol source = _source(random, level, id)!;
     final ChordSymbol answer = relation.apply(source)!;
     final List<ChordSymbol> plausible =
         <ChordSymbol>[
@@ -227,12 +231,15 @@ class ChordNeighborGenerator implements QuizGenerator {
     );
   }
 
-  ChordSymbol _source(math.Random random, MiniGameLevel level, String id) {
+  ChordSymbol? _source(math.Random random, MiniGameLevel level, String id) {
     final List<ChordQuality> qualities = switch (id) {
       'tritone' => <ChordQuality>[ChordQuality.seven],
       'dominant' || 'subdominant' => <ChordQuality>[ChordQuality.major],
       _ => <ChordQuality>[ChordQuality.major, ChordQuality.minor],
     };
+    if (!_repository.chords.any((Chord c) => qualities.contains(c.quality))) {
+      return null;
+    }
     final Chord chord = pickChord(_repository, random, level, qualities);
     return ChordSymbol(chord.root.pitchClass, chord.quality);
   }

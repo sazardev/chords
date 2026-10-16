@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
@@ -61,6 +62,43 @@ void main() {
       expect(easy, lessThan(medium));
       expect(medium, lessThanOrEqualTo(hard));
       expect(hard, bankQualities(s.bank).length);
+    });
+
+    test('las calidades se eligen por popularidad según la dificultad', () {
+      for (final ChordQuality q in studyQualities(s.bank, MiniGameLevel.easy)) {
+        expect(q.popularity, greaterThanOrEqualTo(5), reason: q.id);
+      }
+      final Set<ChordQuality> medium = studyQualities(
+        s.bank,
+        MiniGameLevel.medium,
+      ).toSet();
+      for (final ChordQuality q in medium) {
+        expect(q.popularity, greaterThanOrEqualTo(4), reason: q.id);
+      }
+      expect(
+        medium.containsAll(studyQualities(s.bank, MiniGameLevel.easy)),
+        isTrue,
+      );
+      expect(
+        studyQualities(
+          s.bank,
+          MiniGameLevel.hard,
+        ).any((ChordQuality q) => q.popularity <= 2),
+        isTrue,
+        reason: 'en difícil salen las calidades raras',
+      );
+    });
+
+    test('las preguntas de fácil usan las calidades imprescindibles', () {
+      for (final MiniGameKind kind in <MiniGameKind>[
+        MiniGameKind.spellChord,
+        MiniGameKind.chordFormula,
+        MiniGameKind.chordVariantEar,
+      ]) {
+        for (final QuizQuestion q in s.sample(kind, MiniGameLevel.easy)) {
+          expect(s.chordOf(q).quality.popularity, greaterThanOrEqualTo(5));
+        }
+      }
     });
   });
 

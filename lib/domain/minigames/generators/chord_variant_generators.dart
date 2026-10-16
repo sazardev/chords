@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_inversion.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/pitch_classes.dart';
@@ -15,15 +16,18 @@ import 'package:chords/domain/minigames/generators/quiz_generator.dart';
 import 'package:chords/domain/minigames/services/chord_inversion.dart';
 import 'package:chords/domain/minigames/services/chord_tones.dart';
 
-/// Posición del acorde que suena: la más fácil en fácil, una al azar (de
-/// dificultad razonable) después, para que no se reconozca por una sola forma.
+/// Posición del acorde que suena: la recomendada en fácil, una al azar (de
+/// dificultad razonable y con la raíz en el bajo) después, para que no se
+/// reconozca por una sola forma.
 int soundingVariantIndex(math.Random random, Chord chord, MiniGameLevel level) {
   if (level == MiniGameLevel.easy) {
     return easiestVariantIndex(chord);
   }
   final List<int> candidates = <int>[
     for (int i = 0; i < chord.variants.length; i++)
-      if (chord.variants[i].difficulty.level <= 3) i,
+      if (chord.variants[i].difficulty.level <= 3 &&
+          !chord.variants[i].tags.contains('inversion'))
+        i,
   ];
   return candidates.isEmpty
       ? easiestVariantIndex(chord)
@@ -102,7 +106,7 @@ class InversionGenerator implements QuizGenerator {
           : const <SoundCue>[],
       choices: <QuizChoice>[
         for (final ChordInversion i in _options(pick.chord))
-          QuizChoice(ChoiceType.inversion, i.id),
+          QuizChoice(ChoiceType.inversion, i.name),
       ],
       answer: <int>[_options(pick.chord).indexOf(pick.inversion)],
       chordId: pick.chord.id,
@@ -112,37 +116,56 @@ class InversionGenerator implements QuizGenerator {
     );
   }
 
-  /// Opciones de respuesta: tres para tríadas y cuatro para cuatriadas.
-  List<ChordInversion> _options(Chord chord) =>
-      chord.quality.intervals.length > 3
-      ? ChordInversion.values
-      : ChordInversion.values.take(3).toList();
+  /// Opciones de respuesta: fundamental, 1ª y 2ª, y la 3ª si el acorde tiene
+  /// séptima (o sexta) que pueda ir en el bajo.
+  List<ChordInversion> _options(Chord chord) => <ChordInversion>[
+    ChordInversion.root,
+    ChordInversion.first,
+    ChordInversion.second,
+    if (chord.quality.intervals.any(
+      (int i) => inversionOf(chord.quality, i) == ChordInversion.third,
+    ))
+      ChordInversion.third,
+  ];
 
+  /// Posiciones con nombre de inversión del nivel; si el banco no tiene
+  /// ninguna con ese filtro se amplía a todos los acordes de tres notas o más.
   List<_Voicing> _voicings(MiniGameLevel level) {
-    final int maxNotes = level == MiniGameLevel.easy ? 3 : 7;
-    final List<_Voicing> all = <_Voicing>[
-      for (final Chord chord in _repository.chords)
-        if (chord.quality.intervals.length >= 3 &&
-            chord.quality.intervals.length <= maxNotes)
-          ..._voicingsOf(chord),
-    ];
-    final List<_Voicing> simple = all
-        .where((_Voicing v) => _isTriad(v.chord))
-        .toList();
-    return level == MiniGameLevel.easy && simple.isNotEmpty ? simple : all;
+    final int maxNotes = level == MiniGameLevel.easy ? 3 : 99;
+    final List<_Voicing> strict = _collect(
+      (Chord c) => c.quality.intervals.length <= maxNotes && _isTriad(c, level),
+    );
+    if (strict.isNotEmpty) {
+      return strict;
+    }
+    final List<_Voicing> any = _collect((Chord c) => true);
+    if (any.isEmpty) {
+      throw StateError('El banco no tiene posiciones con inversión');
+    }
+    return any;
   }
+
+  List<_Voicing> _collect(bool Function(Chord chord) keep) => <_Voicing>[
+    for (final Chord chord in _repository.chords)
+      if (keep(chord)) ..._voicingsOf(chord),
+  ];
 
   /// Las posiciones de [chord] cuyo bajo es una de sus notas básicas.
   Iterable<_Voicing> _voicingsOf(Chord chord) sync* {
     for (int v = 0; v < chord.variants.length; v++) {
-      final ChordInversion? inversion = inversionOf(chord, chord.variants[v]);
-      if (inversion != null) {
+      final ChordInversion? inversion = variantInversion(
+        chord,
+        chord.variants[v],
+      );
+      if (inversion != null && _options(chord).contains(inversion)) {
         yield (chord: chord, variant: v, inversion: inversion);
       }
     }
   }
 
-  bool _isTriad(Chord chord) =>
+  /// En fácil solo mayores y menores; después, cualquier acorde.
+  bool _isTriad(Chord chord, MiniGameLevel level) =>
+      level != MiniGameLevel.easy ||
       chord.quality == ChordQuality.major ||
       chord.quality == ChordQuality.minor;
 }
@@ -173,7 +196,8 @@ class RootAndBassGenerator implements QuizGenerator {
       }
     }
     final Chord fallback = _repository.chords.first;
-    return _bass(random, level, fallback, 0, fallback.variants.first)!;
+    return _bass(random, level, fallback, 0, fallback.variants.first) ??
+        (throw StateError('El banco no tiene posiciones con bajo'));
   }
 
   int _variantFor(math.Random random, Chord chord, MiniGameLevel level) {

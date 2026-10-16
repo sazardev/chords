@@ -1,14 +1,17 @@
 import 'dart:math' as math;
 
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_inversion.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
+import 'package:chords/domain/chords/entities/variant_identity.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/entities/sound_cue.dart';
 import 'package:chords/domain/minigames/services/caged_shape.dart';
 import 'package:chords/domain/minigames/services/chord_inversion.dart';
+import 'package:chords/domain/minigames/services/chord_tones.dart';
 import 'package:chords/domain/minigames/services/strum_cues.dart';
 import 'package:chords/domain/minigames/services/voicing_flaws.dart';
 import 'package:chords/domain/minigames/usecases/build_minigame_use_cases.dart';
@@ -60,16 +63,42 @@ void main() {
       expect(flawed, greaterThan(bank.chords.length));
     });
 
-    test('las inversiones salen del bajo de la posición', () {
+    test('las inversiones salen del bajo que declara el identificador', () {
+      int checked = 0;
+      for (final Chord chord in bank.chords) {
+        for (final ChordVariant variant in chord.variants) {
+          final VariantIdentity identity = VariantIdentity.parse(
+            variant.id.substring(chord.id.length + 1),
+          );
+          if (identity.isShape) {
+            continue;
+          }
+          final ChordInversion expected = inversionOf(
+            chord.quality,
+            identity.bassInterval,
+          );
+          final ChordInversion? found = variantInversion(chord, variant);
+          expect(
+            found,
+            chord.quality.intervals.length < 3 ||
+                    expected == ChordInversion.other
+                ? isNull
+                : expected,
+            reason: variant.id,
+          );
+          checked++;
+        }
+      }
+      expect(checked, greaterThan(bank.chords.length));
+    });
+
+    test('el bajo de un acorde de tres notas no es siempre la 6ª cuerda', () {
       final Chord c = bank.chordById('C-maj')!;
-      final Map<String, ChordInversion?> byLabel = <String, ChordInversion?>{
-        for (final ChordVariant v in c.variants)
-          v.positionLabel: inversionOf(c, v),
+      final Set<int> bassStrings = <int>{
+        for (final ChordVariant v in c.variants) soundingStrings(v.frets).first,
       };
-      expect(byLabel['Forma de Do'], ChordInversion.root);
-      expect(byLabel['Triada D-G-B · bajo en E'], ChordInversion.first);
-      expect(byLabel['Triada G-B-e · bajo en G'], ChordInversion.second);
-      expect(byLabel['Triada A-D-G · bajo en C'], ChordInversion.root);
+      expect(bassStrings.length, greaterThan(1));
+      expect(c.variants.first.id, startsWith('C-maj-'));
     });
 
     test('las formas CAGED del banco se reconocen y encajan con su traste', () {
@@ -80,20 +109,35 @@ void main() {
           if (shape == null) {
             continue;
           }
+          expect(variant.isShape, isTrue, reason: variant.id);
           seen.add(shape);
-          // La raíz de la forma de Mi va en la 6ª cuerda y la de La en la 5ª.
+          // Las formas básicas de Mi y La llevan la raíz en la 6ª y la 5ª.
+          final String key = variant.id.substring(chord.id.length + 1);
+          final bool basic = RegExp(r'^[ae]-shape(-min)?-\d+$').hasMatch(key);
           final int rootString = shape == CagedShape.e ? 0 : 1;
-          final bool rootForm = shape == CagedShape.e || shape == CagedShape.a;
-          if (rootForm && variant.frets[rootString] >= 0) {
+          if (basic && variant.frets[rootString] >= 0) {
             expect(
               variant.frets[rootString] % 12,
               shape.barreFretFor(chord.root.pitchClass),
-              reason: '${chord.id} ${variant.positionLabel}',
+              reason: variant.id,
             );
           }
         }
       }
       expect(seen, CagedShape.values.toSet());
+    });
+
+    test('lo que no es CAGED no se confunde con una forma', () {
+      for (final Chord chord in bank.chords) {
+        for (final ChordVariant variant in chord.variants) {
+          if (!variant.isShape) {
+            expect(CagedShape.ofVariant(variant), isNull, reason: variant.id);
+          }
+          if (chord.quality == ChordQuality.power) {
+            expect(CagedShape.ofVariant(variant), isNull, reason: variant.id);
+          }
+        }
+      }
     });
   });
 

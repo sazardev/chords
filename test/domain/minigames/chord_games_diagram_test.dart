@@ -1,5 +1,6 @@
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
+import 'package:chords/domain/chords/entities/variant_identity.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
@@ -48,7 +49,7 @@ void main() {
       },
     );
 
-    test('las formas se reconocen por la etiqueta del banco', () {
+    test('las formas se reconocen por el identificador de la posición', () {
       final ChordVariant open = s.bank.chordById('C-maj')!.variants.first;
       expect(CagedShape.ofVariant(open), CagedShape.c);
       expect(CagedShape.e.barreFretFor(5), 1);
@@ -90,6 +91,46 @@ void main() {
     });
   });
 
+  group('posiciones nuevas del banco', () {
+    test('raíz y bajo y las inversiones usan tríadas, shells y drops', () {
+      final Set<VariantKind> kinds = <VariantKind>{};
+      final Set<int> bassStrings = <int>{};
+      for (final MiniGameKind kind in <MiniGameKind>[
+        MiniGameKind.rootAndBass,
+        MiniGameKind.inversion,
+        MiniGameKind.wrongDiagram,
+      ]) {
+        for (final MiniGameLevel level in MiniGameLevel.values) {
+          for (final QuizQuestion q in s.sample(kind, level)) {
+            final Chord chord = s.chordOf(q);
+            final ChordVariant variant = chord.variants[q.variantIndex];
+            kinds.add(variant.kind);
+            bassStrings.add(soundingStrings(variant.frets).first);
+          }
+        }
+      }
+      expect(kinds.length, greaterThan(2), reason: '$kinds');
+      expect(
+        bassStrings.length,
+        greaterThan(1),
+        reason: 'bajos en varias cuerdas',
+      );
+    });
+
+    test('la raíz suena siempre en las posiciones de los juegos de bajo', () {
+      for (final QuizQuestion q in s.sample(
+        MiniGameKind.rootAndBass,
+        MiniGameLevel.hard,
+      )) {
+        final Chord chord = s.chordOf(q);
+        expect(
+          rootStringIndex(chord, chord.variants[q.variantIndex]),
+          isNotNull,
+        );
+      }
+    });
+  });
+
   group('inversiones', () {
     test('la respuesta es la inversión del diagrama', () {
       for (final MiniGameLevel level in MiniGameLevel.values) {
@@ -97,7 +138,7 @@ void main() {
           final Chord chord = s.chordOf(q);
           expect(
             q.correctChoice.value,
-            inversionOf(chord, chord.variants[q.variantIndex])!.id,
+            variantInversion(chord, chord.variants[q.variantIndex])!.name,
           );
           expect(q.diagram == QuizDiagram.none, level == MiniGameLevel.hard);
           expect(q.hasSound, level == MiniGameLevel.hard);
