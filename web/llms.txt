@@ -1,16 +1,16 @@
 # Chords
 
-> Chords es un banco de acordes de guitarra con sonido real, arpegios, afinación en vivo por micrófono, jam guiado, explorador de escalas, cancionero, escuela de teoría y 22 minijuegos. Gratis para Android y web (Flutter, Material 3 Expressive, español e inglés).
+> Chords es un banco de acordes de guitarra con sonido real, arpegios, afinación en vivo por micrófono, jam guiado, explorador de escalas, cancionero, escuela de teoría y 39 minijuegos. Gratis para Android y web (Flutter, Material 3 Expressive, español e inglés).
 
 ## Secciones de la app
 
 - [Inicio](https://chords-qa.web.app/): acordes recientes, racha de práctica y accesos rápidos.
-- [Biblioteca de acordes](https://chords-qa.web.app/chords): 156 acordes y 561 posiciones con filtros por género, nivel y calidad.
+- [Biblioteca de acordes](https://chords-qa.web.app/chords): 396 acordes y 3.455 posiciones con filtros por género, nivel y calidad.
 - [Aprender](https://chords-qa.web.app/learn): itinerario por niveles, escuela de teoría, escalas y guía de géneros.
-- [Explorador de escalas](https://chords-qa.web.app/learn/scales): 10 escalas en 12 tonos sobre un mástil de 15 trastes.
+- [Explorador de escalas](https://chords-qa.web.app/learn/scales): 38 escalas y modos en 12 tonos sobre un mástil de 18 trastes.
 - [Cancionero](https://chords-qa.web.app/songs): canciones de dominio público con letra, acordes y transporte.
-- [Jam guiado](https://chords-qa.web.app/jam): 23 progresiones por género con rasgueo y puntuación por micrófono.
-- [Juegos](https://chords-qa.web.app/game): 22 minijuegos de oído, mástil, guitarra y teoría.
+- [Jam guiado](https://chords-qa.web.app/jam): 105 progresiones en 27 géneros con una banda completa y puntuación por micrófono.
+- [Juegos](https://chords-qa.web.app/game): 39 minijuegos de oído, mástil, guitarra y teoría.
 - [Afinador](https://chords-qa.web.app/live): afinación en vivo por micrófono, cuerda a cuerda.
 - [Política de privacidad](https://sazardev.github.io/chords/privacy.html)
 

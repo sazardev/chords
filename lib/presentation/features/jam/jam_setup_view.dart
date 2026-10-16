@@ -2,13 +2,11 @@ import 'dart:async' show unawaited;
 
 import 'package:chords/domain/songs/catalog/song_catalog.dart';
 import 'package:chords/domain/songs/entities/song.dart';
-import 'package:chords/domain/theory/catalog/genre_catalog.dart';
-import 'package:chords/domain/theory/catalog/progression_catalog.dart';
-import 'package:chords/domain/theory/entities/chord_progression.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/jam/jam_band_panel.dart';
 import 'package:chords/presentation/features/jam/jam_controller.dart';
 import 'package:chords/presentation/features/jam/jam_custom_builder.dart';
+import 'package:chords/presentation/features/jam/jam_progression_picker.dart';
 import 'package:chords/presentation/features/jam/jam_selection.dart';
 import 'package:chords/presentation/features/jam/jam_state.dart';
 import 'package:chords/presentation/features/jam/jam_tempo_control.dart';
@@ -103,7 +101,7 @@ class JamSetupView extends StatelessWidget {
   List<Widget> _sourcePicker(BuildContext context) =>
       switch (selection.source) {
         JamSource.progression => <Widget>[
-          _ProgressionPicker(selection: selection, onChanged: onChanged),
+          JamProgressionPicker(selection: selection, onChanged: onChanged),
         ],
         JamSource.song => <Widget>[
           _SongPicker(selection: selection, onChanged: onChanged),
@@ -112,55 +110,6 @@ class JamSetupView extends StatelessWidget {
           JamCustomBuilder(selection: selection, onChanged: onChanged),
         ],
       };
-}
-
-class _ProgressionPicker extends StatelessWidget {
-  const _ProgressionPicker({required this.selection, required this.onChanged});
-
-  final JamSelection selection;
-  final ValueChanged<JamSelection> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final ChordProgression current = selection.progression;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        DropdownButtonFormField<String>(
-          initialValue: current.id,
-          isExpanded: true,
-          decoration: InputDecoration(labelText: t.jam.chooseTrack),
-          items: <DropdownMenuItem<String>>[
-            for (final GenreGuide guide in kGenreGuides)
-              for (final ChordProgression p in progressionsOf(guide.id))
-                DropdownMenuItem<String>(
-                  value: p.id,
-                  child: Text(
-                    '${guide.emoji} ${progressionName(t, p)} · ${p.summary}',
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-          ],
-          onChanged: (String? id) => onChanged(
-            selection.copyWith(progressionId: id, resetTonic: true),
-          ),
-        ),
-        const SizedBox(height: 12),
-        AppText(t.jam.key, variant: AppTextVariant.labelLarge),
-        const SizedBox(height: 6),
-        KeyPicker(
-          tonic: selection.progressionTonic,
-          onSelected: (int pc) => onChanged(selection.copyWith(tonic: pc)),
-        ),
-        const SizedBox(height: 6),
-        AppText(
-          keyName(t, selection.progressionTonic, minor: current.minor),
-          variant: AppTextVariant.titleMedium,
-        ),
-      ],
-    );
-  }
 }
 
 class _SongPicker extends StatelessWidget {

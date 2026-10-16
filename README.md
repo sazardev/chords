@@ -6,7 +6,7 @@ diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
-![tests](https://img.shields.io/badge/tests-1223-1DB954)
+![tests](https://img.shields.io/badge/tests-1377-1DB954)
 ![acordes](https://img.shields.io/badge/acordes-396-8B5CF6)
 ![posiciones](https://img.shields.io/badge/posiciones-3455-8B5CF6)
 ![escalas](https://img.shields.io/badge/escalas-38-8B5CF6)
