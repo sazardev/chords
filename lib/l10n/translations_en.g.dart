@@ -75,6 +75,9 @@ class TranslationsEn extends Translations
   @override
   late final Translations$live$en live = Translations$live$en._(_root);
   @override
+  late final Translations$liveChords$en liveChords =
+      Translations$liveChords$en._(_root);
+  @override
   late final Translations$learn$en learn = Translations$learn$en._(_root);
   @override
   late final Translations$settings$en settings = Translations$settings$en._(
@@ -502,6 +505,57 @@ class Translations$live$en extends Translations$live$es {
   String get deniedTitle => 'Permission denied';
   @override
   String get errorTitle => 'Capture error';
+}
+
+// Path: liveChords
+class Translations$liveChords$en extends Translations$liveChords$es {
+  Translations$liveChords$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get silentTitle => 'Play a chord';
+  @override
+  String get silentMessage =>
+      'Strum all six strings and let them ring: I\'ll tell you which chord it is.';
+  @override
+  String get listeningTitle => 'Listening…';
+  @override
+  String get listeningMessage =>
+      'Keep it ringing; I need to hear it a moment longer to be sure.';
+  @override
+  String confidence({required Object percent}) => '${percent} % confidence';
+  @override
+  String get confidenceHigh => 'Very sure';
+  @override
+  String get confidenceMedium => 'Fairly sure';
+  @override
+  String get confidenceLow => 'Not very sure';
+  @override
+  String bass({required Object note}) => 'Bass: ${note}';
+  @override
+  String get notesTitle => 'Notes sounding';
+  @override
+  String get notesLabel =>
+      'Energy of each of the 12 notes; those in the recognised chord are marked';
+  @override
+  String noteInChord({required Object note}) => '${note}, in the chord';
+  @override
+  String get alternativesTitle => 'It could also be';
+  @override
+  String get positionTitle => 'Closest position';
+  @override
+  String positionHint({required Object name}) =>
+      'Tap to open the chord page for ${name}';
+  @override
+  String get historyTitle => 'Latest chords';
+  @override
+  String get historyEmpty => 'The chords you play will show up here.';
+  @override
+  String openChord({required Object name}) => 'Open the page for ${name}';
 }
 
 // Path: learn
@@ -2705,6 +2759,33 @@ extension on TranslationsEn {
           'live.listening' => 'Listening…',
           'live.deniedTitle' => 'Permission denied',
           'live.errorTitle' => 'Capture error',
+          'liveChords.silentTitle' => 'Play a chord',
+          'liveChords.silentMessage' => 'Strum all six strings and let them ring: I\'ll tell you which chord it is.',
+          'liveChords.listeningTitle' => 'Listening…',
+          'liveChords.listeningMessage' =>
+            'Keep it ringing; I need to hear it a moment longer to be sure.',
+          'liveChords.confidence' => ({
+            required Object percent,
+          }) => '${percent} % confidence',
+          'liveChords.confidenceHigh' => 'Very sure',
+          'liveChords.confidenceMedium' => 'Fairly sure',
+          'liveChords.confidenceLow' => 'Not very sure',
+          'liveChords.bass' => ({required Object note}) => 'Bass: ${note}',
+          'liveChords.notesTitle' => 'Notes sounding',
+          'liveChords.notesLabel' => 'Energy of each of the 12 notes; those in the recognised chord are marked',
+          'liveChords.noteInChord' => ({
+            required Object note,
+          }) => '${note}, in the chord',
+          'liveChords.alternativesTitle' => 'It could also be',
+          'liveChords.positionTitle' => 'Closest position',
+          'liveChords.positionHint' => ({
+            required Object name,
+          }) => 'Tap to open the chord page for ${name}',
+          'liveChords.historyTitle' => 'Latest chords',
+          'liveChords.historyEmpty' => 'The chords you play will show up here.',
+          'liveChords.openChord' => ({
+            required Object name,
+          }) => 'Open the page for ${name}',
           'learn.title' => 'Learn',
           'learn.loading' => 'Preparing levels…',
           'learn.errorTitle' => 'Could not load the itinerary',
@@ -3236,6 +3317,9 @@ extension on TranslationsEn {
             required Object string,
             required Object fret,
           }) => 'Play ${string} at fret ${fret}',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.prompt.echo' => 'Listen and play the melody',
           'minigames.prompt.noteAtOpen' => ({
             required Object string,
@@ -3267,9 +3351,6 @@ extension on TranslationsEn {
           'minigames.titles.tuneEar' => 'Tuner ear',
           'minigames.titles.memory' => 'String memory',
           'minigames.titles.noteAtFret' => 'Fretboard notes',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.titles.fretOfNote' => 'Find the note',
           'minigames.titles.fingerQuiz' => 'Which finger?',
           'minigames.titles.readDiagram' => 'Read the diagram',

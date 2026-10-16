@@ -7,9 +7,11 @@ import 'package:chords/core/analytics/live_analytics_events.dart';
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/data/audio/chord_audio_synthesizer.dart';
+import 'package:chords/data/audio/mic_chord_analyzer.dart';
 import 'package:chords/data/audio/mic_pitch_analyzer.dart';
 import 'package:chords/data/audio/microphone_stream_service.dart';
 import 'package:chords/data/audio/wav_encoder.dart';
+import 'package:chords/domain/audio/entities/chord_reading.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
@@ -30,7 +32,12 @@ class AudioRepositoryImpl implements AudioRepository {
     : _synthesizer = synthesizer ?? const ChordAudioSynthesizer(),
       _encoder = encoder ?? const WavEncoder() {
     _sampleRate = encoder?.sampleRate ?? 44100;
-    _analyzer = MicPitchAnalyzer(sampleRate: _sampleRate, echoGate: _echoGate);
+    _chordAnalyzer = MicChordAnalyzer(sampleRate: _sampleRate);
+    _analyzer = MicPitchAnalyzer(
+      sampleRate: _sampleRate,
+      echoGate: _echoGate,
+      sink: _chordAnalyzer,
+    );
   }
 
   MicrophoneStreamService? _microphone;
@@ -43,6 +50,7 @@ class AudioRepositoryImpl implements AudioRepository {
   final WavEncoder _encoder;
   late final int _sampleRate;
   late final MicPitchAnalyzer _analyzer;
+  late final MicChordAnalyzer _chordAnalyzer;
   final PlaybackEchoGate _echoGate = PlaybackEchoGate();
 
   final StreamController<MicStatus> _statusController =
@@ -66,6 +74,9 @@ class AudioRepositoryImpl implements AudioRepository {
 
   @override
   Stream<double> get levels => _analyzer.levels;
+
+  @override
+  Stream<ChordReading> get chordReadings => _chordAnalyzer.readings;
 
   @override
   Future<MicStatus> requestAccess() async {
@@ -182,6 +193,7 @@ class AudioRepositoryImpl implements AudioRepository {
     await _microphone?.dispose();
     await _statusController.close();
     await _analyzer.dispose();
+    await _chordAnalyzer.dispose();
     if (_engineReady) {
       await SoLoud.instance.deinitAsync();
     }

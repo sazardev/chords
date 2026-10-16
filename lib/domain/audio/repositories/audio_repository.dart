@@ -1,3 +1,4 @@
+import 'package:chords/domain/audio/entities/chord_reading.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
@@ -14,6 +15,12 @@ abstract interface class AudioRepository {
 
   /// Nivel de entrada del micrófono (0-1), también cuando no hay tono.
   Stream<double> get levels;
+
+  /// Lecturas polifónicas: el acorde que suena y el cromagrama en vivo.
+  ///
+  /// Se calculan solo mientras alguien escucha este flujo, así que no cuestan
+  /// nada al afinador ni a los juegos de micrófono.
+  Stream<ChordReading> get chordReadings;
 
   /// Solicita permiso de micrófono.
   Future<MicStatus> requestAccess();

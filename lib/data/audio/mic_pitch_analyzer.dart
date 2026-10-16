@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:chords/core/logging/app_log.dart';
 import 'package:chords/core/logging/log_channel.dart';
+import 'package:chords/data/audio/mic_sample_sink.dart';
 import 'package:chords/data/audio/pcm_decoder.dart';
 import 'package:chords/data/audio/yin_pitch_detector.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
@@ -19,6 +20,10 @@ import 'package:chords/domain/audio/services/playback_echo_gate.dart';
 /// Si recibe una [PlaybackEchoGate], descarta el audio que el propio teléfono
 /// emite por el altavoz (publica nivel 0 en su lugar) y empieza de cero al
 /// reabrirse la puerta, para que ese sonido no se tome por la guitarra.
+///
+/// Reparte las muestras que la puerta admite a un [MicSampleSink] opcional (el
+/// reconocedor de acordes), de modo que el audio se decodifica y se filtra una
+/// sola vez para todos.
 class MicPitchAnalyzer {
   /// Crea el analizador para la frecuencia de muestreo indicada.
   MicPitchAnalyzer({
@@ -27,6 +32,7 @@ class MicPitchAnalyzer {
     this._decoder = const PcmDecoder(),
     this._clock = _systemClock,
     this._echoGate,
+    this._sink,
   });
 
   /// Frecuencia de muestreo del audio entrante.
@@ -42,6 +48,7 @@ class MicPitchAnalyzer {
   final PcmDecoder _decoder;
   final int Function() _clock;
   final PlaybackEchoGate? _echoGate;
+  final MicSampleSink? _sink;
   final StreamController<PitchReading> _readings =
       StreamController<PitchReading>.broadcast();
   final StreamController<double> _levels = StreamController<double>.broadcast();
@@ -61,9 +68,11 @@ class MicPitchAnalyzer {
   void addBytes(Uint8List bytes) {
     final Float64List samples = _decoder.decode(bytes);
     if (!(_echoGate?.admits(PitchDetector.rmsOf(samples)) ?? true)) {
+      _sink?.hold();
       _hold();
       return;
     }
+    _sink?.addSamples(samples);
     _window.addAll(samples);
     final int windowSize = (sampleRate / 4).round();
     if (_window.length > windowSize * 2) {
@@ -92,6 +101,7 @@ class MicPitchAnalyzer {
   /// Descarta el audio acumulado (al detener la captura).
   void reset() {
     _window.clear();
+    _sink?.reset();
     _levels.add(0);
   }
 

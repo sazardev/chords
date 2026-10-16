@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:chords/domain/audio/entities/chord_candidate.dart';
+import 'package:chords/domain/audio/entities/chord_reading.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
@@ -15,6 +17,9 @@ class FakeAudioRepository implements AudioRepository {
       StreamController<MicStatus>.broadcast();
 
   final StreamController<double> _levels = StreamController<double>.broadcast();
+
+  final StreamController<ChordReading> _chordReadings =
+      StreamController<ChordReading>.broadcast();
 
   /// Frecuencias de referencia reproducidas.
   final List<double> tones = <double>[];
@@ -34,6 +39,9 @@ class FakeAudioRepository implements AudioRepository {
   @override
   Stream<double> get levels => _levels.stream;
 
+  @override
+  Stream<ChordReading> get chordReadings => _chordReadings.stream;
+
   /// Veces que se pidió acceso al micrófono.
   int requests = 0;
 
@@ -45,6 +53,30 @@ class FakeAudioRepository implements AudioRepository {
 
   /// Emite un nivel de entrada.
   void emitLevel(double level) => _levels.add(level);
+
+  /// Emite una lectura polifónica ya construida.
+  void emitChordReading(ChordReading reading) => _chordReadings.add(reading);
+
+  /// Emite un acorde reconocido [chord] con su [confidence] y un cromagrama
+  /// con las clases de [chord] encendidas.
+  void emitChord(ChordCandidate chord, {double confidence = 0.9}) {
+    final ChordCandidate shown = chord.withConfidence(confidence);
+    _chordReadings.add(
+      ChordReading(
+        chroma: <double>[
+          for (int i = 0; i < 12; i++)
+            if (chord.pitchClasses.contains(i)) 1.0 else 0.05,
+        ],
+        candidates: <ChordCandidate>[shown],
+        chord: shown,
+        bass: chord.root.pitchClass,
+        level: 0.6,
+      ),
+    );
+  }
+
+  /// Emite una lectura polifónica de silencio.
+  void emitChordSilence() => _chordReadings.add(ChordReading.silence);
 
   /// Emite una lectura a una frecuencia concreta (para el afinador).
   void emitFrequency(double frequency, {double clarity = 0.95}) {
@@ -116,5 +148,6 @@ class FakeAudioRepository implements AudioRepository {
     await _readings.close();
     await _status.close();
     await _levels.close();
+    await _chordReadings.close();
   }
 }
