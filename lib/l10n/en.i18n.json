@@ -159,6 +159,26 @@
     "deniedTitle": "Permission denied",
     "errorTitle": "Capture error"
   },
+  "liveChords": {
+    "silentTitle": "Play a chord",
+    "silentMessage": "Strum all six strings and let them ring: I'll tell you which chord it is.",
+    "listeningTitle": "Listening…",
+    "listeningMessage": "Keep it ringing; I need to hear it a moment longer to be sure.",
+    "confidence": "$percent % confidence",
+    "confidenceHigh": "Very sure",
+    "confidenceMedium": "Fairly sure",
+    "confidenceLow": "Not very sure",
+    "bass": "Bass: $note",
+    "notesTitle": "Notes sounding",
+    "notesLabel": "Energy of each of the 12 notes; those in the recognised chord are marked",
+    "noteInChord": "$note, in the chord",
+    "alternativesTitle": "It could also be",
+    "positionTitle": "Closest position",
+    "positionHint": "Tap to open the chord page for $name",
+    "historyTitle": "Latest chords",
+    "historyEmpty": "The chords you play will show up here.",
+    "openChord": "Open the page for $name"
+  },
   "learn": {
     "title": "Learn",
     "loading": "Preparing levels…",

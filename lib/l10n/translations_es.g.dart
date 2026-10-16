@@ -66,6 +66,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   late final Translations$chordDiagram$es chordDiagram =
       Translations$chordDiagram$es.internal(_root);
   late final Translations$live$es live = Translations$live$es.internal(_root);
+  late final Translations$liveChords$es liveChords =
+      Translations$liveChords$es.internal(_root);
   late final Translations$learn$es learn = Translations$learn$es.internal(
     _root,
   );
@@ -609,6 +611,73 @@ class Translations$live$es {
 
   /// es: 'Error de captura'
   String get errorTitle => 'Error de captura';
+}
+
+// Path: liveChords
+class Translations$liveChords$es {
+  Translations$liveChords$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Toca un acorde'
+  String get silentTitle => 'Toca un acorde';
+
+  /// es: 'Rasguea las seis cuerdas y déjalas sonar: te diré qué acorde es.'
+  String get silentMessage =>
+      'Rasguea las seis cuerdas y déjalas sonar: te diré qué acorde es.';
+
+  /// es: 'Escuchando…'
+  String get listeningTitle => 'Escuchando…';
+
+  /// es: 'Sigue sonando; necesito oírlo un instante más para estar seguro.'
+  String get listeningMessage =>
+      'Sigue sonando; necesito oírlo un instante más para estar seguro.';
+
+  /// es: '$percent % de confianza'
+  String confidence({required Object percent}) => '${percent} % de confianza';
+
+  /// es: 'Muy seguro'
+  String get confidenceHigh => 'Muy seguro';
+
+  /// es: 'Bastante seguro'
+  String get confidenceMedium => 'Bastante seguro';
+
+  /// es: 'Poco seguro'
+  String get confidenceLow => 'Poco seguro';
+
+  /// es: 'Bajo: $note'
+  String bass({required Object note}) => 'Bajo: ${note}';
+
+  /// es: 'Notas que suenan'
+  String get notesTitle => 'Notas que suenan';
+
+  /// es: 'Energía de cada una de las 12 notas; las del acorde reconocido están marcadas'
+  String get notesLabel =>
+      'Energía de cada una de las 12 notas; las del acorde reconocido están marcadas';
+
+  /// es: '$note, del acorde'
+  String noteInChord({required Object note}) => '${note}, del acorde';
+
+  /// es: 'También podría ser'
+  String get alternativesTitle => 'También podría ser';
+
+  /// es: 'Posición más cercana'
+  String get positionTitle => 'Posición más cercana';
+
+  /// es: 'Toca para ver la ficha de $name'
+  String positionHint({required Object name}) =>
+      'Toca para ver la ficha de ${name}';
+
+  /// es: 'Últimos acordes'
+  String get historyTitle => 'Últimos acordes';
+
+  /// es: 'Aquí aparecerán los acordes que vayas tocando.'
+  String get historyEmpty => 'Aquí aparecerán los acordes que vayas tocando.';
+
+  /// es: 'Abrir la ficha de $name'
+  String openChord({required Object name}) => 'Abrir la ficha de ${name}';
 }
 
 // Path: learn
@@ -4180,6 +4249,35 @@ extension on Translations {
           'live.listening' => 'Escuchando…',
           'live.deniedTitle' => 'Permiso denegado',
           'live.errorTitle' => 'Error de captura',
+          'liveChords.silentTitle' => 'Toca un acorde',
+          'liveChords.silentMessage' =>
+            'Rasguea las seis cuerdas y déjalas sonar: te diré qué acorde es.',
+          'liveChords.listeningTitle' => 'Escuchando…',
+          'liveChords.listeningMessage' =>
+            'Sigue sonando; necesito oírlo un instante más para estar seguro.',
+          'liveChords.confidence' => ({
+            required Object percent,
+          }) => '${percent} % de confianza',
+          'liveChords.confidenceHigh' => 'Muy seguro',
+          'liveChords.confidenceMedium' => 'Bastante seguro',
+          'liveChords.confidenceLow' => 'Poco seguro',
+          'liveChords.bass' => ({required Object note}) => 'Bajo: ${note}',
+          'liveChords.notesTitle' => 'Notas que suenan',
+          'liveChords.notesLabel' => 'Energía de cada una de las 12 notas; las del acorde reconocido están marcadas',
+          'liveChords.noteInChord' => ({
+            required Object note,
+          }) => '${note}, del acorde',
+          'liveChords.alternativesTitle' => 'También podría ser',
+          'liveChords.positionTitle' => 'Posición más cercana',
+          'liveChords.positionHint' => ({
+            required Object name,
+          }) => 'Toca para ver la ficha de ${name}',
+          'liveChords.historyTitle' => 'Últimos acordes',
+          'liveChords.historyEmpty' =>
+            'Aquí aparecerán los acordes que vayas tocando.',
+          'liveChords.openChord' => ({
+            required Object name,
+          }) => 'Abrir la ficha de ${name}',
           'learn.title' => 'Aprender',
           'learn.loading' => 'Preparando niveles…',
           'learn.errorTitle' => 'No se pudo cargar el itinerario',
@@ -4704,6 +4802,9 @@ extension on Translations {
             required Object string,
             required Object fret,
           }) => 'Toca la ${string} en el traste ${fret}',
+          _ => null,
+        } ??
+        switch (path) {
           'minigames.prompt.echo' => 'Escucha y toca la melodía',
           'minigames.prompt.noteAtOpen' => ({
             required Object string,
@@ -4735,9 +4836,6 @@ extension on Translations {
           'minigames.titles.tuneEar' => 'Oído de afinador',
           'minigames.titles.memory' => 'Memoria de cuerdas',
           'minigames.titles.noteAtFret' => 'Notas del mástil',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.titles.fretOfNote' => 'Busca la nota',
           'minigames.titles.fingerQuiz' => '¿Qué dedo?',
           'minigames.titles.readDiagram' => 'Lee el diagrama',
@@ -5430,6 +5528,9 @@ extension on Translations {
           'theory.genreTip.latin' => 'En la cadencia andaluza, usa la menor armónica sobre el acorde V (Mi mayor en La menor).',
           'theory.genreTip.reggae' =>
             'Toca el skank en las tres cuerdas agudas y apágalo justo después.',
+          _ => null,
+        } ??
+        switch (path) {
           'theory.genreTip.bossa' =>
             'Practica el bajo con el pulgar solo antes de añadir los acordes.',
           'theory.genreTip.metal' => 'Afina el palm mute: la mano en el puente, ni muy encima ni muy fuera.',
@@ -5453,9 +5554,6 @@ extension on Translations {
           'theory.progressionNames.bossaMinor' => 'Bossa menor',
           'theory.progressionNames.latinMinor' => 'Menor latino (i–iv–V7)',
           'theory.progressionNames.latinPop' => 'Pop latino (I–V–IV–V)',
-          _ => null,
-        } ??
-        switch (path) {
           'theory.progressionNames.rancheraPolka' => 'Polka norteña',
           'theory.progressionNames.rancheraCorrido' => 'Corrido en vals',
           'theory.progressionNames.rancheraMinor' => 'Ranchera menor',

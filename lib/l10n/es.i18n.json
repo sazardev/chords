@@ -159,6 +159,26 @@
     "deniedTitle": "Permiso denegado",
     "errorTitle": "Error de captura"
   },
+  "liveChords": {
+    "silentTitle": "Toca un acorde",
+    "silentMessage": "Rasguea las seis cuerdas y déjalas sonar: te diré qué acorde es.",
+    "listeningTitle": "Escuchando…",
+    "listeningMessage": "Sigue sonando; necesito oírlo un instante más para estar seguro.",
+    "confidence": "$percent % de confianza",
+    "confidenceHigh": "Muy seguro",
+    "confidenceMedium": "Bastante seguro",
+    "confidenceLow": "Poco seguro",
+    "bass": "Bajo: $note",
+    "notesTitle": "Notas que suenan",
+    "notesLabel": "Energía de cada una de las 12 notas; las del acorde reconocido están marcadas",
+    "noteInChord": "$note, del acorde",
+    "alternativesTitle": "También podría ser",
+    "positionTitle": "Posición más cercana",
+    "positionHint": "Toca para ver la ficha de $name",
+    "historyTitle": "Últimos acordes",
+    "historyEmpty": "Aquí aparecerán los acordes que vayas tocando.",
+    "openChord": "Abrir la ficha de $name"
+  },
   "learn": {
     "title": "Aprender",
     "loading": "Preparando niveles…",

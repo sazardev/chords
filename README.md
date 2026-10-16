@@ -167,8 +167,31 @@ diseño atómico y Material 3 Expressive.
   "suena muy fuerte"), aviso claro si falta el permiso o falla la captura con
   reintento, y detección sensible a notas suaves (puerta de ruido + confianza
   YIN en lugar de exigir volumen alto).
-- **Micrófono en vivo**: captura PCM16 + detector de tono YIN: nota, cents y
-  acordes sugeridos en tiempo real.
+- **Micrófono en vivo**: captura PCM16 + detector de tono YIN (afinador y
+  juegos de una sola nota).
+- **Reconocimiento polifónico de acordes** (Afinar → *Detectar acordes*): lo
+  que rasgueas se reconoce en tiempo real, también con varias notas a la vez.
+  Núcleo puro en `domain/audio/services`: FFT radix-2 propia (sin asignaciones
+  por trama, FFT de 16384 a 44,1 kHz y un análisis cada 100 ms), ventana de
+  Hann, picos del espectro entre 70 y 2000 Hz, una regresión no negativa sobre
+  un diccionario de notas con sus armónicos (la fundamental de una cuerda grave
+  llega muy débil a un móvil y sus armónicos no deben contar como notas
+  nuevas), cromagrama de 12 notas con compensación de afinación de ±50 cents,
+  suavizado temporal y puerta de ruido. El emparejado compara con las 12 raíces
+  × todas las calidades de `ChordQuality` por *presencia* de notas (la 3.ª o la
+  7.ª suelen sonar en una sola cuerda), usa el bajo para desempatar (Am7 frente
+  a C6) y una histéresis evita el parpadeo entre C, Cmaj7 y Am7. Se engancha al
+  mismo PCM16 y a la misma puerta de eco que el afinador, y solo trabaja
+  mientras alguien escucha `AudioRepository.chordReadings`. La pantalla muestra
+  el acorde en grande con su confianza, las 12 notas en vivo con las del acorde
+  marcadas, alternativas probables, el diagrama de la posición más cercana (con
+  modo zurdo), el historial de los últimos acordes (chips que abren la ficha) y
+  estados claros (sin permiso, "toca un acorde", escuchando). Además, "toca el
+  acorde" da por buena la ronda al oír de golpe el acorde pedido.
+  Precisión sobre el banco sintetizado con `ChordAudioSynthesizer` (561
+  posiciones, 12 raíces): 92,7 % contando como acierto el acorde con las mismas
+  notas y 80,6 % con el nombre exacto; la novena se lee como séptima porque su
+  9.ª es el 3.er armónico de la quinta (ver `chord_recognition_accuracy_test`).
 - **Biblioteca con filtros**: búsqueda libre, chips por género (incluido
   Country, R&B, Soul, Bossa, Punk y Gospel), acordes recientes, por nivel y
   por calidad, más slider de dificultad máxima; los esenciales salen primero.
@@ -203,7 +226,8 @@ lib/
 │   ├── band/          Banda del jam: patrones, presets por género, director y reloj
 │   └── l10n/          Idioma soportado (AppLanguage) y su repositorio
 ├── data/              Datasource de assets, modelos, síntesis de audio (acordes y
-│                      banda en `audio/band/`), YIN
+│                      banda en `audio/band/`), YIN y el adaptador del
+│                      reconocedor de acordes
 │   ├── analytics/     Backend Firebase de analíticas (Analytics + Crashlytics)
 │   └── l10n/          Persistencia del idioma elegido
 ├── core/              Núcleo puro sin Flutter: logging y analíticas

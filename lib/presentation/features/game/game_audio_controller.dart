@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chords/domain/audio/entities/chord_reading.dart';
 import 'package:chords/domain/audio/entities/mic_status.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/audio/repositories/audio_repository.dart';
@@ -40,6 +41,7 @@ class GameAudioController extends ChangeNotifier {
   MicStatus _micStatus = MicStatus.idle;
   double _level = 0;
   StreamSubscription<double>? _levelSubscription;
+  StreamSubscription<ChordReading>? _chordSubscription;
 
   /// Proporción de notas detectadas (0-1).
   double get matchRatio => _match;
@@ -102,6 +104,10 @@ class GameAudioController extends ChangeNotifier {
       _match = _evaluate.call(targetNotes, detected);
       notifyListeners();
     });
+    await _chordSubscription?.cancel();
+    _chordSubscription = _audio.chordReadings.listen(
+      (ChordReading reading) => _onChord(reading, targetNotes, detected),
+    );
     await _levelSubscription?.cancel();
     _levelSubscription = _audio.levels.listen((double level) {
       _level = level;
@@ -123,12 +129,36 @@ class GameAudioController extends ChangeNotifier {
     return true;
   }
 
+  /// Si el reconocedor polifónico oye justo el acorde pedido, da por
+  /// escuchadas todas sus notas de una vez (un rasgueo suena junto y el
+  /// detector de una sola nota solo las pillaría de una en una).
+  void _onChord(
+    ChordReading reading,
+    List<String> targetNotes,
+    Set<int> detected,
+  ) {
+    if (!_evaluate.recognizes(targetNotes, reading)) {
+      return;
+    }
+    _reliableReadings++;
+    for (final String note in targetNotes) {
+      if (!_heard.contains(note)) {
+        _heard.add(note);
+      }
+      detected.add(_pitchClassOf(note));
+    }
+    _match = _evaluate.call(targetNotes, detected);
+    notifyListeners();
+  }
+
   /// Si el micrófono se queda abierto entre rondas para oír órdenes.
   bool get _keepsMic => _guitar?.enabled ?? false;
 
   Future<void> _release() async {
     await _subscription?.cancel();
     _subscription = null;
+    await _chordSubscription?.cancel();
+    _chordSubscription = null;
     await _levelSubscription?.cancel();
     _levelSubscription = null;
     _level = 0;
@@ -157,6 +187,7 @@ class GameAudioController extends ChangeNotifier {
   @override
   void dispose() {
     unawaited(_subscription?.cancel());
+    unawaited(_chordSubscription?.cancel());
     unawaited(_levelSubscription?.cancel());
     super.dispose();
   }

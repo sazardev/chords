@@ -1,3 +1,5 @@
+import 'package:chords/domain/audio/entities/chord_candidate.dart';
+import 'package:chords/domain/audio/entities/chord_reading.dart';
 import 'package:chords/domain/audio/entities/pitch_reading.dart';
 import 'package:chords/domain/chords/entities/game_outcome.dart';
 import 'package:chords/domain/chords/entities/game_round.dart';
@@ -5,7 +7,8 @@ import 'package:chords/domain/chords/entities/game_round.dart';
 /// Caso de uso: evalúa si el micrófono está tocando el acorde objetivo.
 ///
 /// Acumula las clases de tono detectadas y calcula la proporción de notas del
-/// acorde objetivo que se han escuchado.
+/// acorde objetivo que se han escuchado. Además sabe decir si el
+/// reconocedor polifónico oyó, con seguridad, justo el acorde objetivo.
 class EvaluateChordMatchUseCase {
   /// Crea el caso de uso.
   const EvaluateChordMatchUseCase();
@@ -22,6 +25,28 @@ class EvaluateChordMatchUseCase {
       }
     }
     return hits / targetNotes.length;
+  }
+
+  /// `true` si [reading] reconoce con seguridad el acorde objetivo.
+  ///
+  /// Cuenta como el mismo acorde el que tiene exactamente las mismas notas
+  /// (Am7 y C6 suenan igual), pero no uno que tenga notas de más o de menos.
+  /// Es la prueba que no se deja engañar por los armónicos: solo da por
+  /// buena la ronda si el cromagrama entero encaja con el acorde pedido.
+  bool recognizes(
+    List<String> targetNotes,
+    ChordReading reading, {
+    double minConfidence = 0.55,
+  }) {
+    final ChordCandidate? chord = reading.chord;
+    if (chord == null ||
+        chord.confidence < minConfidence ||
+        targetNotes.isEmpty) {
+      return false;
+    }
+    final Set<int> target = targetNotes.map(_pitchClassOf).toSet();
+    final Set<int> heard = chord.pitchClasses;
+    return target.length == heard.length && target.containsAll(heard);
   }
 
   /// `true` si la lectura es lo bastante estable para puntuar.
