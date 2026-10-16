@@ -8,6 +8,7 @@ import 'package:chords/domain/songs/catalog/song_catalog.dart';
 import 'package:chords/domain/songs/entities/song.dart';
 import 'package:chords/domain/studio/theory_lesson.dart';
 import 'package:chords/domain/theory/entities/chord_progression.dart';
+import 'package:chords/domain/theory/entities/genre_guide.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/domain/theory/entities/strum_pattern.dart';
 import 'package:chords/l10n/translations.g.dart';
@@ -96,11 +97,20 @@ String unitTitle(Translations t, LessonUnit unit) => switch (unit) {
   LessonUnit.basics => t.theory.unitBasics,
   LessonUnit.scales => t.theory.unitScales,
   LessonUnit.harmony => t.theory.unitHarmony,
+  LessonUnit.technique => t.theory.unitTechnique,
 };
 
 /// Nombre de un patrón de rasgueo.
 String strumName(Translations t, StrumPattern pattern) =>
     t.theory.strumNames[pattern.name] ?? pattern.name;
+
+/// Descripción de un patrón de rasgueo: cómo suena y cómo se toca.
+String strumAbout(Translations t, StrumPattern pattern) =>
+    t.theory.strumAbout[pattern.name] ?? '';
+
+/// Nombre de una familia de géneros (`Raíces y ritmos latinos`).
+String genreFamilyName(Translations t, GenreFamily family) =>
+    t.theory.genreFamilies[family.name] ?? family.name;
 
 /// Flecha de un golpe de rasgueo.
 String strokeGlyph(StrumStroke stroke) => switch (stroke) {
@@ -109,6 +119,10 @@ String strokeGlyph(StrumStroke stroke) => switch (stroke) {
   StrumStroke.bass => '•',
   StrumStroke.rest => '·',
 };
+
+/// Símbolo del hueco [slot] de un patrón: flecha, bajo, silencio o `✕`.
+String strumGlyph(StrumPattern pattern, int slot) =>
+    pattern.isMuted(slot) ? '✕' : strokeGlyph(pattern.strokes[slot]);
 
 /// Nombre de una parte de canción.
 String songPartName(Translations t, SongPart part) =>

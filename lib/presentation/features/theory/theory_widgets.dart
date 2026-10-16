@@ -147,7 +147,7 @@ class StrumPatternView extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    strokeGlyph(strokes[i]),
+                    strumGlyph(pattern, i),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,

@@ -6,7 +6,7 @@ diseño atómico y Material 3 Expressive.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-6750A4?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
-![tests](https://img.shields.io/badge/tests-565-1DB954)
+![tests](https://img.shields.io/badge/tests-615-1DB954)
 ![acordes](https://img.shields.io/badge/acordes-156-8B5CF6)
 ![posiciones](https://img.shields.io/badge/posiciones-561-8B5CF6)
 
@@ -21,32 +21,44 @@ diseño atómico y Material 3 Expressive.
   progreso persistente por acorde dominado, guía paso a paso
   (dedos → rasgueo → cambio) y **arpegios guiados** (ascendente, descendente,
   alterno y fingerstyle) con audio real por cuerda.
-- **Escuela de guitarra** (desde *Aprender* e *Inicio*): 14 lecciones en tres
-  bloques —fundamentos (notas, intervalos, tónica y tonalidad, ritmo),
-  escalas y posiciones (mayor, menores, pentatónicas, las 5 cajas, blues,
-  modos) y armonía (campo armónico, grados y funciones, progresiones, CAGED)—
-  con ideas clave, demostración en el mástil, juego o jam para practicar y
-  progreso de lecciones aprendidas.
+- **Escuela de guitarra** (desde *Aprender* e *Inicio*): 26 lecciones en
+  cuatro bloques —fundamentos (notas, intervalos y sus canciones, tónica y
+  tonalidad, ritmo y subdivisión: negras, corcheas, tresillos, síncopa y
+  swing), escalas y posiciones (mayor, menores, pentatónicas, las 5 cajas,
+  blues, modos y modos en la práctica), armonía (construcción de acordes por
+  terceras, extensiones y sus/add, inversiones y bajos slash, campo armónico,
+  grados y funciones, progresiones, círculo de quintas, cadencias, tonalidad
+  relativa y paralela, CAGED) y técnica y estilo (transposición y cejilla,
+  acompañamiento por estilos y afinaciones alternativas: drop D, DADGAD,
+  open G)— con ideas clave, demostración en el mástil, juego o jam para
+  practicar y progreso de lecciones aprendidas.
 - **Explorador de escalas**: 10 escalas (mayor, menor natural y armónica,
   pentatónicas, blues, dórica, frigia, lidia, mixolidia) en los 12 tonos sobre
   un mástil de 15 trastes; posición a posición (5 cajas de pentatónica, 7 de
   tres notas por cuerda), notas o grados, tónica y nota característica
   resaltadas, sonido de la escala y de cada nota, y acordes de la tonalidad.
-- **Guía de géneros**: 15 estilos (pop, rock, blues, country, jazz, funk,
-  balada, latino, reggae, bossa, metal, punk, soul/R&B, gospel, folk) con
-  tempo, rasgueo animado, escalas para solear, acordes típicos, progresiones
-  para jammear, canciones y enlace a la biblioteca filtrada.
-- **Jam guiado** (estilo Rocksmith/Yousician): 23 progresiones por género,
+- **Guía de géneros**: 27 estilos en cuatro familias —raíces y ritmos
+  latinos (folk, country, latino, ranchera, cumbia, salsa, bolero, tango,
+  flamenco, bossa, reggae), rock y metal (rock, grunge, indie, punk, ska,
+  metal), blues, jazz y soul (blues, jazz, soul, funk, gospel) y pop y baile
+  (pop, balada, disco, reggaetón, lo-fi)— con búsqueda, tempo, rasgueo que se
+  puede animar y explicado (**31 patrones**, incluido el golpe apagado `✕`),
+  escalas para solear, acordes típicos, progresiones para jammear, canciones
+  y enlace a la biblioteca filtrada.
+- **Jam guiado** (estilo Rocksmith/Yousician): 105 progresiones por género,
   canciones o una progresión propia; tono, tempo y vueltas; cuenta atrás,
   acorde actual y siguiente con diagrama, carril de compases, rasgueo golpe a
   golpe, letra y escala sugerida. Modo *acompañar* (la app rasguea con el
   patrón del estilo, bajo y metrónomo) o *puntuar* (la app calla y el
   micrófono califica cada compás: perfecto/bien/fallo, racha, multiplicador
   ×1-×4, precisión, estrellas y récord por pista).
-- **Cancionero**: canciones tradicionales y de dominio público (Cielito lindo,
-  La bamba, Las mañanitas, La Llorona, Amazing Grace, Oh! Susanna, Red River
-  Valley, Greensleeves…) y ejercicios por género, con acordes por compás,
-  letra, diagramas, transporte ±6 semitonos y tocar en el jam.
+- **Cancionero**: 59 canciones tradicionales y de dominio público —clásicos
+  mexicanos (Cielito lindo, La bamba, Las mañanitas, La Llorona, La Adelita,
+  La Valentina, La golondrina), rondas e infantiles en español, folk anglo
+  (Scarborough Fair, Shenandoah, Danny Boy…), country, blues tradicional,
+  spirituals y villancicos (Amazing Grace, Swing Low, Silent Night…)— y 33
+  ejercicios «solo acordes», uno por cada género de la guía; con acordes por
+  compás, letra, diagramas, transporte ±6 semitonos y tocar en el jam.
 - **Historial y racha**: acordes abiertos recientemente (en Inicio, en la
   biblioteca y en su pantalla) y días seguidos practicando.
 - **22 minijuegos** (pestaña *Jugar*), cada uno con tres dificultades,
