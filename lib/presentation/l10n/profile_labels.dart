@@ -75,4 +75,8 @@ const List<String> kProfileGenres = <String>[
   'Metal',
   'Country',
   'R&B',
+  'Soul',
+  'Bossa',
+  'Punk',
+  'Gospel',
 ];

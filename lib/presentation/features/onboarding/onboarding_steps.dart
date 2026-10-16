@@ -228,16 +228,26 @@ class PlanStep extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: <Widget>[
-              for (int i = 0; i < picks.length; i++)
-                Entrance(
-                  index: i + 3,
-                  child: _PlanChord(chord: picks[i], mirror: mirror),
-                ),
-            ],
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints box) {
+              // Dos columnas que reparten todo el ancho disponible.
+              final double width = (box.maxWidth - 12) / 2;
+              return Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: <Widget>[
+                  for (int i = 0; i < picks.length; i++)
+                    Entrance(
+                      index: i + 3,
+                      child: _PlanChord(
+                        chord: picks[i],
+                        mirror: mirror,
+                        width: width,
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -246,14 +256,19 @@ class PlanStep extends StatelessWidget {
 }
 
 class _PlanChord extends StatelessWidget {
-  const _PlanChord({required this.chord, required this.mirror});
+  const _PlanChord({
+    required this.chord,
+    required this.mirror,
+    required this.width,
+  });
 
   final Chord chord;
   final bool mirror;
+  final double width;
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 150,
+    width: width,
     child: AppCard(
       padding: const EdgeInsets.all(12),
       child: Column(
