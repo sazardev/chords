@@ -7,7 +7,9 @@ import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/chords/services/chord_insights.dart';
 import 'package:chords/domain/preferences/repositories/preferences_repository.dart';
+import 'package:chords/presentation/features/chords/chord_detail_extras.dart';
 import 'package:flutter/foundation.dart';
 
 /// Problema al cargar el detalle de un acorde.
@@ -36,12 +38,16 @@ class ChordDetailController extends ChangeNotifier {
   final PreferencesRepository _preferences;
 
   Chord? _chord;
+  ChordDetailExtras? _extras;
   int _selectedIndex = 0;
   bool _loading = false;
   ChordDetailProblem? _problem;
 
   /// Acorde cargado.
   Chord? get chord => _chord;
+
+  /// Notas, parientes, progresiones, escalas y filtro de posiciones.
+  ChordDetailExtras? get extras => _extras;
 
   /// Índice de la posición seleccionada.
   int get selectedIndex => _selectedIndex;
@@ -79,8 +85,13 @@ class ChordDetailController extends ChangeNotifier {
         );
         _problem = ChordDetailProblem.notFound;
         _chord = null;
+        _extras = null;
       } else {
         _chord = chord;
+        _extras = ChordDetailExtras(
+          chord,
+          ChordInsights.of(chord, _repository.chords),
+        );
         _selectedIndex = 0;
         appLogger.debug(
           'detalle abierto: ${chord.id} (${chord.variantCount} posiciones)',
@@ -116,8 +127,12 @@ class ChordDetailController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Reproduce el sonido de la posición seleccionada (rasgueo).
-  Future<void> playSelected() async {
+  /// Reproduce la posición seleccionada: rasgueada o, con [arpeggio], como
+  /// arpegio.
+  Future<void> playSelected({ArpeggioPattern? arpeggio}) =>
+      arpeggio == null ? _strum() : _arpeggiate(arpeggio);
+
+  Future<void> _strum() async {
     final Chord? chord = _chord;
     final ChordVariant? variant = selectedVariant;
     if (chord == null || variant == null || !_preferences.soundEnabled) {
@@ -137,8 +152,7 @@ class ChordDetailController extends ChangeNotifier {
     analytics.chordPlayed(chordId: chord.id, variantId: variant.id);
   }
 
-  /// Reproduce la posición seleccionada como arpegio.
-  Future<void> playArpeggio(ArpeggioPattern pattern) async {
+  Future<void> _arpeggiate(ArpeggioPattern pattern) async {
     final Chord? chord = _chord;
     final ChordVariant? variant = selectedVariant;
     if (chord == null || variant == null || !_preferences.soundEnabled) {

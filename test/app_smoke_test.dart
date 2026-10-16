@@ -154,15 +154,23 @@ void main() {
     await tester.pumpAndSettle();
     await tester.pump(const Duration(milliseconds: 50));
     await tester.pumpAndSettle();
-    // El diagrama y los botones ocupan la pantalla: la guía, los arpegios y
-    // las posiciones están más abajo y hay que desplazarse.
-    await tester.drag(find.byType(ListView).last, const Offset(0, -450));
-    await tester.pumpAndSettle();
+    // El diagrama y los botones ocupan la pantalla: la guía, las notas, los
+    // arpegios, las variantes y los parientes están más abajo.
+    Future<void> reveal(Finder finder) => tester.dragUntilVisible(
+      finder,
+      find.byType(ListView).last,
+      const Offset(0, -300),
+    );
+    await reveal(find.text('Cómo colocarlo'));
     expect(find.text('Cómo colocarlo'), findsOneWidget);
-    await tester.drag(find.byType(ListView).last, const Offset(0, -450));
-    await tester.pumpAndSettle();
+    await reveal(find.text('Notas y fórmula'));
+    expect(find.text('Notas y fórmula'), findsOneWidget);
+    await reveal(find.text('Arpegios'));
     expect(find.text('Arpegios'), findsOneWidget);
-    expect(find.text('Posiciones'), findsOneWidget);
+    await reveal(find.text('Variantes de este acorde'));
+    expect(find.text('Variantes de este acorde'), findsOneWidget);
+    await reveal(find.text('Dónde se usa'));
+    expect(find.text('Dónde se usa'), findsOneWidget);
     expect(find.text(chord.name), findsWidgets);
 
     // Volver del detalle regresa al listado (ruta raíz, no pestaña).

@@ -1,7 +1,7 @@
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_filters.dart';
-import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/chords/entities/learning_level.dart';
+import 'package:chords/domain/chords/services/chord_query.dart';
 
 /// Caso de uso: filtrar acordes por raíz, calidad, género, nivel y texto.
 class SearchChordsUseCase {
@@ -9,17 +9,32 @@ class SearchChordsUseCase {
   const SearchChordsUseCase();
 
   /// Devuelve los acordes que cumplen los filtros indicados.
+  ///
+  /// El texto de búsqueda se interpreta con [ChordQuery]: cifrado (`Cm7`),
+  /// nombres en español (`Re menor 7`), listas de notas (`C E G`) o texto
+  /// libre. Con texto, los acordes que mejor coinciden van primero; a igual
+  /// relevancia se respeta el orden de [chords].
   List<Chord> call(List<Chord> chords, ChordFilters filters) {
-    final String query = filters.query.trim().toLowerCase();
-    return chords
-        .where((Chord chord) => _accepts(chord, filters, query))
-        .toList();
+    final ChordQuery query = ChordQuery.parse(filters.query);
+    final List<({Chord chord, int relevance})> found =
+        <({Chord chord, int relevance})>[];
+    for (final Chord chord in chords) {
+      final int? relevance = _accepts(chord, filters)
+          ? query.relevance(chord)
+          : null;
+      if (relevance != null) {
+        found.add((chord: chord, relevance: relevance));
+      }
+    }
+    return <Chord>[
+      for (final int level in const <int>[0, 1, 2])
+        for (final ({Chord chord, int relevance}) item in found)
+          if (item.relevance == level) item.chord,
+    ];
   }
 
-  bool _accepts(Chord chord, ChordFilters filters, String query) =>
-      _matchesFacets(chord, filters) &&
-      _matchesLevel(chord, filters) &&
-      (query.isEmpty || _matchesQuery(chord, query));
+  bool _accepts(Chord chord, ChordFilters filters) =>
+      _matchesFacets(chord, filters) && _matchesLevel(chord, filters);
 
   bool _matchesFacets(Chord chord, ChordFilters filters) {
     if (filters.root != null && chord.root != filters.root) {
@@ -45,20 +60,5 @@ class SearchChordsUseCase {
       return false;
     }
     return true;
-  }
-
-  /// Coincidencia del texto libre con nombre, alias, géneros y posiciones.
-  bool _matchesQuery(Chord chord, String query) {
-    final Iterable<String> haystack = <String>[
-      chord.name.toLowerCase(),
-      chord.displayName.toLowerCase(),
-      LearningLevel.of(chord).title.toLowerCase(),
-      ...chord.aliases.map((String alias) => alias.toLowerCase()),
-      ...chord.quality.genres.map((String genre) => genre.toLowerCase()),
-      ...chord.variants.map(
-        (ChordVariant variant) => variant.positionLabel.toLowerCase(),
-      ),
-    ];
-    return haystack.any((String item) => item.contains(query));
   }
 }

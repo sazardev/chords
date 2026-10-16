@@ -76,6 +76,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   late final Translations$onboarding$es onboarding =
       Translations$onboarding$es.internal(_root);
   late final Translations$data$es data = Translations$data$es.internal(_root);
+  late final Translations$chordTheory$es chordTheory =
+      Translations$chordTheory$es.internal(_root);
+  late final Translations$scalesPlus$es scalesPlus =
+      Translations$scalesPlus$es.internal(_root);
   late final Translations$logs$es logs = Translations$logs$es.internal(_root);
   late final Translations$router$es router = Translations$router$es.internal(
     _root,
@@ -816,9 +820,9 @@ class Translations$onboarding$es {
   /// es: 'Todos los acordes, todas las posiciones'
   String get slideOneTitle => 'Todos los acordes, todas las posiciones';
 
-  /// es: '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.'
+  /// es: '396 acordes (33 tipos en 12 notas) y más de 3.400 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.'
   String get slideOneBody =>
-      '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.';
+      '396 acordes (33 tipos en 12 notas) y más de 3.400 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.';
 
   /// es: 'Escucha cada acorde y su arpegio'
   String get slideTwoTitle => 'Escucha cada acorde y su arpegio';
@@ -1015,6 +1019,494 @@ class Translations$data$es {
       Translations$data$levelGoal$es.internal(_root);
   late final Translations$data$arpeggio$es arpeggio =
       Translations$data$arpeggio$es.internal(_root);
+}
+
+// Path: chordTheory
+class Translations$chordTheory$es {
+  Translations$chordTheory$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  Map<String, String> get qualityNames => {
+    'add9': 'Novena añadida',
+    'madd9': 'Menor con novena añadida',
+    '69': 'Sexta con novena',
+    'm9': 'Novena menor',
+    'maj9': 'Novena mayor',
+    '11': 'Oncena',
+    'm11': 'Oncena menor',
+    '13': 'Trecena',
+    '7sus4': 'Séptima suspendida 4',
+    '9sus4': 'Novena suspendida 4',
+    'mMaj7': 'Menor con séptima mayor',
+    'm7b5': 'Semidisminuido',
+    'dim7': 'Séptima disminuida',
+    '7b9': 'Séptima con novena menor',
+    '7s9': 'Séptima con novena aumentada',
+    '7s5': 'Séptima aumentada',
+    '7b5': 'Séptima con quinta bemol',
+    '7s11': 'Séptima con oncena aumentada',
+    'maj7s11': 'Séptima mayor con oncena aumentada',
+    'maj7s5': 'Séptima mayor aumentada',
+  };
+  Map<String, String> get qualityAbout => {
+    'add9': 'Triada con novena añadida; brillo de pop y baladas.',
+    'madd9': 'Menor con novena añadida; íntima y cinematográfica.',
+    '69': 'Sexta con novena; cierre clásico de jazz y bossa.',
+    'm9': 'Séptima menor con novena; soul, jazz y r&b.',
+    'maj9': 'Séptima mayor con novena; lujo de jazz y neo-soul.',
+    '11': 'Dominante con oncena; sonido abierto de funk y gospel.',
+    'm11': 'Menor con oncena; espacioso, de jazz y r&b.',
+    '13': 'Dominante con trecena; blues urbano, funk y jazz.',
+    '7sus4': 'Dominante suspendido; tensión sin tercera, muy de funk.',
+    '9sus4': 'Novena suspendida; flotante, de funk y r&b.',
+    'mMaj7': 'Menor con séptima mayor; misterio de película de espías.',
+    'm7b5': 'Semidisminuido; el ii de los ii-V-i menores.',
+    'dim7': 'Simétrico de cuatro notas; paso cromático y tensión.',
+    '7b9': 'Dominante con novena menor; tensión latina y de jazz.',
+    '7s9': 'El acorde de Hendrix; dominante agrio de rock y funk.',
+    '7s5': 'Dominante aumentado (aug7); tensión de tonos enteros.',
+    '7b5': 'Dominante con quinta bemol; sustituto de tritono.',
+    '7s11': 'Dominante lidio; brillo de jazz moderno y bossa.',
+    'maj7s11': 'Séptima mayor lidia; sonido flotante y soñador.',
+    'maj7s5': 'Séptima mayor aumentada; luminosa e inquieta.',
+  };
+  Map<String, String> get families => {
+    'triad': 'Triadas',
+    'power': 'Quintas',
+    'sixth': 'Sextas',
+    'seventh': 'Séptimas',
+    'extended': 'Extendidos',
+    'suspendedAdded': 'Suspendidos y añadidos',
+    'altered': 'Alterados',
+  };
+  Map<String, String> get tags => {
+    'open': 'Abierta',
+    'barre': 'Cejilla',
+    'movable': 'Movible',
+    'inversion': 'Inversión',
+    'triad': 'Tríada',
+    'shell': 'Shell',
+    'voicing': 'Voicing',
+    'drop2': 'Drop 2',
+    'drop3': 'Drop 3',
+    'upper': 'Cuerdas agudas',
+    'high-position': 'Posición alta',
+  };
+  Map<String, String> get intervalNames => {
+    '1': 'tónica',
+    'b2': 'segunda menor',
+    '2': 'segunda mayor',
+    'b3': 'tercera menor',
+    '3': 'tercera mayor',
+    '4': 'cuarta justa',
+    'b5': 'quinta disminuida',
+    '5': 'quinta justa',
+    '#5': 'quinta aumentada',
+    '6': 'sexta mayor',
+    'bb7': 'séptima disminuida',
+    'b7': 'séptima menor',
+    '7': 'séptima mayor',
+    'b9': 'novena menor',
+    '9': 'novena mayor',
+    '#9': 'novena aumentada',
+    '11': 'oncena justa',
+    '#11': 'oncena aumentada',
+    '13': 'trecena mayor',
+  };
+
+  /// es: 'Ordenar'
+  String get sortTooltip => 'Ordenar';
+
+  /// es: 'Esenciales primero'
+  String get sortEssentials => 'Esenciales primero';
+
+  /// es: 'Más fáciles primero'
+  String get sortDifficulty => 'Más fáciles primero';
+
+  /// es: 'Por nota (Do, Re, Mi…)'
+  String get sortRoot => 'Por nota (Do, Re, Mi…)';
+
+  /// es: 'Por tipo de acorde'
+  String get sortQuality => 'Por tipo de acorde';
+
+  /// es: 'Elegir nota y tipo'
+  String get pickChord => 'Elegir nota y tipo';
+
+  /// es: 'Nota'
+  String get pickRoot => 'Nota';
+
+  /// es: 'Tipo de acorde'
+  String get pickQuality => 'Tipo de acorde';
+
+  /// es: 'Ver $n acordes'
+  String pickShow({required Object n}) => 'Ver ${n} acordes';
+
+  /// es: 'Abrir ficha de $name'
+  String pickOpen({required Object name}) => 'Abrir ficha de ${name}';
+
+  /// es: 'Quitar'
+  String get pickClear => 'Quitar';
+
+  /// es: 'Prueba con Cm7, Do mayor, Re menor 7 o C E G.'
+  String get searchTip => 'Prueba con Cm7, Do mayor, Re menor 7 o C E G.';
+
+  /// es: 'Notas y fórmula'
+  String get notesTitle => 'Notas y fórmula';
+
+  /// es: 'Fórmula: $formula'
+  String formulaLine({required Object formula}) => 'Fórmula: ${formula}';
+
+  /// es: 'Se puede omitir'
+  String get optionalNote => 'Se puede omitir';
+
+  /// es: '$note es la $interval'
+  String noteMeaning({required Object note, required Object interval}) =>
+      '${note} es la ${interval}';
+
+  /// es: 'En qué tonalidades está'
+  String get keysTitle => 'En qué tonalidades está';
+
+  /// es: 'El grado que ocupa en cada tonalidad.'
+  String get keysHint => 'El grado que ocupa en cada tonalidad.';
+
+  /// es: '$roman en $key'
+  String keyChip({required Object roman, required Object key}) =>
+      '${roman} en ${key}';
+
+  /// es: '$note mayor'
+  String keyMajor({required Object note}) => '${note} mayor';
+
+  /// es: '$note menor'
+  String keyMinor({required Object note}) => '${note} menor';
+
+  /// es: 'Variantes de este acorde'
+  String get variantsTitle => 'Variantes de este acorde';
+
+  /// es: 'Posiciones ($n)'
+  String positionsCount({required Object n}) => 'Posiciones (${n})';
+
+  /// es: 'Todas'
+  String get filterAll => 'Todas';
+
+  /// es: 'Ninguna posición de este tipo.'
+  String get variantsEmpty => 'Ninguna posición de este tipo.';
+
+  /// es: 'Acordes parientes'
+  String get relativesTitle => 'Acordes parientes';
+
+  /// es: 'La misma raíz con otro color: toca uno para ver su ficha.'
+  String get relativesHint =>
+      'La misma raíz con otro color: toca uno para ver su ficha.';
+
+  /// es: 'Relativo: $name'
+  String relativeOf({required Object name}) => 'Relativo: ${name}';
+
+  /// es: 'Dónde se usa'
+  String get whereTitle => 'Dónde se usa';
+
+  /// es: 'Géneros'
+  String get genresLabel => 'Géneros';
+
+  /// es: 'En las progresiones'
+  String get progressionsLabel => 'En las progresiones';
+
+  /// es: '$degree en $key'
+  String progressionRow({required Object degree, required Object key}) =>
+      '${degree} en ${key}';
+
+  /// es: 'Todavía no está en ninguna progresión del catálogo.'
+  String get noProgressions =>
+      'Todavía no está en ninguna progresión del catálogo.';
+
+  /// es: 'Tríada cuerdas $strings · $inversion'
+  String variantTriad({required Object strings, required Object inversion}) =>
+      'Tríada cuerdas ${strings} · ${inversion}';
+
+  /// es: 'Shell $degrees · cuerdas $strings'
+  String variantShell({required Object degrees, required Object strings}) =>
+      'Shell ${degrees} · cuerdas ${strings}';
+
+  /// es: 'Voicing · cuerdas $strings · $inversion'
+  String variantVoicing({required Object strings, required Object inversion}) =>
+      'Voicing · cuerdas ${strings} · ${inversion}';
+
+  /// es: 'Drop 2 · cuerdas $strings · $inversion'
+  String variantDrop2({required Object strings, required Object inversion}) =>
+      'Drop 2 · cuerdas ${strings} · ${inversion}';
+
+  /// es: 'Drop 3 · cuerdas $strings · $inversion'
+  String variantDrop3({required Object strings, required Object inversion}) =>
+      'Drop 3 · cuerdas ${strings} · ${inversion}';
+
+  /// es: 'posición fundamental'
+  String get inversionRoot => 'posición fundamental';
+
+  /// es: '1ª inversión'
+  String get inversionFirst => '1ª inversión';
+
+  /// es: '2ª inversión'
+  String get inversionSecond => '2ª inversión';
+
+  /// es: '3ª inversión'
+  String get inversionThird => '3ª inversión';
+
+  /// es: '$degree en el bajo'
+  String inversionOther({required Object degree}) => '${degree} en el bajo';
+
+  /// es: 'Forma de $note$rest'
+  String shapeNameFormat({required Object note, required Object rest}) =>
+      'Forma de ${note}${rest}';
+
+  /// es: '$name · traste $n'
+  String fretSuffix({required Object name, required Object n}) =>
+      '${name} · traste ${n}';
+
+  Map<String, String> get shapeNames => {
+    'e-power': 'Power cuerda 6',
+    'a-power': 'Power cuerda 5',
+    'd-power': 'Power cuerda 4',
+    'e-power-4': 'Power 4 cuerdas',
+    'a-power-4': 'Power 4 cuerdas (5ª)',
+    'e-power-5': 'Power con octava (5 cuerdas)',
+  };
+  Map<String, String> get shapeWords => {
+    'menor': 'menor',
+    'corta': 'corta',
+    '(corta)': '(corta)',
+    '(aguda)': '(aguda)',
+    '(abierta)': '(abierta)',
+    '(alt.)': '(alt.)',
+    '(3': '(3',
+    'dedos)': 'dedos)',
+    '(raíz': '(raíz',
+    'en': 'en',
+    '6ª)': '6ª)',
+  };
+}
+
+// Path: scalesPlus
+class Translations$scalesPlus$es {
+  Translations$scalesPlus$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  Map<String, String> get names => {
+    'major': 'mayor (jónica)',
+    'dorian': 'dórica',
+    'phrygian': 'frigia',
+    'lydian': 'lidia',
+    'mixolydian': 'mixolidia',
+    'minor': 'menor natural (eólica)',
+    'locrian': 'locria',
+    'harmonicMinor': 'menor armónica',
+    'melodicMinor': 'menor melódica',
+    'locrianNatural6': 'locria ♮6',
+    'ionianSharp5': 'jónica #5',
+    'ukrainianDorian': 'dórica #4 (ucraniana)',
+    'phrygianDominant': 'frigia dominante',
+    'lydianSharp2': 'lidia #2',
+    'superLocrianBb7': 'superlocria bb7',
+    'dorianFlat2': 'dórica b2',
+    'lydianAugmented': 'lidia aumentada',
+    'lydianDominant': 'lidia dominante',
+    'mixolydianFlat6': 'mixolidia b6',
+    'locrianSharp2': 'locria #2 (semilocria)',
+    'altered': 'alterada (superlocria)',
+    'minorPentatonic': 'pentatónica menor',
+    'majorPentatonic': 'pentatónica mayor',
+    'blues': 'escala de blues',
+    'majorBlues': 'blues mayor',
+    'minorHexatonic': 'pentatónica menor con 9ª (hexatónica)',
+    'suspendedPentatonic': 'pentatónica suspendida (egipcia)',
+    'wholeTone': 'tonos enteros',
+    'diminishedWholeHalf': 'disminuida (tono-semitono)',
+    'diminishedHalfWhole': 'disminuida (semitono-tono)',
+    'augmentedScale': 'aumentada',
+    'bebopDominant': 'bebop dominante',
+    'bebopMajor': 'bebop mayor',
+    'hungarianMinor': 'húngara menor',
+    'doubleHarmonic': 'doble armónica (arábiga)',
+    'hirajoshi': 'hirajoshi',
+    'neapolitanMinor': 'napolitana menor',
+    'persian': 'persa',
+  };
+  Map<String, String> get about => {
+    'major': 'La base de la armonía: alegre, estable y luminosa.',
+    'dorian':
+        'Menor con sexta mayor: elegante y con ritmo, ni triste ni dulce.',
+    'phrygian':
+        'Menor con segunda menor: oscura, tensa y con aire de flamenco.',
+    'lydian': 'Mayor con cuarta aumentada: flotante, soñadora y de cine.',
+    'mixolydian':
+        'Mayor con séptima menor: relajada, de rock clásico y country.',
+    'minor': 'La menor de siempre: melancólica, épica y muy cantable.',
+    'locrian':
+        'Menor con segunda y quinta bemol: la más inestable, sin reposo.',
+    'harmonicMinor': 'Menor con la séptima elevada: dramática y clásica, con un salto exótico.',
+    'melodicMinor': 'Menor con sexta y séptima mayores: suave y misteriosa, base del jazz moderno.',
+    'locrianNatural6':
+        'Locria con sexta natural: tensa y poco usada, de color oscuro.',
+    'ionianSharp5': 'Mayor con quinta aumentada: luminosa e inquieta.',
+    'ukrainianDorian':
+        'Dórica con cuarta aumentada: sabor de Europa del Este y klezmer.',
+    'phrygianDominant':
+        'Frigia con tercera mayor: el sonido del flamenco y de Oriente Medio.',
+    'lydianSharp2': 'Lidia con segunda aumentada: brillante, rara y llamativa.',
+    'superLocrianBb7': 'La más tensa de la armónica: simétrica y disminuida.',
+    'dorianFlat2': 'Dórica con segunda menor: oscura y cinematográfica.',
+    'lydianAugmented': 'Lidia con quinta aumentada: etérea, de acordes maj7#5.',
+    'lydianDominant':
+        'Mixolidia con cuarta aumentada: dominante brillante de jazz y fusión.',
+    'mixolydianFlat6':
+        'Mixolidia con sexta menor: entre lo mayor y lo menor, aire hindú.',
+    'locrianSharp2':
+        'Locria con segunda mayor: la más suave sobre los acordes m7b5.',
+    'altered': 'Toda la tensión de un dominante: b9, #9, b5 y #5 a la vez.',
+    'minorPentatonic':
+        'Cinco notas que nunca fallan: el corazón del rock y el blues.',
+    'majorPentatonic': 'Dulce y abierta: country, pop, soul y solos melódicos.',
+    'blues': 'Pentatónica menor con la blue note (b5): pura actitud.',
+    'majorBlues': 'Pentatónica mayor con la tercera menor de paso: blues alegre y country.',
+    'minorHexatonic': 'Pentatónica menor con novena: suave y moderna, entre el rock y el jazz.',
+    'suspendedPentatonic':
+        'Sin terceras: abierta, ambigua y muy usada en pop y ambient.',
+    'wholeTone': 'Seis tonos seguidos: flotante, sin tónica clara, de ensueño.',
+    'diminishedWholeHalf':
+        'Tono-semitono: simétrica, para acordes disminuidos.',
+    'diminishedHalfWhole':
+        'Semitono-tono: simétrica, con todas las tensiones de un dominante.',
+    'augmentedScale':
+        'Tercera menor y semitono alternados: simétrica y moderna.',
+    'bebopDominant': 'Mixolidia con la séptima mayor de paso: corcheas que caen en los tiempos.',
+    'bebopMajor': 'Mayor con la sexta menor de paso: líneas fluidas de bebop.',
+    'hungarianMinor':
+        'Menor armónica con cuarta aumentada: dramática, gitana y oscura.',
+    'doubleHarmonic':
+        'Dos segundas aumentadas: sabor arábigo, bizantino y flamenco.',
+    'hirajoshi': 'Cinco notas japonesas: contemplativa, de koto y de anime.',
+    'neapolitanMinor': 'Menor armónica con segunda bemol: clásica y trágica.',
+    'persian': 'Siete notas con segunda y quinta bemol: exótica y muy tensa.',
+  };
+  Map<String, String> get styles => {
+    'major': 'Pop, folk, country, canciones infantiles.',
+    'dorian': 'Funk, jazz, Santana, Pink Floyd, soul.',
+    'phrygian': 'Flamenco, metal, música oscura.',
+    'lydian': 'Bandas sonoras, Joe Satriani, indie, jazz.',
+    'mixolydian': 'Rock clásico, blues, country, funk.',
+    'minor': 'Baladas, rock, metal, pop triste.',
+    'locrian': 'Metal, jazz sobre acordes m7b5.',
+    'harmonicMinor': 'Clásica, flamenco, metal neoclásico, boleros.',
+    'melodicMinor': 'Jazz, fusión, música de cine.',
+    'locrianNatural6': 'Jazz avanzado y metal progresivo.',
+    'ionianSharp5': 'Jazz moderno sobre maj7#5.',
+    'ukrainianDorian': 'Klezmer, música balcánica, metal folk.',
+    'phrygianDominant': 'Flamenco, surf rock, klezmer, metal.',
+    'lydianSharp2': 'Jazz moderno y fusión.',
+    'superLocrianBb7': 'Jazz avanzado, sobre acordes dim7 con tensión.',
+    'dorianFlat2': 'Jazz moderno, bandas sonoras, metal.',
+    'lydianAugmented': 'Jazz, fusión y pasajes etéreos.',
+    'lydianDominant': 'Jazz, fusión, bossa y funk (7#11).',
+    'mixolydianFlat6': 'Jazz, bandas sonoras y fusión.',
+    'locrianSharp2': 'Jazz sobre acordes m7b5 (el ii de los menores).',
+    'altered': 'Jazz: V7 alterado que resuelve a un acorde menor o mayor.',
+    'minorPentatonic': 'Rock, blues, metal, funk, cualquier solo.',
+    'majorPentatonic': 'Country, pop, soul, gospel, solos dulces.',
+    'blues': 'Blues, rock, hard rock, funk.',
+    'majorBlues': 'Blues alegre, country, soul, rock sureño.',
+    'minorHexatonic': 'Rock suave, fusión, neo-soul.',
+    'suspendedPentatonic': 'Pop, ambient, rock progresivo, música étnica.',
+    'wholeTone': 'Impresionismo, jazz (Monk), bandas sonoras oníricas.',
+    'diminishedWholeHalf': 'Jazz, música clásica, metal (acordes dim).',
+    'diminishedHalfWhole': 'Jazz sobre dominantes con b9, #9 y #11.',
+    'augmentedScale': 'Jazz moderno y fusión (Coltrane).',
+    'bebopDominant': 'Jazz bebop sobre acordes dominantes (7).',
+    'bebopMajor': 'Jazz bebop sobre acordes mayores (maj7, 6).',
+    'hungarianMinor': 'Música gitana, metal neoclásico, bandas sonoras.',
+    'doubleHarmonic': 'Música arábiga, flamenco, surf rock, metal.',
+    'hirajoshi': 'Música japonesa, metal, bandas sonoras.',
+    'neapolitanMinor': 'Música clásica, metal neoclásico.',
+    'persian': 'Música persa, árabe y metal oriental.',
+  };
+  Map<String, String> get groups => {
+    'major': 'Mayor y modos',
+    'minor': 'Menores',
+    'pentatonic': 'Pentatónicas y blues',
+    'exotic': 'Exóticas y simétricas',
+  };
+  Map<String, String> get sections => {
+    'majorModes': 'Los siete modos de la mayor',
+    'minors': 'Menor natural, armónica y melódica',
+    'harmonicModes': 'Modos de la menor armónica',
+    'melodicModes': 'Modos de la menor melódica',
+    'pentatonics': 'Pentatónicas, blues y hexatónicas',
+    'symmetric': 'Simétricas y bebop',
+    'exotic': 'Exóticas',
+  };
+
+  /// es: '$n notas'
+  String notesCount({required Object n}) => '${n} notas';
+
+  /// es: 'Fórmula'
+  String get formulaTitle => 'Fórmula';
+
+  /// es: 'Intervalos: $steps'
+  String intervalsLine({required Object steps}) => 'Intervalos: ${steps}';
+
+  /// es: 'Carácter'
+  String get characterTitle => 'Carácter';
+
+  /// es: 'Dónde se usa'
+  String get stylesTitle => 'Dónde se usa';
+
+  /// es: 'Nota característica: $degree'
+  String characteristicNote({required Object degree}) =>
+      'Nota característica: ${degree}';
+
+  /// es: 'Acordes de la escala'
+  String get harmonyTitle => 'Acordes de la escala';
+
+  /// es: 'Tríadas'
+  String get triads => 'Tríadas';
+
+  /// es: 'Séptimas'
+  String get sevenths => 'Séptimas';
+
+  /// es: 'Con $n notas no forma acordes por terceras: úsala sobre un acorde fijo, como un color.'
+  String noHarmony({required Object n}) =>
+      'Con ${n} notas no forma acordes por terceras: úsala sobre un acorde fijo, como un color.';
+
+  /// es: '5 cajas de dos notas por cuerda'
+  String get positionsFive => '5 cajas de dos notas por cuerda';
+
+  /// es: '7 posiciones de tres notas por cuerda'
+  String get positionsSeven => '7 posiciones de tres notas por cuerda';
+
+  /// es: '$n cajas de su escala base más las notas de paso'
+  String positionsExtras({required Object n}) =>
+      '${n} cajas de su escala base más las notas de paso';
+
+  /// es: '$n ventanas de trastes (escala simétrica)'
+  String positionsWindow({required Object n}) =>
+      '${n} ventanas de trastes (escala simétrica)';
+
+  /// es: 'Sube y baja'
+  String get playUpDown => 'Sube y baja';
+
+  /// es: 'Escala para improvisar'
+  String get chordScalesTitle => 'Escala para improvisar';
+
+  /// es: 'Sobre $chord suena bien: $scale'
+  String chordScaleHint({required Object chord, required Object scale}) =>
+      'Sobre ${chord} suena bien: ${scale}';
+
+  /// es: 'También: $scales'
+  String chordScaleAlso({required Object scales}) => 'También: ${scales}';
+
+  /// es: 'Ver en el explorador'
+  String get openInExplorer => 'Ver en el explorador';
 }
 
 // Path: logs
@@ -4358,7 +4850,7 @@ extension on Translations {
           'settings.cliCommand' => 'dart run bin/chords_cli.dart db generate',
           'onboarding.slideOneTitle' =>
             'Todos los acordes, todas las posiciones',
-          'onboarding.slideOneBody' => '156 acordes y 561 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.',
+          'onboarding.slideOneBody' => '396 acordes (33 tipos en 12 notas) y más de 3.400 posiciones verificadas, de los abiertos esenciales a los voicings de jazz.',
           'onboarding.slideTwoTitle' => 'Escucha cada acorde y su arpegio',
           'onboarding.slideTwoBody' => 'Sintetizamos cada cuerda para que reconozcas el sonido antes de tocar.',
           'onboarding.slideThreeTitle' => 'Aprende por niveles y practica',
@@ -4508,6 +5000,437 @@ extension on Translations {
           'data.arpeggio.descending' => 'Descendente',
           'data.arpeggio.alternating' => 'Alterno',
           'data.arpeggio.fingerstyle' => 'Fingerstyle',
+          'chordTheory.qualityNames.add9' => 'Novena añadida',
+          'chordTheory.qualityNames.madd9' => 'Menor con novena añadida',
+          'chordTheory.qualityNames."69"' => 'Sexta con novena',
+          'chordTheory.qualityNames.m9' => 'Novena menor',
+          'chordTheory.qualityNames.maj9' => 'Novena mayor',
+          'chordTheory.qualityNames."11"' => 'Oncena',
+          'chordTheory.qualityNames.m11' => 'Oncena menor',
+          'chordTheory.qualityNames."13"' => 'Trecena',
+          'chordTheory.qualityNames.7sus4' => 'Séptima suspendida 4',
+          'chordTheory.qualityNames.9sus4' => 'Novena suspendida 4',
+          'chordTheory.qualityNames.mMaj7' => 'Menor con séptima mayor',
+          'chordTheory.qualityNames.m7b5' => 'Semidisminuido',
+          'chordTheory.qualityNames.dim7' => 'Séptima disminuida',
+          'chordTheory.qualityNames.7b9' => 'Séptima con novena menor',
+          'chordTheory.qualityNames.7s9' => 'Séptima con novena aumentada',
+          'chordTheory.qualityNames.7s5' => 'Séptima aumentada',
+          'chordTheory.qualityNames.7b5' => 'Séptima con quinta bemol',
+          'chordTheory.qualityNames.7s11' => 'Séptima con oncena aumentada',
+          'chordTheory.qualityNames.maj7s11' =>
+            'Séptima mayor con oncena aumentada',
+          'chordTheory.qualityNames.maj7s5' => 'Séptima mayor aumentada',
+          'chordTheory.qualityAbout.add9' =>
+            'Triada con novena añadida; brillo de pop y baladas.',
+          'chordTheory.qualityAbout.madd9' =>
+            'Menor con novena añadida; íntima y cinematográfica.',
+          'chordTheory.qualityAbout."69"' =>
+            'Sexta con novena; cierre clásico de jazz y bossa.',
+          'chordTheory.qualityAbout.m9' =>
+            'Séptima menor con novena; soul, jazz y r&b.',
+          'chordTheory.qualityAbout.maj9' =>
+            'Séptima mayor con novena; lujo de jazz y neo-soul.',
+          'chordTheory.qualityAbout."11"' =>
+            'Dominante con oncena; sonido abierto de funk y gospel.',
+          'chordTheory.qualityAbout.m11' =>
+            'Menor con oncena; espacioso, de jazz y r&b.',
+          'chordTheory.qualityAbout."13"' =>
+            'Dominante con trecena; blues urbano, funk y jazz.',
+          'chordTheory.qualityAbout.7sus4' =>
+            'Dominante suspendido; tensión sin tercera, muy de funk.',
+          'chordTheory.qualityAbout.9sus4' =>
+            'Novena suspendida; flotante, de funk y r&b.',
+          'chordTheory.qualityAbout.mMaj7' =>
+            'Menor con séptima mayor; misterio de película de espías.',
+          'chordTheory.qualityAbout.m7b5' =>
+            'Semidisminuido; el ii de los ii-V-i menores.',
+          'chordTheory.qualityAbout.dim7' =>
+            'Simétrico de cuatro notas; paso cromático y tensión.',
+          'chordTheory.qualityAbout.7b9' =>
+            'Dominante con novena menor; tensión latina y de jazz.',
+          'chordTheory.qualityAbout.7s9' =>
+            'El acorde de Hendrix; dominante agrio de rock y funk.',
+          'chordTheory.qualityAbout.7s5' =>
+            'Dominante aumentado (aug7); tensión de tonos enteros.',
+          'chordTheory.qualityAbout.7b5' =>
+            'Dominante con quinta bemol; sustituto de tritono.',
+          'chordTheory.qualityAbout.7s11' =>
+            'Dominante lidio; brillo de jazz moderno y bossa.',
+          'chordTheory.qualityAbout.maj7s11' =>
+            'Séptima mayor lidia; sonido flotante y soñador.',
+          'chordTheory.qualityAbout.maj7s5' =>
+            'Séptima mayor aumentada; luminosa e inquieta.',
+          'chordTheory.families.triad' => 'Triadas',
+          'chordTheory.families.power' => 'Quintas',
+          'chordTheory.families.sixth' => 'Sextas',
+          'chordTheory.families.seventh' => 'Séptimas',
+          'chordTheory.families.extended' => 'Extendidos',
+          'chordTheory.families.suspendedAdded' => 'Suspendidos y añadidos',
+          'chordTheory.families.altered' => 'Alterados',
+          'chordTheory.tags.open' => 'Abierta',
+          'chordTheory.tags.barre' => 'Cejilla',
+          'chordTheory.tags.movable' => 'Movible',
+          'chordTheory.tags.inversion' => 'Inversión',
+          'chordTheory.tags.triad' => 'Tríada',
+          'chordTheory.tags.shell' => 'Shell',
+          'chordTheory.tags.voicing' => 'Voicing',
+          'chordTheory.tags.drop2' => 'Drop 2',
+          'chordTheory.tags.drop3' => 'Drop 3',
+          'chordTheory.tags.upper' => 'Cuerdas agudas',
+          'chordTheory.tags.high-position' => 'Posición alta',
+          'chordTheory.intervalNames."1"' => 'tónica',
+          'chordTheory.intervalNames.b2' => 'segunda menor',
+          'chordTheory.intervalNames."2"' => 'segunda mayor',
+          'chordTheory.intervalNames.b3' => 'tercera menor',
+          'chordTheory.intervalNames."3"' => 'tercera mayor',
+          'chordTheory.intervalNames."4"' => 'cuarta justa',
+          'chordTheory.intervalNames.b5' => 'quinta disminuida',
+          'chordTheory.intervalNames."5"' => 'quinta justa',
+          'chordTheory.intervalNames.#5' => 'quinta aumentada',
+          'chordTheory.intervalNames."6"' => 'sexta mayor',
+          'chordTheory.intervalNames.bb7' => 'séptima disminuida',
+          'chordTheory.intervalNames.b7' => 'séptima menor',
+          'chordTheory.intervalNames."7"' => 'séptima mayor',
+          'chordTheory.intervalNames.b9' => 'novena menor',
+          'chordTheory.intervalNames."9"' => 'novena mayor',
+          'chordTheory.intervalNames.#9' => 'novena aumentada',
+          'chordTheory.intervalNames."11"' => 'oncena justa',
+          'chordTheory.intervalNames.#11' => 'oncena aumentada',
+          'chordTheory.intervalNames."13"' => 'trecena mayor',
+          'chordTheory.sortTooltip' => 'Ordenar',
+          'chordTheory.sortEssentials' => 'Esenciales primero',
+          'chordTheory.sortDifficulty' => 'Más fáciles primero',
+          'chordTheory.sortRoot' => 'Por nota (Do, Re, Mi…)',
+          'chordTheory.sortQuality' => 'Por tipo de acorde',
+          'chordTheory.pickChord' => 'Elegir nota y tipo',
+          'chordTheory.pickRoot' => 'Nota',
+          'chordTheory.pickQuality' => 'Tipo de acorde',
+          'chordTheory.pickShow' => ({required Object n}) => 'Ver ${n} acordes',
+          'chordTheory.pickOpen' => ({
+            required Object name,
+          }) => 'Abrir ficha de ${name}',
+          'chordTheory.pickClear' => 'Quitar',
+          'chordTheory.searchTip' =>
+            'Prueba con Cm7, Do mayor, Re menor 7 o C E G.',
+          'chordTheory.notesTitle' => 'Notas y fórmula',
+          'chordTheory.formulaLine' => ({
+            required Object formula,
+          }) => 'Fórmula: ${formula}',
+          'chordTheory.optionalNote' => 'Se puede omitir',
+          'chordTheory.noteMeaning' => ({
+            required Object note,
+            required Object interval,
+          }) => '${note} es la ${interval}',
+          'chordTheory.keysTitle' => 'En qué tonalidades está',
+          'chordTheory.keysHint' => 'El grado que ocupa en cada tonalidad.',
+          'chordTheory.keyChip' => ({
+            required Object roman,
+            required Object key,
+          }) => '${roman} en ${key}',
+          'chordTheory.keyMajor' => ({required Object note}) => '${note} mayor',
+          'chordTheory.keyMinor' => ({required Object note}) => '${note} menor',
+          'chordTheory.variantsTitle' => 'Variantes de este acorde',
+          'chordTheory.positionsCount' => ({
+            required Object n,
+          }) => 'Posiciones (${n})',
+          'chordTheory.filterAll' => 'Todas',
+          'chordTheory.variantsEmpty' => 'Ninguna posición de este tipo.',
+          'chordTheory.relativesTitle' => 'Acordes parientes',
+          'chordTheory.relativesHint' =>
+            'La misma raíz con otro color: toca uno para ver su ficha.',
+          'chordTheory.relativeOf' => ({
+            required Object name,
+          }) => 'Relativo: ${name}',
+          'chordTheory.whereTitle' => 'Dónde se usa',
+          'chordTheory.genresLabel' => 'Géneros',
+          'chordTheory.progressionsLabel' => 'En las progresiones',
+          'chordTheory.progressionRow' => ({
+            required Object degree,
+            required Object key,
+          }) => '${degree} en ${key}',
+          'chordTheory.noProgressions' =>
+            'Todavía no está en ninguna progresión del catálogo.',
+          'chordTheory.variantTriad' => ({
+            required Object strings,
+            required Object inversion,
+          }) => 'Tríada cuerdas ${strings} · ${inversion}',
+          'chordTheory.variantShell' => ({
+            required Object degrees,
+            required Object strings,
+          }) => 'Shell ${degrees} · cuerdas ${strings}',
+          'chordTheory.variantVoicing' => ({
+            required Object strings,
+            required Object inversion,
+          }) => 'Voicing · cuerdas ${strings} · ${inversion}',
+          'chordTheory.variantDrop2' => ({
+            required Object strings,
+            required Object inversion,
+          }) => 'Drop 2 · cuerdas ${strings} · ${inversion}',
+          'chordTheory.variantDrop3' => ({
+            required Object strings,
+            required Object inversion,
+          }) => 'Drop 3 · cuerdas ${strings} · ${inversion}',
+          'chordTheory.inversionRoot' => 'posición fundamental',
+          'chordTheory.inversionFirst' => '1ª inversión',
+          'chordTheory.inversionSecond' => '2ª inversión',
+          'chordTheory.inversionThird' => '3ª inversión',
+          'chordTheory.inversionOther' => ({
+            required Object degree,
+          }) => '${degree} en el bajo',
+          'chordTheory.shapeNameFormat' => ({
+            required Object note,
+            required Object rest,
+          }) => 'Forma de ${note}${rest}',
+          'chordTheory.fretSuffix' => ({
+            required Object name,
+            required Object n,
+          }) => '${name} · traste ${n}',
+          'chordTheory.shapeNames.e-power' => 'Power cuerda 6',
+          'chordTheory.shapeNames.a-power' => 'Power cuerda 5',
+          'chordTheory.shapeNames.d-power' => 'Power cuerda 4',
+          'chordTheory.shapeNames.e-power-4' => 'Power 4 cuerdas',
+          'chordTheory.shapeNames.a-power-4' => 'Power 4 cuerdas (5ª)',
+          'chordTheory.shapeNames.e-power-5' => 'Power con octava (5 cuerdas)',
+          'chordTheory.shapeWords.menor' => 'menor',
+          'chordTheory.shapeWords.corta' => 'corta',
+          'chordTheory.shapeWords.(corta)' => '(corta)',
+          'chordTheory.shapeWords.(aguda)' => '(aguda)',
+          'chordTheory.shapeWords.(abierta)' => '(abierta)',
+          'chordTheory.shapeWords."(alt.)"' => '(alt.)',
+          'chordTheory.shapeWords.(3' => '(3',
+          'chordTheory.shapeWords.dedos)' => 'dedos)',
+          'chordTheory.shapeWords.(raíz' => '(raíz',
+          'chordTheory.shapeWords.en' => 'en',
+          'chordTheory.shapeWords.6ª)' => '6ª)',
+          'scalesPlus.names.major' => 'mayor (jónica)',
+          'scalesPlus.names.dorian' => 'dórica',
+          'scalesPlus.names.phrygian' => 'frigia',
+          'scalesPlus.names.lydian' => 'lidia',
+          'scalesPlus.names.mixolydian' => 'mixolidia',
+          'scalesPlus.names.minor' => 'menor natural (eólica)',
+          'scalesPlus.names.locrian' => 'locria',
+          'scalesPlus.names.harmonicMinor' => 'menor armónica',
+          'scalesPlus.names.melodicMinor' => 'menor melódica',
+          'scalesPlus.names.locrianNatural6' => 'locria ♮6',
+          'scalesPlus.names.ionianSharp5' => 'jónica #5',
+          'scalesPlus.names.ukrainianDorian' => 'dórica #4 (ucraniana)',
+          'scalesPlus.names.phrygianDominant' => 'frigia dominante',
+          'scalesPlus.names.lydianSharp2' => 'lidia #2',
+          'scalesPlus.names.superLocrianBb7' => 'superlocria bb7',
+          'scalesPlus.names.dorianFlat2' => 'dórica b2',
+          'scalesPlus.names.lydianAugmented' => 'lidia aumentada',
+          'scalesPlus.names.lydianDominant' => 'lidia dominante',
+          'scalesPlus.names.mixolydianFlat6' => 'mixolidia b6',
+          'scalesPlus.names.locrianSharp2' => 'locria #2 (semilocria)',
+          'scalesPlus.names.altered' => 'alterada (superlocria)',
+          'scalesPlus.names.minorPentatonic' => 'pentatónica menor',
+          'scalesPlus.names.majorPentatonic' => 'pentatónica mayor',
+          'scalesPlus.names.blues' => 'escala de blues',
+          'scalesPlus.names.majorBlues' => 'blues mayor',
+          'scalesPlus.names.minorHexatonic' =>
+            'pentatónica menor con 9ª (hexatónica)',
+          'scalesPlus.names.suspendedPentatonic' =>
+            'pentatónica suspendida (egipcia)',
+          'scalesPlus.names.wholeTone' => 'tonos enteros',
+          'scalesPlus.names.diminishedWholeHalf' =>
+            'disminuida (tono-semitono)',
+          'scalesPlus.names.diminishedHalfWhole' =>
+            'disminuida (semitono-tono)',
+          'scalesPlus.names.augmentedScale' => 'aumentada',
+          'scalesPlus.names.bebopDominant' => 'bebop dominante',
+          'scalesPlus.names.bebopMajor' => 'bebop mayor',
+          'scalesPlus.names.hungarianMinor' => 'húngara menor',
+          'scalesPlus.names.doubleHarmonic' => 'doble armónica (arábiga)',
+          'scalesPlus.names.hirajoshi' => 'hirajoshi',
+          _ => null,
+        } ??
+        switch (path) {
+          'scalesPlus.names.neapolitanMinor' => 'napolitana menor',
+          'scalesPlus.names.persian' => 'persa',
+          'scalesPlus.about.major' =>
+            'La base de la armonía: alegre, estable y luminosa.',
+          'scalesPlus.about.dorian' =>
+            'Menor con sexta mayor: elegante y con ritmo, ni triste ni dulce.',
+          'scalesPlus.about.phrygian' =>
+            'Menor con segunda menor: oscura, tensa y con aire de flamenco.',
+          'scalesPlus.about.lydian' =>
+            'Mayor con cuarta aumentada: flotante, soñadora y de cine.',
+          'scalesPlus.about.mixolydian' =>
+            'Mayor con séptima menor: relajada, de rock clásico y country.',
+          'scalesPlus.about.minor' =>
+            'La menor de siempre: melancólica, épica y muy cantable.',
+          'scalesPlus.about.locrian' =>
+            'Menor con segunda y quinta bemol: la más inestable, sin reposo.',
+          'scalesPlus.about.harmonicMinor' => 'Menor con la séptima elevada: dramática y clásica, con un salto exótico.',
+          'scalesPlus.about.melodicMinor' => 'Menor con sexta y séptima mayores: suave y misteriosa, base del jazz moderno.',
+          'scalesPlus.about.locrianNatural6' =>
+            'Locria con sexta natural: tensa y poco usada, de color oscuro.',
+          'scalesPlus.about.ionianSharp5' =>
+            'Mayor con quinta aumentada: luminosa e inquieta.',
+          'scalesPlus.about.ukrainianDorian' =>
+            'Dórica con cuarta aumentada: sabor de Europa del Este y klezmer.',
+          'scalesPlus.about.phrygianDominant' => 'Frigia con tercera mayor: el sonido del flamenco y de Oriente Medio.',
+          'scalesPlus.about.lydianSharp2' =>
+            'Lidia con segunda aumentada: brillante, rara y llamativa.',
+          'scalesPlus.about.superLocrianBb7' =>
+            'La más tensa de la armónica: simétrica y disminuida.',
+          'scalesPlus.about.dorianFlat2' =>
+            'Dórica con segunda menor: oscura y cinematográfica.',
+          'scalesPlus.about.lydianAugmented' =>
+            'Lidia con quinta aumentada: etérea, de acordes maj7#5.',
+          'scalesPlus.about.lydianDominant' => 'Mixolidia con cuarta aumentada: dominante brillante de jazz y fusión.',
+          'scalesPlus.about.mixolydianFlat6' =>
+            'Mixolidia con sexta menor: entre lo mayor y lo menor, aire hindú.',
+          'scalesPlus.about.locrianSharp2' =>
+            'Locria con segunda mayor: la más suave sobre los acordes m7b5.',
+          'scalesPlus.about.altered' =>
+            'Toda la tensión de un dominante: b9, #9, b5 y #5 a la vez.',
+          'scalesPlus.about.minorPentatonic' =>
+            'Cinco notas que nunca fallan: el corazón del rock y el blues.',
+          'scalesPlus.about.majorPentatonic' =>
+            'Dulce y abierta: country, pop, soul y solos melódicos.',
+          'scalesPlus.about.blues' =>
+            'Pentatónica menor con la blue note (b5): pura actitud.',
+          'scalesPlus.about.majorBlues' => 'Pentatónica mayor con la tercera menor de paso: blues alegre y country.',
+          'scalesPlus.about.minorHexatonic' => 'Pentatónica menor con novena: suave y moderna, entre el rock y el jazz.',
+          'scalesPlus.about.suspendedPentatonic' =>
+            'Sin terceras: abierta, ambigua y muy usada en pop y ambient.',
+          'scalesPlus.about.wholeTone' =>
+            'Seis tonos seguidos: flotante, sin tónica clara, de ensueño.',
+          'scalesPlus.about.diminishedWholeHalf' =>
+            'Tono-semitono: simétrica, para acordes disminuidos.',
+          'scalesPlus.about.diminishedHalfWhole' => 'Semitono-tono: simétrica, con todas las tensiones de un dominante.',
+          'scalesPlus.about.augmentedScale' =>
+            'Tercera menor y semitono alternados: simétrica y moderna.',
+          'scalesPlus.about.bebopDominant' => 'Mixolidia con la séptima mayor de paso: corcheas que caen en los tiempos.',
+          'scalesPlus.about.bebopMajor' =>
+            'Mayor con la sexta menor de paso: líneas fluidas de bebop.',
+          'scalesPlus.about.hungarianMinor' =>
+            'Menor armónica con cuarta aumentada: dramática, gitana y oscura.',
+          'scalesPlus.about.doubleHarmonic' =>
+            'Dos segundas aumentadas: sabor arábigo, bizantino y flamenco.',
+          'scalesPlus.about.hirajoshi' =>
+            'Cinco notas japonesas: contemplativa, de koto y de anime.',
+          'scalesPlus.about.neapolitanMinor' =>
+            'Menor armónica con segunda bemol: clásica y trágica.',
+          'scalesPlus.about.persian' =>
+            'Siete notas con segunda y quinta bemol: exótica y muy tensa.',
+          'scalesPlus.styles.major' =>
+            'Pop, folk, country, canciones infantiles.',
+          'scalesPlus.styles.dorian' =>
+            'Funk, jazz, Santana, Pink Floyd, soul.',
+          'scalesPlus.styles.phrygian' => 'Flamenco, metal, música oscura.',
+          'scalesPlus.styles.lydian' =>
+            'Bandas sonoras, Joe Satriani, indie, jazz.',
+          'scalesPlus.styles.mixolydian' =>
+            'Rock clásico, blues, country, funk.',
+          'scalesPlus.styles.minor' => 'Baladas, rock, metal, pop triste.',
+          'scalesPlus.styles.locrian' => 'Metal, jazz sobre acordes m7b5.',
+          'scalesPlus.styles.harmonicMinor' =>
+            'Clásica, flamenco, metal neoclásico, boleros.',
+          'scalesPlus.styles.melodicMinor' => 'Jazz, fusión, música de cine.',
+          'scalesPlus.styles.locrianNatural6' =>
+            'Jazz avanzado y metal progresivo.',
+          'scalesPlus.styles.ionianSharp5' => 'Jazz moderno sobre maj7#5.',
+          'scalesPlus.styles.ukrainianDorian' =>
+            'Klezmer, música balcánica, metal folk.',
+          'scalesPlus.styles.phrygianDominant' =>
+            'Flamenco, surf rock, klezmer, metal.',
+          'scalesPlus.styles.lydianSharp2' => 'Jazz moderno y fusión.',
+          'scalesPlus.styles.superLocrianBb7' =>
+            'Jazz avanzado, sobre acordes dim7 con tensión.',
+          'scalesPlus.styles.dorianFlat2' =>
+            'Jazz moderno, bandas sonoras, metal.',
+          'scalesPlus.styles.lydianAugmented' =>
+            'Jazz, fusión y pasajes etéreos.',
+          'scalesPlus.styles.lydianDominant' =>
+            'Jazz, fusión, bossa y funk (7#11).',
+          'scalesPlus.styles.mixolydianFlat6' =>
+            'Jazz, bandas sonoras y fusión.',
+          'scalesPlus.styles.locrianSharp2' =>
+            'Jazz sobre acordes m7b5 (el ii de los menores).',
+          'scalesPlus.styles.altered' =>
+            'Jazz: V7 alterado que resuelve a un acorde menor o mayor.',
+          'scalesPlus.styles.minorPentatonic' =>
+            'Rock, blues, metal, funk, cualquier solo.',
+          'scalesPlus.styles.majorPentatonic' =>
+            'Country, pop, soul, gospel, solos dulces.',
+          'scalesPlus.styles.blues' => 'Blues, rock, hard rock, funk.',
+          'scalesPlus.styles.majorBlues' =>
+            'Blues alegre, country, soul, rock sureño.',
+          'scalesPlus.styles.minorHexatonic' => 'Rock suave, fusión, neo-soul.',
+          'scalesPlus.styles.suspendedPentatonic' =>
+            'Pop, ambient, rock progresivo, música étnica.',
+          'scalesPlus.styles.wholeTone' =>
+            'Impresionismo, jazz (Monk), bandas sonoras oníricas.',
+          'scalesPlus.styles.diminishedWholeHalf' =>
+            'Jazz, música clásica, metal (acordes dim).',
+          'scalesPlus.styles.diminishedHalfWhole' =>
+            'Jazz sobre dominantes con b9, #9 y #11.',
+          'scalesPlus.styles.augmentedScale' =>
+            'Jazz moderno y fusión (Coltrane).',
+          'scalesPlus.styles.bebopDominant' =>
+            'Jazz bebop sobre acordes dominantes (7).',
+          'scalesPlus.styles.bebopMajor' =>
+            'Jazz bebop sobre acordes mayores (maj7, 6).',
+          'scalesPlus.styles.hungarianMinor' =>
+            'Música gitana, metal neoclásico, bandas sonoras.',
+          'scalesPlus.styles.doubleHarmonic' =>
+            'Música arábiga, flamenco, surf rock, metal.',
+          'scalesPlus.styles.hirajoshi' =>
+            'Música japonesa, metal, bandas sonoras.',
+          'scalesPlus.styles.neapolitanMinor' =>
+            'Música clásica, metal neoclásico.',
+          'scalesPlus.styles.persian' =>
+            'Música persa, árabe y metal oriental.',
+          'scalesPlus.groups.major' => 'Mayor y modos',
+          'scalesPlus.groups.minor' => 'Menores',
+          'scalesPlus.groups.pentatonic' => 'Pentatónicas y blues',
+          'scalesPlus.groups.exotic' => 'Exóticas y simétricas',
+          'scalesPlus.sections.majorModes' => 'Los siete modos de la mayor',
+          'scalesPlus.sections.minors' => 'Menor natural, armónica y melódica',
+          'scalesPlus.sections.harmonicModes' => 'Modos de la menor armónica',
+          'scalesPlus.sections.melodicModes' => 'Modos de la menor melódica',
+          'scalesPlus.sections.pentatonics' =>
+            'Pentatónicas, blues y hexatónicas',
+          'scalesPlus.sections.symmetric' => 'Simétricas y bebop',
+          'scalesPlus.sections.exotic' => 'Exóticas',
+          'scalesPlus.notesCount' => ({required Object n}) => '${n} notas',
+          'scalesPlus.formulaTitle' => 'Fórmula',
+          'scalesPlus.intervalsLine' => ({
+            required Object steps,
+          }) => 'Intervalos: ${steps}',
+          'scalesPlus.characterTitle' => 'Carácter',
+          'scalesPlus.stylesTitle' => 'Dónde se usa',
+          'scalesPlus.characteristicNote' => ({
+            required Object degree,
+          }) => 'Nota característica: ${degree}',
+          'scalesPlus.harmonyTitle' => 'Acordes de la escala',
+          'scalesPlus.triads' => 'Tríadas',
+          'scalesPlus.sevenths' => 'Séptimas',
+          'scalesPlus.noHarmony' => ({
+            required Object n,
+          }) => 'Con ${n} notas no forma acordes por terceras: úsala sobre un acorde fijo, como un color.',
+          'scalesPlus.positionsFive' => '5 cajas de dos notas por cuerda',
+          'scalesPlus.positionsSeven' =>
+            '7 posiciones de tres notas por cuerda',
+          'scalesPlus.positionsExtras' => ({
+            required Object n,
+          }) => '${n} cajas de su escala base más las notas de paso',
+          'scalesPlus.positionsWindow' => ({
+            required Object n,
+          }) => '${n} ventanas de trastes (escala simétrica)',
+          'scalesPlus.playUpDown' => 'Sube y baja',
+          'scalesPlus.chordScalesTitle' => 'Escala para improvisar',
+          'scalesPlus.chordScaleHint' => ({
+            required Object chord,
+            required Object scale,
+          }) => 'Sobre ${chord} suena bien: ${scale}',
+          'scalesPlus.chordScaleAlso' => ({
+            required Object scales,
+          }) => 'También: ${scales}',
+          'scalesPlus.openInExplorer' => 'Ver en el explorador',
           'logs.title' => 'Diagnóstico',
           'logs.clear' => 'Vaciar registro',
           'logs.total' => 'Total',
@@ -4802,9 +5725,6 @@ extension on Translations {
             required Object string,
             required Object fret,
           }) => 'Toca la ${string} en el traste ${fret}',
-          _ => null,
-        } ??
-        switch (path) {
           'minigames.prompt.echo' => 'Escucha y toca la melodía',
           'minigames.prompt.noteAtOpen' => ({
             required Object string,
@@ -5185,6 +6105,9 @@ extension on Translations {
           'chordGames.changes.playThis' => 'Toca este acorde',
           'chordGames.changes.clean' => 'Cambios limpios',
           'chordGames.changes.goal' => ({required Object n}) => 'Meta: ${n}',
+          _ => null,
+        } ??
+        switch (path) {
           'chordGames.changes.heard' => ({
             required Object count,
             required Object total,
@@ -5528,9 +6451,6 @@ extension on Translations {
           'theory.genreTip.latin' => 'En la cadencia andaluza, usa la menor armónica sobre el acorde V (Mi mayor en La menor).',
           'theory.genreTip.reggae' =>
             'Toca el skank en las tres cuerdas agudas y apágalo justo después.',
-          _ => null,
-        } ??
-        switch (path) {
           'theory.genreTip.bossa' =>
             'Practica el bajo con el pulgar solo antes de añadir los acordes.',
           'theory.genreTip.metal' => 'Afina el palm mute: la mano en el puente, ni muy encima ni muy fuera.',
@@ -5817,6 +6737,9 @@ extension on Translations {
                   one: '${n} día seguido tocando',
                   other: '${n} días seguidos tocando',
                 ),
+          _ => null,
+        } ??
+        switch (path) {
           'studio.streakZero' => 'Toca hoy para empezar tu racha',
           'studio.streakToday' => '¡Hoy ya practicaste!',
           'studio.recentTitle' => 'Acordes recientes',

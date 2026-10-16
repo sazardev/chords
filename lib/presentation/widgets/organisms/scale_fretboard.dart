@@ -1,6 +1,10 @@
+import 'dart:async' show unawaited;
 import 'dart:math' as math;
 
 import 'package:chords/domain/audio/services/fretboard.dart';
+import 'package:chords/domain/theory/services/scale_positions.dart'
+    show kScaleMaxFret;
+import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 
 /// Cómo se pinta una nota en el mástil.
@@ -37,13 +41,13 @@ class FretMark {
 /// Mástil horizontal con notas marcadas: la 1ª cuerda arriba, como en una
 /// tablatura. Se desplaza en horizontal si no cabe y, al tocar una nota,
 /// avisa con [onTap] para que suene.
-class ScaleFretboard extends StatelessWidget {
+class ScaleFretboard extends StatefulWidget {
   /// Crea el mástil.
   const ScaleFretboard({
     required this.marks,
     super.key,
     this.startFret = 0,
-    this.endFret = 15,
+    this.endFret = kScaleMaxFret,
     this.mirror = false,
     this.window,
     this.onTap,
@@ -76,38 +80,85 @@ class ScaleFretboard extends StatelessWidget {
   static const double _bottom = 26;
 
   @override
+  State<ScaleFretboard> createState() => _ScaleFretboardState();
+}
+
+class _ScaleFretboardState extends State<ScaleFretboard> {
+  final ScrollController _scroll = ScrollController();
+  double _viewport = 0;
+  double _fretWidth = 44;
+
+  @override
+  void didUpdateWidget(ScaleFretboard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.window != widget.window && widget.window != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _revealWindow());
+    }
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Desplaza el mástil para que la posición elegida quede a la vista.
+  void _revealWindow() {
+    final (int, int)? range = widget.window;
+    if (!mounted || range == null || !_scroll.hasClients) {
+      return;
+    }
+    final int columns = widget.endFret - widget.startFret + 1;
+    final double total = _fretWidth * columns;
+    final double left = (range.$1 - widget.startFret) * _fretWidth - 24;
+    final double target = widget.mirror ? total - _viewport - left : left;
+    unawaited(
+      _scroll.animateTo(
+        target.clamp(0, _scroll.position.maxScrollExtent),
+        duration: kMotionMedium,
+        curve: Curves.easeOutCubic,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (BuildContext context, BoxConstraints constraints) {
-      final int columns = endFret - startFret + 1;
+      final int columns = widget.endFret - widget.startFret + 1;
       final double fretWidth = math.max(44, constraints.maxWidth / columns);
+      _viewport = constraints.maxWidth;
+      _fretWidth = fretWidth;
       final Size size = Size(
         fretWidth * columns,
-        _top + _stringGap * 5 + _bottom,
+        ScaleFretboard._top +
+            ScaleFretboard._stringGap * 5 +
+            ScaleFretboard._bottom,
       );
       final Widget board = GestureDetector(
-        onTapUp: onTap == null
+        onTapUp: widget.onTap == null
             ? null
             : (TapUpDetails details) =>
                   _handleTap(details.localPosition, fretWidth, size.width),
         child: CustomPaint(
           size: size,
           painter: _FretboardPainter(
-            marks: marks,
-            startFret: startFret,
-            endFret: endFret,
+            marks: widget.marks,
+            startFret: widget.startFret,
+            endFret: widget.endFret,
             fretWidth: fretWidth,
-            mirror: mirror,
-            window: window,
+            mirror: widget.mirror,
+            window: widget.window,
             scheme: Theme.of(context).colorScheme,
             textStyle: Theme.of(context).textTheme.labelSmall!,
           ),
         ),
       );
       return Semantics(
-        label: semanticLabel,
+        label: widget.semanticLabel,
         child: SingleChildScrollView(
+          controller: _scroll,
           scrollDirection: Axis.horizontal,
-          reverse: mirror,
+          reverse: widget.mirror,
           child: board,
         ),
       );
@@ -115,11 +166,16 @@ class ScaleFretboard extends StatelessWidget {
   );
 
   void _handleTap(Offset local, double fretWidth, double width) {
-    final double x = mirror ? width - local.dx : local.dx;
-    final int fret = startFret + (x / fretWidth).floor();
-    final int string = ((local.dy - _top) / _stringGap).round() + 1;
-    if (string >= 1 && string <= 6 && fret >= startFret && fret <= endFret) {
-      onTap!(FretPosition(string, fret));
+    final double x = widget.mirror ? width - local.dx : local.dx;
+    final int fret = widget.startFret + (x / fretWidth).floor();
+    final int string =
+        ((local.dy - ScaleFretboard._top) / ScaleFretboard._stringGap).round() +
+        1;
+    if (string >= 1 &&
+        string <= 6 &&
+        fret >= widget.startFret &&
+        fret <= widget.endFret) {
+      widget.onTap!(FretPosition(string, fret));
     }
   }
 }

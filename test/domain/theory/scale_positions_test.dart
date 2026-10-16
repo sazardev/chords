@@ -28,21 +28,20 @@ void main() {
     expect(box.maxFret, 8);
   });
 
-  test('las pentatónicas tienen 5 cajas y las de 7 notas 7 posiciones', () {
+  test('cada escala reparte el mástil en cajas válidas', () {
     for (final ScaleType scale in ScaleType.values) {
       for (int tonic = 0; tonic < 12; tonic++) {
-        final List<ScalePosition> boxes = ScalePositions(
-          scale,
-          tonic,
-        ).positions();
-        expect(
-          boxes.length,
-          scale.length == 7 ? 7 : 5,
-          reason: '${scale.id} $tonic',
-        );
+        final ScalePositions map = ScalePositions(scale, tonic);
+        final List<ScalePosition> boxes = map.positions();
+        expect(boxes.length, map.positionCount, reason: '${scale.id} $tonic');
         for (final ScalePosition box in boxes) {
-          expect(box.minFret, greaterThanOrEqualTo(0));
-          expect(box.maxFret - box.minFret, lessThanOrEqualTo(6));
+          expect(box.minFret, greaterThanOrEqualTo(0), reason: scale.id);
+          expect(box.maxFret, lessThanOrEqualTo(kScaleMaxFret));
+          expect(
+            box.maxFret - box.minFret,
+            lessThanOrEqualTo(7),
+            reason: '${scale.id} $tonic ${box.number}',
+          );
           for (final FretPosition note in box.notes) {
             expect(
               scale.contains(tonic, note.pitchClass),
@@ -52,6 +51,38 @@ void main() {
           }
         }
       }
+    }
+  });
+
+  test('5 cajas en las pentatónicas y 7 posiciones en las de 7 notas', () {
+    for (final ScaleType scale in ScaleType.values) {
+      final int count = const ScalePositions(ScaleType.major, 0).positionCount;
+      expect(count, 7);
+      final int own = ScalePositions(scale, 0).positionCount;
+      if (scale.length == 5) {
+        expect(own, 5, reason: scale.id);
+      }
+      if (scale.length == 7) {
+        expect(own, 7, reason: scale.id);
+      }
+    }
+    expect(const ScalePositions(ScaleType.blues, 9).positionCount, 5);
+    expect(const ScalePositions(ScaleType.bebopDominant, 0).positionCount, 7);
+    expect(const ScalePositions(ScaleType.wholeTone, 0).positionCount, 6);
+    expect(
+      const ScalePositions(ScaleType.diminishedWholeHalf, 0).positionCount,
+      8,
+    );
+  });
+
+  test('las cajas de cada escala cubren todas sus notas del mástil', () {
+    for (final ScaleType scale in ScaleType.values) {
+      final ScalePositions map = ScalePositions(scale, 2);
+      final Set<int> covered = <int>{
+        for (final ScalePosition box in map.positions())
+          for (final FretPosition note in box.notes) note.pitchClass,
+      };
+      expect(covered, scale.pitchClasses(2).toSet(), reason: scale.id);
     }
   });
 

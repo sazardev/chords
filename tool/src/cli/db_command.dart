@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import '../chord_database_writer.dart';
+import '../chord_db_show.dart';
 import '../chord_db_validator.dart';
 import 'cli_command.dart';
 
@@ -12,7 +13,7 @@ const String defaultChordDbPath = 'assets/chords/chords_db.json';
 /// Instancia reutilizable del comando `dbCommand`.
 const DbCommand dbCommand = DbCommand();
 
-/// Comando `db`: genera y valida el banco de acordes.
+/// Comando `db`: genera, valida y muestra el banco de acordes.
 class DbCommand implements CliCommand {
   /// Crea el comando.
   const DbCommand();
@@ -21,7 +22,7 @@ class DbCommand implements CliCommand {
   String get name => 'db';
 
   @override
-  String get summary => 'Genera o valida el banco de acordes';
+  String get summary => 'Genera, valida o muestra el banco de acordes';
 
   @override
   void configure(ArgParser parser) {
@@ -33,6 +34,11 @@ class DbCommand implements CliCommand {
       )
       ..addCommand(
         'validate',
+        ArgParser()
+          ..addOption('path', abbr: 'p', defaultsTo: defaultChordDbPath),
+      )
+      ..addCommand(
+        'show',
         ArgParser()
           ..addOption('path', abbr: 'p', defaultsTo: defaultChordDbPath),
       );
@@ -48,6 +54,15 @@ class DbCommand implements CliCommand {
     }
     if (action == 'validate') {
       return _validate(_pathOf(subcommand!, defaultChordDbPath));
+    }
+    if (action == 'show') {
+      stdout.write(
+        describeChords(
+          _pathOf(subcommand!, defaultChordDbPath),
+          subcommand.rest,
+        ),
+      );
+      return 0;
     }
     return 2;
   }

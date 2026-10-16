@@ -1,46 +1,43 @@
 import 'package:chords/domain/chords/entities/barre_info.dart';
+import 'package:chords/domain/chords/entities/chord_quality.dart';
+import 'package:chords/domain/chords/entities/chord_root.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
-import 'package:chords/domain/chords/entities/difficulty.dart';
+import 'package:chords/domain/chords/entities/chord_variant_composer.dart';
 
 /// Modelo de serialización de una posición de acorde.
+///
+/// El banco solo guarda lo que no se puede deducir (identificador, trastes,
+/// dedos, dificultad y cejillo); el nombre, las notas y las etiquetas las
+/// compone `composeVariant`.
 class ChordVariantModel {
   /// Crea el modelo desde un mapa JSON.
   factory ChordVariantModel.fromJson(Map<String, Object?> json) {
     final Object? barre = json['barre'];
     return ChordVariantModel._(
       id: _string(json['id']),
-      positionLabel: _string(json['position']),
       frets: _intList(json['frets']),
       fingers: _intList(json['fingers']),
       difficultyLevel: _int(json['difficulty']),
-      barre: barre is Map<String, Object?> && barre.isNotEmpty
+      barre: barre is List<Object?> && barre.length == 3
           ? BarreInfo(
-              fret: _int(barre['fret']),
-              fromString: _int(barre['from']),
-              lastString: _int(barre['to']),
+              fret: _int(barre[0]),
+              fromString: _int(barre[1]),
+              lastString: _int(barre[2]),
             )
           : null,
-      notes: _stringList(json['notes']),
-      tags: _stringList(json['tags']),
     );
   }
 
   const ChordVariantModel._({
     required this.id,
-    required this.positionLabel,
     required this.frets,
     required this.fingers,
     required this.difficultyLevel,
     required this.barre,
-    required this.notes,
-    required this.tags,
   });
 
-  /// Identificador de la posición.
+  /// Identificador de la posición (sin el prefijo del acorde).
   final String id;
-
-  /// Etiqueta de posición.
-  final String positionLabel;
 
   /// Trastes por cuerda.
   final List<int> frets;
@@ -54,22 +51,22 @@ class ChordVariantModel {
   /// Información de cejillo si aplica.
   final BarreInfo? barre;
 
-  /// Notas contenidas.
-  final List<String> notes;
-
-  /// Etiquetas descriptivas.
-  final List<String> tags;
-
   /// Convierte el modelo a entidad de dominio.
-  ChordVariant toEntity() => ChordVariant(
+  ChordVariant toEntity({
+    required String chordId,
+    required ChordRoot root,
+    required ChordQuality quality,
+    required Map<String, String> shapeLabels,
+  }) => composeVariant(
+    chordId: chordId,
+    root: root,
+    quality: quality,
     id: id,
-    positionLabel: positionLabel,
     frets: frets,
     fingers: fingers,
-    difficulty: Difficulty.fromLevel(difficultyLevel) ?? Difficulty.medium,
+    difficulty: difficultyLevel,
     barre: barre,
-    notes: notes,
-    tags: tags,
+    shapeLabels: shapeLabels,
   );
 
   static String _string(Object? value) => value is String ? value : '';
@@ -78,8 +75,4 @@ class ChordVariantModel {
 
   static List<int> _intList(Object? value) =>
       value is List<Object?> ? value.whereType<int>().toList() : const <int>[];
-
-  static List<String> _stringList(Object? value) => value is List<Object?>
-      ? value.whereType<String>().toList()
-      : const <String>[];
 }

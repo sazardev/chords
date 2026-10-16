@@ -7,6 +7,8 @@ import 'package:chords/core/logging/log_channel.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_filters.dart';
 import 'package:chords/domain/chords/repositories/chord_repository.dart';
+import 'package:chords/domain/chords/services/chord_query.dart';
+import 'package:chords/domain/chords/services/chord_sorter.dart';
 import 'package:chords/domain/chords/usecases/search_chords_use_case.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -41,6 +43,8 @@ class ChordsController extends ChangeNotifier {
   ChordsStatus _status = ChordsStatus.loading;
   List<Chord> _visible = const <Chord>[];
   ChordFilters _lastFilters = const ChordFilters.empty();
+  ChordSort _lastSort = ChordSort.essentials;
+  static const ChordSorter _sorter = ChordSorter();
   Timer? _searchDebounce;
 
   /// Estado de carga.
@@ -75,9 +79,18 @@ class ChordsController extends ChangeNotifier {
   void _onFiltersChanged() => _applyFilters();
 
   void _applyFilters() {
-    _visible = _repository.essentialFirst(
-      _searchChords(_repository.chords, _filters.filters),
+    final ChordQuery query = ChordQuery.parse(_filters.filters.query);
+    final List<Chord> found = _searchChords(
+      _repository.chords,
+      _filters.filters,
     );
+    _visible = query.isEmpty
+        ? _sorter.sort(found, _filters.sort)
+        : _sorter.sortRanked(
+            found,
+            _filters.sort,
+            (Chord chord) => query.relevance(chord) ?? 3,
+          );
     _trackFilters();
     notifyListeners();
   }
@@ -85,6 +98,14 @@ class ChordsController extends ChangeNotifier {
   void _trackFilters() {
     final ChordFilters current = _filters.filters;
     final ChordFilters previous = _lastFilters;
+    if (_filters.sort != _lastSort) {
+      _lastSort = _filters.sort;
+      analytics.filterChanged(
+        filter: 'sort',
+        value: _lastSort.name,
+        results: _visible.length,
+      );
+    }
     if (current == previous) {
       return;
     }

@@ -3,11 +3,15 @@ import 'dart:async' show unawaited;
 import 'package:chords/config/route_paths.dart';
 import 'package:chords/domain/chords/entities/arpeggio_pattern.dart';
 import 'package:chords/domain/chords/entities/chord.dart';
-import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/profile/entities/playing_style.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_detail_controller.dart';
+import 'package:chords/presentation/features/chords/chord_detail_extras.dart';
+import 'package:chords/presentation/features/chords/chord_notes_section.dart';
 import 'package:chords/presentation/features/chords/chord_position_guide.dart';
+import 'package:chords/presentation/features/chords/chord_relatives_section.dart';
+import 'package:chords/presentation/features/chords/chord_usage_section.dart';
+import 'package:chords/presentation/features/chords/chord_variants_section.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/studio/studio_progress_controller.dart';
@@ -16,10 +20,8 @@ import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
-import 'package:chords/presentation/widgets/atoms/chord_play_button.dart';
 import 'package:chords/presentation/widgets/atoms/difficulty_badge.dart';
 import 'package:chords/presentation/widgets/atoms/section_header.dart';
-import 'package:chords/presentation/widgets/organisms/chord_diagram.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -151,7 +153,8 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
 
   Widget _chordBody(ChordDetailController controller, bool mirror) {
     final Translations t = context.t;
-    final ThemeData theme = Theme.of(context);
+    final Chord chord = controller.chord!;
+    final ChordDetailExtras? extras = controller.extras;
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
       children: <Widget>[
@@ -169,11 +172,18 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: ChordPositionGuide(variant: controller.selectedVariant!),
         ),
+        if (extras != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: ChordNotesSection(chord: chord, insights: extras.insights),
+          ),
         SectionHeader(title: t.chordDetail.arpeggios),
         _ArpeggioRow(controller: controller),
-        SectionHeader(title: t.chordDetail.positions),
-        for (int i = 0; i < controller.chord!.variants.length; i++)
-          _variantTile(controller, i, theme),
+        if (extras != null) ...<Widget>[
+          ChordVariantsSection(controller: controller, extras: extras),
+          ChordRelativesSection(chord: chord, insights: extras.insights),
+          ChordUsageSection(chord: chord, insights: extras.insights),
+        ],
       ],
     );
   }
@@ -183,52 +193,6 @@ class _ChordDetailPageState extends State<ChordDetailPage> {
     final String id = Uri.encodeComponent(controller.chord!.id);
     await context.push(
       '$kChordPracticePath?id=$id&v=${controller.selectedIndex}',
-    );
-  }
-
-  Widget _variantTile(
-    ChordDetailController controller,
-    int index,
-    ThemeData theme,
-  ) {
-    final Translations t = context.t;
-    final ChordVariant variant = controller.chord!.variants[index];
-    final bool selected = index == controller.selectedIndex;
-    return ListTile(
-      selected: selected,
-      leading: ChordDiagram(
-        variant: variant,
-        showFingers: false,
-        width: 44,
-        height: 56,
-      ),
-      title: Text(variant.positionLabel),
-      subtitle: Text(
-        index == 0
-            ? '${t.chordDetail.recommended} · '
-                  '${t.chordDetail.notes(notes: variant.notes.join(' · '))}'
-            : t.chordDetail.notes(notes: variant.notes.join(' · ')),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          DifficultyBadge(difficulty: variant.difficulty, compact: true),
-          const SizedBox(width: 8),
-          ChordPlayButton(
-            size: 36,
-            tooltip: t.chordDetail.listenPosition(
-              position: variant.positionLabel,
-            ),
-            onPressed: () {
-              controller.selectVariant(index);
-              unawaited(controller.playSelected());
-            },
-          ),
-        ],
-      ),
-      onTap: () => controller.selectVariant(index),
-      tileColor: selected ? theme.colorScheme.surfaceContainerHigh : null,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     );
   }
 }
@@ -249,7 +213,7 @@ class _ChordSummary extends StatelessWidget {
         children: <Widget>[
           AppText(chord.name, variant: AppTextVariant.displayLarge),
           AppText(
-            chord.displayName,
+            chordDisplayName(t, chord),
             variant: AppTextVariant.bodyLarge,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -318,7 +282,8 @@ class _ArpeggioRow extends StatelessWidget {
                   level: pattern.difficulty,
                 ),
               ),
-              onPressed: () => unawaited(controller.playArpeggio(pattern)),
+              onPressed: () =>
+                  unawaited(controller.playSelected(arpeggio: pattern)),
             ),
             const SizedBox(width: 8),
           ],

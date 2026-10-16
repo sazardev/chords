@@ -1,17 +1,23 @@
 import 'dart:async' show unawaited;
 
 import 'package:chords/config/route_paths.dart';
+import 'package:chords/domain/chords/entities/chord.dart';
 import 'package:chords/domain/chords/entities/chord_filters.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 import 'package:chords/domain/chords/entities/chord_root.dart';
+import 'package:chords/domain/chords/services/chord_sorter.dart';
 import 'package:chords/domain/profile/entities/player_profile.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/chords/chord_filter_controller.dart';
 import 'package:chords/presentation/features/chords/chord_filters_sheet.dart';
+import 'package:chords/presentation/features/chords/chord_quick_pick_sheet.dart';
+import 'package:chords/presentation/features/chords/chord_sort_button.dart';
 import 'package:chords/presentation/features/chords/chords_controller.dart';
 import 'package:chords/presentation/features/profile/profile_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/features/studio/history_page.dart';
+import 'package:chords/presentation/l10n/chord_labels.dart';
+import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/theme/app_motion.dart';
 import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_loading.dart';
@@ -90,22 +96,8 @@ class _ChordsPageState extends State<ChordsPage> {
     final bool mirror = context.select<SettingsController, bool>(
       (SettingsController settings) => settings.mirrorChords,
     );
-    final int advanced = _advancedFilterCount(filters.filters);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.chords.title),
-        actions: <Widget>[
-          IconButton(
-            tooltip: t.chords.filters,
-            icon: Badge(
-              isLabelVisible: advanced > 0,
-              label: Text('$advanced'),
-              child: const Icon(Icons.tune_rounded),
-            ),
-            onPressed: () => unawaited(showChordFiltersSheet(context)),
-          ),
-        ],
-      ),
+      appBar: _appBar(t, filters),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -118,6 +110,7 @@ class _ChordsPageState extends State<ChordsPage> {
                 onChanged: filters.setQuery,
               ),
             ),
+            _ActiveSelection(filters: filters),
             const RecentChordsRow(),
             const SizedBox(height: 4),
             GenreFilterRow(
@@ -140,6 +133,31 @@ class _ChordsPageState extends State<ChordsPage> {
     );
   }
 
+  /// Barra superior: filtros avanzados, orden y selector rápido.
+  PreferredSizeWidget _appBar(Translations t, ChordFilterController filters) {
+    final int advanced = _advancedFilterCount(filters.filters);
+    return AppBar(
+      title: Text(t.chords.title),
+      actions: <Widget>[
+        IconButton(
+          tooltip: t.chords.filters,
+          icon: Badge(
+            isLabelVisible: advanced > 0,
+            label: Text('$advanced'),
+            child: const Icon(Icons.tune_rounded),
+          ),
+          onPressed: () => unawaited(showChordFiltersSheet(context)),
+        ),
+        ChordSortButton(selected: filters.sort, onSelected: filters.setSort),
+        IconButton(
+          tooltip: t.chordTheory.pickChord,
+          icon: const Icon(Icons.apps_rounded),
+          onPressed: () => unawaited(showChordQuickPickSheet(context)),
+        ),
+      ],
+    );
+  }
+
   /// Número de filtros avanzados activos (los que viven en la hoja).
   int _advancedFilterCount(ChordFilters filters) =>
       (filters.level != null ? 1 : 0) +
@@ -154,6 +172,14 @@ class _ChordsPageState extends State<ChordsPage> {
     ),
   ];
 
+  /// Título de grupo según el orden: por nota o por tipo; sin grupos si no.
+  String Function(Chord)? _groupLabelOf(Translations t, ChordSort sort) =>
+      switch (sort) {
+        ChordSort.root => (Chord c) => noteLabel(t, c.root.pitchClass),
+        ChordSort.quality => (Chord c) => qualityLabel(t, c.quality),
+        _ => null,
+      };
+
   Widget _body(ChordsController controller, bool mirror) {
     final Translations t = context.t;
     return switch (controller.status) {
@@ -166,11 +192,15 @@ class _ChordsPageState extends State<ChordsPage> {
       ChordsStatus.ready when controller.visibleChords.isEmpty => AppEmptyState(
         icon: Icons.search_off_rounded,
         title: t.chords.emptyTitle,
-        message: t.chords.emptyMessage,
+        message: '${t.chords.emptyMessage}\n${t.chordTheory.searchTip}',
       ),
       ChordsStatus.ready => ChordGrid(
         chords: controller.visibleChords,
         mirror: mirror,
+        groupLabelOf: _groupLabelOf(
+          t,
+          context.read<ChordFilterController>().sort,
+        ),
         onSelect: (String id) =>
             context.push('$kChordDetailPath?id=${Uri.encodeComponent(id)}'),
         onPlay: (String id) =>
@@ -233,6 +263,41 @@ class _ResultsBar extends StatelessWidget {
               label: Text(t.chords.clearFilters),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Nota y tipo elegidos en el selector rápido, con una cruz para quitarlos.
+class _ActiveSelection extends StatelessWidget {
+  const _ActiveSelection({required this.filters});
+
+  final ChordFilterController filters;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    final ChordRoot? root = filters.filters.root;
+    final ChordQuality? quality = filters.filters.quality;
+    if (root == null && quality == null) {
+      return const SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+      child: Wrap(
+        spacing: 8,
+        children: <Widget>[
+          if (root != null)
+            InputChip(
+              label: Text(noteLabel(t, root.pitchClass)),
+              onDeleted: () => filters.selectRoot(null),
+            ),
+          if (quality != null)
+            InputChip(
+              label: Text(qualityLabel(t, quality)),
+              onDeleted: () => filters.selectQuality(null),
+            ),
         ],
       ),
     );

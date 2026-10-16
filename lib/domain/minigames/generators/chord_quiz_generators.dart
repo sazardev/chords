@@ -10,6 +10,11 @@ import 'package:chords/domain/minigames/entities/sound_cue.dart';
 import 'package:chords/domain/minigames/generators/quiz_generator.dart';
 import 'package:chords/domain/minigames/services/chord_tones.dart';
 
+/// Uso mínimo de la calidad de un acorde para que salga en los juegos: con
+/// tantas calidades en el banco, los acordes raros (7#9, maj7#11…) no se
+/// preguntan.
+const int kMinGameQualityPopularity = 4;
+
 /// Acordes asequibles para el nivel: dificultad 1, hasta 2 o hasta 3.
 List<Chord> chordPoolFor(ChordRepository repository, MiniGameLevel level) {
   final int maxDifficulty = switch (level) {
@@ -18,7 +23,11 @@ List<Chord> chordPoolFor(ChordRepository repository, MiniGameLevel level) {
     MiniGameLevel.hard => 3,
   };
   final List<Chord> pool = repository.chords
-      .where((Chord chord) => chord.difficulty.level <= maxDifficulty)
+      .where(
+        (Chord chord) =>
+            chord.difficulty.level <= maxDifficulty &&
+            chord.quality.popularity >= kMinGameQualityPopularity,
+      )
       .toList();
   return pool.length >= 3 ? pool : repository.chords;
 }

@@ -1,5 +1,6 @@
 import 'package:chords/domain/chords/entities/barre_info.dart';
 import 'package:chords/domain/chords/entities/difficulty.dart';
+import 'package:chords/domain/chords/entities/variant_identity.dart';
 import 'package:meta/meta.dart';
 
 /// Posición concreta (voicing) de un acorde en el mástil.
@@ -15,6 +16,7 @@ class ChordVariant {
     this.barre,
     this.notes = const <String>[],
     this.tags = const <String>[],
+    this.kind = VariantKind.shape,
   });
 
   /// Identificador estable de la posición.
@@ -42,6 +44,12 @@ class ChordVariant {
 
   /// Etiquetas descriptivas (`open`, `barre`, `triad`, ...).
   final List<String> tags;
+
+  /// Cómo se construyó: forma del catálogo o voicing buscado.
+  final VariantKind kind;
+
+  /// `true` si es una forma del catálogo (CAGED, abierta o movible).
+  bool get isShape => kind == VariantKind.shape;
 
   /// Traste más grave pulsado (excluyendo cuerdas al aire).
   int get baseFret {

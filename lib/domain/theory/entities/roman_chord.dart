@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord_quality.dart';
+import 'package:chords/domain/theory/entities/chord_suffixes.dart';
 import 'package:chords/domain/theory/entities/chord_symbol.dart';
 import 'package:meta/meta.dart';
 
@@ -80,7 +81,7 @@ class RomanChord {
     'sus4' => ChordQuality.suspendedFourth,
     'sus2' => ChordQuality.suspendedSecond,
     '9' => ChordQuality.ninth,
-    _ => null,
+    _ => qualityOfSuffix(suffix),
   };
 
   /// La cifra concreta en la tonalidad de [tonic] (0 = Do).

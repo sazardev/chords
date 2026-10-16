@@ -1,4 +1,5 @@
 import 'package:chords/domain/audio/services/fretboard.dart';
+import 'package:chords/domain/theory/entities/scale_accents.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/domain/theory/services/scale_positions.dart';
 import 'package:chords/l10n/translations.g.dart';
@@ -47,21 +48,10 @@ FretMarkStyle _style(
     return FretMarkStyle.root;
   }
   final int interval = (note.pitchClass - tonic) % 12;
-  return _accentOf(scale) == interval
+  return kScaleAccents[scale] == interval
       ? FretMarkStyle.accent
       : FretMarkStyle.scale;
 }
-
-/// Intervalo de la nota característica de la escala, si la tiene.
-int? _accentOf(ScaleType scale) => switch (scale) {
-  ScaleType.blues => 6,
-  ScaleType.dorian => 9,
-  ScaleType.phrygian => 1,
-  ScaleType.lydian => 6,
-  ScaleType.mixolydian => 10,
-  ScaleType.harmonicMinor => 11,
-  _ => null,
-};
 
 /// Tramo de trastes de una posición (para resaltarla); `null` si es todo.
 (int, int)? positionWindow(ScaleType scale, int tonic, int position) {

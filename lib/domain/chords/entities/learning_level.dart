@@ -1,4 +1,5 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_family.dart';
 import 'package:chords/domain/chords/entities/chord_quality.dart';
 
 /// Nivel de aprendizaje de un acorde.
@@ -16,11 +17,11 @@ enum LearningLevel {
   /// Formas con cejilla completo.
   third(3, 'Cejilla', 'Formas movibles completas', '💪'),
 
-  /// Color: m7, maj7, sus2, sus4 y 6.
-  fourth(4, 'Color y suspensión', 'm7, maj7, sus2, sus4, 6', '🎨'),
+  /// Color: m7, maj7, sus, sextas y añadidos.
+  fourth(4, 'Color y suspensión', 'm7, maj7, sus2, sus4, 6, add9', '🎨'),
 
-  /// Jazz: 9, dim, aug y posiciones altas.
-  fifth(5, 'Jazz y voicings', '9, dim, aug y voicings avanzados', '🎷');
+  /// Jazz: novenas, extendidos, alterados, dim y aug.
+  fifth(5, 'Jazz y voicings', '9, 13, dim, aug y voicings avanzados', '🎷');
 
   /// Crea el nivel.
   const LearningLevel(this.level, this.title, this.goal, this.emoji);
@@ -37,7 +38,7 @@ enum LearningLevel {
     if (level <= 2 && _isEasy(quality)) {
       return LearningLevel.second;
     }
-    if (level == 3) {
+    if (level == 3 && _isCommon(quality)) {
       return LearningLevel.third;
     }
     return _isColor(quality) ? LearningLevel.fourth : LearningLevel.fifth;
@@ -46,17 +47,30 @@ enum LearningLevel {
   static bool _isBasic(ChordQuality quality) =>
       quality == ChordQuality.major || quality == ChordQuality.minor;
 
-  static bool _isEasy(ChordQuality quality) =>
-      quality == ChordQuality.seven || quality == ChordQuality.power;
+  /// Calidades de uso corriente: las extendidas y las alteradas, aunque se
+  /// toquen con un cejillo, son ya de jazz.
+  static bool _isCommon(ChordQuality quality) =>
+      quality.popularity >= 3 &&
+      quality.family != ChordFamily.extended &&
+      quality.family != ChordFamily.altered;
 
-  static bool _isColor(ChordQuality quality) => switch (quality) {
-    ChordQuality.minorSeven ||
-    ChordQuality.majorSeven ||
-    ChordQuality.suspendedSecond ||
-    ChordQuality.suspendedFourth ||
-    ChordQuality.sixth => true,
-    _ => false,
-  };
+  /// Triadas de siempre (con mini cejilla incluida), séptimas y quintas.
+  static bool _isEasy(ChordQuality quality) =>
+      _isBasic(quality) ||
+      quality == ChordQuality.seven ||
+      quality == ChordQuality.power;
+
+  /// Calidades de "color" que se aprenden antes de las de jazz: séptimas
+  /// habituales, sextas, suspendidas y añadidas de uso corriente.
+  static bool _isColor(ChordQuality quality) =>
+      quality.popularity >= 3 &&
+      switch (quality.family) {
+        ChordFamily.sixth || ChordFamily.suspendedAdded => true,
+        ChordFamily.seventh =>
+          quality == ChordQuality.minorSeven ||
+              quality == ChordQuality.majorSeven,
+        _ => false,
+      };
 
   /// Número de nivel (1-5).
   final int level;
