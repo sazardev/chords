@@ -4,6 +4,7 @@ import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/entities/sound_cue.dart';
+import 'package:chords/domain/minigames/generators/ear_progression_pool.dart';
 import 'package:chords/domain/minigames/generators/theory_ear_generators.dart';
 import 'package:chords/domain/minigames/generators/theory_quiz_generators.dart';
 import 'package:chords/domain/theory/entities/chord_symbol.dart';
@@ -109,8 +110,11 @@ void main() {
       MiniGameKind.progressionEar,
       (MiniGameLevel l) => generator.generate(random, l, 0),
       (QuizQuestion q) {
-        expect(q.cues.length, 4);
-        expect(kEarProgressions, contains(q.correctChoice.value));
+        expect(q.cues.length, q.correctChoice.value.split(' ').length);
+        expect(<String>[
+          ...kEarProgressions,
+          ...catalogEarProgressions(),
+        ], contains(q.correctChoice.value));
         for (final SoundCue cue in q.cues) {
           expect(bank.chordById((cue as ChordCue).chordId), isNotNull);
         }

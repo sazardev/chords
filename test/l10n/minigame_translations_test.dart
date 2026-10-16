@@ -1,6 +1,7 @@
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Los textos de los minijuegos están completos en todos los idiomas.
@@ -10,9 +11,9 @@ void main() {
 
     test('${locale.languageCode}: cada juego tiene título, resumen y guía', () {
       for (final MiniGameKind kind in MiniGameKind.values) {
-        expect(t.minigames.titles[kind.id], isNotEmpty, reason: kind.id);
-        expect(t.minigames.descriptions[kind.id], isNotEmpty, reason: kind.id);
-        expect(t.minigames.howTo[kind.id], isNotEmpty, reason: kind.id);
+        expect(gameTitle(t, kind), isNot(kind.id), reason: kind.id);
+        expect(gameDescription(t, kind), isNotEmpty, reason: kind.id);
+        expect(gameHowTo(t, kind), isNotEmpty, reason: kind.id);
       }
     });
 

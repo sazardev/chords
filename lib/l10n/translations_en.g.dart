@@ -104,6 +104,9 @@ class TranslationsEn extends Translations
     _root,
   );
   @override
+  late final Translations$chordGames$en chordGames =
+      Translations$chordGames$en._(_root);
+  @override
   late final Translations$guitar$en guitar = Translations$guitar$en._(_root);
   @override
   late final Translations$theory$en theory = Translations$theory$en._(_root);
@@ -196,7 +199,7 @@ class Translations$home$en extends Translations$home$es {
   String get gameMode => 'Mini-games';
   @override
   String gameSubtitle({required Object count}) =>
-      '${count} games for ear, fretboard and fingers';
+      '${count} games for ear, fretboard, chords and harmony';
   @override
   String get liveTitle => 'Tuner and listening';
   @override
@@ -1350,6 +1353,132 @@ class Translations$minigames$en extends Translations$minigames$es {
   @override
   String get theorySubtitle =>
       'Scales, keys, degrees and progressions: understand what you play.';
+}
+
+// Path: chordGames
+class Translations$chordGames$en extends Translations$chordGames$es {
+  Translations$chordGames$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get chordsTitle => 'Chords and variants';
+  @override
+  String get chordsSubtitle =>
+      'Notes, formulas, diagrams, CAGED shapes and timed challenges';
+  @override
+  String get harmonyTitle => 'Progressions and harmony';
+  @override
+  String get harmonySubtitle => 'Degrees, transposing, relatives and styles';
+  @override
+  String get newBadge => 'New';
+  @override
+  String get searchHint => 'Search games';
+  @override
+  String get filterAll => 'All';
+  @override
+  String get filterNew => 'New';
+  @override
+  String get filterLabel => 'Filter by family';
+  @override
+  String get noResultsTitle => 'No game matches';
+  @override
+  String get noResultsBody => 'Try another word or remove the filter.';
+  @override
+  String get clearSearch => 'Clear the search';
+  @override
+  String gamesCount({required num n}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+        n,
+        one: '${n} game',
+        other: '${n} games',
+      );
+  @override
+  String get timeUp => 'Time is up!';
+  @override
+  String timeLeft({required Object n}) => '${n} s';
+  @override
+  String speedBonus({required Object n}) => 'Speed: +${n} points';
+  @override
+  String perQuestion({required Object n}) => 'Time per question: ${n} s';
+  @override
+  String changesGoal({required Object goal, required Object seconds}) =>
+      'Goal: ${goal} clean changes in ${seconds} s';
+  @override
+  Map<String, String> get titles => {
+    'spellChord': 'Spell the chord',
+    'chordFormula': 'Chord formula',
+    'chordVariantEar': 'Which variant is it?',
+    'chordMemory': 'Chord memory',
+    'rootAndBass': 'Root and bass',
+    'inversion': 'Inversions',
+    'wrongDiagram': 'Wrong diagram',
+    'cagedShape': 'CAGED shapes',
+    'rushOpen': 'Rush: open chords',
+    'rushBarre': 'Rush: barre chords',
+    'rushSeventh': 'Rush: seventh chords',
+    'fillProgression': 'Complete the progression',
+    'romanDegree': 'Roman numerals',
+    'transposeChord': 'Transpose',
+    'chordNeighbors': 'Relatives and fifths',
+    'styleDuel': 'Style duel',
+    'chordChanges': 'Chord changes',
+  };
+  @override
+  Map<String, String> get descriptions => {
+    'spellChord': 'Which notes make up each chord?',
+    'chordFormula': 'From the chord to its 1-3-5… formula and back',
+    'chordVariantEar': 'Hear maj7, 7, 6, sus… and tell the variant',
+    'chordMemory': 'Repeat the chords you hear in order',
+    'rootAndBass': 'Where the root is and which note is in the bass',
+    'inversion': 'Root position, 1st or 2nd inversion',
+    'wrongDiagram': 'Find the diagram with a mistake',
+    'cagedShape': 'Tell C, A, G, E, D and where the barre goes',
+    'rushOpen': 'Name open chords against the clock',
+    'rushBarre': 'Name barre chords against the clock',
+    'rushSeventh': 'Sevenths and extended chords against the clock',
+    'fillProgression': 'Find the missing chord',
+    'romanDegree': 'From the IV to the chord and back',
+    'transposeChord': 'Move up in semitones and play with a capo',
+    'chordNeighbors': 'Relative, dominant, subdominant and fifths',
+    'styleDuel': 'Which genre is it? Progression and strumming',
+    'chordChanges': 'Clean changes in 60 seconds',
+  };
+  @override
+  Map<String, String> get howTo => {
+    'spellChord': 'You will see a chord name. On easy and medium pick the group of notes that makes it up: C6 and A minor 7 share notes, so watch the root. On hard, play the notes of the chord from the root up.',
+    'chordFormula': 'Every chord is built with intervals from its root: 1-3-5 is major, 1-♭3-5 minor, 1-3-5-♭7 dominant seventh… Go from the chord to its formula or from the formula to the chord name.',
+    'chordVariantEar': 'You will hear a chord and be told its root. Tell which variant it is: major, minor, 7, maj7, 6, sus… The higher the level, the more look-alike variants there are.',
+    'chordMemory': 'You will hear a series of chords. Tap the chords in the same order they played. Each level adds more chords and more options.',
+    'rootAndBass': 'You will see the diagram of a position. Sometimes you must say which string holds the lowest root and other times which note is in the bass, the lowest string that sounds.',
+    'inversion': 'A chord is in root position when the root is in the bass; with the third in the bass it is the 1st inversion and with the fifth, the 2nd. On hard you only hear it: listen to the bass.',
+    'wrongDiagram': 'You will see several diagrams of the same chord and one has a mistake: a note that is not in the chord, a string that should be muted or an essential note that is missing. Find it.',
+    'cagedShape': 'Barre chords move along the neck with five shapes: C, A, G, E and D. Recognise the shape of a diagram or say which fret the barre goes on to play a chord with a given shape.',
+    'rushOpen': 'A race against the clock: the diagram of an open chord appears and you have a few seconds to name it. The faster you answer, the more points.',
+    'rushBarre': 'A race against the clock: the diagram of a barre chord appears and you have a few seconds to name it. The faster you answer, the more points.',
+    'rushSeventh': 'A race against the clock: the diagram of a seventh or extended chord appears and you have a few seconds to say which one it is. The faster you answer, the more points.',
+    'fillProgression': 'You will see a famous progression with one hidden chord (?). Pick the missing one; on hard, pick its Roman numeral. On easy and medium you can hear the rest of the progression.',
+    'romanDegree': 'Roman numerals name the chords of a key: in G major the IV is C and the V7 is D7. Go from the numeral to the chord and back; on hard there are sevenths and borrowed chords such as the ♭VII.',
+    'transposeChord': 'Transposing means moving a chord up or down. With a capo on fret N, the shape you play sounds N semitones higher. Solve moves up, down and capo questions.',
+    'chordNeighbors': 'Every chord has neighbours: its relative (shares the scale notes), its dominant (V), its subdominant (IV) and the ones next to it on the circle of fifths. Find the one you are asked for.',
+    'styleDuel': 'You will hear the first bars of a progression with its strumming. From the chords and the rhythm, say the genre: pop, rock, blues, reggae…',
+    'chordChanges': 'We ask for chords one after another: play it and change as soon as you can. Every clean change counts; you have 60 seconds and the goal number of changes gives three stars.',
+  };
+  @override
+  late final Translations$chordGames$prompt$en prompt =
+      Translations$chordGames$prompt$en._(_root);
+  @override
+  late final Translations$chordGames$choice$en choice =
+      Translations$chordGames$choice$en._(_root);
+  @override
+  late final Translations$chordGames$explain$en explain =
+      Translations$chordGames$explain$en._(_root);
+  @override
+  late final Translations$chordGames$changes$en changes =
+      Translations$chordGames$changes$en._(_root);
 }
 
 // Path: guitar
@@ -2783,6 +2912,207 @@ class Translations$minigames$choice$en
   String get sharp => 'Sharp (higher)';
 }
 
+// Path: chordGames.prompt
+class Translations$chordGames$prompt$en
+    extends Translations$chordGames$prompt$es {
+  Translations$chordGames$prompt$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String spellSet({required Object chord}) => 'Which notes make up ${chord}?';
+  @override
+  String spellOrder({required Object chord}) =>
+      'Play the notes of ${chord}, from the root up';
+  @override
+  String formulaTo({required Object chord}) =>
+      'What is the formula of ${chord}?';
+  @override
+  String formulaName({required Object note, required Object formula}) =>
+      'Which chord on root ${note} has the formula ${formula}?';
+  @override
+  String variantEar({required Object note}) =>
+      'A chord on root ${note} is playing. Which variant is it?';
+  @override
+  String get chordMemory => 'Listen and repeat the chords in the same order';
+  @override
+  String rootString({required Object chord}) =>
+      'Which string holds the lowest root of this ${chord}?';
+  @override
+  String bassNote({required Object chord}) =>
+      'Which note is in the bass (the lowest sounding string) of this ${chord}?';
+  @override
+  String inversionDiagram({required Object chord}) =>
+      'Which inversion is this ${chord} in?';
+  @override
+  String inversionEar({required Object chord}) =>
+      'Listen to this ${chord}. Which inversion is playing?';
+  @override
+  String wrongDiagram({required Object chord}) =>
+      'One of these ${chord} diagrams has a mistake. Which one?';
+  @override
+  String cagedShape({required Object chord}) =>
+      'Which CAGED shape is this ${chord}?';
+  @override
+  String cagedBarre({required Object chord, required Object shape}) =>
+      'To play ${chord} with the ${shape} shape, which fret does the barre go on?';
+  @override
+  String get rush => 'Which chord is this?';
+  @override
+  String fillChord({required Object genre, required Object key}) =>
+      'Complete the ${genre} progression in ${key}: which chord is missing?';
+  @override
+  String fillRoman({required Object genre, required Object key}) =>
+      'Complete the ${genre} progression in ${key}: which degree is missing?';
+  @override
+  String romanToChord({required Object key, required Object roman}) =>
+      'In ${key}, which chord is the ${roman}?';
+  @override
+  String romanToRoman({required Object key, required Object chord}) =>
+      'In ${key}, which degree is ${chord}?';
+  @override
+  String transposeUp({required num n, required Object chord}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+        n,
+        one: 'Move ${chord} up one semitone. Which chord do you get?',
+        other: 'Move ${chord} up ${n} semitones. Which chord do you get?',
+      );
+  @override
+  String transposeDown({required num n, required Object chord}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+        n,
+        one: 'Move ${chord} down one semitone. Which chord do you get?',
+        other: 'Move ${chord} down ${n} semitones. Which chord do you get?',
+      );
+  @override
+  String capoSounds({required Object n, required Object chord}) =>
+      'With a capo on fret ${n} you play the ${chord} shape. Which chord sounds?';
+  @override
+  String capoShape({required Object n, required Object chord}) =>
+      'With a capo on fret ${n} you want ${chord} to sound. Which shape do you play?';
+  @override
+  String relativeMinor({required Object chord}) =>
+      'What is the relative minor of ${chord}?';
+  @override
+  String relativeMajor({required Object chord}) =>
+      'What is the relative major of ${chord}?';
+  @override
+  String dominant({required Object chord}) =>
+      'What is the dominant (V) of ${chord}?';
+  @override
+  String subdominant({required Object chord}) =>
+      'What is the subdominant (IV) of ${chord}?';
+  @override
+  String fifthUp({required Object chord}) =>
+      'On the circle of fifths, which chord is a fifth above ${chord}?';
+  @override
+  String fifthDown({required Object chord}) =>
+      'On the circle of fifths, which chord is a fifth below ${chord}?';
+  @override
+  String parallel({required Object chord}) =>
+      'What is the parallel chord of ${chord} (same note, other mode)?';
+  @override
+  String tritone({required Object chord}) =>
+      'What is the tritone substitution of ${chord}?';
+  @override
+  String get styleDuel =>
+      'Listen to the progression and the strumming. Which genre is it?';
+}
+
+// Path: chordGames.choice
+class Translations$chordGames$choice$en
+    extends Translations$chordGames$choice$es {
+  Translations$chordGames$choice$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get inversionRoot => 'Root position';
+  @override
+  String get inversionFirst => '1st inversion';
+  @override
+  String get inversionSecond => '2nd inversion';
+  @override
+  String get inversionThird => '3rd inversion';
+  @override
+  String diagram({required Object n}) => 'Diagram ${n}';
+}
+
+// Path: chordGames.explain
+class Translations$chordGames$explain$en
+    extends Translations$chordGames$explain$es {
+  Translations$chordGames$explain$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String alienNote({
+    required Object string,
+    required Object note,
+    required Object chord,
+  }) => 'On the ${string} you hear ${note}, which is not a note of ${chord}.';
+  @override
+  String unmutedString({
+    required Object string,
+    required Object note,
+    required Object chord,
+  }) =>
+      'The ${string} should be muted: open it sounds ${note}, which is not in ${chord}.';
+  @override
+  String missingNote({required Object note, required Object chord}) =>
+      '${note} is missing, one of the notes that define ${chord}.';
+  @override
+  String styleDuel({required Object genre}) => 'It was ${genre}.';
+  @override
+  String shape({required Object shape}) => 'It is the ${shape} shape.';
+}
+
+// Path: chordGames.changes
+class Translations$chordGames$changes$en
+    extends Translations$chordGames$changes$es {
+  Translations$chordGames$changes$en._(TranslationsEn root)
+    : this._root = root,
+      super.internal(root);
+
+  final TranslationsEn _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get getReady => 'Get ready…';
+  @override
+  String startsIn({required Object n}) => 'Starting in ${n}';
+  @override
+  String get playThis => 'Play this chord';
+  @override
+  String get clean => 'Clean changes';
+  @override
+  String goal({required Object n}) => 'Goal: ${n}';
+  @override
+  String heard({required Object count, required Object total}) =>
+      'Notes heard: ${count} of ${total}';
+  @override
+  String get hear => 'Hear the chord';
+  @override
+  String get skip => 'Skip chord';
+  @override
+  String get listening => 'Listening…';
+  @override
+  String get cleanChange => 'Clean change!';
+  @override
+  String get missed => 'Time ran out on this chord';
+  @override
+  String timeLeft({required Object n}) => '${n} s left';
+}
+
 /// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -2823,7 +3153,7 @@ extension on TranslationsEn {
           'home.gameMode' => 'Mini-games',
           'home.gameSubtitle' => ({
             required Object count,
-          }) => '${count} games for ear, fretboard and fingers',
+          }) => '${count} games for ear, fretboard, chords and harmony',
           'home.liveTitle' => 'Tuner and listening',
           'home.liveSubtitle' => 'Tune string by string with your microphone',
           'home.greetingMorning' => 'Good morning',
@@ -3677,6 +4007,264 @@ extension on TranslationsEn {
           'minigames.theoryTitle' => 'Music theory',
           'minigames.theorySubtitle' =>
             'Scales, keys, degrees and progressions: understand what you play.',
+          'chordGames.chordsTitle' => 'Chords and variants',
+          'chordGames.chordsSubtitle' =>
+            'Notes, formulas, diagrams, CAGED shapes and timed challenges',
+          'chordGames.harmonyTitle' => 'Progressions and harmony',
+          'chordGames.harmonySubtitle' =>
+            'Degrees, transposing, relatives and styles',
+          'chordGames.newBadge' => 'New',
+          'chordGames.searchHint' => 'Search games',
+          'chordGames.filterAll' => 'All',
+          'chordGames.filterNew' => 'New',
+          'chordGames.filterLabel' => 'Filter by family',
+          'chordGames.noResultsTitle' => 'No game matches',
+          'chordGames.noResultsBody' =>
+            'Try another word or remove the filter.',
+          'chordGames.clearSearch' => 'Clear the search',
+          'chordGames.gamesCount' =>
+            ({required num n}) =>
+                (_root.$meta.cardinalResolver ??
+                PluralResolvers.cardinal('en'))(
+                  n,
+                  one: '${n} game',
+                  other: '${n} games',
+                ),
+          'chordGames.timeUp' => 'Time is up!',
+          'chordGames.timeLeft' => ({required Object n}) => '${n} s',
+          'chordGames.speedBonus' => ({
+            required Object n,
+          }) => 'Speed: +${n} points',
+          'chordGames.perQuestion' => ({
+            required Object n,
+          }) => 'Time per question: ${n} s',
+          'chordGames.changesGoal' => ({
+            required Object goal,
+            required Object seconds,
+          }) => 'Goal: ${goal} clean changes in ${seconds} s',
+          'chordGames.titles.spellChord' => 'Spell the chord',
+          'chordGames.titles.chordFormula' => 'Chord formula',
+          'chordGames.titles.chordVariantEar' => 'Which variant is it?',
+          'chordGames.titles.chordMemory' => 'Chord memory',
+          'chordGames.titles.rootAndBass' => 'Root and bass',
+          'chordGames.titles.inversion' => 'Inversions',
+          'chordGames.titles.wrongDiagram' => 'Wrong diagram',
+          'chordGames.titles.cagedShape' => 'CAGED shapes',
+          'chordGames.titles.rushOpen' => 'Rush: open chords',
+          'chordGames.titles.rushBarre' => 'Rush: barre chords',
+          'chordGames.titles.rushSeventh' => 'Rush: seventh chords',
+          'chordGames.titles.fillProgression' => 'Complete the progression',
+          'chordGames.titles.romanDegree' => 'Roman numerals',
+          'chordGames.titles.transposeChord' => 'Transpose',
+          'chordGames.titles.chordNeighbors' => 'Relatives and fifths',
+          'chordGames.titles.styleDuel' => 'Style duel',
+          'chordGames.titles.chordChanges' => 'Chord changes',
+          'chordGames.descriptions.spellChord' =>
+            'Which notes make up each chord?',
+          'chordGames.descriptions.chordFormula' =>
+            'From the chord to its 1-3-5… formula and back',
+          'chordGames.descriptions.chordVariantEar' =>
+            'Hear maj7, 7, 6, sus… and tell the variant',
+          'chordGames.descriptions.chordMemory' =>
+            'Repeat the chords you hear in order',
+          'chordGames.descriptions.rootAndBass' =>
+            'Where the root is and which note is in the bass',
+          'chordGames.descriptions.inversion' =>
+            'Root position, 1st or 2nd inversion',
+          'chordGames.descriptions.wrongDiagram' =>
+            'Find the diagram with a mistake',
+          'chordGames.descriptions.cagedShape' =>
+            'Tell C, A, G, E, D and where the barre goes',
+          'chordGames.descriptions.rushOpen' =>
+            'Name open chords against the clock',
+          'chordGames.descriptions.rushBarre' =>
+            'Name barre chords against the clock',
+          'chordGames.descriptions.rushSeventh' =>
+            'Sevenths and extended chords against the clock',
+          'chordGames.descriptions.fillProgression' => 'Find the missing chord',
+          'chordGames.descriptions.romanDegree' =>
+            'From the IV to the chord and back',
+          'chordGames.descriptions.transposeChord' =>
+            'Move up in semitones and play with a capo',
+          'chordGames.descriptions.chordNeighbors' =>
+            'Relative, dominant, subdominant and fifths',
+          'chordGames.descriptions.styleDuel' =>
+            'Which genre is it? Progression and strumming',
+          'chordGames.descriptions.chordChanges' =>
+            'Clean changes in 60 seconds',
+          'chordGames.howTo.spellChord' => 'You will see a chord name. On easy and medium pick the group of notes that makes it up: C6 and A minor 7 share notes, so watch the root. On hard, play the notes of the chord from the root up.',
+          'chordGames.howTo.chordFormula' => 'Every chord is built with intervals from its root: 1-3-5 is major, 1-♭3-5 minor, 1-3-5-♭7 dominant seventh… Go from the chord to its formula or from the formula to the chord name.',
+          'chordGames.howTo.chordVariantEar' => 'You will hear a chord and be told its root. Tell which variant it is: major, minor, 7, maj7, 6, sus… The higher the level, the more look-alike variants there are.',
+          'chordGames.howTo.chordMemory' => 'You will hear a series of chords. Tap the chords in the same order they played. Each level adds more chords and more options.',
+          'chordGames.howTo.rootAndBass' => 'You will see the diagram of a position. Sometimes you must say which string holds the lowest root and other times which note is in the bass, the lowest string that sounds.',
+          'chordGames.howTo.inversion' => 'A chord is in root position when the root is in the bass; with the third in the bass it is the 1st inversion and with the fifth, the 2nd. On hard you only hear it: listen to the bass.',
+          'chordGames.howTo.wrongDiagram' => 'You will see several diagrams of the same chord and one has a mistake: a note that is not in the chord, a string that should be muted or an essential note that is missing. Find it.',
+          'chordGames.howTo.cagedShape' => 'Barre chords move along the neck with five shapes: C, A, G, E and D. Recognise the shape of a diagram or say which fret the barre goes on to play a chord with a given shape.',
+          'chordGames.howTo.rushOpen' => 'A race against the clock: the diagram of an open chord appears and you have a few seconds to name it. The faster you answer, the more points.',
+          'chordGames.howTo.rushBarre' => 'A race against the clock: the diagram of a barre chord appears and you have a few seconds to name it. The faster you answer, the more points.',
+          'chordGames.howTo.rushSeventh' => 'A race against the clock: the diagram of a seventh or extended chord appears and you have a few seconds to say which one it is. The faster you answer, the more points.',
+          'chordGames.howTo.fillProgression' => 'You will see a famous progression with one hidden chord (?). Pick the missing one; on hard, pick its Roman numeral. On easy and medium you can hear the rest of the progression.',
+          'chordGames.howTo.romanDegree' => 'Roman numerals name the chords of a key: in G major the IV is C and the V7 is D7. Go from the numeral to the chord and back; on hard there are sevenths and borrowed chords such as the ♭VII.',
+          'chordGames.howTo.transposeChord' => 'Transposing means moving a chord up or down. With a capo on fret N, the shape you play sounds N semitones higher. Solve moves up, down and capo questions.',
+          'chordGames.howTo.chordNeighbors' => 'Every chord has neighbours: its relative (shares the scale notes), its dominant (V), its subdominant (IV) and the ones next to it on the circle of fifths. Find the one you are asked for.',
+          'chordGames.howTo.styleDuel' => 'You will hear the first bars of a progression with its strumming. From the chords and the rhythm, say the genre: pop, rock, blues, reggae…',
+          'chordGames.howTo.chordChanges' => 'We ask for chords one after another: play it and change as soon as you can. Every clean change counts; you have 60 seconds and the goal number of changes gives three stars.',
+          'chordGames.prompt.spellSet' => ({
+            required Object chord,
+          }) => 'Which notes make up ${chord}?',
+          'chordGames.prompt.spellOrder' => ({
+            required Object chord,
+          }) => 'Play the notes of ${chord}, from the root up',
+          'chordGames.prompt.formulaTo' => ({
+            required Object chord,
+          }) => 'What is the formula of ${chord}?',
+          'chordGames.prompt.formulaName' => ({
+            required Object note,
+            required Object formula,
+          }) => 'Which chord on root ${note} has the formula ${formula}?',
+          'chordGames.prompt.variantEar' => ({
+            required Object note,
+          }) => 'A chord on root ${note} is playing. Which variant is it?',
+          'chordGames.prompt.chordMemory' =>
+            'Listen and repeat the chords in the same order',
+          'chordGames.prompt.rootString' => ({
+            required Object chord,
+          }) => 'Which string holds the lowest root of this ${chord}?',
+          'chordGames.prompt.bassNote' => ({
+            required Object chord,
+          }) => 'Which note is in the bass (the lowest sounding string) of this ${chord}?',
+          'chordGames.prompt.inversionDiagram' => ({
+            required Object chord,
+          }) => 'Which inversion is this ${chord} in?',
+          'chordGames.prompt.inversionEar' => ({
+            required Object chord,
+          }) => 'Listen to this ${chord}. Which inversion is playing?',
+          'chordGames.prompt.wrongDiagram' => ({
+            required Object chord,
+          }) => 'One of these ${chord} diagrams has a mistake. Which one?',
+          'chordGames.prompt.cagedShape' => ({
+            required Object chord,
+          }) => 'Which CAGED shape is this ${chord}?',
+          'chordGames.prompt.cagedBarre' => ({
+            required Object chord,
+            required Object shape,
+          }) => 'To play ${chord} with the ${shape} shape, which fret does the barre go on?',
+          'chordGames.prompt.rush' => 'Which chord is this?',
+          'chordGames.prompt.fillChord' => ({
+            required Object genre,
+            required Object key,
+          }) => 'Complete the ${genre} progression in ${key}: which chord is missing?',
+          'chordGames.prompt.fillRoman' => ({
+            required Object genre,
+            required Object key,
+          }) => 'Complete the ${genre} progression in ${key}: which degree is missing?',
+          'chordGames.prompt.romanToChord' => ({
+            required Object key,
+            required Object roman,
+          }) => 'In ${key}, which chord is the ${roman}?',
+          'chordGames.prompt.romanToRoman' => ({
+            required Object key,
+            required Object chord,
+          }) => 'In ${key}, which degree is ${chord}?',
+          'chordGames.prompt.transposeUp' =>
+            ({required num n, required Object chord}) =>
+                (_root.$meta.cardinalResolver ??
+                PluralResolvers.cardinal('en'))(
+                  n,
+                  one: 'Move ${chord} up one semitone. Which chord do you get?',
+                  other:
+                      'Move ${chord} up ${n} semitones. Which chord do you get?',
+                ),
+          'chordGames.prompt.transposeDown' =>
+            ({
+              required num n,
+              required Object chord,
+            }) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(
+              n,
+              one: 'Move ${chord} down one semitone. Which chord do you get?',
+              other:
+                  'Move ${chord} down ${n} semitones. Which chord do you get?',
+            ),
+          'chordGames.prompt.capoSounds' => ({
+            required Object n,
+            required Object chord,
+          }) => 'With a capo on fret ${n} you play the ${chord} shape. Which chord sounds?',
+          'chordGames.prompt.capoShape' => ({
+            required Object n,
+            required Object chord,
+          }) => 'With a capo on fret ${n} you want ${chord} to sound. Which shape do you play?',
+          'chordGames.prompt.relativeMinor' => ({
+            required Object chord,
+          }) => 'What is the relative minor of ${chord}?',
+          'chordGames.prompt.relativeMajor' => ({
+            required Object chord,
+          }) => 'What is the relative major of ${chord}?',
+          'chordGames.prompt.dominant' => ({
+            required Object chord,
+          }) => 'What is the dominant (V) of ${chord}?',
+          'chordGames.prompt.subdominant' => ({
+            required Object chord,
+          }) => 'What is the subdominant (IV) of ${chord}?',
+          'chordGames.prompt.fifthUp' => ({
+            required Object chord,
+          }) => 'On the circle of fifths, which chord is a fifth above ${chord}?',
+          'chordGames.prompt.fifthDown' => ({
+            required Object chord,
+          }) => 'On the circle of fifths, which chord is a fifth below ${chord}?',
+          'chordGames.prompt.parallel' => ({
+            required Object chord,
+          }) => 'What is the parallel chord of ${chord} (same note, other mode)?',
+          'chordGames.prompt.tritone' => ({
+            required Object chord,
+          }) => 'What is the tritone substitution of ${chord}?',
+          'chordGames.prompt.styleDuel' =>
+            'Listen to the progression and the strumming. Which genre is it?',
+          'chordGames.choice.inversionRoot' => 'Root position',
+          'chordGames.choice.inversionFirst' => '1st inversion',
+          'chordGames.choice.inversionSecond' => '2nd inversion',
+          'chordGames.choice.inversionThird' => '3rd inversion',
+          'chordGames.choice.diagram' => ({
+            required Object n,
+          }) => 'Diagram ${n}',
+          'chordGames.explain.alienNote' => ({
+            required Object string,
+            required Object note,
+            required Object chord,
+          }) => 'On the ${string} you hear ${note}, which is not a note of ${chord}.',
+          'chordGames.explain.unmutedString' => ({
+            required Object string,
+            required Object note,
+            required Object chord,
+          }) => 'The ${string} should be muted: open it sounds ${note}, which is not in ${chord}.',
+          'chordGames.explain.missingNote' => ({
+            required Object note,
+            required Object chord,
+          }) => '${note} is missing, one of the notes that define ${chord}.',
+          'chordGames.explain.styleDuel' => ({
+            required Object genre,
+          }) => 'It was ${genre}.',
+          'chordGames.explain.shape' => ({
+            required Object shape,
+          }) => 'It is the ${shape} shape.',
+          'chordGames.changes.getReady' => 'Get ready…',
+          'chordGames.changes.startsIn' => ({
+            required Object n,
+          }) => 'Starting in ${n}',
+          'chordGames.changes.playThis' => 'Play this chord',
+          'chordGames.changes.clean' => 'Clean changes',
+          'chordGames.changes.goal' => ({required Object n}) => 'Goal: ${n}',
+          'chordGames.changes.heard' => ({
+            required Object count,
+            required Object total,
+          }) => 'Notes heard: ${count} of ${total}',
+          'chordGames.changes.hear' => 'Hear the chord',
+          'chordGames.changes.skip' => 'Skip chord',
+          'chordGames.changes.listening' => 'Listening…',
+          'chordGames.changes.cleanChange' => 'Clean change!',
+          'chordGames.changes.missed' => 'Time ran out on this chord',
+          'chordGames.changes.timeLeft' => ({
+            required Object n,
+          }) => '${n} s left',
           'guitar.ready' => 'Play an open string',
           'guitar.waiting' => 'Let the last note fade…',
           'guitar.noMic' =>
@@ -4044,6 +4632,9 @@ extension on TranslationsEn {
           'theory.progressionNames.bossaMinor' => 'Minor bossa',
           'theory.progressionNames.latinMinor' => 'Latin minor (i–iv–V7)',
           'theory.progressionNames.latinPop' => 'Latin pop (I–V–IV–V)',
+          _ => null,
+        } ??
+        switch (path) {
           'theory.progressionNames.rancheraPolka' => 'Norteño polka',
           'theory.progressionNames.rancheraCorrido' => 'Corrido waltz',
           'theory.progressionNames.rancheraMinor' => 'Minor ranchera',
@@ -4188,9 +4779,6 @@ extension on TranslationsEn {
           'theory.lessonSummaries.subdivision' =>
             'Split the beat in 2, 3 or 4 and understand syncopation and swing.',
           'theory.lessonSummaries.modesPractical' => 'When and how to use dorian, phrygian, lydian and mixolydian over a single chord.',
-          _ => null,
-        } ??
-        switch (path) {
           'theory.lessonSummaries.triads' =>
             'Triads and sevenths built by stacking thirds above the root.',
           'theory.lessonSummaries.extensions' => 'Ninths, elevenths and thirteenths; suspended chords and added notes.',

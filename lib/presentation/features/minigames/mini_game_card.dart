@@ -6,7 +6,8 @@ import 'package:chords/presentation/widgets/atoms/app_card.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:flutter/material.dart';
 
-/// Tarjeta de un minijuego en el catálogo: icono, nombre y estrellas.
+/// Tarjeta de un minijuego en el catálogo: icono, nombre, estrellas y la
+/// marca de novedad.
 class MiniGameCard extends StatelessWidget {
   /// Crea la tarjeta de [kind] con las [stars] ganadas (0-3).
   const MiniGameCard({
@@ -52,6 +53,7 @@ class MiniGameCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              if (kind.isNew) const _NewBadge(),
               if (kind.usesMic)
                 Tooltip(
                   message: t.minigames.needsMic,
@@ -91,6 +93,30 @@ class MiniGameCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Marca de los juegos recién añadidos (solo un icono: la tarjeta es
+/// estrecha en el móvil).
+class _NewBadge extends StatelessWidget {
+  const _NewBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final String label = context.t.chordGames.newBadge;
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Tooltip(
+        message: label,
+        child: Icon(
+          Icons.fiber_new_rounded,
+          size: 26,
+          semanticLabel: label,
+          color: scheme.tertiary,
+        ),
       ),
     );
   }

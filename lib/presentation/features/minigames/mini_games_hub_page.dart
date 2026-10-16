@@ -6,25 +6,29 @@ import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_command_bar.dart';
+import 'package:chords/presentation/features/minigames/hub_filter.dart';
 import 'package:chords/presentation/features/minigames/hub_guitar_nav.dart';
-import 'package:chords/presentation/features/minigames/mini_game_card.dart';
+import 'package:chords/presentation/features/minigames/hub_search_bar.dart';
+import 'package:chords/presentation/features/minigames/hub_sections.dart';
 import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
 import 'package:chords/presentation/features/settings/settings_controller.dart';
 import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
+import 'package:chords/presentation/widgets/atoms/app_empty_state.dart';
 import 'package:chords/presentation/widgets/atoms/app_text.dart';
 import 'package:chords/presentation/widgets/atoms/entrance.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-/// Catálogo de juegos: oído, mástil y dedos, y tocar con el micrófono.
+/// Catálogo de juegos por familias, con buscador y filtros.
 ///
 /// Con el modo guitarra encendido se recorre tocando cuerdas al aire: Re pasa
 /// al juego siguiente, La al anterior y Mi abre el seleccionado, de modo que
-/// puede elegir qué practicar sin soltar la guitarra. El panel fijo de la app
-/// (`GuitarDock`) dice qué juego está elegido; el micrófono y la salida del
-/// modo los lleva ese panel, no esta pantalla.
+/// puede elegir qué practicar sin soltar la guitarra. Se recorren solo los
+/// juegos que deja ver el filtro. El panel fijo de la app (`GuitarDock`) dice
+/// qué juego está elegido; el micrófono y la salida del modo los lleva ese
+/// panel, no esta pantalla.
 class MiniGamesHubPage extends StatefulWidget {
   /// Crea el catálogo.
   const MiniGamesHubPage({super.key});
@@ -34,13 +38,13 @@ class MiniGamesHubPage extends StatefulWidget {
 }
 
 class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
-  /// Elementos navegables: la serie de acordes y después cada minijuego.
-  static final int _count = 1 + MiniGameKind.values.length;
+  /// Llave del elemento de la serie de acordes (no es un [MiniGameKind]).
+  final GlobalKey _chordGameKey = GlobalKey();
+  final Map<MiniGameKind, GlobalKey> _keys = <MiniGameKind, GlobalKey>{
+    for (final MiniGameKind kind in MiniGameKind.values) kind: GlobalKey(),
+  };
 
-  final List<GlobalKey> _keys = List<GlobalKey>.generate(
-    _count,
-    (_) => GlobalKey(),
-  );
+  HubFilter _filter = const HubFilter();
   int _focus = 0;
   bool _wasOn = false;
 
@@ -54,21 +58,43 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
     _wasOn = on;
   }
 
-  String _pathOf(int index) => index == 0
-      ? kChordGamePath
-      : '$kMiniGamePath?kind=${MiniGameKind.values[index - 1].id}';
+  /// Elementos navegables en orden: la serie de acordes (`null`) y los juegos
+  /// que deja ver el filtro.
+  List<MiniGameKind?> _entries(Translations t) => <MiniGameKind?>[
+    if (showsChordGame(t, _filter)) null,
+    ...filterGames(t, _filter),
+  ];
 
-  void _open() => unawaited(context.push(_pathOf(_focus)));
+  void _open(List<MiniGameKind?> entries) {
+    if (entries.isEmpty) {
+      return;
+    }
+    final MiniGameKind? kind = entries[_focus.clamp(0, entries.length - 1)];
+    unawaited(
+      context.push(
+        kind == null ? kChordGamePath : '$kMiniGamePath?kind=${kind.id}',
+      ),
+    );
+  }
 
-  void _move(int step) {
-    setState(() => _focus = (_focus + step + _count) % _count);
+  void _move(int step, int count) {
+    if (count == 0) {
+      return;
+    }
+    setState(() => _focus = (_focus + step + count) % count);
     _reveal();
   }
 
   /// Lleva el elemento elegido al centro de la lista.
   void _reveal() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final BuildContext? target = _keys[_focus].currentContext;
+      final List<MiniGameKind?> entries = _entries(context.t);
+      if (entries.isEmpty) {
+        return;
+      }
+      final MiniGameKind? kind = entries[_focus.clamp(0, entries.length - 1)];
+      final BuildContext? target =
+          (kind == null ? _chordGameKey : _keys[kind]!).currentContext;
       if (target != null && target.mounted) {
         unawaited(
           Scrollable.ensureVisible(
@@ -81,36 +107,44 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
     });
   }
 
-  List<GuitarAction> _actions(Translations t) => <GuitarAction>[
-    GuitarAction(
-      command: GuitarCommand.next,
-      label: t.guitar.open,
-      icon: Icons.play_arrow_rounded,
-      emphasized: true,
-      onTrigger: _open,
-    ),
-    GuitarAction(
-      command: GuitarCommand.retry,
-      label: t.guitar.previousGame,
-      icon: Icons.arrow_upward_rounded,
-      onTrigger: () => _move(-1),
-    ),
-    GuitarAction(
-      command: GuitarCommand.listen,
-      label: t.guitar.nextGame,
-      icon: Icons.arrow_downward_rounded,
-      onTrigger: () => _move(1),
-    ),
-  ];
+  void _changeFilter(HubFilter filter) => setState(() {
+    _filter = filter;
+    _focus = 0;
+  });
+
+  List<GuitarAction> _actions(Translations t, List<MiniGameKind?> entries) =>
+      <GuitarAction>[
+        GuitarAction(
+          command: GuitarCommand.next,
+          label: t.guitar.open,
+          icon: Icons.play_arrow_rounded,
+          emphasized: true,
+          onTrigger: () => _open(entries),
+        ),
+        GuitarAction(
+          command: GuitarCommand.retry,
+          label: t.guitar.previousGame,
+          icon: Icons.arrow_upward_rounded,
+          onTrigger: () => _move(-1, entries.length),
+        ),
+        GuitarAction(
+          command: GuitarCommand.listen,
+          label: t.guitar.nextGame,
+          icon: Icons.arrow_downward_rounded,
+          onTrigger: () => _move(1, entries.length),
+        ),
+      ];
 
   /// Nombre del elemento elegido con su posición en el catálogo.
-  String _selected(Translations t) => t.guitar.hubSelected(
-    name: _focus == 0
-        ? t.minigames.chordGameTitle
-        : gameTitle(t, MiniGameKind.values[_focus - 1]),
-    n: _focus + 1,
-    total: _count,
-  );
+  String _selected(Translations t, List<MiniGameKind?> entries) {
+    final int at = _focus.clamp(0, entries.length - 1);
+    final MiniGameKind? kind = entries[at];
+    return t.guitar.hubSelected(
+      name: kind == null ? t.minigames.chordGameTitle : gameTitle(t, kind),
+      n: at + 1,
+      total: entries.length,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +153,18 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
         .watch<MiniGameProgressController>();
     final SettingsController settings = context.watch<SettingsController>();
     final bool on = settings.guitarBrowse;
+    final List<MiniGameKind?> entries = _entries(t);
+    final MiniGameKind? focused = on && entries.isNotEmpty
+        ? entries[_focus.clamp(0, entries.length - 1)]
+        : null;
+    final bool chordFocused = on && entries.isNotEmpty && focused == null;
     return Scaffold(
       appBar: AppBar(title: Text(t.minigames.hubTitle)),
-      bottomNavigationBar: on
-          ? GuitarCommandBar(actions: _actions(t), headline: _selected(t))
+      bottomNavigationBar: on && entries.isNotEmpty
+          ? GuitarCommandBar(
+              actions: _actions(t, entries),
+              headline: _selected(t, entries),
+            )
           : null,
       body: SafeArea(
         child: Center(
@@ -135,23 +177,26 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
                 const SizedBox(height: 12),
                 HubGuitarSwitch(settings: settings),
                 const SizedBox(height: 12),
-                Entrance(
-                  index: 1,
-                  child: HubFocus(
-                    key: _keys[0],
-                    focused: on && _focus == 0,
-                    child: const _ChordGameCard(),
+                HubSearchBar(filter: _filter, onChanged: _changeFilter),
+                const SizedBox(height: 12),
+                if (entries.isEmpty)
+                  AppEmptyState(
+                    icon: Icons.search_off_rounded,
+                    title: t.chordGames.noResultsTitle,
+                    message: t.chordGames.noResultsBody,
                   ),
-                ),
+                if (showsChordGame(t, _filter))
+                  Entrance(
+                    index: 1,
+                    child: HubFocus(
+                      key: _chordGameKey,
+                      focused: chordFocused,
+                      child: const HubChordGameCard(),
+                    ),
+                  ),
                 for (final MiniGameCategory category
-                    in MiniGameCategory.values) ...<Widget>[
-                  const SizedBox(height: 24),
-                  _CategorySection(
-                    category: category,
-                    progress: progress,
-                    focused: on ? _focus : -1,
-                    keys: _keys,
-                  ),
+                    in kHubCategoryOrder) ...<Widget>[
+                  ..._section(t, category, progress, focused),
                 ],
               ],
             ),
@@ -159,6 +204,31 @@ class _MiniGamesHubPageState extends State<MiniGamesHubPage> {
         ),
       ),
     );
+  }
+
+  List<Widget> _section(
+    Translations t,
+    MiniGameCategory category,
+    MiniGameProgressController progress,
+    MiniGameKind? focused,
+  ) {
+    final List<MiniGameKind> games = filterGames(
+      t,
+      _filter,
+    ).where((MiniGameKind kind) => kind.category == category).toList();
+    if (games.isEmpty) {
+      return const <Widget>[];
+    }
+    return <Widget>[
+      const SizedBox(height: 24),
+      HubCategorySection(
+        category: category,
+        games: games,
+        progress: progress,
+        focused: focused,
+        keyOf: (MiniGameKind kind) => _keys[kind]!,
+      ),
+    ];
   }
 }
 
@@ -207,115 +277,6 @@ class _ProgressCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ChordGameCard extends StatelessWidget {
-  const _ChordGameCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    return AppCard(
-      color: scheme.tertiaryContainer,
-      onTap: () => context.push(kChordGamePath),
-      child: Row(
-        children: <Widget>[
-          Icon(
-            Icons.sports_esports_rounded,
-            size: 32,
-            color: scheme.onTertiaryContainer,
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                AppText(
-                  t.minigames.chordGameTitle,
-                  variant: AppTextVariant.titleMedium,
-                  color: scheme.onTertiaryContainer,
-                ),
-                AppText(
-                  t.minigames.chordGameSubtitle,
-                  variant: AppTextVariant.labelMedium,
-                  color: scheme.onTertiaryContainer.withValues(alpha: 0.8),
-                  maxLines: 2,
-                ),
-              ],
-            ),
-          ),
-          Icon(Icons.chevron_right_rounded, color: scheme.onTertiaryContainer),
-        ],
-      ),
-    );
-  }
-}
-
-class _CategorySection extends StatelessWidget {
-  const _CategorySection({
-    required this.category,
-    required this.progress,
-    required this.focused,
-    required this.keys,
-  });
-
-  final MiniGameCategory category;
-  final MiniGameProgressController progress;
-
-  /// Posición del elemento seleccionado con la guitarra (-1 si ninguno).
-  final int focused;
-
-  /// Llaves de cada elemento para desplazar la lista hasta el seleccionado.
-  final List<GlobalKey> keys;
-
-  @override
-  Widget build(BuildContext context) {
-    final Translations t = context.t;
-    final List<MiniGameKind> games = MiniGameKind.of(category);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        AppText(categoryTitle(t, category), variant: AppTextVariant.titleLarge),
-        AppText(
-          categorySubtitle(t, category),
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          maxLines: 2,
-        ),
-        const SizedBox(height: 12),
-        for (int i = 0; i < games.length; i += 2) ...<Widget>[
-          if (i > 0) const SizedBox(height: 12),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(child: _card(context, games[i])),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: i + 1 < games.length
-                      ? _card(context, games[i + 1])
-                      : const SizedBox.shrink(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _card(BuildContext context, MiniGameKind kind) {
-    final int index = 1 + MiniGameKind.values.indexOf(kind);
-    return HubFocus(
-      key: keys[index],
-      focused: focused == index,
-      child: MiniGameCard(
-        kind: kind,
-        stars: progress.starsFor(kind),
-        onTap: () => context.push('$kMiniGamePath?kind=${kind.id}'),
       ),
     );
   }

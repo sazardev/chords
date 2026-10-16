@@ -46,8 +46,21 @@ class MiniGameScore {
   /// Estrellas ganadas (0-3).
   int get stars => starsForPercent(percent);
 
+  /// Marcador de un reto con meta: los aciertos cuentan sobre [goal] (sin
+  /// pasarse del 100 %) y los puntos y las rachas se conservan.
+  MiniGameScore againstGoal(int goal) => MiniGameScore(
+    correct: math.min(correct, goal),
+    total: goal,
+    streak: streak,
+    bestStreak: bestStreak,
+    points: points,
+  );
+
   /// Marcador tras una respuesta acertada o fallada.
-  MiniGameScore record({required bool isCorrect}) {
+  ///
+  /// [bonus] suma puntos extra a un acierto (la rapidez en los retos con
+  /// tiempo).
+  MiniGameScore record({required bool isCorrect, int bonus = 0}) {
     if (!isCorrect) {
       return MiniGameScore(
         correct: correct,
@@ -62,7 +75,7 @@ class MiniGameScore {
       total: total + 1,
       streak: nextStreak,
       bestStreak: math.max(bestStreak, nextStreak),
-      points: points + 10 + math.min(nextStreak - 1, 5) * 2,
+      points: points + 10 + math.min(nextStreak - 1, 5) * 2 + bonus,
     );
   }
 }

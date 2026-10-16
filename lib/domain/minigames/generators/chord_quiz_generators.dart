@@ -8,6 +8,7 @@ import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/minigames/entities/sound_cue.dart';
 import 'package:chords/domain/minigames/generators/quiz_generator.dart';
+import 'package:chords/domain/minigames/services/chord_tones.dart';
 
 /// Acordes asequibles para el nivel: dificultad 1, hasta 2 o hasta 3.
 List<Chord> chordPoolFor(ChordRepository repository, MiniGameLevel level) {
@@ -29,14 +30,21 @@ int easiestVariantIndex(Chord chord) =>
 /// Elige [count] acordes con [answer], prefiriendo los parecidos.
 ///
 /// Los parecidos comparten raíz o calidad (`C` junto a `Cm` o `G`), que es
-/// justo lo que cuesta distinguir al oído y en un diagrama.
+/// justo lo que cuesta distinguir al oído y en un diagrama. Nunca incluye un
+/// acorde con las mismas notas que la respuesta (`C6` y `Am7`), porque
+/// ambos serían correctos.
 List<Chord> chordOptions(
   math.Random random,
   Chord answer,
   List<Chord> pool,
   int count,
 ) {
-  final List<Chord> others = pool.where((Chord c) => c != answer).toList();
+  final Set<int> notes = pitchClassesOfChord(answer);
+  final List<Chord> others = pool
+      .where(
+        (Chord c) => c != answer && !_sameNotes(pitchClassesOfChord(c), notes),
+      )
+      .toList();
   final List<Chord> related =
       others
           .where(
@@ -54,6 +62,9 @@ List<Chord> chordOptions(
   ].take(count - 1).toList();
   return <Chord>[answer, ...picked];
 }
+
+bool _sameNotes(Set<int> a, Set<int> b) =>
+    a.length == b.length && a.containsAll(b);
 
 List<QuizChoice> _chordChoices(List<Chord> chords) => <QuizChoice>[
   for (final Chord chord in chords)
@@ -165,6 +176,7 @@ class ReadDiagramGenerator implements QuizGenerator {
       answer: <int>[options.indexOf(answer)],
       chordId: answer.id,
       variantIndex: easiestVariantIndex(answer),
+      diagram: QuizDiagram.fingers,
     );
   }
 }
@@ -196,6 +208,7 @@ class FingerQuizGenerator implements QuizGenerator {
       chordId: chord.id,
       variantIndex: easiestVariantIndex(chord),
       stringNumber: 6 - stringIndex,
+      diagram: QuizDiagram.plain,
     );
   }
 

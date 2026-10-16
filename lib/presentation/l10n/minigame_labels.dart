@@ -13,21 +13,24 @@ import 'package:chords/domain/minigames/entities/mini_game_level.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/l10n/translations.g.dart';
+import 'package:chords/presentation/l10n/chord_game_labels.dart';
 import 'package:chords/presentation/l10n/chord_labels.dart';
 import 'package:chords/presentation/l10n/theory_labels.dart';
 import 'package:chords/presentation/l10n/tuner_labels.dart';
 
 /// Nombre traducido de un minijuego.
 String gameTitle(Translations t, MiniGameKind kind) =>
-    t.minigames.titles[kind.id] ?? kind.id;
+    t.minigames.titles[kind.id] ?? t.chordGames.titles[kind.id] ?? kind.id;
 
 /// Descripción corta de un minijuego (para su tarjeta).
 String gameDescription(Translations t, MiniGameKind kind) =>
-    t.minigames.descriptions[kind.id] ?? '';
+    t.minigames.descriptions[kind.id] ??
+    t.chordGames.descriptions[kind.id] ??
+    '';
 
 /// Explicación de cómo se juega un minijuego.
 String gameHowTo(Translations t, MiniGameKind kind) =>
-    t.minigames.howTo[kind.id] ?? '';
+    t.minigames.howTo[kind.id] ?? t.chordGames.howTo[kind.id] ?? '';
 
 /// Título traducido de una familia de juegos.
 String categoryTitle(Translations t, MiniGameCategory category) =>
@@ -36,6 +39,8 @@ String categoryTitle(Translations t, MiniGameCategory category) =>
       MiniGameCategory.fretboard => t.minigames.fretboardTitle,
       MiniGameCategory.play => t.minigames.playTitle,
       MiniGameCategory.theory => t.minigames.theoryTitle,
+      MiniGameCategory.chords => t.chordGames.chordsTitle,
+      MiniGameCategory.harmony => t.chordGames.harmonyTitle,
     };
 
 /// Subtítulo traducido de una familia de juegos.
@@ -45,6 +50,8 @@ String categorySubtitle(Translations t, MiniGameCategory category) =>
       MiniGameCategory.fretboard => t.minigames.fretboardSubtitle,
       MiniGameCategory.play => t.minigames.playSubtitle,
       MiniGameCategory.theory => t.minigames.theorySubtitle,
+      MiniGameCategory.chords => t.chordGames.chordsSubtitle,
+      MiniGameCategory.harmony => t.chordGames.harmonySubtitle,
     };
 
 /// Nombre traducido de una dificultad.
@@ -96,6 +103,13 @@ String choiceLabel(Translations t, QuizChoice choice) =>
       ChoiceType.tuning => _tuningChoice(t, choice.value),
       ChoiceType.degree => degreeChoice(t, int.tryParse(choice.value) ?? 1),
       ChoiceType.progression => choice.value,
+      ChoiceType.noteSet ||
+      ChoiceType.formula ||
+      ChoiceType.roman ||
+      ChoiceType.shape ||
+      ChoiceType.inversion ||
+      ChoiceType.genre ||
+      ChoiceType.diagram => chordGameChoiceLabel(t, choice),
     };
 
 String _stringChoice(Translations t, String value) {
@@ -146,7 +160,10 @@ String questionPrompt(Translations t, QuizQuestion question) {
     ),
     MiniGameKind.fingerQuiz => t.minigames.prompt.fingerQuiz(string: string),
     MiniGameKind.readDiagram => t.minigames.prompt.readDiagram,
-    _ => theoryPrompt(t, question) ?? gameTitle(t, question.kind),
+    _ =>
+      theoryPrompt(t, question) ??
+          chordGamePrompt(t, question) ??
+          gameTitle(t, question.kind),
   };
 }
 

@@ -36,6 +36,39 @@ enum ChoiceType {
 
   /// Progresión en grados (`label` = `I – V – vi – IV`).
   progression,
+
+  /// Conjunto de notas de un acorde (`value` = `0,4,7`, clases de tono).
+  noteSet,
+
+  /// Fórmula de intervalos (`value` y `label` = `1 – ♭3 – 5`).
+  formula,
+
+  /// Grado romano (`value` y `label` = `bVII`).
+  roman,
+
+  /// Forma CAGED (`value` y `label` = `C`, `A`, `G`, `E` o `D`).
+  shape,
+
+  /// Inversión de un acorde (`value` = `root`, `first`, `second`, `third`).
+  inversion,
+
+  /// Género de la guía (`value` = id del género).
+  genre,
+
+  /// Diagrama dibujado en la opción (`value` = trastes `x,3,2,0,1,0`).
+  diagram,
+}
+
+/// Cómo se dibuja el diagrama del enunciado.
+enum QuizDiagram {
+  /// Sin diagrama.
+  none,
+
+  /// Con los números de dedo.
+  fingers,
+
+  /// Solo los puntos, sin números de dedo.
+  plain,
 }
 
 /// Una opción de respuesta.
@@ -81,6 +114,10 @@ class QuizQuestion {
     this.keyTonic,
     this.scaleId,
     this.degree,
+    this.diagram = QuizDiagram.none,
+    this.detail,
+    this.bars = const <String>[],
+    this.params = const <String, String>{},
   });
 
   /// Juego al que pertenece.
@@ -119,6 +156,19 @@ class QuizQuestion {
   /// Grado del enunciado (1-7).
   final int? degree;
 
+  /// Diagrama del enunciado (el del acorde [chordId], posición
+  /// [variantIndex]).
+  final QuizDiagram diagram;
+
+  /// Variante del enunciado dentro del juego (`up`, `capoSounds`, un error…).
+  final String? detail;
+
+  /// Compases mostrados en el enunciado; `?` marca el que falta.
+  final List<String> bars;
+
+  /// Datos del enunciado ya listos para mostrar (`chord` = `Cmaj7`).
+  final Map<String, String> params;
+
   /// `true` si hay que acertar varias opciones seguidas.
   bool get isSequence => answer.length > 1;
 
@@ -131,7 +181,8 @@ class QuizQuestion {
   /// Huella para evitar repetir la misma pregunta dos veces seguidas.
   String get signature =>
       '${kind.id}|${answer.map((int i) => choices[i].value).join(',')}|'
-      '$chordId|$stringNumber|$fret|$note|$keyTonic|$scaleId|$degree|'
+      '$chordId|$variantIndex|$stringNumber|$fret|$note|$keyTonic|$scaleId|'
+      '$degree|$detail|${bars.join(' ')}|${params.values.join(',')}|'
       '${cues.map((SoundCue c) => switch (c) {
         ToneCue() => c.frequency.toStringAsFixed(1),
         ChordCue() => c.chordId,

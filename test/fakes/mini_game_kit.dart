@@ -5,7 +5,9 @@ import 'package:chords/presentation/features/guitar_control/guitar_command_liste
 import 'package:chords/presentation/features/guitar_control/guitar_kit.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_mic_keeper.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_nav_controller.dart';
+import 'package:chords/presentation/features/minigames/audio_chord_hearing.dart';
 import 'package:chords/presentation/features/minigames/build_chord_controller.dart';
+import 'package:chords/presentation/features/minigames/chord_changes_controller.dart';
 import 'package:chords/presentation/features/minigames/mic_game_controller.dart';
 import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
 import 'package:chords/presentation/features/minigames/quiz_controller.dart';
@@ -15,12 +17,15 @@ import 'package:chords/presentation/features/studio/studio_kit.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'manual_question_clock.dart';
+
 /// Controladores de los minijuegos listos para pruebas.
 ///
 /// El reproductor no espera entre notas para que las preguntas con
 /// secuencia de sonidos terminen al instante. [clock] gobierna el tiempo del
 /// oyente de órdenes de guitarra y [settings] los ajustes de guitarra (por
-/// defecto unos propios).
+/// defecto unos propios). Los juegos con tiempo usan un [ManualQuestionClock]
+/// (`questionClock`) que solo avanza al llamar a `tick`.
 class MiniGameKit {
   /// Construye los controladores sobre los repositorios indicados.
   factory MiniGameKit({
@@ -38,6 +43,7 @@ class MiniGameKit {
       chords,
       wait: (Duration duration) async {},
     );
+    final ManualQuestionClock questionClock = ManualQuestionClock();
     final GuitarKit guitarKit = GuitarKit(
       audio,
       settings ?? SettingsController(preferences),
@@ -45,13 +51,22 @@ class MiniGameKit {
     );
     return MiniGameKit._(
       progress: progress,
-      quiz: QuizController(chords, player, progress),
+      questionClock: questionClock,
+      quiz: QuizController(chords, player, progress, clock: questionClock),
       build: BuildChordController(chords, audio, progress),
       mic: MicGameController(
         audio,
         player,
         progress,
         confirmations: 1,
+        guitar: guitarKit.listener,
+      ),
+      chordChanges: ChordChangesController(
+        audio,
+        chords,
+        progress,
+        hearing: AudioChordHearing(audio, ignore: guitarKit.listener.claims),
+        clock: questionClock,
         guitar: guitarKit.listener,
       ),
       guitar: guitarKit.listener,
@@ -66,6 +81,8 @@ class MiniGameKit {
     required this.quiz,
     required this.build,
     required this.mic,
+    required this.chordChanges,
+    required this.questionClock,
     required this.guitar,
     required this.keeper,
     required this.nav,
@@ -83,6 +100,12 @@ class MiniGameKit {
 
   /// Juegos con micrófono.
   final MicGameController mic;
+
+  /// Cambios de acorde.
+  final ChordChangesController chordChanges;
+
+  /// Reloj de los juegos con tiempo y de los cambios de acorde.
+  final ManualQuestionClock questionClock;
 
   /// Oyente de las órdenes de guitarra.
   final GuitarCommandListener guitar;
@@ -117,6 +140,7 @@ class MiniGameKit {
     ChangeNotifierProvider<QuizController>.value(value: quiz),
     ChangeNotifierProvider<BuildChordController>.value(value: build),
     ChangeNotifierProvider<MicGameController>.value(value: mic),
+    ChangeNotifierProvider<ChordChangesController>.value(value: chordChanges),
     ChangeNotifierProvider<GuitarCommandListener>.value(value: guitar),
     ChangeNotifierProvider<GuitarNavController>.value(value: nav),
     Provider<GuitarMicKeeper>.value(value: keeper),

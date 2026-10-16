@@ -1,6 +1,8 @@
+import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/minigames/quiz_state.dart';
+import 'package:chords/presentation/l10n/chord_game_labels.dart';
 import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/theme/app_chord_colors.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
@@ -27,6 +29,9 @@ class QuizFeedbackBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final bool ok = state.wasCorrect;
+    final String? why = questionExplanation(t, question);
+    final bool whyIsHeadline =
+        !ok && question.kind == MiniGameKind.wrongDiagram;
     final bool last = state.index + 1 >= state.total;
     final Color background = ok
         ? chordColorsOf(context).inTune.withValues(alpha: 0.22)
@@ -46,7 +51,9 @@ class QuizFeedbackBar extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: AppText(
-                  ok ? t.minigames.correct : _wrongText(t, question),
+                  ok
+                      ? t.minigames.correct
+                      : (whyIsHeadline ? why! : _wrongText(t, question)),
                   variant: AppTextVariant.titleMedium,
                   color: ink,
                   maxLines: 3,
@@ -55,6 +62,15 @@ class QuizFeedbackBar extends StatelessWidget {
               ),
             ],
           ),
+          if (why != null && !whyIsHeadline) ...<Widget>[
+            const SizedBox(height: 8),
+            AppText(
+              why,
+              color: ink,
+              maxLines: 4,
+              overflow: TextOverflow.visible,
+            ),
+          ],
           const SizedBox(height: 12),
           FilledButton(
             onPressed: onNext,
@@ -66,6 +82,10 @@ class QuizFeedbackBar extends StatelessWidget {
   }
 
   String _wrongText(Translations t, QuizQuestion question) {
+    if (state.timedOut) {
+      final String answer = choiceLabel(t, question.correctChoice);
+      return '${t.chordGames.timeUp} ${t.minigames.wrong(answer: answer)}';
+    }
     if (question.isSequence) {
       final String sequence = question.answer
           .map((int i) => choiceLabel(t, question.choices[i]))

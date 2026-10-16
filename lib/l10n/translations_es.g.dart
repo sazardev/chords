@@ -89,6 +89,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
   );
   late final Translations$minigames$es minigames =
       Translations$minigames$es.internal(_root);
+  late final Translations$chordGames$es chordGames =
+      Translations$chordGames$es.internal(_root);
   late final Translations$guitar$es guitar = Translations$guitar$es.internal(
     _root,
   );
@@ -199,9 +201,9 @@ class Translations$home$es {
   /// es: 'Minijuegos'
   String get gameMode => 'Minijuegos';
 
-  /// es: '$count juegos de oído, mástil y dedos'
+  /// es: '$count juegos de oído, mástil, acordes y armonía'
   String gameSubtitle({required Object count}) =>
-      '${count} juegos de oído, mástil y dedos';
+      '${count} juegos de oído, mástil, acordes y armonía';
 
   /// es: 'Afinador y escucha'
   String get liveTitle => 'Afinador y escucha';
@@ -1651,6 +1653,142 @@ class Translations$minigames$es {
   /// es: 'Escalas, tonalidades, grados y progresiones: entiende lo que tocas.'
   String get theorySubtitle =>
       'Escalas, tonalidades, grados y progresiones: entiende lo que tocas.';
+}
+
+// Path: chordGames
+class Translations$chordGames$es {
+  Translations$chordGames$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Acordes y variantes'
+  String get chordsTitle => 'Acordes y variantes';
+
+  /// es: 'Notas, fórmulas, diagramas, formas CAGED y retos con tiempo'
+  String get chordsSubtitle =>
+      'Notas, fórmulas, diagramas, formas CAGED y retos con tiempo';
+
+  /// es: 'Progresiones y armonía'
+  String get harmonyTitle => 'Progresiones y armonía';
+
+  /// es: 'Grados, transporte, relativos y estilos'
+  String get harmonySubtitle => 'Grados, transporte, relativos y estilos';
+
+  /// es: 'Nuevo'
+  String get newBadge => 'Nuevo';
+
+  /// es: 'Buscar juegos'
+  String get searchHint => 'Buscar juegos';
+
+  /// es: 'Todos'
+  String get filterAll => 'Todos';
+
+  /// es: 'Nuevos'
+  String get filterNew => 'Nuevos';
+
+  /// es: 'Filtrar por familia'
+  String get filterLabel => 'Filtrar por familia';
+
+  /// es: 'Ningún juego coincide'
+  String get noResultsTitle => 'Ningún juego coincide';
+
+  /// es: 'Prueba con otra palabra o quita el filtro.'
+  String get noResultsBody => 'Prueba con otra palabra o quita el filtro.';
+
+  /// es: 'Quitar la búsqueda'
+  String get clearSearch => 'Quitar la búsqueda';
+
+  /// es: '(one) {$n juego} (other) {$n juegos}'
+  String gamesCount({required num n}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: '${n} juego',
+        other: '${n} juegos',
+      );
+
+  /// es: '¡Se acabó el tiempo!'
+  String get timeUp => '¡Se acabó el tiempo!';
+
+  /// es: '$n s'
+  String timeLeft({required Object n}) => '${n} s';
+
+  /// es: 'Rapidez: +$n puntos'
+  String speedBonus({required Object n}) => 'Rapidez: +${n} puntos';
+
+  /// es: 'Tiempo por pregunta: $n s'
+  String perQuestion({required Object n}) => 'Tiempo por pregunta: ${n} s';
+
+  /// es: 'Meta: $goal cambios limpios en $seconds s'
+  String changesGoal({required Object goal, required Object seconds}) =>
+      'Meta: ${goal} cambios limpios en ${seconds} s';
+
+  Map<String, String> get titles => {
+    'spellChord': 'Deletrea el acorde',
+    'chordFormula': 'Fórmula del acorde',
+    'chordVariantEar': '¿Qué variante es?',
+    'chordMemory': 'Memoria de acordes',
+    'rootAndBass': 'Raíz y bajo',
+    'inversion': 'Inversiones',
+    'wrongDiagram': 'Diagrama incorrecto',
+    'cagedShape': 'Formas CAGED',
+    'rushOpen': 'Racha: acordes abiertos',
+    'rushBarre': 'Racha: cejillas',
+    'rushSeventh': 'Racha: séptimas',
+    'fillProgression': 'Completa la progresión',
+    'romanDegree': 'Grados romanos',
+    'transposeChord': 'Transporta',
+    'chordNeighbors': 'Relativos y quintas',
+    'styleDuel': 'Duelo de estilos',
+    'chordChanges': 'Cambios de acorde',
+  };
+  Map<String, String> get descriptions => {
+    'spellChord': '¿Qué notas forman cada acorde?',
+    'chordFormula': 'Del acorde a su fórmula 1-3-5… y al revés',
+    'chordVariantEar': 'Oye maj7, 7, 6, sus… y distingue la variante',
+    'chordMemory': 'Repite la sucesión de acordes que oyes',
+    'rootAndBass': 'Dónde está la raíz y qué nota va en el bajo',
+    'inversion': 'Fundamental, 1ª o 2ª inversión',
+    'wrongDiagram': 'Encuentra el diagrama con un error',
+    'cagedShape': 'Reconoce C, A, G, E, D y dónde va la cejilla',
+    'rushOpen': 'Nombra acordes abiertos contra el reloj',
+    'rushBarre': 'Nombra acordes con cejilla contra el reloj',
+    'rushSeventh': 'Séptimas y extendidos contra el reloj',
+    'fillProgression': 'Encuentra el acorde que falta',
+    'romanDegree': 'Del IV al acorde y del acorde al IV',
+    'transposeChord': 'Sube semitonos y toca con capo',
+    'chordNeighbors': 'Relativo, dominante, subdominante y quintas',
+    'styleDuel': '¿Qué género suena? Progresión y rasgueo',
+    'chordChanges': 'Cambios limpios en 60 segundos',
+  };
+  Map<String, String> get howTo => {
+    'spellChord': 'Verás el nombre de un acorde. En fácil y medio elige el grupo de notas que lo forma: Do6 y La menor 7 comparten notas, así que fíjate en la raíz. En difícil toca las notas del acorde de la raíz hacia arriba.',
+    'chordFormula': 'Cada acorde se construye con intervalos desde su raíz: 1-3-5 es mayor, 1-♭3-5 menor, 1-3-5-♭7 séptima… Pasa del acorde a su fórmula o de la fórmula al nombre del acorde.',
+    'chordVariantEar': 'Oirás un acorde y se te dice su raíz. Distingue qué variante es: mayor, menor, 7, maj7, 6, sus… Cuanto más subes de nivel, más variantes parecidas hay.',
+    'chordMemory': 'Oirás una sucesión de acordes. Pulsa los acordes en el mismo orden en que sonaron. Cada nivel añade más acordes y más opciones.',
+    'rootAndBass': 'Verás el diagrama de una posición. Unas veces hay que decir en qué cuerda está la raíz más grave y otras qué nota hace de bajo, que es la cuerda más grave que suena.',
+    'inversion': 'Un acorde está en estado fundamental si la raíz va en el bajo; con la tercera en el bajo es la 1ª inversión y con la quinta, la 2ª. En difícil solo lo oyes: fíjate en el bajo.',
+    'wrongDiagram': 'Verás varios diagramas del mismo acorde y uno tiene un error: una nota que no es del acorde, una cuerda que debía ir muteada o una nota esencial que falta. Encuéntralo.',
+    'cagedShape': 'Los acordes con cejilla se mueven por el mástil con cinco formas: C, A, G, E y D. Reconoce la forma de un diagrama o di en qué traste va la cejilla para tocar un acorde con una forma dada.',
+    'rushOpen': 'Reto contra el reloj: aparece el diagrama de un acorde abierto y tienes pocos segundos para nombrarlo. Cuanto más rápido aciertes, más puntos.',
+    'rushBarre': 'Reto contra el reloj: aparece el diagrama de un acorde con cejilla y tienes pocos segundos para nombrarlo. Cuanto más rápido aciertes, más puntos.',
+    'rushSeventh': 'Reto contra el reloj: aparece el diagrama de una séptima o un acorde extendido y tienes pocos segundos para decir cuál es. Cuanto más rápido aciertes, más puntos.',
+    'fillProgression': 'Verás una progresión famosa con un acorde oculto (?). Elige cuál falta; en difícil, elige su grado romano. En fácil y medio puedes oír el resto de la progresión.',
+    'romanDegree': 'Los grados romanos nombran los acordes de una tonalidad: en Sol mayor el IV es Do y el V7 es Re7. Pasa del grado al acorde y del acorde al grado; en difícil hay séptimas y acordes prestados como el ♭VII.',
+    'transposeChord': 'Transportar es mover un acorde hacia arriba o abajo. Con un capo en el traste N, la forma que tocas suena N semitonos más aguda. Resuelve subidas, bajadas y capos.',
+    'chordNeighbors': 'Cada acorde tiene vecinos: su relativo (comparte las notas de la escala), su dominante (V), su subdominante (IV) y los de al lado en el círculo de quintas. Encuentra el que se pide.',
+    'styleDuel': 'Oirás los primeros compases de una progresión con su rasgueo. Por los acordes y el ritmo, di de qué género es: pop, rock, blues, reggae…',
+    'chordChanges': 'Te pedimos acordes uno tras otro: tócalo y cámbialo cuanto antes. Cada cambio limpio suma; tienes 60 segundos y la meta de cambios da las tres estrellas.',
+  };
+  late final Translations$chordGames$prompt$es prompt =
+      Translations$chordGames$prompt$es.internal(_root);
+  late final Translations$chordGames$choice$es choice =
+      Translations$chordGames$choice$es.internal(_root);
+  late final Translations$chordGames$explain$es explain =
+      Translations$chordGames$explain$es.internal(_root);
+  late final Translations$chordGames$changes$es changes =
+      Translations$chordGames$changes$es.internal(_root);
 }
 
 // Path: guitar
@@ -3318,6 +3456,248 @@ class Translations$minigames$choice$es {
   String get sharp => 'Alta (más aguda)';
 }
 
+// Path: chordGames.prompt
+class Translations$chordGames$prompt$es {
+  Translations$chordGames$prompt$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: '¿Qué notas forman $chord?'
+  String spellSet({required Object chord}) => '¿Qué notas forman ${chord}?';
+
+  /// es: 'Toca las notas de $chord, de la raíz hacia arriba'
+  String spellOrder({required Object chord}) =>
+      'Toca las notas de ${chord}, de la raíz hacia arriba';
+
+  /// es: '¿Cuál es la fórmula de $chord?'
+  String formulaTo({required Object chord}) =>
+      '¿Cuál es la fórmula de ${chord}?';
+
+  /// es: '¿Qué acorde de raíz $note tiene la fórmula $formula?'
+  String formulaName({required Object note, required Object formula}) =>
+      '¿Qué acorde de raíz ${note} tiene la fórmula ${formula}?';
+
+  /// es: 'Suena un acorde de raíz $note. ¿Qué variante es?'
+  String variantEar({required Object note}) =>
+      'Suena un acorde de raíz ${note}. ¿Qué variante es?';
+
+  /// es: 'Escucha y repite los acordes en el mismo orden'
+  String get chordMemory => 'Escucha y repite los acordes en el mismo orden';
+
+  /// es: '¿En qué cuerda está la raíz más grave de este $chord?'
+  String rootString({required Object chord}) =>
+      '¿En qué cuerda está la raíz más grave de este ${chord}?';
+
+  /// es: '¿Qué nota hace de bajo (la cuerda más grave que suena) en este $chord?'
+  String bassNote({required Object chord}) =>
+      '¿Qué nota hace de bajo (la cuerda más grave que suena) en este ${chord}?';
+
+  /// es: '¿En qué inversión está este $chord?'
+  String inversionDiagram({required Object chord}) =>
+      '¿En qué inversión está este ${chord}?';
+
+  /// es: 'Escucha este $chord. ¿Qué inversión suena?'
+  String inversionEar({required Object chord}) =>
+      'Escucha este ${chord}. ¿Qué inversión suena?';
+
+  /// es: 'Un diagrama de $chord tiene un error. ¿Cuál?'
+  String wrongDiagram({required Object chord}) =>
+      'Un diagrama de ${chord} tiene un error. ¿Cuál?';
+
+  /// es: '¿Con qué forma CAGED está tocado este $chord?'
+  String cagedShape({required Object chord}) =>
+      '¿Con qué forma CAGED está tocado este ${chord}?';
+
+  /// es: 'Para tocar $chord con la forma de $shape, ¿en qué traste va la cejilla?'
+  String cagedBarre({required Object chord, required Object shape}) =>
+      'Para tocar ${chord} con la forma de ${shape}, ¿en qué traste va la cejilla?';
+
+  /// es: '¿Qué acorde es este?'
+  String get rush => '¿Qué acorde es este?';
+
+  /// es: 'Completa la progresión de $genre en $key: ¿qué acorde falta?'
+  String fillChord({required Object genre, required Object key}) =>
+      'Completa la progresión de ${genre} en ${key}: ¿qué acorde falta?';
+
+  /// es: 'Completa la progresión de $genre en $key: ¿qué grado falta?'
+  String fillRoman({required Object genre, required Object key}) =>
+      'Completa la progresión de ${genre} en ${key}: ¿qué grado falta?';
+
+  /// es: 'En $key, ¿qué acorde es el $roman?'
+  String romanToChord({required Object key, required Object roman}) =>
+      'En ${key}, ¿qué acorde es el ${roman}?';
+
+  /// es: 'En $key, ¿qué grado es $chord?'
+  String romanToRoman({required Object key, required Object chord}) =>
+      'En ${key}, ¿qué grado es ${chord}?';
+
+  /// es: '(one) {Sube $chord un semitono. ¿Qué acorde resulta?} (other) {Sube $chord $n semitonos. ¿Qué acorde resulta?}'
+  String transposeUp({required num n, required Object chord}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: 'Sube ${chord} un semitono. ¿Qué acorde resulta?',
+        other: 'Sube ${chord} ${n} semitonos. ¿Qué acorde resulta?',
+      );
+
+  /// es: '(one) {Baja $chord un semitono. ¿Qué acorde resulta?} (other) {Baja $chord $n semitonos. ¿Qué acorde resulta?}'
+  String transposeDown({required num n, required Object chord}) =>
+      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(
+        n,
+        one: 'Baja ${chord} un semitono. ¿Qué acorde resulta?',
+        other: 'Baja ${chord} ${n} semitonos. ¿Qué acorde resulta?',
+      );
+
+  /// es: 'Con capo en el traste $n tocas la forma de $chord. ¿Qué acorde suena?'
+  String capoSounds({required Object n, required Object chord}) =>
+      'Con capo en el traste ${n} tocas la forma de ${chord}. ¿Qué acorde suena?';
+
+  /// es: 'Con capo en el traste $n quieres que suene $chord. ¿Qué forma tocas?'
+  String capoShape({required Object n, required Object chord}) =>
+      'Con capo en el traste ${n} quieres que suene ${chord}. ¿Qué forma tocas?';
+
+  /// es: '¿Cuál es el relativo menor de $chord?'
+  String relativeMinor({required Object chord}) =>
+      '¿Cuál es el relativo menor de ${chord}?';
+
+  /// es: '¿Cuál es el relativo mayor de $chord?'
+  String relativeMajor({required Object chord}) =>
+      '¿Cuál es el relativo mayor de ${chord}?';
+
+  /// es: '¿Cuál es la dominante (V) de $chord?'
+  String dominant({required Object chord}) =>
+      '¿Cuál es la dominante (V) de ${chord}?';
+
+  /// es: '¿Cuál es la subdominante (IV) de $chord?'
+  String subdominant({required Object chord}) =>
+      '¿Cuál es la subdominante (IV) de ${chord}?';
+
+  /// es: 'En el círculo de quintas, ¿qué acorde está una quinta por encima de $chord?'
+  String fifthUp({required Object chord}) =>
+      'En el círculo de quintas, ¿qué acorde está una quinta por encima de ${chord}?';
+
+  /// es: 'En el círculo de quintas, ¿qué acorde está una quinta por debajo de $chord?'
+  String fifthDown({required Object chord}) =>
+      'En el círculo de quintas, ¿qué acorde está una quinta por debajo de ${chord}?';
+
+  /// es: '¿Cuál es el acorde paralelo de $chord (misma nota, otro modo)?'
+  String parallel({required Object chord}) =>
+      '¿Cuál es el acorde paralelo de ${chord} (misma nota, otro modo)?';
+
+  /// es: '¿Cuál es la sustitución de tritono de $chord?'
+  String tritone({required Object chord}) =>
+      '¿Cuál es la sustitución de tritono de ${chord}?';
+
+  /// es: 'Escucha la progresión y el rasgueo. ¿De qué género es?'
+  String get styleDuel =>
+      'Escucha la progresión y el rasgueo. ¿De qué género es?';
+}
+
+// Path: chordGames.choice
+class Translations$chordGames$choice$es {
+  Translations$chordGames$choice$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Fundamental'
+  String get inversionRoot => 'Fundamental';
+
+  /// es: '1ª inversión'
+  String get inversionFirst => '1ª inversión';
+
+  /// es: '2ª inversión'
+  String get inversionSecond => '2ª inversión';
+
+  /// es: '3ª inversión'
+  String get inversionThird => '3ª inversión';
+
+  /// es: 'Diagrama $n'
+  String diagram({required Object n}) => 'Diagrama ${n}';
+}
+
+// Path: chordGames.explain
+class Translations$chordGames$explain$es {
+  Translations$chordGames$explain$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'En la $string suena $note, que no es una nota de $chord.'
+  String alienNote({
+    required Object string,
+    required Object note,
+    required Object chord,
+  }) => 'En la ${string} suena ${note}, que no es una nota de ${chord}.';
+
+  /// es: 'La $string debía ir muteada: al aire suena $note, que no es de $chord.'
+  String unmutedString({
+    required Object string,
+    required Object note,
+    required Object chord,
+  }) =>
+      'La ${string} debía ir muteada: al aire suena ${note}, que no es de ${chord}.';
+
+  /// es: 'Falta $note, una de las notas que definen $chord.'
+  String missingNote({required Object note, required Object chord}) =>
+      'Falta ${note}, una de las notas que definen ${chord}.';
+
+  /// es: 'Era $genre.'
+  String styleDuel({required Object genre}) => 'Era ${genre}.';
+
+  /// es: 'Es la forma de $shape.'
+  String shape({required Object shape}) => 'Es la forma de ${shape}.';
+}
+
+// Path: chordGames.changes
+class Translations$chordGames$changes$es {
+  Translations$chordGames$changes$es.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+
+  /// es: 'Prepárate…'
+  String get getReady => 'Prepárate…';
+
+  /// es: 'Empieza en $n'
+  String startsIn({required Object n}) => 'Empieza en ${n}';
+
+  /// es: 'Toca este acorde'
+  String get playThis => 'Toca este acorde';
+
+  /// es: 'Cambios limpios'
+  String get clean => 'Cambios limpios';
+
+  /// es: 'Meta: $n'
+  String goal({required Object n}) => 'Meta: ${n}';
+
+  /// es: 'Notas oídas: $count de $total'
+  String heard({required Object count, required Object total}) =>
+      'Notas oídas: ${count} de ${total}';
+
+  /// es: 'Oír el acorde'
+  String get hear => 'Oír el acorde';
+
+  /// es: 'Saltar acorde'
+  String get skip => 'Saltar acorde';
+
+  /// es: 'Te escucho…'
+  String get listening => 'Te escucho…';
+
+  /// es: '¡Cambio limpio!'
+  String get cleanChange => '¡Cambio limpio!';
+
+  /// es: 'Se agotó el tiempo con este acorde'
+  String get missed => 'Se agotó el tiempo con este acorde';
+
+  /// es: 'Quedan $n s'
+  String timeLeft({required Object n}) => 'Quedan ${n} s';
+}
+
 /// The flat map containing all translations for locale <es>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -3358,7 +3738,7 @@ extension on Translations {
           'home.gameMode' => 'Minijuegos',
           'home.gameSubtitle' => ({
             required Object count,
-          }) => '${count} juegos de oído, mástil y dedos',
+          }) => '${count} juegos de oído, mástil, acordes y armonía',
           'home.liveTitle' => 'Afinador y escucha',
           'home.liveSubtitle' => 'Afina cuerda a cuerda con tu micrófono',
           'home.greetingMorning' => 'Buenos días',
@@ -4202,6 +4582,262 @@ extension on Translations {
           'minigames.micPlayingMelody' => 'Escucha la melodía…',
           'minigames.theoryTitle' => 'Teoría musical',
           'minigames.theorySubtitle' => 'Escalas, tonalidades, grados y progresiones: entiende lo que tocas.',
+          'chordGames.chordsTitle' => 'Acordes y variantes',
+          'chordGames.chordsSubtitle' =>
+            'Notas, fórmulas, diagramas, formas CAGED y retos con tiempo',
+          'chordGames.harmonyTitle' => 'Progresiones y armonía',
+          'chordGames.harmonySubtitle' =>
+            'Grados, transporte, relativos y estilos',
+          'chordGames.newBadge' => 'Nuevo',
+          'chordGames.searchHint' => 'Buscar juegos',
+          'chordGames.filterAll' => 'Todos',
+          'chordGames.filterNew' => 'Nuevos',
+          'chordGames.filterLabel' => 'Filtrar por familia',
+          'chordGames.noResultsTitle' => 'Ningún juego coincide',
+          'chordGames.noResultsBody' =>
+            'Prueba con otra palabra o quita el filtro.',
+          'chordGames.clearSearch' => 'Quitar la búsqueda',
+          'chordGames.gamesCount' =>
+            ({required num n}) =>
+                (_root.$meta.cardinalResolver ??
+                PluralResolvers.cardinal('es'))(
+                  n,
+                  one: '${n} juego',
+                  other: '${n} juegos',
+                ),
+          'chordGames.timeUp' => '¡Se acabó el tiempo!',
+          'chordGames.timeLeft' => ({required Object n}) => '${n} s',
+          'chordGames.speedBonus' => ({
+            required Object n,
+          }) => 'Rapidez: +${n} puntos',
+          'chordGames.perQuestion' => ({
+            required Object n,
+          }) => 'Tiempo por pregunta: ${n} s',
+          'chordGames.changesGoal' => ({
+            required Object goal,
+            required Object seconds,
+          }) => 'Meta: ${goal} cambios limpios en ${seconds} s',
+          'chordGames.titles.spellChord' => 'Deletrea el acorde',
+          'chordGames.titles.chordFormula' => 'Fórmula del acorde',
+          'chordGames.titles.chordVariantEar' => '¿Qué variante es?',
+          'chordGames.titles.chordMemory' => 'Memoria de acordes',
+          'chordGames.titles.rootAndBass' => 'Raíz y bajo',
+          'chordGames.titles.inversion' => 'Inversiones',
+          'chordGames.titles.wrongDiagram' => 'Diagrama incorrecto',
+          'chordGames.titles.cagedShape' => 'Formas CAGED',
+          'chordGames.titles.rushOpen' => 'Racha: acordes abiertos',
+          'chordGames.titles.rushBarre' => 'Racha: cejillas',
+          'chordGames.titles.rushSeventh' => 'Racha: séptimas',
+          'chordGames.titles.fillProgression' => 'Completa la progresión',
+          'chordGames.titles.romanDegree' => 'Grados romanos',
+          'chordGames.titles.transposeChord' => 'Transporta',
+          'chordGames.titles.chordNeighbors' => 'Relativos y quintas',
+          'chordGames.titles.styleDuel' => 'Duelo de estilos',
+          'chordGames.titles.chordChanges' => 'Cambios de acorde',
+          'chordGames.descriptions.spellChord' =>
+            '¿Qué notas forman cada acorde?',
+          'chordGames.descriptions.chordFormula' =>
+            'Del acorde a su fórmula 1-3-5… y al revés',
+          'chordGames.descriptions.chordVariantEar' =>
+            'Oye maj7, 7, 6, sus… y distingue la variante',
+          'chordGames.descriptions.chordMemory' =>
+            'Repite la sucesión de acordes que oyes',
+          'chordGames.descriptions.rootAndBass' =>
+            'Dónde está la raíz y qué nota va en el bajo',
+          'chordGames.descriptions.inversion' =>
+            'Fundamental, 1ª o 2ª inversión',
+          'chordGames.descriptions.wrongDiagram' =>
+            'Encuentra el diagrama con un error',
+          'chordGames.descriptions.cagedShape' =>
+            'Reconoce C, A, G, E, D y dónde va la cejilla',
+          'chordGames.descriptions.rushOpen' =>
+            'Nombra acordes abiertos contra el reloj',
+          'chordGames.descriptions.rushBarre' =>
+            'Nombra acordes con cejilla contra el reloj',
+          'chordGames.descriptions.rushSeventh' =>
+            'Séptimas y extendidos contra el reloj',
+          'chordGames.descriptions.fillProgression' =>
+            'Encuentra el acorde que falta',
+          'chordGames.descriptions.romanDegree' =>
+            'Del IV al acorde y del acorde al IV',
+          'chordGames.descriptions.transposeChord' =>
+            'Sube semitonos y toca con capo',
+          'chordGames.descriptions.chordNeighbors' =>
+            'Relativo, dominante, subdominante y quintas',
+          'chordGames.descriptions.styleDuel' =>
+            '¿Qué género suena? Progresión y rasgueo',
+          'chordGames.descriptions.chordChanges' =>
+            'Cambios limpios en 60 segundos',
+          'chordGames.howTo.spellChord' => 'Verás el nombre de un acorde. En fácil y medio elige el grupo de notas que lo forma: Do6 y La menor 7 comparten notas, así que fíjate en la raíz. En difícil toca las notas del acorde de la raíz hacia arriba.',
+          'chordGames.howTo.chordFormula' => 'Cada acorde se construye con intervalos desde su raíz: 1-3-5 es mayor, 1-♭3-5 menor, 1-3-5-♭7 séptima… Pasa del acorde a su fórmula o de la fórmula al nombre del acorde.',
+          'chordGames.howTo.chordVariantEar' => 'Oirás un acorde y se te dice su raíz. Distingue qué variante es: mayor, menor, 7, maj7, 6, sus… Cuanto más subes de nivel, más variantes parecidas hay.',
+          'chordGames.howTo.chordMemory' => 'Oirás una sucesión de acordes. Pulsa los acordes en el mismo orden en que sonaron. Cada nivel añade más acordes y más opciones.',
+          'chordGames.howTo.rootAndBass' => 'Verás el diagrama de una posición. Unas veces hay que decir en qué cuerda está la raíz más grave y otras qué nota hace de bajo, que es la cuerda más grave que suena.',
+          'chordGames.howTo.inversion' => 'Un acorde está en estado fundamental si la raíz va en el bajo; con la tercera en el bajo es la 1ª inversión y con la quinta, la 2ª. En difícil solo lo oyes: fíjate en el bajo.',
+          'chordGames.howTo.wrongDiagram' => 'Verás varios diagramas del mismo acorde y uno tiene un error: una nota que no es del acorde, una cuerda que debía ir muteada o una nota esencial que falta. Encuéntralo.',
+          'chordGames.howTo.cagedShape' => 'Los acordes con cejilla se mueven por el mástil con cinco formas: C, A, G, E y D. Reconoce la forma de un diagrama o di en qué traste va la cejilla para tocar un acorde con una forma dada.',
+          'chordGames.howTo.rushOpen' => 'Reto contra el reloj: aparece el diagrama de un acorde abierto y tienes pocos segundos para nombrarlo. Cuanto más rápido aciertes, más puntos.',
+          'chordGames.howTo.rushBarre' => 'Reto contra el reloj: aparece el diagrama de un acorde con cejilla y tienes pocos segundos para nombrarlo. Cuanto más rápido aciertes, más puntos.',
+          'chordGames.howTo.rushSeventh' => 'Reto contra el reloj: aparece el diagrama de una séptima o un acorde extendido y tienes pocos segundos para decir cuál es. Cuanto más rápido aciertes, más puntos.',
+          'chordGames.howTo.fillProgression' => 'Verás una progresión famosa con un acorde oculto (?). Elige cuál falta; en difícil, elige su grado romano. En fácil y medio puedes oír el resto de la progresión.',
+          'chordGames.howTo.romanDegree' => 'Los grados romanos nombran los acordes de una tonalidad: en Sol mayor el IV es Do y el V7 es Re7. Pasa del grado al acorde y del acorde al grado; en difícil hay séptimas y acordes prestados como el ♭VII.',
+          'chordGames.howTo.transposeChord' => 'Transportar es mover un acorde hacia arriba o abajo. Con un capo en el traste N, la forma que tocas suena N semitonos más aguda. Resuelve subidas, bajadas y capos.',
+          'chordGames.howTo.chordNeighbors' => 'Cada acorde tiene vecinos: su relativo (comparte las notas de la escala), su dominante (V), su subdominante (IV) y los de al lado en el círculo de quintas. Encuentra el que se pide.',
+          'chordGames.howTo.styleDuel' => 'Oirás los primeros compases de una progresión con su rasgueo. Por los acordes y el ritmo, di de qué género es: pop, rock, blues, reggae…',
+          'chordGames.howTo.chordChanges' => 'Te pedimos acordes uno tras otro: tócalo y cámbialo cuanto antes. Cada cambio limpio suma; tienes 60 segundos y la meta de cambios da las tres estrellas.',
+          'chordGames.prompt.spellSet' => ({
+            required Object chord,
+          }) => '¿Qué notas forman ${chord}?',
+          'chordGames.prompt.spellOrder' => ({
+            required Object chord,
+          }) => 'Toca las notas de ${chord}, de la raíz hacia arriba',
+          'chordGames.prompt.formulaTo' => ({
+            required Object chord,
+          }) => '¿Cuál es la fórmula de ${chord}?',
+          'chordGames.prompt.formulaName' => ({
+            required Object note,
+            required Object formula,
+          }) => '¿Qué acorde de raíz ${note} tiene la fórmula ${formula}?',
+          'chordGames.prompt.variantEar' => ({
+            required Object note,
+          }) => 'Suena un acorde de raíz ${note}. ¿Qué variante es?',
+          'chordGames.prompt.chordMemory' =>
+            'Escucha y repite los acordes en el mismo orden',
+          'chordGames.prompt.rootString' => ({
+            required Object chord,
+          }) => '¿En qué cuerda está la raíz más grave de este ${chord}?',
+          'chordGames.prompt.bassNote' => ({
+            required Object chord,
+          }) => '¿Qué nota hace de bajo (la cuerda más grave que suena) en este ${chord}?',
+          'chordGames.prompt.inversionDiagram' => ({
+            required Object chord,
+          }) => '¿En qué inversión está este ${chord}?',
+          'chordGames.prompt.inversionEar' => ({
+            required Object chord,
+          }) => 'Escucha este ${chord}. ¿Qué inversión suena?',
+          'chordGames.prompt.wrongDiagram' => ({
+            required Object chord,
+          }) => 'Un diagrama de ${chord} tiene un error. ¿Cuál?',
+          'chordGames.prompt.cagedShape' => ({
+            required Object chord,
+          }) => '¿Con qué forma CAGED está tocado este ${chord}?',
+          'chordGames.prompt.cagedBarre' => ({
+            required Object chord,
+            required Object shape,
+          }) => 'Para tocar ${chord} con la forma de ${shape}, ¿en qué traste va la cejilla?',
+          'chordGames.prompt.rush' => '¿Qué acorde es este?',
+          'chordGames.prompt.fillChord' => ({
+            required Object genre,
+            required Object key,
+          }) => 'Completa la progresión de ${genre} en ${key}: ¿qué acorde falta?',
+          'chordGames.prompt.fillRoman' => ({
+            required Object genre,
+            required Object key,
+          }) => 'Completa la progresión de ${genre} en ${key}: ¿qué grado falta?',
+          'chordGames.prompt.romanToChord' => ({
+            required Object key,
+            required Object roman,
+          }) => 'En ${key}, ¿qué acorde es el ${roman}?',
+          'chordGames.prompt.romanToRoman' => ({
+            required Object key,
+            required Object chord,
+          }) => 'En ${key}, ¿qué grado es ${chord}?',
+          'chordGames.prompt.transposeUp' =>
+            ({required num n, required Object chord}) =>
+                (_root.$meta.cardinalResolver ??
+                PluralResolvers.cardinal('es'))(
+                  n,
+                  one: 'Sube ${chord} un semitono. ¿Qué acorde resulta?',
+                  other: 'Sube ${chord} ${n} semitonos. ¿Qué acorde resulta?',
+                ),
+          'chordGames.prompt.transposeDown' =>
+            ({required num n, required Object chord}) =>
+                (_root.$meta.cardinalResolver ??
+                PluralResolvers.cardinal('es'))(
+                  n,
+                  one: 'Baja ${chord} un semitono. ¿Qué acorde resulta?',
+                  other: 'Baja ${chord} ${n} semitonos. ¿Qué acorde resulta?',
+                ),
+          'chordGames.prompt.capoSounds' => ({
+            required Object n,
+            required Object chord,
+          }) => 'Con capo en el traste ${n} tocas la forma de ${chord}. ¿Qué acorde suena?',
+          'chordGames.prompt.capoShape' => ({
+            required Object n,
+            required Object chord,
+          }) => 'Con capo en el traste ${n} quieres que suene ${chord}. ¿Qué forma tocas?',
+          'chordGames.prompt.relativeMinor' => ({
+            required Object chord,
+          }) => '¿Cuál es el relativo menor de ${chord}?',
+          'chordGames.prompt.relativeMajor' => ({
+            required Object chord,
+          }) => '¿Cuál es el relativo mayor de ${chord}?',
+          'chordGames.prompt.dominant' => ({
+            required Object chord,
+          }) => '¿Cuál es la dominante (V) de ${chord}?',
+          'chordGames.prompt.subdominant' => ({
+            required Object chord,
+          }) => '¿Cuál es la subdominante (IV) de ${chord}?',
+          'chordGames.prompt.fifthUp' => ({
+            required Object chord,
+          }) => 'En el círculo de quintas, ¿qué acorde está una quinta por encima de ${chord}?',
+          'chordGames.prompt.fifthDown' => ({
+            required Object chord,
+          }) => 'En el círculo de quintas, ¿qué acorde está una quinta por debajo de ${chord}?',
+          'chordGames.prompt.parallel' => ({
+            required Object chord,
+          }) => '¿Cuál es el acorde paralelo de ${chord} (misma nota, otro modo)?',
+          'chordGames.prompt.tritone' => ({
+            required Object chord,
+          }) => '¿Cuál es la sustitución de tritono de ${chord}?',
+          'chordGames.prompt.styleDuel' =>
+            'Escucha la progresión y el rasgueo. ¿De qué género es?',
+          'chordGames.choice.inversionRoot' => 'Fundamental',
+          'chordGames.choice.inversionFirst' => '1ª inversión',
+          'chordGames.choice.inversionSecond' => '2ª inversión',
+          'chordGames.choice.inversionThird' => '3ª inversión',
+          'chordGames.choice.diagram' => ({
+            required Object n,
+          }) => 'Diagrama ${n}',
+          'chordGames.explain.alienNote' => ({
+            required Object string,
+            required Object note,
+            required Object chord,
+          }) => 'En la ${string} suena ${note}, que no es una nota de ${chord}.',
+          'chordGames.explain.unmutedString' => ({
+            required Object string,
+            required Object note,
+            required Object chord,
+          }) => 'La ${string} debía ir muteada: al aire suena ${note}, que no es de ${chord}.',
+          'chordGames.explain.missingNote' => ({
+            required Object note,
+            required Object chord,
+          }) => 'Falta ${note}, una de las notas que definen ${chord}.',
+          'chordGames.explain.styleDuel' => ({
+            required Object genre,
+          }) => 'Era ${genre}.',
+          'chordGames.explain.shape' => ({
+            required Object shape,
+          }) => 'Es la forma de ${shape}.',
+          'chordGames.changes.getReady' => 'Prepárate…',
+          'chordGames.changes.startsIn' => ({
+            required Object n,
+          }) => 'Empieza en ${n}',
+          'chordGames.changes.playThis' => 'Toca este acorde',
+          'chordGames.changes.clean' => 'Cambios limpios',
+          'chordGames.changes.goal' => ({required Object n}) => 'Meta: ${n}',
+          'chordGames.changes.heard' => ({
+            required Object count,
+            required Object total,
+          }) => 'Notas oídas: ${count} de ${total}',
+          'chordGames.changes.hear' => 'Oír el acorde',
+          'chordGames.changes.skip' => 'Saltar acorde',
+          'chordGames.changes.listening' => 'Te escucho…',
+          'chordGames.changes.cleanChange' => '¡Cambio limpio!',
+          'chordGames.changes.missed' => 'Se agotó el tiempo con este acorde',
+          'chordGames.changes.timeLeft' => ({
+            required Object n,
+          }) => 'Quedan ${n} s',
           'guitar.ready' => 'Toca una cuerda al aire',
           'guitar.waiting' => 'Deja que se apague la nota…',
           'guitar.noMic' => 'No te oigo: revisa el micrófono o usa los botones',
@@ -4556,6 +5192,9 @@ extension on Translations {
           'theory.progressionNames.bossaMinor' => 'Bossa menor',
           'theory.progressionNames.latinMinor' => 'Menor latino (i–iv–V7)',
           'theory.progressionNames.latinPop' => 'Pop latino (I–V–IV–V)',
+          _ => null,
+        } ??
+        switch (path) {
           'theory.progressionNames.rancheraPolka' => 'Polka norteña',
           'theory.progressionNames.rancheraCorrido' => 'Corrido en vals',
           'theory.progressionNames.rancheraMinor' => 'Ranchera menor',
@@ -4709,9 +5348,6 @@ extension on Translations {
           'theory.lessonSummaries.subdivision' =>
             'Divide el pulso en 2, 3 o 4 y entiende la síncopa y el swing.',
           'theory.lessonSummaries.modesPractical' => 'Cuándo y cómo usar dórico, frigio, lidio y mixolidio sobre un acorde fijo.',
-          _ => null,
-        } ??
-        switch (path) {
           'theory.lessonSummaries.triads' =>
             'Tríadas y séptimas por apilamiento de terceras, desde la raíz.',
           'theory.lessonSummaries.extensions' =>

@@ -5,6 +5,7 @@ import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_action.dart';
 import 'package:chords/presentation/features/guitar_control/guitar_command_bar.dart';
 import 'package:chords/presentation/features/minigames/mini_game_catalog.dart';
+import 'package:chords/presentation/features/minigames/mini_game_level_hint.dart';
 import 'package:chords/presentation/features/minigames/mini_game_progress_controller.dart';
 import 'package:chords/presentation/l10n/minigame_labels.dart';
 import 'package:chords/presentation/widgets/atoms/app_card.dart';
@@ -129,6 +130,7 @@ class _MiniGameIntroViewState extends State<MiniGameIntroView> {
           onSelectionChanged: (Set<MiniGameLevel> value) =>
               setState(() => _level = value.first),
         ),
+        MiniGameLevelHint(kind: widget.kind, level: _level),
         const SizedBox(height: 8),
         if (best > 0)
           AppText(
