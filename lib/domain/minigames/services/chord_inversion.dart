@@ -1,45 +1,22 @@
 import 'package:chords/domain/chords/entities/chord.dart';
+import 'package:chords/domain/chords/entities/chord_inversion.dart';
 import 'package:chords/domain/chords/entities/chord_variant.dart';
 import 'package:chords/domain/minigames/services/chord_tones.dart';
 
-/// Inversión de una posición según la nota que lleva el bajo.
-enum ChordInversion {
-  /// La raíz en el bajo.
-  root,
-
-  /// La tercera en el bajo.
-  first,
-
-  /// La quinta en el bajo.
-  second,
-
-  /// La séptima en el bajo.
-  third;
-
-  /// Identificador estable.
-  String get id => name;
-
-  /// Resuelve una inversión por su identificador.
-  static ChordInversion? fromId(String id) {
-    for (final ChordInversion inversion in ChordInversion.values) {
-      if (inversion.id == id) {
-        return inversion;
-      }
-    }
-    return null;
-  }
-}
-
-/// Inversión de [variant] como [chord]; `null` si el bajo no es una de las
-/// cuatro primeras notas del acorde o el acorde tiene menos de tres notas.
-ChordInversion? inversionOf(Chord chord, ChordVariant variant) {
+/// Inversión de [variant] como [chord] según la nota del bajo.
+///
+/// Usa la misma clasificación que el banco (`inversionOf` de la calidad).
+/// Devuelve `null` si el acorde tiene menos de tres notas (un power chord no
+/// se invierte) o si el bajo es otra nota (novena, oncena, cuarta…), que no
+/// tiene nombre de inversión.
+ChordInversion? variantInversion(Chord chord, ChordVariant variant) {
   final int? bass = bassPitchClass(variant);
-  final List<int> tones = chordTones(chord.root.pitchClass, chord.quality);
-  if (bass == null || tones.length < 3) {
+  if (bass == null || chord.quality.intervals.length < 3) {
     return null;
   }
-  final int index = tones.indexOf(bass);
-  return index < 0 || index >= ChordInversion.values.length
-      ? null
-      : ChordInversion.values[index];
+  final ChordInversion inversion = inversionOf(
+    chord.quality,
+    (bass - chord.root.pitchClass + 12) % 12,
+  );
+  return inversion == ChordInversion.other ? null : inversion;
 }

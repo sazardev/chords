@@ -6,9 +6,9 @@
 /// tiene aquí la función que arma su enunciado.
 library;
 
+import 'package:chords/domain/chords/entities/chord_inversion.dart';
 import 'package:chords/domain/minigames/entities/mini_game_kind.dart';
 import 'package:chords/domain/minigames/entities/quiz_question.dart';
-import 'package:chords/domain/minigames/services/chord_inversion.dart';
 import 'package:chords/domain/theory/entities/scale_type.dart';
 import 'package:chords/l10n/translations.g.dart';
 import 'package:chords/presentation/l10n/minigame_labels.dart';
@@ -134,12 +134,12 @@ String chordGameChoiceLabel(Translations t, QuizChoice choice) =>
     };
 
 String _inversionLabel(Translations t, String id) =>
-    switch (ChordInversion.fromId(id)) {
+    switch (ChordInversion.values.asNameMap()[id]) {
       ChordInversion.root => t.chordGames.choice.inversionRoot,
       ChordInversion.first => t.chordGames.choice.inversionFirst,
       ChordInversion.second => t.chordGames.choice.inversionSecond,
       ChordInversion.third => t.chordGames.choice.inversionThird,
-      null => id,
+      ChordInversion.other || null => id,
     };
 
 /// Texto de un diagrama como opción, para lectores de pantalla.

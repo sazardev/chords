@@ -22,10 +22,11 @@ List<ChordQuality> bankQualities(ChordRepository repository) => <ChordQuality>[
       quality,
 ];
 
-/// Calidades que se estudian en cada nivel.
+/// Calidades que se estudian en cada nivel, según su `popularity` en el banco.
 ///
-/// Fácil: mayor, menor y séptima. Medio: las de hasta cuatro notas.
-/// Difícil: todas las del banco, incluidas las extendidas.
+/// Fácil: las imprescindibles (mayor, menor, séptima, menor séptima).
+/// Medio: también las muy usadas (maj7, sus, power, novena, add9).
+/// Difícil: todas las del banco, incluidas las raras y las alteradas.
 List<ChordQuality> studyQualities(
   ChordRepository repository,
   MiniGameLevel level,
@@ -34,14 +35,11 @@ List<ChordQuality> studyQualities(
   final List<ChordQuality> picked = switch (level) {
     MiniGameLevel.easy => <ChordQuality>[
       for (final ChordQuality q in all)
-        if (q == ChordQuality.major ||
-            q == ChordQuality.minor ||
-            q == ChordQuality.seven)
-          q,
+        if (q.popularity >= 5) q,
     ],
     MiniGameLevel.medium => <ChordQuality>[
       for (final ChordQuality q in all)
-        if (q.intervals.length <= 4) q,
+        if (q.popularity >= 4) q,
     ],
     MiniGameLevel.hard => all,
   };

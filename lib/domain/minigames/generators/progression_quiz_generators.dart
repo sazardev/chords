@@ -128,7 +128,8 @@ class FillProgressionGenerator implements QuizGenerator {
         return question;
       }
     }
-    return _build(random, MiniGameLevel.easy, kProgressions.first)!;
+    return _build(random, MiniGameLevel.easy, kProgressions.first) ??
+        (throw StateError('El banco no tiene los acordes de las progresiones'));
   }
 
   bool _fits(ChordProgression progression, MiniGameLevel level) {
@@ -297,12 +298,12 @@ class RomanDegreeGenerator implements QuizGenerator {
   QuizQuestion generate(math.Random random, MiniGameLevel level, int index) {
     final bool minor =
         level != MiniGameLevel.easy && random.nextDouble() < 0.35;
-    final List<String> tokens = <String>[
-      for (final String token in (minor ? _minor[level]! : _major[level]!))
-        if (_repository.chordById(RomanChord.parse(token).inKey(0).chordId) !=
-            null)
-          token,
-    ];
+    final List<String> tokens = _playable(
+      minor ? _minor[level]! : _major[level]!,
+    );
+    if (tokens.isEmpty) {
+      throw StateError('El banco no tiene acordes para los grados romanos');
+    }
     final int tonic = randomTonic(random, level);
     final String token = tokens[random.nextInt(tokens.length)];
     final ChordSymbol answer = RomanChord.parse(token).inKey(tonic);
@@ -325,6 +326,14 @@ class RomanDegreeGenerator implements QuizGenerator {
       },
     );
   }
+
+  /// Los grados cuyo acorde existe en el banco.
+  List<String> _playable(List<String> tokens) => <String>[
+    for (final String token in tokens)
+      if (_repository.chordById(RomanChord.parse(token).inKey(0).chordId) !=
+          null)
+        token,
+  ];
 
   ShuffledChoices _toChord(
     math.Random random,

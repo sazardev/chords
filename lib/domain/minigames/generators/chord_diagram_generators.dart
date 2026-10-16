@@ -38,10 +38,13 @@ class WrongDiagramGenerator implements QuizGenerator {
         return question;
       }
     }
-    final Chord any = _repository.chords.firstWhere(
-      (Chord c) => c.variants.length > valid,
-    );
-    return _build(random, any, valid)!;
+    for (final Chord chord in _repository.chords) {
+      final QuizQuestion? question = _build(random, chord, valid);
+      if (question != null) {
+        return question;
+      }
+    }
+    throw StateError('El banco no tiene posiciones para un diagrama erróneo');
   }
 
   QuizQuestion? _build(math.Random random, Chord chord, int valid) {
@@ -91,19 +94,25 @@ class CagedShapeGenerator implements QuizGenerator {
 
   @override
   QuizQuestion generate(math.Random random, MiniGameLevel level, int index) {
-    final bool barre = random.nextDouble() < _barreShare(level);
+    final List<(Chord, int, CagedShape)> shapes = _shapeVariants(level);
+    final bool barre =
+        shapes.isEmpty || random.nextDouble() < _barreShare(level);
     return (barre ? _barreQuestion(random, level) : null) ??
-        _shapeQuestion(random, level);
+        _shapeQuestion(random, level, shapes);
   }
 
   double _barreShare(MiniGameLevel level) =>
       level == MiniGameLevel.easy ? 0.35 : 0.5;
 
   /// Diagrama → forma.
-  QuizQuestion _shapeQuestion(math.Random random, MiniGameLevel level) {
-    final List<(Chord, int, CagedShape)> options = _shapeVariants(level);
-    final (Chord, int, CagedShape) pick =
-        options[random.nextInt(options.length)];
+  QuizQuestion _shapeQuestion(
+    math.Random random,
+    MiniGameLevel level,
+    List<(Chord, int, CagedShape)> options,
+  ) {
+    final (Chord, int, CagedShape) pick = options.isEmpty
+        ? (_repository.chords.first, 0, CagedShape.e)
+        : options[random.nextInt(options.length)];
     final List<CagedShape> others =
         CagedShape.values.where((CagedShape s) => s != pick.$3).toList()
           ..shuffle(random);
@@ -124,30 +133,30 @@ class CagedShapeGenerator implements QuizGenerator {
     );
   }
 
+  /// Formas CAGED del banco según el nivel: abiertas en fácil, con cejilla o
+  /// sin cuerdas al aire en medio y todas en difícil. Si el filtro del nivel
+  /// no deja ninguna se usan todas.
   List<(Chord, int, CagedShape)> _shapeVariants(MiniGameLevel level) {
-    List<(Chord, int, CagedShape)> collect(bool Function(ChordVariant) keep) =>
-        <(Chord, int, CagedShape)>[
-          for (final Chord chord in _repository.chords)
-            for (int v = 0; v < chord.variants.length; v++)
-              if (CagedShape.ofVariant(chord.variants[v])
-                  case final CagedShape s when keep(chord.variants[v]))
-                (chord, v, s),
-        ];
-    final List<(Chord, int, CagedShape)> open = collect(
-      (ChordVariant v) => v.tags.contains('open'),
-    );
-    final List<(Chord, int, CagedShape)> all = collect(
-      (ChordVariant v) => true,
-    );
-    return switch (level) {
-      MiniGameLevel.easy when open.length >= 3 => open,
-      MiniGameLevel.medium || MiniGameLevel.easy => collect(
-        (ChordVariant v) =>
-            v.tags.contains('open') ||
-            (v.tags.contains('barre') && !v.tags.contains('jazz')),
-      ),
-      MiniGameLevel.hard => all,
-    };
+    final List<(Chord, int, CagedShape)> all = <(Chord, int, CagedShape)>[
+      for (final Chord chord in _repository.chords)
+        for (int v = 0; v < chord.variants.length; v++)
+          if (CagedShape.ofVariant(chord.variants[v]) case final CagedShape s)
+            (chord, v, s),
+    ];
+    bool fits((Chord, int, CagedShape) item) {
+      final Set<String> tags = item.$1.variants[item.$2].tags.toSet();
+      return switch (level) {
+        MiniGameLevel.easy => tags.contains('open'),
+        MiniGameLevel.medium =>
+          tags.contains('open') ||
+              tags.contains('barre') ||
+              tags.contains('movable'),
+        MiniGameLevel.hard => true,
+      };
+    }
+
+    final List<(Chord, int, CagedShape)> picked = all.where(fits).toList();
+    return picked.length >= 3 ? picked : all;
   }
 
   /// Acorde + forma → traste de la cejilla.
