@@ -94,29 +94,9 @@ class _LivePageState extends State<LivePage> {
         body: SafeArea(
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-                child: SegmentedButton<bool>(
-                  showSelectedIcon: false,
-                  segments: <ButtonSegment<bool>>[
-                    ButtonSegment<bool>(
-                      value: false,
-                      icon: const Icon(Icons.tune_rounded),
-                      label: Text(t.tuner.modeTuner),
-                    ),
-                    ButtonSegment<bool>(
-                      value: true,
-                      icon: const Icon(Icons.library_music_rounded),
-                      label: Text(t.tuner.modeChords),
-                    ),
-                  ],
-                  selected: <bool>{_chords},
-                  onSelectionChanged: (Set<bool> mode) {
-                    if (mode.first != _chords) {
-                      unawaited(_toggleMode());
-                    }
-                  },
-                ),
+              _ModeSwitch(
+                chords: _chords,
+                onChanged: () => unawaited(_toggleMode()),
               ),
               Expanded(
                 child: LayoutBuilder(
@@ -131,6 +111,43 @@ class _LivePageState extends State<LivePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Selector visible entre el afinador y la detección de acordes.
+class _ModeSwitch extends StatelessWidget {
+  const _ModeSwitch({required this.chords, required this.onChanged});
+
+  final bool chords;
+  final VoidCallback onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final Translations t = context.t;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: SegmentedButton<bool>(
+        showSelectedIcon: false,
+        segments: <ButtonSegment<bool>>[
+          ButtonSegment<bool>(
+            value: false,
+            icon: const Icon(Icons.tune_rounded),
+            label: Text(t.tuner.modeTuner),
+          ),
+          ButtonSegment<bool>(
+            value: true,
+            icon: const Icon(Icons.library_music_rounded),
+            label: Text(t.tuner.modeChords),
+          ),
+        ],
+        selected: <bool>{chords},
+        onSelectionChanged: (Set<bool> mode) {
+          if (mode.first != chords) {
+            onChanged();
+          }
+        },
       ),
     );
   }
