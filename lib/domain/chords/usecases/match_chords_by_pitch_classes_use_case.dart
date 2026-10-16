@@ -12,7 +12,10 @@ class MatchChordsByPitchClassesUseCase {
   const MatchChordsByPitchClassesUseCase();
 
   /// Devuelve los acordes sugeridos ordenados por calidad de coincidencia.
-  List<Chord> call(List<Chord> chords, Set<int> detected) {
+  ///
+  /// Con tantos tipos de acorde pueden coincidir decenas: se devuelven como
+  /// mucho [limit], los más probables primero.
+  List<Chord> call(List<Chord> chords, Set<int> detected, {int limit = 12}) {
     if (detected.isEmpty) {
       return const <Chord>[];
     }
@@ -32,7 +35,7 @@ class MatchChordsByPitchClassesUseCase {
     return <Chord>[
       ...exact..sort(_byCommonness),
       ...partial..sort(_byCommonness),
-    ];
+    ].take(limit).toList();
   }
 
   /// Los acordes de uso corriente primero y, a igual uso, los más fáciles.
